@@ -64,12 +64,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleDetailDto selectArticle(Long articleId) {
-        return articleRepository.findByArticleId(articleId).map(this::toDto).orElseThrow();
+        return articleRepository.findById(articleId).map(this::toDto).orElseThrow();
     }
 
     @Override
     public boolean updateArticle(Long userId, ArticleUpdateParam param, MultipartFile picture) throws IOException {
-        Article article = articleRepository.findByArticleId(param.getArticleId()).get();
+        Article article = articleRepository.findById(param.getArticleId()).get();
 
         //게시글 수정 권한이 없을 때
         if (!Objects.equals(article.getUser().getUserId(), userId)) {
@@ -90,7 +90,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public boolean deleteArticle(Long userId, Long articleId) {
-        Article article = articleRepository.findByArticleId(articleId).get();
+        Article article = articleRepository.findById(articleId).get();
         if (!Objects.equals(article.getUser().getUserId(), userId)) {
             return false;
         }
