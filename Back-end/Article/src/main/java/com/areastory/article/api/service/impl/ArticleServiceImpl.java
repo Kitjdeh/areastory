@@ -1,11 +1,12 @@
-package com.areastory.article.api.service;
+package com.areastory.article.api.service.impl;
 
+import com.areastory.article.api.service.ArticleService;
 import com.areastory.article.db.entity.Article;
 import com.areastory.article.db.entity.User;
 import com.areastory.article.db.repository.ArticleRepository;
 import com.areastory.article.db.repository.UserRepository;
-import com.areastory.article.dto.common.ArticleDetailDto;
 import com.areastory.article.dto.common.ArticleDto;
+import com.areastory.article.dto.request.ArticleReq;
 import com.areastory.article.dto.request.ArticleUpdateParam;
 import com.areastory.article.dto.response.ArticleResp;
 import com.areastory.article.util.FileUtil;
@@ -44,14 +45,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleResp selectAllArticle(Pageable pageable) {
-        Page<ArticleDto> articles = articleRepository.findAll(pageable).map(article -> ArticleDto.builder()
-                .nickname(article.getUser().getNickname())
-                .content(article.getContent())
-                .picture(article.getImage())
-                .likeCount(article.getLikeCount())
-                .commentCount(article.getCommentCount())
-                .build());
+    public ArticleResp selectAllArticle(ArticleReq articleReq, Pageable pageable) {
+        Page<ArticleDto> articles = articleRepository.findAll(articleReq, pageable);
 
 
         return ArticleResp.builder()
@@ -63,8 +58,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleDetailDto selectArticle(Long articleId) {
-        return articleRepository.findById(articleId).map(this::toDto).orElseThrow();
+    public ArticleDto selectArticle(Long userId, Long articleId) {
+        return articleRepository.findById(userId, articleId);
     }
 
     @Override

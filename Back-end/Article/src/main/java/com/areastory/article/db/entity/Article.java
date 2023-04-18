@@ -3,8 +3,10 @@ package com.areastory.article.db.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,12 +24,15 @@ public class Article extends BaseTime {
     private String content;
     private String image;
     private Long likeCount;
+
+    @ColumnDefault("0")
     private Long commentCount;
 
-//    private List<Comment> comment;
+    @OneToMany(mappedBy = "article")
+    private List<Comment> comment;
 
     @OneToOne
-    @JoinColumn(name = "locationId")
+    @JoinColumn(name = "location_id")
     private Location location;
 
     @Builder
@@ -43,5 +48,9 @@ public class Article extends BaseTime {
 
     public void updateImage(String image) {
         this.image = image;
+    }
+
+    public void updateCommentCount() {
+        this.commentCount++;
     }
 }

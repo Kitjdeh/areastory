@@ -1,7 +1,7 @@
 package com.areastory.article.api.service;
 
-import com.areastory.article.db.entity.Article;
-import com.areastory.article.dto.common.ArticleDetailDto;
+import com.areastory.article.dto.common.ArticleDto;
+import com.areastory.article.dto.request.ArticleReq;
 import com.areastory.article.dto.request.ArticleUpdateParam;
 import com.areastory.article.dto.response.ArticleResp;
 import org.springframework.data.domain.Pageable;
@@ -13,21 +13,21 @@ public interface ArticleService {
 
     void addArticle(Long userId, String content, MultipartFile picture) throws IOException;
 
-    ArticleResp selectAllArticle(Pageable pageable);
+    ArticleResp selectAllArticle(ArticleReq articleReq, Pageable pageable);
 
-    ArticleDetailDto selectArticle(Long articleId);
+    ArticleDto selectArticle(Long userId, Long articleId);
 
     boolean updateArticle(Long userId, ArticleUpdateParam param, MultipartFile picture) throws IOException;
 
     boolean deleteArticle(Long userId, Long articleId);
 
-    default ArticleDetailDto toDto(Article article) {
-        return ArticleDetailDto.builder()
-                .nickname(article.getUser().getNickname())
-                .content(article.getContent())
-                .picture(article.getImage())
-                .likeCount(article.getLikeCount())
-                .commentCount(article.getCommentCount())
-                .build();
-    }
+//    default ArticleDetailDto toDto(Article article) {
+//        return ArticleDetailDto.builder()
+//                .nickname(article.getUser().getNickname())
+//                .content(article.getContent())
+//                .image(article.getImage())
+//                .likeCount(article.getLikeCount())
+//                .commentCount(article.getCommentCount())
+//                .build();
+//    }
 }

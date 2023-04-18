@@ -1,22 +1,40 @@
 package com.areastory.article.dto.common;
 
-import lombok.AllArgsConstructor;
+import com.querydsl.core.annotations.QueryProjection;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.Setter;
+
+import java.util.List;
 
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@SuperBuilder
+@Setter
+@Builder
 public class ArticleDto {
-
+    private Long articleId;
     private String nickname;
-    //    private String location;
+    private String profile;
     private String content;
-    private String picture;
+    private String image;
     private Long likeCount;
     private Long commentCount;
+    private Boolean isLike;
 
+    private List<CommentDto> comment;
+
+    @QueryProjection
+    public ArticleDto(Long articleId, String nickname, String profile, String content, String image, Long likeCount, Long commentCount, Boolean isLike, List<CommentDto> comment) {
+        this.articleId = articleId;
+        this.nickname = nickname;
+        this.profile = profile;
+        this.content = content;
+        this.image = image;
+        this.likeCount = likeCount;
+        this.commentCount = commentCount;
+        this.isLike = isLike;
+        this.comment = comment;
+    }
 }

@@ -1,6 +1,7 @@
 package com.areastory.article.api.controller;
 
 import com.areastory.article.api.service.ArticleService;
+import com.areastory.article.dto.request.ArticleReq;
 import com.areastory.article.dto.request.ArticleUpdateParam;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,32 +40,37 @@ public class ArticleController {
     /*
     모든 게시물 불러오기
     한페이지당 개수는 15개, 정렬은 좋아요 순으로
+    댓글은 우선 2개만 보여주기
      */
     @ApiOperation(value = "모든 게시물 불러오기", notes = "모든 게시물 부르기")
     @GetMapping("/articles")
-    public ResponseEntity<?> selectAllArticle(@PageableDefault(size = 15, sort = "likeCount", direction = Sort.Direction.DESC) Pageable pageable) {
-        return new ResponseEntity<>(articleService.selectAllArticle(pageable), HttpStatus.OK);
+    public ResponseEntity<?> selectAllArticle(@RequestBody ArticleReq articleReq,
+                                              @PageableDefault(size = 15, sort = "likeCount", direction = Sort.Direction.DESC) Pageable pageable) {
+        System.out.println("모든");
+        return new ResponseEntity<>(articleService.selectAllArticle(articleReq, pageable), HttpStatus.OK);
     }
 
     /*
     특정 게시물 불러오기
+    댓글 10개 보여주기
      */
     @ApiOperation(value = "게시물 상세 불러오기", notes = "특정 게시물 상세 불러오기")
-    @GetMapping("/article/{articleId}")
-    public ResponseEntity<?> selectArticle(@PathVariable Long articleId) {
-        return new ResponseEntity<>(articleService.selectArticle(articleId), HttpStatus.OK);
+    @GetMapping("/articles/{articleId}")
+    public ResponseEntity<?> selectArticle(Long userId, @PathVariable Long articleId) {
+        System.out.println("상세");
+        return new ResponseEntity<>(articleService.selectArticle(userId, articleId), HttpStatus.OK);
     }
 
     /*
     게시물 수정
      */
     @ApiOperation(value = "게시물 수정", notes = "게시글 수정")
-    @PutMapping("/article")
-    public ResponseEntity<?> updateArticle(Long userId,
+    @PutMapping("/articles/{articleId}")
+    public ResponseEntity<?> updateArticle(Long userId, @PathVariable Long articleId,
                                            @RequestPart(required = false) ArticleUpdateParam param,
                                            @RequestPart(value = "picture", required = false) MultipartFile picture) throws IOException {
 
-
+        param.setArticleId(articleId);
         boolean check = articleService.updateArticle(userId, param, picture);
         if (!check) {
             return new ResponseEntity<>(FAIL, HttpStatus.UNAUTHORIZED);
@@ -76,7 +82,7 @@ public class ArticleController {
     게시글 삭제
      */
     @ApiOperation(value = "게시물 삭제", notes = "게시글 삭제")
-    @DeleteMapping("/article/{articleId}")
+    @DeleteMapping("/articles/{articleId}")
     public ResponseEntity<?> deleteArticle(Long userId, @PathVariable Long articleId) {
 
         boolean check = articleService.deleteArticle(userId, articleId);
