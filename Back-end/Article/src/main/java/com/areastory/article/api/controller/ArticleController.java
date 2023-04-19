@@ -3,6 +3,7 @@ package com.areastory.article.api.controller;
 import com.areastory.article.api.service.ArticleService;
 import com.areastory.article.dto.request.ArticleReq;
 import com.areastory.article.dto.request.ArticleUpdateParam;
+import com.areastory.article.dto.request.ArticleWriteReq;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +33,8 @@ public class ArticleController {
     @PostMapping("/articles")
     public ResponseEntity<?> writeArticle(Long userId,
                                           @RequestPart(value = "picture", required = false) MultipartFile picture,
-                                          @RequestPart(required = false) String content) throws IOException {
-        articleService.addArticle(userId, content, picture);
+                                          @RequestPart ArticleWriteReq articleWriteReq) throws IOException {
+        articleService.addArticle(userId, articleWriteReq, picture);
         return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
     }
 

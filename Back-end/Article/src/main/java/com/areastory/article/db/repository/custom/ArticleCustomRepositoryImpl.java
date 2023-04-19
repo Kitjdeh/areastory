@@ -21,7 +21,8 @@ import java.util.List;
 import static com.areastory.article.db.entity.QArticle.article;
 import static com.areastory.article.db.entity.QArticleLike.articleLike;
 import static com.areastory.article.db.entity.QComment.comment;
-import static com.querydsl.core.types.Projections.list;
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 
 
 @Repository
@@ -31,41 +32,101 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
 
     @Override
     public Page<ArticleDto> findAll(ArticleReq articleReq, Pageable pageable) {
-        List<ArticleDto> articles = query
-                .select(Projections.constructor(ArticleDto.class,
-                        article.articleId,
-                        article.user.nickname,
-                        article.user.profile,
-                        article.content,
-                        article.image,
-                        article.likeCount,
-                        article.commentCount,
-                        new CaseBuilder()
-                                .when(articleLike.user.userId.eq(articleReq.getUserId()))
-                                .then(true)
-                                .otherwise(false),
-                        list(Projections.constructor(CommentDto.class,
-                                comment.user.nickname,
-                                comment.user.profile,
-                                comment.content,
-                                comment.likeCount))
-
-                ))
-                .from(article)
+        List<ArticleDto> test = query.selectFrom(comment)
+                .rightJoin(article)
+                .on(comment.article.eq(article))
                 .leftJoin(articleLike)
                 .on(articleLike.user.userId.eq(articleReq.getUserId()), articleLike.article.eq(article))
-                .where(containsDo(articleReq.getDoName()), containsSi(articleReq.getSi()), containsGun(articleReq.getGun()),
-                        containsGu(articleReq.getGu()), containsDong(articleReq.getDong()), containsEup(articleReq.getEup()),
-                        containsMyeon(articleReq.getMyeon()))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+                .limit(1)
+                .transform(
+                        groupBy(comment.article.articleId).list(
+                                Projections.constructor(ArticleDto.class, list(
+                                                Projections.constructor(CommentDto.class,
+                                                        comment.user.nickname,
+                                                        comment.user.profile,
+                                                        comment.content,
+                                                        comment.likeCount)
+                                        ), article.articleId,
+                                        article.user.nickname,
+                                        article.user.profile,
+                                        article.content,
+                                        article.image,
+                                        article.likeCount,
+                                        article.commentCount,
+                                        new CaseBuilder()
+                                                .when(articleLike.user.userId.eq(articleReq.getUserId()))
+                                                .then(true)
+                                                .otherwise(false))
+                        )
+                );
+
+//        List<ArticleDto> test = query.selectFrom(article)
+//                .leftJoin(articleLike)
+//                .on(articleLike.user.userId.eq(articleReq.getUserId()), articleLike.article.eq(article))
+//                .leftJoin(comment)
+//                .on(comment.article.eq(article))
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .transform(
+//                        groupBy(article.articleId).list(
+//                                Projections.constructor(ArticleDto.class, list(
+//                                                Projections.constructor(CommentDto.class,
+//                                                        comment.user.nickname,
+//                                                        comment.user.profile,
+//                                                        comment.content,
+//                                                        comment.likeCount)
+//                                        ), article.articleId,
+//                                        article.user.nickname,
+//                                        article.user.profile,
+//                                        article.content,
+//                                        article.image,
+//                                        article.likeCount,
+//                                        article.commentCount,
+//                                        new CaseBuilder()
+//                                                .when(articleLike.user.userId.eq(articleReq.getUserId()))
+//                                                .then(true)
+//                                                .otherwise(false))
+//                        )
+//                );
+
+//        List<ArticleDto> articles = query
+//                .select(Projections.constructor(ArticleDto.class,
+//                        article.articleId,
+//                        article.user.nickname,
+//                        article.user.profile,
+//                        article.content,
+//                        article.image,
+//                        article.likeCount,
+//                        article.commentCount,
+//                        new CaseBuilder()
+//                                .when(articleLike.user.userId.eq(articleReq.getUserId()))
+//                                .then(true)
+//                                .otherwise(false),
+//                        list(Projections.constructor(CommentDto.class,
+//                                comment.user.nickname,
+//                                comment.user.profile,
+//                                comment.content,
+//                                comment.likeCount))
+//
+//                ))
+//                .from(article)
+//                .leftJoin(articleLike)
+//                .on(articleLike.user.userId.eq(articleReq.getUserId()), articleLike.article.eq(article))
+//                .join(comment)
+//                .on(comment.article.eq(article))
+//
+//                .where(containsDo(articleReq.getDoName()), containsSi(articleReq.getSi()), containsGun(articleReq.getGun()),
+//                        containsGu(articleReq.getGu()), containsDong(articleReq.getDong()), containsEup(articleReq.getEup()),
+//                        containsMyeon(articleReq.getMyeon()))
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .fetch();
 
         JPAQuery<Long> articleSize = query
                 .select(article.count())
                 .from(article);
 
-        return PageableExecutionUtils.getPage(articles, pageable, articleSize::fetchOne);
+        return PageableExecutionUtils.getPage(test, pageable, articleSize::fetchOne);
     }
 
     @Override
@@ -111,49 +172,49 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
 
     private BooleanExpression containsDo(String doName) {
         if (StringUtils.hasText(doName)) {
-            return article.location.doName.eq(doName);
+            return article.doName.eq(doName);
         }
         return null;
     }
 
     private BooleanExpression containsSi(String si) {
         if (StringUtils.hasText(si)) {
-            return article.location.si.eq(si);
+            return article.si.eq(si);
         }
         return null;
     }
 
     private BooleanExpression containsGun(String gun) {
         if (StringUtils.hasText(gun)) {
-            return article.location.gun.eq(gun);
+            return article.gun.eq(gun);
         }
         return null;
     }
 
     private BooleanExpression containsGu(String gu) {
         if (StringUtils.hasText(gu)) {
-            return article.location.gu.eq(gu);
+            return article.gu.eq(gu);
         }
         return null;
     }
 
     private BooleanExpression containsDong(String dong) {
         if (StringUtils.hasText(dong)) {
-            return article.location.dong.eq(dong);
+            return article.dong.eq(dong);
         }
         return null;
     }
 
     private BooleanExpression containsEup(String eup) {
         if (StringUtils.hasText(eup)) {
-            return article.location.eup.eq(eup);
+            return article.eup.eq(eup);
         }
         return null;
     }
 
     private BooleanExpression containsMyeon(String myeon) {
         if (StringUtils.hasText(myeon)) {
-            return article.location.myeon.eq(myeon);
+            return article.myeon.eq(myeon);
         }
         return null;
     }

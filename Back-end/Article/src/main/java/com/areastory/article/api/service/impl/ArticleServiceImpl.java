@@ -8,6 +8,7 @@ import com.areastory.article.db.repository.UserRepository;
 import com.areastory.article.dto.common.ArticleDto;
 import com.areastory.article.dto.request.ArticleReq;
 import com.areastory.article.dto.request.ArticleUpdateParam;
+import com.areastory.article.dto.request.ArticleWriteReq;
 import com.areastory.article.dto.response.ArticleResp;
 import com.areastory.article.util.FileUtil;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final FileUtil fileUtil;
 
     @Override
-    public void addArticle(Long userId, String content, MultipartFile picture) throws IOException {
+    public void addArticle(Long userId, ArticleWriteReq articleWriteReq, MultipartFile picture) throws IOException {
         User user = userRepository.findById(userId).orElseThrow();
 
         String imageUrl = "";
@@ -39,8 +40,15 @@ public class ArticleServiceImpl implements ArticleService {
 
         articleRepository.save(Article.builder()
                 .user(user)
-                .content(content)
+                .content(articleWriteReq.getContent())
                 .image(imageUrl)
+                .doName(articleWriteReq.getDoName())
+                .si(articleWriteReq.getSi())
+                .gun(articleWriteReq.getGun())
+                .gu(articleWriteReq.getGu())
+                .dong(articleWriteReq.getDong())
+                .eup(articleWriteReq.getEup())
+                .myeon(articleWriteReq.getMyeon())
                 .build());
     }
 

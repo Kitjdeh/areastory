@@ -31,15 +31,32 @@ public class Article extends BaseTime {
     @OneToMany(mappedBy = "article")
     private List<Comment> comment;
 
-    @OneToOne
-    @JoinColumn(name = "location_id")
-    private Location location;
+//    @OneToOne
+//    @JoinColumn(name = "location_id")
+//    private Location location;
+
+    @Column(name = "do")
+    private String doName;
+    private String si;
+    private String gun;
+    private String gu;
+    private String dong;
+    private String eup;
+    private String myeon;
+
 
     @Builder
-    public Article(User user, String content, String image) {
+    public Article(User user, String content, String image, String doName, String si, String gun, String gu, String dong, String eup, String myeon) {
         this.user = user;
         this.content = content;
         this.image = image;
+        this.doName = doName;
+        this.si = si;
+        this.gun = gun;
+        this.gu = gu;
+        this.dong = dong;
+        this.eup = eup;
+        this.myeon = myeon;
     }
 
     public void updateContent(String content) {
