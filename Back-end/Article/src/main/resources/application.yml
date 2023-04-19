@@ -22,9 +22,6 @@ spring:
       password: ${DB_PASSWORD}
       username: ${DB_USER}
     url: ${DB_URL}
-  mvc:
-    pathmatch:
-      matching-strategy: ANT_PATH_MATCHER
   servlet:
     multipart:
       max-file-size: 100MB

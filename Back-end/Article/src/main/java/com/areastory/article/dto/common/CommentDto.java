@@ -6,18 +6,23 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-@Builder
 public class CommentDto {
-    String nickname;
-    String profile;
-    String content;
-    Long likeCount;
+    private Long commentId;
+    private Long articleId;
+    private String nickname;
+    private String profile;
+    private String content;
+    private Long likeCount;
+    private Boolean isLike;
 
-
-    public CommentDto(String nickname, String profile, String content, Long likeCount) {
+    @Builder
+    public CommentDto(Long commentId, Long articleId, String nickname, String profile, String content, Long likeCount, Boolean isLike) {
+        this.commentId = commentId;
+        this.articleId = articleId;
         this.nickname = nickname;
         this.profile = profile;
         this.content = content;
         this.likeCount = likeCount;
+        this.isLike = isLike;
     }
 }

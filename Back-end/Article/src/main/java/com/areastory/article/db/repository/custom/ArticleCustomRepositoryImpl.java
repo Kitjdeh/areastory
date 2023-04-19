@@ -16,13 +16,16 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.areastory.article.db.entity.QArticle.article;
 import static com.areastory.article.db.entity.QArticleLike.articleLike;
 import static com.areastory.article.db.entity.QComment.comment;
-import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.group.GroupBy.list;
+import static com.areastory.article.db.entity.QCommentLike.commentLike;
 
 
 @Repository
@@ -32,108 +35,54 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
 
     @Override
     public Page<ArticleDto> findAll(ArticleReq articleReq, Pageable pageable) {
-//        List<ArticleDto> test = query.selectFrom(article)
-//                .leftJoin(comment)
-//                .on(comment.article.eq(article))
-//                .leftJoin(articleLike)
-//                .on(articleLike.user.userId.eq(articleReq.getUserId()), articleLike.article.eq(article))
-//                .where(containsDo(articleReq.getDoName()), containsSi(articleReq.getSi()), containsGun(articleReq.getGun()),
-//                        containsGu(articleReq.getGu()), containsDong(articleReq.getDong()), containsEup(articleReq.getEup()),
-//                        containsMyeon(articleReq.getMyeon()))
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .transform(
-//                        groupBy(article.articleId).list(
-//                                Projections.constructor(ArticleDto.class,
-//                                        list(
-//                                                Projections.constructor(CommentDto.class,
-//                                                        comment.user.nickname,
-//                                                        comment.user.profile,
-//                                                        comment.content,
-//                                                        comment.likeCount)
-//                                        ), article.articleId,
-//                                        article.user.nickname,
-//                                        article.user.profile,
-//                                        article.content,
-//                                        article.image,
-//                                        article.likeCount,
-//                                        article.commentCount,
-//                                        new CaseBuilder()
-//                                                .when(articleLike.user.userId.eq(articleReq.getUserId()))
-//                                                .then(true)
-//                                                .otherwise(false))
-//                        )
-//                );
-
-
-//        List<ArticleDto> test = query.selectFrom(comment)
-//                .rightJoin(article)
-//                .on(comment.article.eq(article))
-//                .leftJoin(articleLike)
-//                .on(articleLike.user.userId.eq(articleReq.getUserId()), articleLike.article.eq(article))
-//                .where(eqDo(articleReq.getDoName()), eqSi(articleReq.getSi()), eqGun(articleReq.getGun()),
-//                        eqGu(articleReq.getGu()), eqDong(articleReq.getDong()), eqEup(articleReq.getEup()),
-//                        eqMyeon(articleReq.getMyeon()))
-////                .offset(pageable.getOffset())
-////                .limit(2)
-////                .orderBy(comment.article.likeCount.desc())
-//                .transform(
-//                        groupBy(article.articleId).list(
-//                                Projections.constructor(ArticleDto.class, list(
-//                                                Projections.constructor(CommentDto.class,
-//                                                        comment.user.nickname,
-//                                                        comment.user.profile,
-//                                                        comment.content,
-//                                                        comment.likeCount)
-//                                        ), article.articleId,
-//                                        article.user.nickname,
-//                                        article.user.profile,
-//                                        article.content,
-//                                        article.image,
-//                                        article.likeCount,
-//                                        article.commentCount,
-//                                        new CaseBuilder()
-//                                                .when(articleLike.user.userId.eq(articleReq.getUserId()))
-//                                                .then(true)
-//                                                .otherwise(false))
-//                        )
-//                );
-
-        List<ArticleDto> test = query.selectFrom(article)
+        List<ArticleDto> test = query.select(Projections.constructor(ArticleDto.class,
+                        article.articleId,
+                        article.user.nickname,
+                        article.user.profile,
+                        article.content,
+                        article.image,
+                        article.likeCount,
+                        article.commentCount,
+                        new CaseBuilder()
+                                .when(articleLike.user.userId.eq(articleReq.getUserId()))
+                                .then(true)
+                                .otherwise(false)))
+                .from(article)
                 .leftJoin(articleLike)
                 .on(articleLike.user.userId.eq(articleReq.getUserId()), articleLike.article.eq(article))
-                .leftJoin(comment)
-                .on(comment.article.eq(article))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .transform(
-                        groupBy(article.articleId).list(
-                                Projections.constructor(ArticleDto.class, list(
-                                                Projections.constructor(CommentDto.class,
-                                                        comment.user.nickname,
-                                                        comment.user.profile,
-                                                        comment.content,
-                                                        comment.likeCount)
-                                        ), article.articleId,
-                                        article.user.nickname,
-                                        article.user.profile,
-                                        article.content,
-                                        article.image,
-                                        article.likeCount,
-                                        article.commentCount,
-                                        new CaseBuilder()
-                                                .when(articleLike.user.userId.eq(articleReq.getUserId()))
-                                                .then(true)
-                                                .otherwise(false))
-                        )
-                );
+                .fetch();
+        List<Long> articleIdList = test.stream().map(ArticleDto::getArticleId).collect(Collectors.toList());
+        List<CommentDto> commentList = query.select(Projections.constructor(CommentDto.class,
+                        comment.commentId,
+                        comment.article.articleId,
+                        comment.user.nickname,
+                        comment.user.profile,
+                        comment.content,
+                        comment.likeCount,
+                        new CaseBuilder()
+                                .when(commentLike.user.userId.eq(articleReq.getUserId()))
+                                .then(true)
+                                .otherwise(false)
+                ))
+                .from(comment)
+                .leftJoin(commentLike)
+                .on(commentLike.user.userId.eq(articleReq.getUserId()), commentLike.comment.commentId.eq(comment.commentId))
+                .where(comment.article.articleId.in(articleIdList))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        Map<Long, ArticleDto> map = new HashMap<>();
+        test.forEach(o1 -> map.put(o1.getArticleId(), o1));
+        commentList.forEach(o1 -> map.get(o1.getArticleId()).getComment().add(o1));
 
         JPAQuery<Long> articleSize = query
                 .select(article.count())
                 .from(article);
 
 //        System.out.println("articleSize: " + articleSize);
-        return PageableExecutionUtils.getPage(test, pageable, articleSize::fetchOne);
+        return PageableExecutionUtils.getPage(new ArrayList<>(map.values()), pageable, articleSize::fetchOne);
     }
 
     @Override

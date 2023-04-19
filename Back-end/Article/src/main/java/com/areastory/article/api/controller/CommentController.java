@@ -2,8 +2,6 @@ package com.areastory.article.api.controller;
 
 import com.areastory.article.api.service.CommentService;
 import com.areastory.article.dto.request.CommentReq;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/articles")
-@Api(tags = {"댓글 관련 API"})
 public class CommentController {
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
@@ -22,7 +19,6 @@ public class CommentController {
     /*
     댓글 작성
      */
-    @ApiOperation(value = "댓글 작성", notes = "댓글 작성")
     @PostMapping("/comments")
     public ResponseEntity<?> writeComment(@RequestBody CommentReq commentReq) {
         commentService.addComment(commentReq);
@@ -42,7 +38,6 @@ public class CommentController {
     /*
     댓글 수정
      */
-    @ApiOperation(value = "댓글 수정", notes = "댓글 수정")
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<?> updateArticle(Long userId, @PathVariable Long commentId, String content) {
 
@@ -57,7 +52,6 @@ public class CommentController {
     /*
     댓글 삭제
      */
-    @ApiOperation(value = "댓글 삭제", notes = "댓글 삭제")
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<?> deleteComment(Long userId, @PathVariable Long commentId) {
 

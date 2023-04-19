@@ -17,11 +17,11 @@ public class ArticleLike extends BaseTime implements Serializable {
     @Id
     @ManyToOne
     @JoinColumn(name = "user_id")
-    User user;
+    private User user;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "article_id")
-    Article article;
+    private Article article;
 
 }

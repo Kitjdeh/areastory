@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,7 +23,7 @@ public class ArticleDto {
 
     private List<CommentDto> comment;
 
-    public ArticleDto(List<CommentDto> comment, Long articleId, String nickname, String profile, String content, String image, Long likeCount, Long commentCount, Boolean isLike) {
+    public ArticleDto(Long articleId, String nickname, String profile, String content, String image, Long likeCount, Long commentCount, Boolean isLike) {
         this.articleId = articleId;
         this.nickname = nickname;
         this.profile = profile;
@@ -31,6 +32,6 @@ public class ArticleDto {
         this.likeCount = likeCount;
         this.commentCount = commentCount;
         this.isLike = isLike;
-        this.comment = comment;
+        this.comment = new ArrayList<>();
     }
 }
