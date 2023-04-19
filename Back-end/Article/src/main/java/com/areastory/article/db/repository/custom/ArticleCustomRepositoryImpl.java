@@ -44,12 +44,12 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
                         article.likeCount,
                         article.commentCount,
                         new CaseBuilder()
-                                .when(articleLike.user.userId.eq(articleReq.getUserId()))
+                                .when(articleLike.userId.eq(articleReq.getUserId()))
                                 .then(true)
                                 .otherwise(false)))
                 .from(article)
                 .leftJoin(articleLike)
-                .on(articleLike.user.userId.eq(articleReq.getUserId()), articleLike.article.eq(article))
+                .on(articleLike.userId.eq(articleReq.getUserId()), articleLike.articleId.eq(article.articleId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -97,13 +97,13 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
                         article.likeCount,
                         article.commentCount,
                         new CaseBuilder()
-                                .when(articleLike.user.userId.eq(userId))
+                                .when(articleLike.userId.eq(userId))
                                 .then(true)
                                 .otherwise(false)
                 ))
                 .from(article)
                 .leftJoin(articleLike)
-                .on(articleLike.user.userId.eq(userId), articleLike.article.eq(article))
+                .on(articleLike.userId.eq(userId), articleLike.articleId.eq(article.articleId))
                 .where(article.articleId.eq(articleId))
                 .fetchOne();
 

@@ -5,23 +5,20 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import java.io.Serializable;
+import javax.persistence.IdClass;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class ArticleLike extends BaseTime implements Serializable {
-
+@IdClass(ArticleLikePK.class)
+public class ArticleLike extends BaseTime {
     @Id
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
+    private Long userId;
     @Id
-    @ManyToOne
-    @JoinColumn(name = "article_id")
-    private Article article;
+    private Long articleId;
 
+    public ArticleLike(Long userId, Long articleId) {
+        this.userId = userId;
+        this.articleId = articleId;
+    }
 }

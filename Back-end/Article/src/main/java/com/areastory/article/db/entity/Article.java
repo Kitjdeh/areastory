@@ -70,4 +70,12 @@ public class Article extends BaseTime {
     public void updateCommentCount() {
         this.commentCount++;
     }
+
+    public void addLikeCount() {
+        this.likeCount++;
+    }
+
+    public void removeLikeCount() {
+        this.likeCount--;
+    }
 }
