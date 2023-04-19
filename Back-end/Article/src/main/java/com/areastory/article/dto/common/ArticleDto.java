@@ -1,6 +1,5 @@
 package com.areastory.article.dto.common;
 
-import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +22,6 @@ public class ArticleDto {
 
     private List<CommentDto> comment;
 
-    @QueryProjection
     public ArticleDto(List<CommentDto> comment, Long articleId, String nickname, String profile, String content, String image, Long likeCount, Long commentCount, Boolean isLike) {
         this.articleId = articleId;
         this.nickname = nickname;
