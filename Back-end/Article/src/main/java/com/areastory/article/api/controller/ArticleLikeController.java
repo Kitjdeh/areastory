@@ -14,13 +14,13 @@ public class ArticleLikeController {
     private static final String SUCCESS = "SUCCESS";
     private final ArticleLikeService articleLikeService;
 
-    @PostMapping("/api/likes/articles/{articleId}")
+    @PostMapping("/likes/articles/{articleId}")
     public ResponseEntity<?> addLike(@PathVariable Long articleId, Long userId) {
         articleLikeService.addLike(userId, articleId);
         return ResponseEntity.ok(SUCCESS);
     }
 
-    @DeleteMapping("/api/likes/articles/{articleId}")
+    @DeleteMapping("/likes/articles/{articleId}")
     public ResponseEntity<?> deleteLike(@PathVariable Long articleId, Long userId) {
         articleLikeService.deleteLike(userId, articleId);
         return ResponseEntity.ok(SUCCESS);

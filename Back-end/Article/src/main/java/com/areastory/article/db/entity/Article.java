@@ -28,7 +28,7 @@ public class Article extends BaseTime {
     @ColumnDefault("0")
     private Long commentCount;
 
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "articleId")
     private List<Comment> comment;
 
 //    @OneToOne

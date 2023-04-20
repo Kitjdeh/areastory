@@ -6,19 +6,19 @@ import com.areastory.article.db.entity.User;
 import com.areastory.article.db.repository.ArticleRepository;
 import com.areastory.article.db.repository.UserRepository;
 import com.areastory.article.dto.common.ArticleDto;
+import com.areastory.article.dto.common.ArticleTest;
 import com.areastory.article.dto.request.ArticleReq;
 import com.areastory.article.dto.request.ArticleUpdateParam;
 import com.areastory.article.dto.request.ArticleWriteReq;
-import com.areastory.article.dto.response.ArticleResp;
 import com.areastory.article.util.FileUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -53,16 +53,17 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleResp selectAllArticle(ArticleReq articleReq, Pageable pageable) {
-        Page<ArticleDto> articles = articleRepository.findAll(articleReq, pageable);
+    public List<ArticleTest> selectAllArticle(ArticleReq articleReq, Pageable pageable) {
+//        Page<ArticleDto> articles = articleRepository.findAll(articleReq, pageable);
+        List<ArticleTest> articleInfo = articleRepository.findAll(articleReq, pageable);
 
-
-        return ArticleResp.builder()
-                .articles(articles.getContent())
-                .pageSize(articles.getPageable().getPageSize())
-                .totalPageNumber(articles.getTotalPages())
-                .totalCount(articles.getTotalElements())
-                .build();
+//        return ArticleResp.builder()
+//                .articles(articles.getContent())
+//                .pageSize(articles.getPageable().getPageSize())
+//                .totalPageNumber(articles.getTotalPages())
+//                .totalCount(articles.getTotalElements())
+//                .build();
+        return articleInfo;
     }
 
     @Override

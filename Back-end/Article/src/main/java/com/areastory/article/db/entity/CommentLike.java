@@ -3,7 +3,8 @@ package com.areastory.article.db.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 
 @Entity
@@ -11,12 +12,13 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class CommentLike implements Serializable {
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    User user;
+    private Long userId;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
-    Comment comment;
+    private Long commentId;
+
+    public CommentLike(Long userId, Long commentId) {
+        this.userId = userId;
+        this.commentId = commentId;
+    }
 }

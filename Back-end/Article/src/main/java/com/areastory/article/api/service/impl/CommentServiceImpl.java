@@ -29,7 +29,7 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(Comment.builder()
                 .user(userRepository.findById(commentReq.getUserId()).get())
                 .content(commentReq.getContent())
-                .article(article)
+                .articleId(commentReq.getArticleId())
                 .build());
     }
 

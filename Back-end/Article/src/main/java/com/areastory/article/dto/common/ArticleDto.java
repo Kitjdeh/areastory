@@ -19,11 +19,11 @@ public class ArticleDto {
     private String image;
     private Long likeCount;
     private Long commentCount;
-    private Boolean isLike;
+//    private Boolean isLike;
 
-    private List<CommentDto> comment;
+    private List<CommentDto> comment = new ArrayList<>();
 
-    public ArticleDto(Long articleId, String nickname, String profile, String content, String image, Long likeCount, Long commentCount, Boolean isLike) {
+    public ArticleDto(Long articleId, String nickname, String profile, String content, String image, Long likeCount, Long commentCount, List<CommentDto> comment) {
         this.articleId = articleId;
         this.nickname = nickname;
         this.profile = profile;
@@ -31,7 +31,7 @@ public class ArticleDto {
         this.image = image;
         this.likeCount = likeCount;
         this.commentCount = commentCount;
-        this.isLike = isLike;
-        this.comment = new ArrayList<>();
+//        this.isLike = isLike;
+        this.comment = comment;
     }
 }

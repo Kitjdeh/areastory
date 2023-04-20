@@ -21,15 +21,17 @@ public class Comment extends BaseTime {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "article_id")
-    private Article article;
+//    @ManyToOne
+//    @JoinColumn(name = "article_id")
+//    private Article article;
+
+    private Long articleId;
 
     @Builder
-    public Comment(String content, User user, Article article) {
+    public Comment(String content, User user, Long articleId) {
         this.content = content;
         this.user = user;
-        this.article = article;
+        this.articleId = articleId;
     }
 
     public void updateContent(String content) {
