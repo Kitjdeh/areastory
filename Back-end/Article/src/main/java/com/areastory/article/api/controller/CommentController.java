@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/articles/{articleId}")
 public class CommentController {
-    private static final String SUCCESS = "success";
-    private static final String FAIL = "fail";
     private final CommentService commentService;
 
 
@@ -46,28 +44,38 @@ public class CommentController {
     댓글 수정
      */
     @PutMapping("/comments/{commentId}")
-    public ResponseEntity<?> updateArticle(Long userId, @PathVariable Long commentId, String content) {
+    public ResponseEntity<?> updateComment(Long userId, @PathVariable Long commentId, String content) {
+        CommentUpdateDto commentUpdateDto = CommentUpdateDto.builder()
+                .userId(userId)
+                .commentId(commentId)
+                .content(content)
+                .build();
 
-
-        boolean check = commentService.updateComment(userId, commentId, content);
+        boolean check = commentService.updateComment(commentUpdateDto);
         if (!check) {
-            return new ResponseEntity<>(FAIL, HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     /*
     댓글 삭제
      */
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<?> deleteComment(Long userId, @PathVariable Long commentId) {
+    public ResponseEntity<?> deleteComment(
+            @PathVariable Long articleId, Long userId, @PathVariable Long commentId) {
 
-        boolean check = commentService.deleteComment(userId, commentId);
+        CommentDeleteDto commentDeleteDto = CommentDeleteDto.builder()
+                .userId(userId)
+                .commentId(commentId)
+                .articleId(articleId)
+                .build();
+        boolean check = commentService.deleteComment(commentDeleteDto);
 
         if (!check) {
-            return new ResponseEntity<>(FAIL, HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
 

@@ -13,7 +13,7 @@ public interface CommentService {
 
     CommentResp selectAllComment(CommentReq commentReq, Pageable pageable);
 
-    boolean updateComment(Long userId, Long commentId, String content);
+    boolean updateComment(CommentUpdateDto commentUpdateDto);
 
     boolean deleteComment(CommentDeleteDto commentDeleteDto);
 

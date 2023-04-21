@@ -11,7 +11,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class ArticleLikePK implements Serializable {
-    private static final long serialVersionUID = 1L;
     @Id
     private Long userId;
     @Id

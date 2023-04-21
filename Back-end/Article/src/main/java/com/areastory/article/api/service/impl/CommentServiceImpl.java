@@ -59,21 +59,27 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public boolean updateComment(Long userId, Long commentId, String content) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
-        if (!Objects.equals(comment.getUser().getUserId(), userId)) {
+    public boolean updateComment(CommentUpdateDto commentUpdateDto) {
+        Comment comment = commentRepository.findById(commentUpdateDto.getCommentId()).orElseThrow();
+        if (!Objects.equals(comment.getUser().getUserId(), commentUpdateDto.getUserId())) {
             return false;
         }
-        comment.updateContent(content);
+        comment.updateContent(commentUpdateDto.getContent());
         return true;
     }
 
     @Override
-    public boolean deleteComment(Long userId, Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
-        if (!Objects.equals(comment.getUser().getUserId(), userId)) {
+    public boolean deleteComment(CommentDeleteDto commentDeleteDto) {
+        //comment 불러오기
+        Comment comment = commentRepository.findById(commentDeleteDto.getCommentId()).orElseThrow();
+        //comment 쓴사람 아니면 false 리턴
+        if (!Objects.equals(comment.getUser().getUserId(), commentDeleteDto.getUserId())) {
             return false;
         }
+        //article commentCount 줄이기 위함
+        Article article = articleRepository.findById(commentDeleteDto.getArticleId()).orElseThrow();
+        article.deleteCommentCount();
+        //comment 삭제하기
         commentRepository.delete(comment);
         return true;
     }
