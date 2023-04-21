@@ -15,6 +15,7 @@ public class FollowerResp {
     private Long userId;
     private String nickname;
     private String profile;
+//    private boolean check;
 
     public static FollowerResp fromEntity(Follow follow) {
         return FollowerResp.builder()

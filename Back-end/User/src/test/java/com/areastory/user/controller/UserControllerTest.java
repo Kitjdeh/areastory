@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@Commit
 class UserControllerTest {
 
     @Autowired
@@ -37,8 +38,6 @@ class UserControllerTest {
     JPAQueryFactory queryFactory;
 
     @Test
-    @Commit
-    @Transactional
     void login() {
         queryFactory = new JPAQueryFactory(em);
         User user1 = new User("user1", "profile1", "kakao", 111L);
@@ -64,8 +63,6 @@ class UserControllerTest {
     }
 
     @Test
-    @Commit
-    @Transactional
     void getUserDetail() {
         User user1 = new User("user1", "profile1", "kakao", 111L);
         User user2 = new User("user2", "profile2", "google", 222L);
@@ -89,6 +86,15 @@ class UserControllerTest {
 
     @Test
     void updateUserNickName() {
+        User user1 = new User("user1", "profile1", "kakao", 111L);
+        em.persist(user1);
+
+        em.flush();
+        em.clear();
+
+        userRepository.updateNickname(1L, "updateNickname");
+        User findUser = userRepository.findById(1L).orElse(null);
+        assertThat(findUser.getNickname()).isEqualTo("updateNickname");
     }
 
     @Test
@@ -97,11 +103,18 @@ class UserControllerTest {
 
     @Test
     void deleteUser() {
+        User user1 = new User("user1", "profile1", "kakao", 111L);
+        em.persist(user1);
+
+        em.flush();
+        em.clear();
+
+        userRepository.deleteById(1L);
+        User findUser = userRepository.findById(1L).orElse(null);
+        assertThat(findUser).isEqualTo(null);
     }
 
     @Test
-    @Commit
-    @Transactional
     void getArticleList() {
         queryFactory = new JPAQueryFactory(em);
         User user1 = new User("user1", "profile1", "kakao", 111L);

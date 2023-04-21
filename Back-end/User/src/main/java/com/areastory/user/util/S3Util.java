@@ -1,4 +1,4 @@
-package com.areastory.user.config;
+package com.areastory.user.util;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Transactional
-public class S3Config {
+public class S3Util {
 
     private final AmazonS3Client amazonS3Client;
 
@@ -33,6 +33,7 @@ public class S3Config {
         int index = originalFilename.lastIndexOf("."); // 4
         String ext = originalFilename.substring(index + 1); // PNG
 
+        // userId (PK)
         String storeFileName = UUID.randomUUID() + "." + ext; // random + . + PNG
         String key = "profile/" + storeFileName; // 파일 위치(test/) + 및 파일명
         System.out.println("storeFileName : " + storeFileName);

@@ -32,5 +32,7 @@ public class User {
         this.profile = profile;
         this.provider = provider;
         this.providerId = providerId;
+        this.followCount = 0L;
+        this.followingCount = 0L;
     }
 }

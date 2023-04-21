@@ -31,8 +31,8 @@ public class UserController {
         존재하지 않을 시, null 및 false 반환
         존재 시, 유저 정보 반환
      */
-    @PostMapping("/login/{providerId}")
-    public ResponseEntity<?> login(@PathVariable("providerId") Long providerId) {
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestParam("providerId") Long providerId) {
         UserResp userResp = userService.login(providerId);
         if (userResp.getIsNew() == false) {
             return responseDefault.success(true, "신규 회원입니다.", userResp);

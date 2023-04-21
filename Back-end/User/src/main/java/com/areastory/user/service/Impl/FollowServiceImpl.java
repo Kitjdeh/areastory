@@ -43,10 +43,11 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public Boolean addFollower(Long userId, Long followingId) {
-        User user = userRepository.findById(userId).orElse(null);
-        User followingUser = userRepository.findById(followingId).orElse(null);
 
-        if (!followRepository.existsByFollowerUserIdAndFollowingUserId(user, followingUser)) {
+        if (!followRepository.existsByFollowerUserId_UserIdAndFollowingUserId_UserId(userId, followingId)) {
+            User user = userRepository.findById(userId).orElse(null);
+            User followingUser = userRepository.findById(followingId).orElse(null);
+
             followRepository.save(Follow.follow(user, followingUser));
             userRepository.updateFollowingAddCount(userId);
             userRepository.updateFollowAddCount(followingId);
@@ -58,11 +59,9 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public Boolean deleteFollowing(Long userId, Long followingId) {
-        User user = userRepository.findById(userId).orElse(null);
-        User followingUser = userRepository.findById(followingId).orElse(null);
 
-        if (followRepository.existsByFollowerUserIdAndFollowingUserId(user, followingUser)) {
-            followRepository.deleteByFollowerUserIdAndFollowingUserId(user, followingUser);
+        if (followRepository.existsByFollowerUserId_UserIdAndFollowingUserId_UserId(userId, followingId)) {
+            followRepository.deleteByFollowerUserId_UserIdAndFollowingUserId_UserId(userId, followingId);
             userRepository.updateFollowingDisCount(userId);
             userRepository.updateFollowDisCount(followingId);
             return true;
@@ -73,11 +72,9 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public Boolean deleteFollower(Long userId, Long followerId) {
-        User user = userRepository.findById(userId).orElse(null);
-        User followerUser = userRepository.findById(followerId).orElse(null);
 
-        if (followRepository.existsByFollowerUserIdAndFollowingUserId(followerUser, user)) {
-            followRepository.deleteByFollowerUserIdAndFollowingUserId(followerUser, user);
+        if (followRepository.existsByFollowerUserId_UserIdAndFollowingUserId_UserId(followerId, userId)) {
+            followRepository.deleteByFollowerUserId_UserIdAndFollowingUserId_UserId(followerId, userId);
             userRepository.updateFollowDisCount(userId);
             userRepository.updateFollowingDisCount(followerId);
             return true;

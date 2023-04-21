@@ -1,6 +1,6 @@
 package com.areastory.user.service.Impl;
 
-import com.areastory.user.config.S3Config;
+import com.areastory.user.util.S3Util;
 import com.areastory.user.db.entity.User;
 import com.areastory.user.db.repository.ArticleRepository;
 import com.areastory.user.db.repository.UserRepository;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
-    private final S3Config s3Config;
+    private final S3Util s3Config;
 
     @Override
     public Boolean findUser(Long userId) {
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void signUp(UserReq userReq, MultipartFile profile) throws IOException {
         if (profile == null) {
-            userRepository.save(userReq.toEntity(userReq, null));
+            userRepository.save(UserReq.toEntity(userReq, null));
         } else {
             userRepository.save(UserReq.toEntity(userReq, s3Config.saveUploadFile(profile)));
         }
