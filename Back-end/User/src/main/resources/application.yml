@@ -1,0 +1,41 @@
+server:
+  port: 5001
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  profiles:
+    include: API-KEY
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/areastory
+    password: ssafy
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    generate-ddl: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+cloud:
+  aws:
+    s3:
+      bucket: areastory-user
+    credentials:
+      access-key: AKIA3JCA7IWZKYII6T5M
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false

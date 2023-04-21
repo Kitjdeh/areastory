@@ -1,0 +1,54 @@
+#spring:
+#  profiles:
+#    active: test
+#  datasource:
+#    url: jdbc:h2:tcp://localhost/~/User
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+#      naming:
+#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#    properties:
+#      hibernate:
+#        # show_sql: true
+#        format_sql: true
+#        use_sql_comments: true
+#    database: h2
+#logging.level:
+#  org.hibernate.SQL: debug
+#  org.hibernate.type:
+
+spring:
+  profiles:
+    active: test
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/User
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        # show_sql: true
+        format_sql: true
+        use_sql_comments: true
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
+
+cloud:
+  aws:
+    s3:
+      bucket: areastory-user
+    credentials:
+      access-key: AKIA3JCA7IWZKYII6T5M
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
