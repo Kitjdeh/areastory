@@ -6,4 +6,5 @@ import com.areastory.article.db.entity.ArticleLikePK;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ArticleLikeRepository extends JpaRepository<ArticleLike, ArticleLikePK> {
+
 }

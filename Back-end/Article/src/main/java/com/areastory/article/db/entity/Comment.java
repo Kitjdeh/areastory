@@ -37,4 +37,12 @@ public class Comment extends BaseTime {
     public void updateContent(String content) {
         this.content = content;
     }
+
+    public void addLikeCount() {
+        this.likeCount++;
+    }
+
+    public void removeLikeCount() {
+        this.likeCount--;
+    }
 }

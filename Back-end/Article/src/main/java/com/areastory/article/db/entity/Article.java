@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter
@@ -27,13 +26,6 @@ public class Article extends BaseTime {
 
     @ColumnDefault("0")
     private Long commentCount;
-
-    @OneToMany(mappedBy = "articleId")
-    private List<Comment> comment;
-
-//    @OneToOne
-//    @JoinColumn(name = "location_id")
-//    private Location location;
 
     @Column(name = "do")
     private String doName;
@@ -67,8 +59,12 @@ public class Article extends BaseTime {
         this.image = image;
     }
 
-    public void updateCommentCount() {
+    public void addCommentCount() {
         this.commentCount++;
+    }
+
+    public void deleteCommentCount() {
+        this.commentCount--;
     }
 
     public void addLikeCount() {

@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ArticleUpdateParam {
+    private Long userId;
     private Long articleId;
     private String content;
 }

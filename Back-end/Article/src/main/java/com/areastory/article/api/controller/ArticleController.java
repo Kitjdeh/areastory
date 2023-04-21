@@ -18,41 +18,33 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 public class ArticleController {
-
-    private static final String SUCCESS = "success";
-    private static final String FAIL = "fail";
     private final ArticleService articleService;
 
     /*
     게시물 작성
      */
     @PostMapping("/articles")
-    public ResponseEntity<?> writeArticle(Long userId,
-                                          @RequestPart(value = "picture", required = false) MultipartFile picture,
+    public ResponseEntity<?> writeArticle(@RequestPart(value = "picture", required = false) MultipartFile picture,
                                           @RequestPart ArticleWriteReq articleWriteReq) throws IOException {
-        articleService.addArticle(userId, articleWriteReq, picture);
-        return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
+        articleService.addArticle(articleWriteReq, picture);
+        return ResponseEntity.ok().build();
     }
 
     /*
     모든 게시물 불러오기
     한페이지당 개수는 15개, 정렬은 좋아요 순으로
-    댓글은 우선 2개만 보여주기
      */
     @GetMapping("/articles")
     public ResponseEntity<?> selectAllArticle(@RequestBody ArticleReq articleReq,
                                               @PageableDefault(size = 15, sort = "likeCount", direction = Sort.Direction.DESC) Pageable pageable) {
-        System.out.println("모든");
         return new ResponseEntity<>(articleService.selectAllArticle(articleReq, pageable), HttpStatus.OK);
     }
 
     /*
     특정 게시물 불러오기
-    댓글 10개 보여주기
      */
     @GetMapping("/articles/{articleId}")
     public ResponseEntity<?> selectArticle(Long userId, @PathVariable Long articleId) {
-        System.out.println("상세");
         return new ResponseEntity<>(articleService.selectArticle(userId, articleId), HttpStatus.OK);
     }
 
@@ -60,16 +52,16 @@ public class ArticleController {
     게시물 수정
      */
     @PutMapping("/articles/{articleId}")
-    public ResponseEntity<?> updateArticle(Long userId, @PathVariable Long articleId,
+    public ResponseEntity<?> updateArticle(@PathVariable Long articleId,
                                            @RequestPart(required = false) ArticleUpdateParam param,
                                            @RequestPart(value = "picture", required = false) MultipartFile picture) throws IOException {
 
         param.setArticleId(articleId);
-        boolean check = articleService.updateArticle(userId, param, picture);
+        boolean check = articleService.updateArticle(param, picture);
         if (!check) {
-            return new ResponseEntity<>(FAIL, HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     /*
@@ -79,9 +71,32 @@ public class ArticleController {
     public ResponseEntity<?> deleteArticle(Long userId, @PathVariable Long articleId) {
 
         if (!articleService.deleteArticle(userId, articleId)) {
-            return new ResponseEntity<>(FAIL, HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+    게시글 좋아요 누르기
+     */
+    @PostMapping("/articles/like/{articleId}")
+    public ResponseEntity<?> addLike(@PathVariable Long articleId, Long userId) {
+        if (!articleService.addArticleLike(userId, articleId)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+    게시글 좋아요 취소
+     */
+    @DeleteMapping("/articles/like/{articleId}")
+    public ResponseEntity<?> deleteLike(@PathVariable Long articleId, Long userId) {
+        if (!articleService.deleteArticleLike(userId, articleId)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        return ResponseEntity.ok().build();
     }
 
 }
