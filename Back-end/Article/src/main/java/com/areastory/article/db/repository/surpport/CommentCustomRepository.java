@@ -1,4 +1,4 @@
-package com.areastory.article.db.repository.custom;
+package com.areastory.article.db.repository.surpport;
 
 import com.areastory.article.dto.common.CommentDto;
 import com.areastory.article.dto.request.CommentReq;
