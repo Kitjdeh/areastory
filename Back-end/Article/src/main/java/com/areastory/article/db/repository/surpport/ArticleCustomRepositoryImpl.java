@@ -59,11 +59,12 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
                         article.image,
                         article.likeCount,
                         article.commentCount,
-                        article.createdAt,
                         new CaseBuilder()
                                 .when(articleLike.userId.eq(userId))
                                 .then(true)
-                                .otherwise(false)))
+                                .otherwise(false),
+                        article.createdAt
+                ))
                 .from(article)
                 .leftJoin(articleLike)
                 .on(articleLike.userId.eq(userId), articleLike.articleId.eq(article.articleId));

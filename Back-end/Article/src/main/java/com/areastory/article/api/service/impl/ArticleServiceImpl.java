@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +34,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final UserRepository userRepository;
     private final FileUtil fileUtil;
 
+    @Transactional
     @Override
     public void addArticle(ArticleWriteReq articleWriteReq, MultipartFile picture) throws IOException {
         User user = userRepository.findById(articleWriteReq.getUserId()).orElseThrow();
@@ -73,6 +75,7 @@ public class ArticleServiceImpl implements ArticleService {
         return articleRepository.findById(userId, articleId);
     }
 
+    @Transactional
     @Override
     public boolean updateArticle(ArticleUpdateParam param, MultipartFile picture) throws IOException {
         Article article = articleRepository.findById(param.getArticleId()).get();
@@ -94,6 +97,7 @@ public class ArticleServiceImpl implements ArticleService {
         return true;
     }
 
+    @Transactional
     @Override
     public boolean deleteArticle(Long userId, Long articleId) {
         Article article = articleRepository.findById(articleId).get();
@@ -104,6 +108,7 @@ public class ArticleServiceImpl implements ArticleService {
         return true;
     }
 
+    @Transactional
     @Override
     public boolean addArticleLike(Long userId, Long articleId) {
         if (articleLikeRepository.existsById(new ArticleLikePK(userId, articleId)))
@@ -114,9 +119,10 @@ public class ArticleServiceImpl implements ArticleService {
         return true;
     }
 
+    @Transactional
     @Override
     public boolean deleteArticleLike(Long userId, Long articleId) {
-        if (!articleLikeRepository.existsById(new ArticleLikePK(userId, articleId)))
+        if (articleLikeRepository.existsById(new ArticleLikePK(userId, articleId)))
             return false;
         articleLikeRepository.delete(new ArticleLike(userId, articleId));
         Article article = articleRepository.findById(articleId).orElseThrow();

@@ -4,12 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@DynamicInsert
 public class Article extends BaseTime {
 
     @Id
@@ -22,6 +24,7 @@ public class Article extends BaseTime {
 
     private String content;
     private String image;
+    @ColumnDefault("0")
     private Long likeCount;
 
     @ColumnDefault("0")
