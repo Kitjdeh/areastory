@@ -36,7 +36,7 @@ public class ArticleController {
      */
     @GetMapping("/articles")
     public ResponseEntity<?> selectAllArticle(@RequestBody ArticleReq articleReq,
-                                              @PageableDefault(size = 15, sort = "likeCount", direction = Sort.Direction.DESC) Pageable pageable) {
+                                              @PageableDefault(sort = {"likeCount"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable) {
         return new ResponseEntity<>(articleService.selectAllArticle(articleReq, pageable), HttpStatus.OK);
     }
 

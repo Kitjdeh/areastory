@@ -91,7 +91,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         if (picture != null) {
             fileUtil.deleteFile(article.getImage());
-            String url = fileUtil.upload(picture, "picture");
+            String url = fileUtil.upload(picture, "test");
             article.updateImage(url);
         }
         return true;
@@ -122,7 +122,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     @Override
     public boolean deleteArticleLike(Long userId, Long articleId) {
-        if (articleLikeRepository.existsById(new ArticleLikePK(userId, articleId)))
+        if (!articleLikeRepository.existsById(new ArticleLikePK(userId, articleId)))
             return false;
         articleLikeRepository.delete(new ArticleLike(userId, articleId));
         Article article = articleRepository.findById(articleId).orElseThrow();

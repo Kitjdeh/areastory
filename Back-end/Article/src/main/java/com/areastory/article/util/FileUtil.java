@@ -33,7 +33,8 @@ public class FileUtil {
     }
 
     private String upload(File uploadFile, String dirName) {
-        String fileName = dirName + "/" + Math.random() * 1000 + "_" + LocalDate.now() + uploadFile.getName();
+        //테스트 때문에 랜덤 값 제거 => 추후 살리기
+        String fileName = dirName + "/" + LocalDate.now() + uploadFile.getName();
         String uploadImageUrl = putS3(uploadFile, fileName);
         uploadFile.delete(); // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
 
@@ -42,11 +43,10 @@ public class FileUtil {
 
     public void deleteFile(String fileUrl) {
         try {
-            String fileKey = fileUrl.substring(51);
-            if (amazonS3Client.doesObjectExist(bucket, fileKey)) {
+            String fileKey = fileUrl.substring(50); // 삭제 시 필요한 키
+            String objectName = fileUrl.substring(55); // 파일이 존재하는지 확인하기 위한 키
+            if (amazonS3Client.doesObjectExist(bucket, objectName)) {
                 amazonS3Client.deleteObject(bucket, fileKey);
-            } else {
-                throw new NoFileException();
             }
         } catch (Exception e) {
             throw new NoFileException("파일 삭제 불가");
