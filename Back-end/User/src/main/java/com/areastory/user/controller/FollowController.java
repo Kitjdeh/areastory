@@ -26,21 +26,35 @@ public class FollowController {
     /*
         팔로워 목록 조회
         한 페이지당 20개, 팔로워 이름 순으로 정렬
+        이름으로 검색
      */
     @GetMapping("/follow/{userId}")
-    public ResponseEntity<?> findFollowers(@PathVariable("userId") Long userId, @RequestParam int page) {
-        List<FollowerResp> followers = followService.findFollowers(userId, page);
+    public ResponseEntity<?> findFollowers(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam String search) {
+        List<FollowerResp> followers = followService.findFollowers(userId, page, search);
         return responseDefault.success(true, "팔로워 목록 조회", followers);
     }
 
     /*
         팔로잉 목록 조회
-        한 페이지당 20개, 팔로잉한 유저 이름 순으로 정렬
+        한 페이지당 20개
+        팔로잉한 유저 이름 순, 팔로잉 시간 순, 역순으로 정렬
      */
     @GetMapping("/following/{userId}")
-    public ResponseEntity<?> findFollowing(@PathVariable("userId") Long userId, @RequestParam int page) {
-        List<FollowingResp> following = followService.findFollowing(userId, page);
+    public ResponseEntity<?> findFollowing(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam int type) {
+        List<FollowingResp> following = followService.findFollowing(userId, page, type);
         return responseDefault.success(true, "팔로잉 목록 조회", following);
+    }
+
+    /*
+        팔로잉 목록 조회
+        검색 기능
+        유저 이름 순
+        => 무조건 이름 순인데, type을 받지않기 위해 새롭게 기능 추가
+     */
+    @GetMapping("/following/search/{userId}")
+    public ResponseEntity<?> findFollowingBySearch(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam String search) {
+        List<FollowingResp> following = followService.findFollowingBySearch(userId, page, search);
+        return responseDefault.success(true, "팔로잉 검색 목록 조회", following);
     }
 
     /*

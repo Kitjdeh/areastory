@@ -12,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 @ToString
-public class Follow implements Serializable {
+public class Follow extends ArticleBaseTime implements Serializable {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)

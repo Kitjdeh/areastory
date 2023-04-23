@@ -46,4 +46,8 @@ public class S3Util {
         String storeFileUrl = amazonS3Client.getUrl(bucket, key).toString(); // 버켓 url/ + key(파일위치 + 파일명)
         return storeFileUrl;
     }
+
+    public void deleteFile(String source) {
+        amazonS3Client.deleteObject(bucket, source);
+    }
 }

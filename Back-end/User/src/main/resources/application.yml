@@ -31,10 +31,10 @@ spring:
 cloud:
   aws:
     s3:
-      bucket: areastory-user
+      bucket: ${BUCKET}
     credentials:
-      access-key: AKIA3JCA7IWZKYII6T5M
-      secret-key: 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
+      access-key: ${ACCESS-KEY}
+      secret-key: ${SECRET-KEY}
     region:
       static: ap-northeast-2
     stack:

@@ -1,12 +1,10 @@
 package com.areastory.user.response;
 
 import com.areastory.user.db.entity.Follow;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -24,4 +22,5 @@ public class FollowerResp {
                 .profile(follow.getFollowerUserId().getProfile())
                 .build();
     }
+
 }

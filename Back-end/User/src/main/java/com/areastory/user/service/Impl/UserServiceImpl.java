@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public void signUp(UserReq userReq, MultipartFile profile) throws IOException {
-        if (profile == null) {
+        if (profile == null || profile.isEmpty()) {
             userRepository.save(UserReq.toEntity(userReq, null));
         } else {
             userRepository.save(UserReq.toEntity(userReq, s3Config.saveUploadFile(profile)));
@@ -69,7 +69,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateProfile(Long userId, MultipartFile profile) throws IOException {
-        userRepository.updateProfile(userId, s3Config.saveUploadFile(profile));
+        User user = userRepository.findById(userId).orElse(null);
+        if (user.getProfile() != null) {
+            s3Config.deleteFile(user.getProfile().substring(55));
+        }
+
+        if (profile == null || profile.isEmpty()) {
+            userRepository.updateProfile(userId, null);
+        } else {
+            userRepository.updateProfile(userId, s3Config.saveUploadFile(profile));
+        }
     }
 
     @Override
