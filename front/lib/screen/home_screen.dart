@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/mypage.dart';
+import 'package:front/screen/sns.dart';
 
 // 홈 + 바텀탭바
 class HomeScreen extends StatefulWidget {
@@ -38,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       body: TabBarView(controller: controller, children: [
         // 인덱스에 맞춰서 각 페이지를 넣어야 한다.
         Text("지도"),
-        Text("SNS"),
+        SnsScreen(),
         Text("랜덤"),
         MyPageScreen()
       ]),
