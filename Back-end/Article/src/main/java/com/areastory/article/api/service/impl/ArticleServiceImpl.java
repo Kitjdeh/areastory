@@ -91,7 +91,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         if (picture != null) {
             fileUtil.deleteFile(article.getImage());
-            String url = fileUtil.upload(picture, "test");
+            String url = fileUtil.upload(picture, "picture");
             article.updateImage(url);
         }
         return true;

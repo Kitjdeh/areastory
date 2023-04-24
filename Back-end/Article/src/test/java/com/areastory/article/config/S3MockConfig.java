@@ -27,7 +27,7 @@ public class S3MockConfig {
     @Bean
     public AmazonS3 amazonS3(S3Mock s3Mock) {
         s3Mock.start();
-        AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration("http://localhost:5002", region);
+        AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration("https://s3.ap-northeast-2.amazonaws.com", region);
         AmazonS3 client = AmazonS3ClientBuilder
                 .standard()
                 .withPathStyleAccessEnabled(true)

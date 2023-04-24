@@ -48,13 +48,15 @@ dependencies {
 
     //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testImplementation 'io.findify:s3mock_2.13:0.2.6'
     runtimeOnly 'com.h2database:h2'
 }
 
-//tasks.named('test') {
-//    useJUnitPlatform()
-//}
+test {
+    useJUnitPlatform()
+}
 
 def querydslDir = "$buildDir/generated/querydsl"
 

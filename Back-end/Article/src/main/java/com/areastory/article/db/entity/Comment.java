@@ -3,18 +3,23 @@ package com.areastory.article.db.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@DynamicInsert
 public class Comment extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
     private String content;
+
+    @ColumnDefault("0")
     private Long likeCount;
 
     @ManyToOne

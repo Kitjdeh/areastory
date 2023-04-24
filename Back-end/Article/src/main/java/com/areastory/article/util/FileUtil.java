@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ public class FileUtil {
 
     private String upload(File uploadFile, String dirName) {
         //테스트 때문에 랜덤 값 제거 => 추후 살리기
-        String fileName = dirName + "/" + LocalDate.now() + uploadFile.getName();
+        String fileName = dirName + "/" + LocalDateTime.now() + uploadFile.getName();
         String uploadImageUrl = putS3(uploadFile, fileName);
         uploadFile.delete(); // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
 

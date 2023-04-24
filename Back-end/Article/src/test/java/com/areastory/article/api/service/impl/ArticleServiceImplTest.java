@@ -29,8 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringBootTest
-@Order(1)
 @Configuration
+@DisplayName("게시글 테스트")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // @Order 에 의해서 실행 순서 결정
 public class ArticleServiceImplTest {
     static List<User> userList;
@@ -130,7 +130,7 @@ public class ArticleServiceImplTest {
                 .build());
 
         //이후 게시글 사진 수정 테스트를 해야하므로 여기 사진 집어넣기
-        String path = "서울 관악구 2번 게시물 사진.png";
+        String path = "사진 테스트.png";
         String contentType = "image/png";
         String dirName = "test";
         MockMultipartFile file = new MockMultipartFile("test", path, contentType, "test".getBytes());

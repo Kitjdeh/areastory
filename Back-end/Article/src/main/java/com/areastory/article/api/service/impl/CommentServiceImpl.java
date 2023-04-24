@@ -59,6 +59,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public boolean updateComment(CommentUpdateDto commentUpdateDto) {
         Comment comment = commentRepository.findById(commentUpdateDto.getCommentId()).orElseThrow();
         if (!Objects.equals(comment.getUser().getUserId(), commentUpdateDto.getUserId())) {
@@ -69,6 +70,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public boolean deleteComment(CommentDeleteDto commentDeleteDto) {
         //comment 불러오기
         Comment comment = commentRepository.findById(commentDeleteDto.getCommentId()).orElseThrow();
@@ -85,6 +87,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public boolean addCommentLike(Long userId, Long commentId) {
         if (commentLikeRepository.existsById(new CommentLikePK(userId, commentId)))
             return false;
@@ -95,6 +98,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public boolean deleteCommentLike(Long userId, Long commentId) {
         if (!commentLikeRepository.existsById(new CommentLikePK(userId, commentId)))
             return false;
