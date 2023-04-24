@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:front/screen/home_screen.dart';
+import 'package:front/screen/sns.dart';
 
 void main() {
   runApp(
     MaterialApp(
-      home: HomeScreen(),
+      debugShowCheckedModeBanner: false,
+      home: SnsScreen(),
     ),
   );
 }
