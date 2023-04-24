@@ -6,6 +6,7 @@ import com.areastory.user.db.repository.FollowRepository;
 import com.areastory.user.db.repository.UserRepository;
 import com.areastory.user.response.FollowerResp;
 import com.areastory.user.response.FollowingResp;
+import com.areastory.user.service.FollowService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,28 +38,70 @@ class FollowControllerTest {
     UserRepository userRepository;
     @Autowired
     FollowRepository followRepository;
+    @Autowired
+    FollowService followService;
 
     JPAQueryFactory queryFactory;
 
     @Test
     void findFollowers() {
-        PageRequest pageRequest = PageRequest.of(0, 20, Sort.Direction.ASC, "followerUserId.nickname");
-        List<FollowerResp> followerRespList = followRepository.findByFollowingUserId_UserId(3L, pageRequest)
-                .stream().map(m -> FollowerResp.fromEntity(m)).collect(Collectors.toList());
+        List<FollowerResp> followers1 = followService.findFollowers(3L, 0, "");
+        em.flush();
+        em.clear();
+        assertThat(followers1.get(0).getNickname()).isEqualTo("user1");
+        assertThat(followers1.get(0).getCheck().booleanValue()).isFalse();
+        assertThat(followers1.get(1).getNickname()).isEqualTo("user2");
+        assertThat(followers1.get(1).getCheck().booleanValue()).isTrue();
 
-        assertThat(followerRespList.get(0).getNickname()).isEqualTo("user1");
-        assertThat(followerRespList.get(1).getNickname()).isEqualTo("user2");
-
+        List<FollowerResp> followers2 = followService.findFollowers(3L, 0, "2");
+        em.flush();
+        em.clear();
+        assertThat(followers2.get(0).getNickname()).isEqualTo("user2");
+        assertThat(followers2.get(0).getCheck().booleanValue()).isTrue();
     }
 
     @Test
     void findFollowing() {
-        PageRequest pageRequest = PageRequest.of(0, 20, Sort.Direction.ASC, "followingUserId.nickname");
-        List<FollowingResp> followingRespList = followRepository.findByFollowerUserId_UserId(1L, pageRequest)
-                .stream().map(m -> FollowingResp.fromEntity(m)).collect(Collectors.toList());
+        List<FollowingResp> following1 = followService.findFollowing(1L, 0, 1);
+        em.flush();
+        em.clear();
+        assertThat(following1.get(0).getNickname()).isEqualTo("user2");
+        assertThat(following1.get(1).getNickname()).isEqualTo("user3");
 
-        assertThat(followingRespList.get(0).getNickname()).isEqualTo("user2");
-        assertThat(followingRespList.get(1).getNickname()).isEqualTo("user3");
+        List<FollowingResp> following2 = followService.findFollowing(1L, 0, 2);
+        em.flush();
+        em.clear();
+        assertThat(following2.get(0).getNickname()).isEqualTo("user3");
+        assertThat(following2.get(1).getNickname()).isEqualTo("user2");
+
+        List<FollowingResp> following3 = followService.findFollowing(1L, 0, 3);
+        em.flush();
+        em.clear();
+        assertThat(following3.get(0).getNickname()).isEqualTo("user2");
+        assertThat(following3.get(1).getNickname()).isEqualTo("user3");
+    }
+
+    @Test
+    void findFollowingBySearch() {
+        List<FollowingResp> following1 = followService.findFollowingBySearch(1L, 0, "");
+        em.flush();
+        em.clear();
+        assertThat(following1.get(0).getNickname()).isEqualTo("user2");
+        assertThat(following1.get(1).getNickname()).isEqualTo("user3");
+        assertThat(following1.size()).isEqualTo(2);
+
+        List<FollowingResp> following2 = followService.findFollowingBySearch(1L, 0, "2");
+        em.flush();
+        em.clear();
+        assertThat(following2.get(0).getNickname()).isEqualTo("user2");
+        assertThat(following2.size()).isEqualTo(1);
+
+        List<FollowingResp> following3 = followService.findFollowingBySearch(1L, 0, "ser");
+        em.flush();
+        em.clear();
+        assertThat(following3.get(0).getNickname()).isEqualTo("user2");
+        assertThat(following3.get(1).getNickname()).isEqualTo("user3");
+        assertThat(following3.size()).isEqualTo(2);
     }
 
     @Test
@@ -68,6 +111,7 @@ class FollowControllerTest {
             2 -> 3
             1 -> 3
             1 -> 2
+            3 -> 2
          */
 
         User user1 = new User("user1", "profile1", "kakao", 111L);
@@ -92,14 +136,18 @@ class FollowControllerTest {
         userRepository.updateFollowingAddCount(user1.getUserId());
         userRepository.updateFollowAddCount(user2.getUserId());
 
+        followRepository.save(Follow.follow(user3, user2));
+        userRepository.updateFollowingAddCount(user3.getUserId());
+        userRepository.updateFollowAddCount(user2.getUserId());
+
         assertThat(userRepository.findById(1L).orElse(null).getFollowCount()).isEqualTo(0);
         assertThat(userRepository.findById(1L).orElse(null).getFollowingCount()).isEqualTo(2);
 
-        assertThat(userRepository.findById(2L).orElse(null).getFollowCount()).isEqualTo(1);
+        assertThat(userRepository.findById(2L).orElse(null).getFollowCount()).isEqualTo(2);
         assertThat(userRepository.findById(2L).orElse(null).getFollowingCount()).isEqualTo(1);
 
         assertThat(userRepository.findById(3L).orElse(null).getFollowCount()).isEqualTo(2);
-        assertThat(userRepository.findById(3L).orElse(null).getFollowingCount()).isEqualTo(0);
+        assertThat(userRepository.findById(3L).orElse(null).getFollowingCount()).isEqualTo(1);
 
         em.flush();
         em.clear();
@@ -113,7 +161,7 @@ class FollowControllerTest {
         userRepository.updateFollowingDisCount(1L);
         userRepository.updateFollowDisCount(2L);
         assertThat(userRepository.findById(1L).orElse(null).getFollowingCount()).isEqualTo(1);
-        assertThat(userRepository.findById(2L).orElse(null).getFollowCount()).isEqualTo(0);
+        assertThat(userRepository.findById(2L).orElse(null).getFollowCount()).isEqualTo(1);
 
         em.flush();
         em.clear();

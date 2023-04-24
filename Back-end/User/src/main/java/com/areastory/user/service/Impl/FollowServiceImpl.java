@@ -36,14 +36,7 @@ public class FollowServiceImpl implements FollowService {
 
     public List<FollowerResp> findFollowers(Long userId, int page, String search) {
         PageRequest pageRequest = PageRequest.of(page, 20);
-//        List<Follow> followList = followRepository.findByFollowingUserId_UserId(userId, pageRequest);
-//        List<User> userList = followList.stream()
-//                .map(Follow::getFollowerUserId).collect(Collectors.toList());
-//        List<Long> userIdList = userList.stream()
-//                .map(User::getUserId)
-//                .collect(Collectors.toList());
-
-        return followRepository.findFollwerResps(userId, pageRequest, searchCondition(search));
+        return followRepository.findFollowerResps(userId, pageRequest, searchCondition(search));
     }
 
     @Override

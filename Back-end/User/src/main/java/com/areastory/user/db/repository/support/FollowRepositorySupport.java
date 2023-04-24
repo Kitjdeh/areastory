@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface FollowRepositorySupport {
 
-    List<FollowerResp> findFollwerResps(Long userId, PageRequest pageRequest, String search);
+    List<FollowerResp> findFollowerResps(Long userId, PageRequest pageRequest, String search);
 
     List<FollowingResp> findFollowingResp(Long userId, PageRequest pageRequest, String search);
 }
