@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:front/component/article.dart';
+import 'package:front/const/article_test.dart';
 import 'package:front/const/colors.dart';
 
 class SnsScreen extends StatefulWidget {
@@ -55,16 +57,22 @@ class _SnsScreenState extends State<SnsScreen> {
                   await Future.delayed(Duration(seconds: 3));
                 },
                 child: ListView.separated(
-                  itemCount: 100,
+                  itemCount: 2,
                   itemBuilder: (BuildContext context, int index) {
-                    return renderContainer(
-                      color: rainbowColors[index % rainbowColors.length],
-                      index: index,
+                    return ArticleComponent(
+                      nickname: articleTest["articles"][index]["nickname"],
+                      image: articleTest["articles"][index]["image"],
+                      profile: articleTest["articles"][index]["profile"],
+                      content: articleTest["articles"][index]["content"],
+                      likeCount: articleTest["articles"][index]["likeCount"],
+                      commentCount: articleTest["articles"][index]["commentCount"],
+                      isLike: articleTest["articles"][index]["isLike"],
+
                     );
                   },
                   separatorBuilder: (context, index) {
                     return renderContainer(
-                        color: Colors.black, index: index, height: 50);
+                        color: Colors.white, index: index, height: 50);
                   },
                 ),
               ),
