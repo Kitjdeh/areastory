@@ -18,13 +18,18 @@ class _MyPageScreenState extends State<MyPageScreen> {
           children: [
             // 1.닉네임, 설정버튼
             Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              height: 50,
               color: Colors.blue,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("nickname"),
                   // 추후 아이콘 버튼 + Icon이미지 변경
-                  Icon(Icons.settings)
+                  IconButton(
+                      icon: Icon(Icons.settings),
+                    onPressed: (){},
+                  )
                 ],
               ),
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front/component/mypage/myalbum.dart';
 import 'package:front/constant/mypage_tabs.dart';
 
 class MypageTabbar extends StatefulWidget {
@@ -38,7 +39,7 @@ class _MypageTabbarState extends State<MypageTabbar>
             Expanded(
               child: TabBarView(
                 controller: mypagecontroller,
-                  children: [Text("감자"), Text("고구마")]),
+                  children: [MyAlbum(), Text("고구마")]),
             )
           ],
         ),
