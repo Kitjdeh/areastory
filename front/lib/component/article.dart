@@ -24,129 +24,168 @@ class ArticleComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: height ?? 500,
-      child: Column(
-        children: [
-          Row(
-            children: [
-              ClipOval(
-                child: Image.network(
-                  profile,
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    nickname,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text('서울특별시 강남구 언주로'),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    fit: BoxFit.cover, image: NetworkImage(image)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Expanded(
-                    flex: 6,
-                    child: SizedBox(),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.0,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.8),
+              spreadRadius: 2,
+              blurRadius: 4,
+              offset: Offset(3, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            height: height ?? 500,
+            child: Column(
+              children: [
+                Container(
+                  color: Color(0xFF0A2647),
+                  height: 60,
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 10,
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: Image.asset(
-                              'asset/img/like.png',
-                              height: 30,
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              likeCount.toString(),
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: Image.asset(
-                              'asset/img/comment.png',
-                              height: 30,
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              commentCount.toString(),
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      decoration: BoxDecoration(color: Colors.white30),
-                      child: Center(
-                        child: Text(
-                          content,
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      ClipOval(
+                        child: Image.network(
+                          profile,
+                          width: 45,
+                          height: 45,
+                          fit: BoxFit.cover,
                         ),
                       ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            nickname,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            '서울특별시 강남구 언주로',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(image),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          flex: 6,
+                          child: SizedBox(),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Expanded(
+                                  child: Image.asset(
+                                    isLike
+                                        ? 'asset/img/like.png'
+                                        : 'asset/img/nolike.png',
+                                    height: 30,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    likeCount.toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Expanded(
+                                  child: Image.asset(
+                                    'asset/img/comment.png',
+                                    height: 30,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    commentCount.toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Color(0x65FFFFFF),
+                            ),
+                            child: Center(
+                              child: Text(
+                                content,
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

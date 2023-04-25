@@ -14,6 +14,7 @@ class _SnsScreenState extends State<SnsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFECF9FF),
       body: SafeArea(
         child: Column(
           children: [
@@ -50,30 +51,35 @@ class _SnsScreenState extends State<SnsScreen> {
                 ),
               ],
             ),
+            SizedBox(
+              height: 10,
+            ),
             Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  // 서버 요청
-                  await Future.delayed(Duration(seconds: 3));
-                },
-                child: ListView.separated(
-                  itemCount: 2,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ArticleComponent(
-                      nickname: articleTest["articles"][index]["nickname"],
-                      image: articleTest["articles"][index]["image"],
-                      profile: articleTest["articles"][index]["profile"],
-                      content: articleTest["articles"][index]["content"],
-                      likeCount: articleTest["articles"][index]["likeCount"],
-                      commentCount: articleTest["articles"][index]["commentCount"],
-                      isLike: articleTest["articles"][index]["isLike"],
-
-                    );
+              child: Container(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    // 서버 요청
+                    await Future.delayed(Duration(seconds: 3));
                   },
-                  separatorBuilder: (context, index) {
-                    return renderContainer(
-                        color: Colors.white, index: index, height: 50);
-                  },
+                  child: ListView.separated(
+                    itemCount: 2,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ArticleComponent(
+                        nickname: articleTest["articles"][index]["nickname"],
+                        image: articleTest["articles"][index]["image"],
+                        profile: articleTest["articles"][index]["profile"],
+                        content: articleTest["articles"][index]["content"],
+                        likeCount: articleTest["articles"][index]["likeCount"],
+                        commentCount: articleTest["articles"][index]
+                            ["commentCount"],
+                        isLike: articleTest["articles"][index]["isLike"],
+                        height: 500,
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return renderContainer(height: 20);
+                    },
+                  ),
                 ),
               ),
             ),
@@ -84,24 +90,10 @@ class _SnsScreenState extends State<SnsScreen> {
   }
 
   Widget renderContainer({
-    required Color color,
-    required int index,
     double? height,
   }) {
-    print(index);
     return Container(
-      height: height ?? 500,
-      color: color,
-      child: Center(
-        child: Text(
-          index.toString(),
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w700,
-            fontSize: 30.0,
-          ),
-        ),
-      ),
+      height: height,
     );
   }
 }

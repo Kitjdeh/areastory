@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front/constant/home_tabs.dart';
+import 'package:front/screen/camera_test.dart';
 import 'package:front/screen/mypage.dart';
 import 'package:front/screen/sns.dart';
 
@@ -23,9 +24,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     // 이건 나중에 데이터 작업할때
     controller.addListener(() {
-      setState(() {
-
-      });
+      setState(() {});
     });
   }
 
@@ -38,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
       body: TabBarView(controller: controller, children: [
         // 인덱스에 맞춰서 각 페이지를 넣어야 한다.
-        Text("지도"),
+        CameraExample(), //잠시 가져간다 이거
         SnsScreen(),
         Text("랜덤"),
         MyPageScreen()
