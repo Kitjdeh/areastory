@@ -10,10 +10,7 @@ class TabInfo {
   const TabInfo({required this.icon, required this.label});
 }
 
-const MAINTABS = [
+const MYPAGETABS = [
+  TabInfo(icon: Icons.book_outlined, label: '앨범'),
   TabInfo(icon: Icons.map_outlined, label: '지도'),
-  TabInfo(icon: Icons.person_2_outlined, label: 'SNS'),
-  TabInfo(icon: Icons.add_circle_outlined, label: 'new'),
-  TabInfo(icon: Icons.question_mark_outlined, label: '랜덤'),
-  TabInfo(icon: Icons.person, label: '마이페이지'),
 ];
