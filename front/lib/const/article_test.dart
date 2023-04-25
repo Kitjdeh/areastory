@@ -13,9 +13,9 @@ final Map<String, dynamic> articleTest = {
       "content": "히히 화났죵",
       "image":
           "https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg",
-      "likeCount": 1,
-      "commentCount": 1,
-      "isLike": false
+      "likeCount": 32,
+      "commentCount": 14,
+      "isLike": true
     },
     {
       "articleId": 2,
@@ -25,8 +25,8 @@ final Map<String, dynamic> articleTest = {
       "content": "순둥순둥한거 봐라",
       "image":
           "https://image.dongascience.com/Photo/2022/06/6982fdc1054c503af88bdefeeb7c8fa8.jpg",
-      "likeCount": 0,
-      "commentCount": 0,
+      "likeCount": 17,
+      "commentCount": 13,
       "isLike": false
     }
   ]
