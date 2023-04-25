@@ -37,9 +37,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
       body: TabBarView(controller: controller, children: [
         // 인덱스에 맞춰서 각 페이지를 넣어야 한다.
-        CameraExample(), //잠시 가져간다 이거
+        Text('지도'),
         SnsScreen(),
-        Text("게시글생성"),
+        CameraExample(),
         Text("랜덤"),
         MyPageScreen()
       ]),

@@ -26,7 +26,7 @@ class _CameraExampleState extends State<CameraExample> {
   // 이미지를 보여주는 위젯
   Widget showImage() {
     return Container(
-        color: const Color(0xffd0cece),
+        color: Colors.white,
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.width,
         child: Center(
@@ -42,7 +42,7 @@ class _CameraExampleState extends State<CameraExample> {
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     return Scaffold(
-      backgroundColor: const Color(0xfff4f3f9),
+      backgroundColor: const Color(0xFFECF9FF),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -51,20 +51,60 @@ class _CameraExampleState extends State<CameraExample> {
           SizedBox(
             height: 50.0,
           ),
-          Row(
-            children: <Widget>[
-              // 카메라 촬영 버튼
-              FloatingActionButton(
-                child: Icon(Icons.add_a_photo),
-                tooltip: 'pick Iamge',
-                onPressed: () {
-                  getImage(ImageSource.camera);
-                },
-              ),
-            ],
-          )
+          // 이미지 선택 버튼
+          _image != null
+              ? Text('2') // 이미지가 선택되면 보여주지 않음
+              : FloatingActionButton(
+                  child: Icon(Icons.add_a_photo),
+                  tooltip: 'pick Image',
+                  onPressed: () {
+                    getImage(ImageSource.camera);
+                  },
+                ),
         ],
       ),
+    );
+  }
+
+  // 게시글 작성 폼
+  Widget createPostForm() {
+    return Column(
+      children: [
+        // 장소 입력 폼
+        Expanded(
+          child: TextFormField(
+            decoration: InputDecoration(labelText: '장소'),
+          ),
+        ),
+        // 제목 입력 폼
+        Expanded(
+          child: TextFormField(
+            decoration: InputDecoration(labelText: '제목'),
+          ),
+        ),
+        // 내용 입력 폼
+        Expanded(
+          child: TextFormField(
+            decoration: InputDecoration(labelText: '내용'),
+            maxLines: 10,
+          ),
+        ),
+        // 비공개 여부 체크박스
+        Expanded(
+          child: CheckboxListTile(
+            title: Text('비공개'),
+            value: false,
+            onChanged: (value) {},
+          ),
+        ),
+        // 등록 버튼
+        Expanded(
+          child: ElevatedButton(
+            onPressed: () {},
+            child: Text('등록'),
+          ),
+        ),
+      ],
     );
   }
 }
