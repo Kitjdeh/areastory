@@ -28,7 +28,21 @@ class _MyPageScreenState extends State<MyPageScreen> {
                   // 추후 아이콘 버튼 + Icon이미지 변경
                   IconButton(
                       icon: Icon(Icons.settings),
-                    onPressed: (){},
+                    onPressed: (){
+                        // 설정버튼 클릭시 하단 모달up
+                        showModalBottomSheet(
+                            context: context,
+                            // 모달 이외 클릭시 모달창 닫힘.
+                            isDismissible: true,
+                            builder: (BuildContext context){
+                              return Container(
+                                height: 300,
+                                width: MediaQuery.of(context).size.width,
+                                child: Text("감자"),
+                              );
+                            }
+                        );
+                    },
                   )
                 ],
               ),
