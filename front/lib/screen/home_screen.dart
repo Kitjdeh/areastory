@@ -1,8 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:front/component/mypage/follow/follow.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/camera_test.dart';
 import 'package:front/screen/mypage.dart';
 import 'package:front/screen/sns.dart';
+import 'package:image_picker/image_picker.dart';
 
 // 홈 + 바텀탭바
 class HomeScreen extends StatefulWidget {
@@ -15,6 +18,8 @@ class HomeScreen extends StatefulWidget {
 // with TickerProviderStateMixin 가 필수인데 이게 프레임관리하는거임
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final TabController controller;
+  // File? _image;
+  // final picker = ImagePicker();
 
   @override
   void initState() {
@@ -65,4 +70,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               .toList()),
     );
   }
+
+  // 비동기 처리를 통해 카메라와 갤러리에서 이미지를 가져온다.
+  // Future getImage(ImageSource imageSource) async {
+  //   final image = await picker.pickImage(source: imageSource);
+  //
+  //   // setState(() {
+  //   //   _image = File(image!.path); // 가져온 이미지를 _image에 저장
+  //   // });
+  //   return File(image!.path);
+  // }
+  //
+  // Widget playCamere(){
+  //   final tmp = getImage(ImageSource.camera);
+  //   return CameraExample();
+  // }
 }
