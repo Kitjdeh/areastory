@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:front/component/mypage/follow/follow.dart';
 import 'package:front/component/mypage/mypage_tabbar.dart';
 import 'package:front/constant/mypage_tabs.dart';
+import 'package:front/screen/home_screen.dart';
 
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({Key? key}) : super(key: key);
@@ -10,12 +12,27 @@ class MyPageScreen extends StatefulWidget {
 }
 
 class _MyPageScreenState extends State<MyPageScreen> {
+
+  bool showMyPageScreen = true;
+
   @override
   Widget build(BuildContext context) {
+    return showMyPageScreen ? _buildMyPageScreen() :
+    FollowScreen(
+      onShowMyPageScreenChanged: (val){
+        setState(() {
+          showMyPageScreen = val;
+        });
+      },
+    );
+  }
+
+  Widget _buildMyPageScreen() {
     return Scaffold(
       body: SafeArea(
         child: Column(
-          children: [
+          children:
+          [
             // 1.닉네임, 설정버튼
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
@@ -27,8 +44,53 @@ class _MyPageScreenState extends State<MyPageScreen> {
                   Text("nickname"),
                   // 추후 아이콘 버튼 + Icon이미지 변경
                   IconButton(
-                      icon: Icon(Icons.settings),
-                    onPressed: (){},
+                    icon: Icon(Icons.settings),
+                    onPressed: () {
+                      // 설정버튼 클릭시 하단 모달up
+                      showModalBottomSheet(
+                          context: context,
+                          // 모달 이외 클릭시 모달창 닫힘.
+                          isDismissible: true,
+                          builder: (BuildContext context) {
+                            return Container(
+                              height: 200,
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  TextButton.icon(
+                                    // 아마 라우터로 페이지 이동시켜야될듯?
+                                    onPressed: () {
+                                      print("설정 및 개인정보");
+                                    },
+                                    icon: Icon(Icons.settings),
+                                    label: Text("설정 및 개인정보"),
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      print("로그아웃");
+                                    },
+                                    icon: Icon(Icons.logout),
+                                    label: Text("로그아웃"),
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      print("서비스 탈퇴");
+                                    },
+                                    icon: Icon(Icons.accessible_outlined),
+                                    label: Text("서비스 탈퇴"),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                      );
+                    },
                   )
                 ],
               ),
@@ -50,7 +112,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                     child: ClipRRect(
                       // 가장 완벽한 원을 만드는 방법은 상위가 되었든 뭐든, 높이길이의 50%(높이=넓이)
                       borderRadius: BorderRadius.circular(50),
-                      child: Image.asset('asset/img/test01.jpg', fit: BoxFit.cover,
+                      child: Image.asset(
+                        'asset/img/test01.jpg', fit: BoxFit.cover,
                       ),
                     ),
                   ),
@@ -91,15 +154,17 @@ class _MyPageScreenState extends State<MyPageScreen> {
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
                     ),
-                    onPressed: (){
+                    onPressed: () {
 
                     },
-                    child: Text("프로필편집")),
+                    child: Text("프로필 편집")),
                 ElevatedButton(
-                    onPressed: (){
-
+                    onPressed: () {
+                      setState(() {
+                        showMyPageScreen = false;
+                      });
                     },
-                    child: Text("체지방28%")),
+                    child: Text("팔로워/팔로잉")),
               ],
             ),
             // 4. 사진첩 및 지도 탭바

@@ -30,7 +30,7 @@ class MyAlbum extends StatelessWidget {
         );
       },
       // 내꺼 아이템의 총 개수.
-      itemCount: 200,
+      itemCount: 100,
     );
   }
 

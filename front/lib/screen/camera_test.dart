@@ -64,6 +64,13 @@ class _CameraExampleState extends State<CameraExample> {
     );
   }
 
+  // 실행과 동시에 카메라 실행시켜라(최원준)
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   getImage(ImageSource.camera);
+  // }
+
   @override
   Widget build(BuildContext context) {
     // 화면 세로 고정
