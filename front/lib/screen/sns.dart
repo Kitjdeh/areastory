@@ -11,6 +11,29 @@ class SnsScreen extends StatefulWidget {
 }
 
 class _SnsScreenState extends State<SnsScreen> {
+  int _currentPage = 1;
+  List _articles = [];
+
+  // void _loadMoreData() async {
+  void _loadMoreData() async {
+    // final newArticles = await api.fetchArticles(page: _currentPage + 1);
+    // _articles.addAll(newArticles["articles"]);
+    if (_currentPage == 1) {
+      _articles.addAll(articleTest["articles"]);
+    } else {
+      _articles.addAll(articleTest2["articles"]);
+    }
+    await _currentPage++;
+    setState(() {});
+  }
+
+  void _updateIsChildActive(bool isChildActive) {
+    setState(() {
+      print('성공!!!');
+      print(_currentPage);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,19 +85,28 @@ class _SnsScreenState extends State<SnsScreen> {
                     await Future.delayed(Duration(seconds: 3));
                   },
                   child: ListView.separated(
-                    itemCount: 2,
+                    itemCount: _articles.length + 1,
                     itemBuilder: (BuildContext context, int index) {
-                      return ArticleComponent(
-                        nickname: articleTest["articles"][index]["nickname"],
-                        image: articleTest["articles"][index]["image"],
-                        profile: articleTest["articles"][index]["profile"],
-                        content: articleTest["articles"][index]["content"],
-                        likeCount: articleTest["articles"][index]["likeCount"],
-                        commentCount: articleTest["articles"][index]
-                            ["commentCount"],
-                        isLike: articleTest["articles"][index]["isLike"],
-                        height: 500,
-                      );
+                      if (index < _articles.length) {
+                        return ArticleComponent(
+                          nickname: _articles[index]["nickname"],
+                          image: _articles[index]["image"],
+                          profile: _articles[index]["profile"],
+                          content: _articles[index]["content"],
+                          likeCount: _articles[index]["likeCount"],
+                          commentCount: _articles[index]["commentCount"],
+                          isLike: _articles[index]["isLike"],
+                          height: 500,
+                          onUpdateIsChildActive: _updateIsChildActive,
+                        );
+                      } else {
+                        _loadMoreData();
+                        return Container(
+                          height: 50,
+                          alignment: Alignment.center,
+                          child: const CircularProgressIndicator(),
+                        );
+                      }
                     },
                     separatorBuilder: (context, index) {
                       return renderContainer(height: 20);
