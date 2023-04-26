@@ -13,7 +13,7 @@ final Map<String, dynamic> articleTest = {
       "content": "히히 화났죵",
       "image":
           "https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg",
-      "likeCount": 32,
+      "likeCount": 33,
       "commentCount": 14,
       "isLike": true
     },
