@@ -11,8 +11,25 @@ class CameraExample extends StatefulWidget {
 }
 
 class _CameraExampleState extends State<CameraExample> {
+  final FocusNode _focusNode1 = FocusNode();
+  final FocusNode _focusNode2 = FocusNode();
+  bool _isSwitched = false;
+  ScrollController? _scrollController;
+
   File? _image;
   final picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController!.dispose();
+    super.dispose();
+  }
 
   // 비동기 처리를 통해 카메라와 갤러리에서 이미지를 가져온다.
   Future getImage(ImageSource imageSource) async {
@@ -26,13 +43,25 @@ class _CameraExampleState extends State<CameraExample> {
   // 이미지를 보여주는 위젯
   Widget showImage() {
     return Container(
-        color: Colors.white,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.width,
-        child: Center(
-            child: _image == null
-                ? Text('No image selected.')
-                : Image.file(File(_image!.path))));
+      color: Colors.white,
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.width / 1.3,
+      child: Center(
+        child: _image == null
+            ? GestureDetector(
+                child: Icon(Icons.add_a_photo, color: Colors.blue, size: 100),
+                onTap: () {
+                  getImage(ImageSource.camera);
+                },
+              )
+            : GestureDetector(
+                child: Image.file(File(_image!.path)),
+                onTap: () {
+                  getImage(ImageSource.camera);
+                },
+              ),
+      ),
+    );
   }
 
   // 실행과 동시에 카메라 실행시켜라(최원준)
@@ -48,70 +77,87 @@ class _CameraExampleState extends State<CameraExample> {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFECF9FF),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(height: 25.0),
-          showImage(),
-          SizedBox(
-            height: 50.0,
-          ),
-          // 이미지 선택 버튼
-          _image != null
-              ? Text('2') // 이미지가 선택되면 보여주지 않음
-              : FloatingActionButton(
-                  child: Icon(Icons.add_a_photo),
-                  tooltip: 'pick Image',
-                  onPressed: () {
-                    getImage(ImageSource.camera);
-                  },
+    return SafeArea(
+      child: GestureDetector(
+        onTap: () {
+          // 화면 클릭 이벤트 처리
+          if (_focusNode1.hasFocus) {
+            // 첫번째 TextFormField에 포커스가 있는 경우
+            _focusNode1.unfocus();
+          }
+          if (_focusNode2.hasFocus) {
+            // 두번째 TextFormField에 포커스가 있는 경우
+            _focusNode2.unfocus();
+          }
+        },
+        child: Scaffold(
+          backgroundColor: const Color(0xFFECF9FF),
+          body: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                showImage(),
+                SizedBox(
+                  height: 50.0,
                 ),
-        ],
+                createPostForm(),
+                SizedBox(
+                  height: 15.0,
+                )
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 
   // 게시글 작성 폼
   Widget createPostForm() {
-    return Column(
-      children: [
-        // 장소 입력 폼
-        Expanded(
-          child: TextFormField(
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 16,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 장소 입력 폼
+          TextFormField(
+            focusNode: _focusNode1,
             decoration: InputDecoration(labelText: '장소'),
+            onTap: () {
+              //120만큼 500milSec 동안 뷰를 올려줌
+              _scrollController!.animateTo(120.0,
+                  duration: Duration(milliseconds: 500), curve: Curves.ease);
+            },
           ),
-        ),
-        // 제목 입력 폼
-        Expanded(
-          child: TextFormField(
-            decoration: InputDecoration(labelText: '제목'),
-          ),
-        ),
-        // 내용 입력 폼
-        Expanded(
-          child: TextFormField(
+          TextFormField(
+            focusNode: _focusNode2,
             decoration: InputDecoration(labelText: '내용'),
-            maxLines: 10,
+            onTap: () {
+              //120만큼 500milSec 동안 뷰를 올려줌
+              _scrollController!.animateTo(120.0,
+                  duration: Duration(milliseconds: 500), curve: Curves.ease);
+            },
+            maxLines: 3,
           ),
-        ),
-        // 비공개 여부 체크박스
-        Expanded(
-          child: CheckboxListTile(
+          // 비공개 여부 체크박스
+          SwitchListTile(
             title: Text('비공개'),
-            value: false,
-            onChanged: (value) {},
+            value: _isSwitched,
+            onChanged: (value) {
+              setState(() {
+                _isSwitched = value;
+              });
+            },
           ),
-        ),
-        // 등록 버튼
-        Expanded(
-          child: ElevatedButton(
+          // 등록 버튼
+          ElevatedButton(
             onPressed: () {},
             child: Text('등록'),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

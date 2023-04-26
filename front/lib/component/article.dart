@@ -8,6 +8,7 @@ class ArticleComponent extends StatelessWidget {
   final int likeCount;
   final int commentCount;
   final bool isLike;
+  final Function(bool) onUpdateIsChildActive;
   double? height;
 
   ArticleComponent(
@@ -19,6 +20,7 @@ class ArticleComponent extends StatelessWidget {
       required this.likeCount,
       required this.commentCount,
       required this.isLike,
+      required this.onUpdateIsChildActive,
       Key? key})
       : super(key: key);
 
@@ -111,11 +113,16 @@ class ArticleComponent extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Expanded(
-                                  child: Image.asset(
-                                    isLike
-                                        ? 'asset/img/like.png'
-                                        : 'asset/img/nolike.png',
-                                    height: 30,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      onUpdateIsChildActive(true);
+                                    },
+                                    child: Image.asset(
+                                      isLike
+                                          ? 'asset/img/like.png'
+                                          : 'asset/img/nolike.png',
+                                      height: 30,
+                                    ),
                                   ),
                                 ),
                                 Expanded(
