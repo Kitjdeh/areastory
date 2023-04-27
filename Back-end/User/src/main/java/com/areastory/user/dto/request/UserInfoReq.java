@@ -1,4 +1,4 @@
-package com.areastory.user.request;
+package com.areastory.user.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

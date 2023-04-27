@@ -1,12 +1,10 @@
 package com.areastory.user.controller;
 
-import com.areastory.user.db.entity.Article;
-import com.areastory.user.db.entity.User;
-import com.areastory.user.request.UserInfoReq;
-import com.areastory.user.request.UserReq;
-import com.areastory.user.response.ArticleResp;
-import com.areastory.user.response.ResponseDefault;
-import com.areastory.user.response.UserResp;
+import com.areastory.user.dto.request.UserInfoReq;
+import com.areastory.user.dto.request.UserReq;
+import com.areastory.user.dto.response.ArticleResp;
+import com.areastory.user.dto.response.ResponseDefault;
+import com.areastory.user.dto.response.UserResp;
 import com.areastory.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,10 +32,16 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam("providerId") Long providerId) {
         UserResp userResp = userService.login(providerId);
-        if (userResp.getIsNew() == false) {
+        if (!userResp.getIsExist()) {
             return responseDefault.success(true, "신규 회원입니다.", userResp);
         }
         return responseDefault.success(true, "존재하는 회원입니다.", userResp);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(Long userId) {
+        userService.logout(userId);
+        return responseDefault.success(true, "로그아웃에 성공했습니다.", null);
     }
 
     // 신규 회원일 경우 회원가입 시도
@@ -45,10 +49,11 @@ public class UserController {
     public ResponseEntity<?> signUp(@RequestPart UserReq userReq, @RequestPart("profile") MultipartFile profile) {
         try {
             userService.signUp(userReq, profile);
-            return responseDefault.success(true, "회원 가입 성공", null);
-        } catch (Exception e) {
-            return responseDefault.fail(false, "서버 오류", null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+        return responseDefault.success(true, "회원 가입 성공", null);
+
     }
 
     // 유저 정보 조회

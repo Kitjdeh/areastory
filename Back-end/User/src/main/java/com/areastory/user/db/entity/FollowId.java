@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Builder
 public class FollowId implements Serializable {
 
-    private Long followerUserId;
-    private Long followingUserId;
+    private Long followerUser;
+    private Long followingUser;
 
 }

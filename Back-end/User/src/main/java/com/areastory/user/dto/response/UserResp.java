@@ -1,12 +1,10 @@
-package com.areastory.user.response;
+package com.areastory.user.dto.response;
 
 import com.areastory.user.db.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
 
 @Data
 @NoArgsConstructor
@@ -19,7 +17,7 @@ public class UserResp {
     private String profile;
     private Long followCount;
     private Long followingCount;
-    private Boolean isNew;
+    private Boolean isExist;
 
     public static UserResp fromEntity(User user) {
         return UserResp.builder()
@@ -31,20 +29,20 @@ public class UserResp {
                 .build();
     }
 
-    public static UserResp fromEntity(User user, Boolean isNew) {
+    public static UserResp fromEntity(User user, Boolean isExist) {
         return UserResp.builder()
                 .userId(user.getUserId())
                 .nickname(user.getNickname())
                 .profile(user.getProfile())
                 .followCount(user.getFollowCount())
                 .followingCount(user.getFollowingCount())
-                .isNew(isNew)
+                .isExist(isExist)
                 .build();
     }
 
-    public static UserResp fromEntity(Boolean isNew) {
+    public static UserResp fromEntity(Boolean isExist) {
         return UserResp.builder()
-                .isNew(isNew)
+                .isExist(isExist)
                 .build();
     }
 }

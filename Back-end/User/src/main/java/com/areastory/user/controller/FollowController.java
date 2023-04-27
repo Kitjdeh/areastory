@@ -1,8 +1,8 @@
 package com.areastory.user.controller;
 
-import com.areastory.user.response.FollowerResp;
-import com.areastory.user.response.FollowingResp;
-import com.areastory.user.response.ResponseDefault;
+import com.areastory.user.dto.response.FollowerResp;
+import com.areastory.user.dto.response.FollowingResp;
+import com.areastory.user.dto.response.ResponseDefault;
 import com.areastory.user.service.FollowService;
 import com.areastory.user.service.UserService;
 import lombok.RequiredArgsConstructor;

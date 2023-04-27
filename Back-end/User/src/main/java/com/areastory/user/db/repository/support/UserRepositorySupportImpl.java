@@ -4,31 +4,13 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import static com.areastory.user.db.entity.QUser.*;
+import static com.areastory.user.db.entity.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
 public class UserRepositorySupportImpl implements UserRepositorySupport {
 
     private final JPAQueryFactory queryFactory;
-
-    @Override
-    public void updateNickname(Long userId, String nickname) {
-        queryFactory
-                .update(user)
-                .set(user.nickname, nickname)
-                .where(user.userId.eq(userId))
-                .execute();
-    }
-
-    @Override
-    public void updateProfile(Long userId, String profile) {
-        queryFactory
-                .update(user)
-                .set(user.profile, profile)
-                .where(user.userId.eq(userId))
-                .execute();
-    }
 
     @Override
     public void updateFollowAddCount(Long userId) {
@@ -47,6 +29,7 @@ public class UserRepositorySupportImpl implements UserRepositorySupport {
                 .where(user.userId.eq(userId))
                 .execute();
     }
+
     @Override
     public void updateFollowDisCount(Long userId) {
         queryFactory

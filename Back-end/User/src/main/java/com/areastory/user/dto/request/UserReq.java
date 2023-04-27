@@ -1,15 +1,10 @@
-package com.areastory.user.request;
+package com.areastory.user.dto.request;
 
 import com.areastory.user.db.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @Data
 @NoArgsConstructor
@@ -19,7 +14,7 @@ public class UserReq {
     private String nickname; // 닉네임
     private String provider; // 소셜 로그인 종류
     private Long providerId; // 소셜 로그인 아이디
-    
+
     public static User toEntity(UserReq userReq, String profile) {
         return User.builder()
                 .nickname(userReq.getNickname())
@@ -28,6 +23,7 @@ public class UserReq {
                 .providerId(userReq.getProviderId())
                 .followCount(0L)
                 .followingCount(0L)
+                .isValid(false)
                 .build();
     }
 }

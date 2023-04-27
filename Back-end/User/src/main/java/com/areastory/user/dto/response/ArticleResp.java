@@ -1,4 +1,4 @@
-package com.areastory.user.response;
+package com.areastory.user.dto.response;
 
 import com.areastory.user.db.entity.Article;
 import lombok.AllArgsConstructor;
@@ -22,8 +22,8 @@ public class ArticleResp {
         return ArticleResp.builder()
                 .content(article.getContent())
                 .image(article.getImage())
-                .like_count(article.getLike_count())
-                .comment_count(article.getComment_count())
+                .like_count(article.getLikeCount())
+                .comment_count(article.getCommentCount())
                 .build();
     }
 }

@@ -1,15 +1,14 @@
 package com.areastory.user.db.repository.support;
 
-import com.areastory.user.db.entity.User;
-import com.areastory.user.response.FollowerResp;
-import com.areastory.user.response.FollowingResp;
+import com.areastory.user.dto.response.FollowerResp;
+import com.areastory.user.dto.response.FollowingResp;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
 public interface FollowRepositorySupport {
 
-    List<FollowerResp> findFollowerResps(Long userId, PageRequest pageRequest, String search);
+    List<FollowerResp> findFollowerResp(Long userId, PageRequest pageRequest, String search);
 
     List<FollowingResp> findFollowingResp(Long userId, PageRequest pageRequest, String search);
 }

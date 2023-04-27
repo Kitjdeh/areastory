@@ -25,6 +25,8 @@ public class S3Util {
     private String bucket;
 
     public String saveUploadFile(MultipartFile multipartFile) throws IOException {
+        if (multipartFile == null || multipartFile.isEmpty())
+            return null;
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(multipartFile.getContentType());
         objectMetadata.setContentLength(multipartFile.getSize());
@@ -48,6 +50,6 @@ public class S3Util {
     }
 
     public void deleteFile(String source) {
-        amazonS3Client.deleteObject(bucket, source);
+        amazonS3Client.deleteObject(bucket, source.substring(55));
     }
 }

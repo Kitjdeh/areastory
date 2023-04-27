@@ -1,8 +1,8 @@
 package com.areastory.user.db.repository.support;
 
 import com.areastory.user.db.entity.QFollow;
-import com.areastory.user.response.FollowerResp;
-import com.areastory.user.response.FollowingResp;
+import com.areastory.user.dto.response.FollowerResp;
+import com.areastory.user.dto.response.FollowingResp;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.areastory.user.db.entity.QFollow.*;
+import static com.areastory.user.db.entity.QFollow.follow;
 
 
 @Repository
@@ -26,16 +26,16 @@ public class FollowRepositorySupportImpl implements FollowRepositorySupport {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<FollowerResp> findFollowerResps(Long userId, PageRequest pageRequest, String search) {
+    public List<FollowerResp> findFollowerResp(Long userId, PageRequest pageRequest, String search) {
 
         QFollow followSub = new QFollow("followSub");
-        BooleanExpression isFollowing = followSub.followerUserId.userId.eq(userId).and(followSub.followingUserId.eq(follow.followerUserId));
+        BooleanExpression isFollowing = followSub.followerUser.userId.eq(userId).and(followSub.followingUser.eq(follow.followerUser));
 
         List<Tuple> tuples = queryFactory
                 .select(Projections.constructor(FollowerResp.class),
-                        follow.followerUserId.userId,
-                        follow.followerUserId.nickname,
-                        follow.followerUserId.profile,
+                        follow.followerUser.userId,
+                        follow.followerUser.nickname,
+                        follow.followerUser.profile,
                         ExpressionUtils.as(
                                 JPAExpressions.selectOne()
                                         .from(followSub)
@@ -44,17 +44,17 @@ public class FollowRepositorySupportImpl implements FollowRepositorySupport {
                                 "check"
                         ))
                 .from(follow)
-                .where(follow.followingUserId.userId.eq(userId), follow.followerUserId.nickname.like(search))
-                .orderBy(follow.followerUserId.nickname.asc())
+                .where(follow.followingUser.userId.eq(userId), follow.followerUser.nickname.like(search))
+                .orderBy(follow.followerUser.nickname.asc())
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
                 .fetch();
 
         return tuples.stream()
                 .map(tuple -> new FollowerResp(tuple.get(1, Long.class),
-                                            tuple.get(2, String.class),
-                                            tuple.get(3, String.class),
-                                            tuple.get(4, Boolean.class)))
+                        tuple.get(2, String.class),
+                        tuple.get(3, String.class),
+                        tuple.get(4, Boolean.class)))
                 .collect(Collectors.toList());
     }
 
@@ -62,12 +62,12 @@ public class FollowRepositorySupportImpl implements FollowRepositorySupport {
     public List<FollowingResp> findFollowingResp(Long userId, PageRequest pageRequest, String search) {
         List<Tuple> tuples = queryFactory
                 .select(Projections.constructor(FollowingResp.class),
-                        follow.followingUserId.userId,
-                        follow.followingUserId.nickname,
-                        follow.followingUserId.profile)
+                        follow.followingUser.userId,
+                        follow.followingUser.nickname,
+                        follow.followingUser.profile)
                 .from(follow)
-                .where(follow.followerUserId.userId.eq(userId), follow.followingUserId.nickname.like(search))
-                .orderBy(follow.followingUserId.nickname.asc())
+                .where(follow.followerUser.userId.eq(userId), follow.followingUser.nickname.like(search))
+                .orderBy(follow.followingUser.nickname.asc())
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
                 .fetch();

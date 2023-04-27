@@ -1,4 +1,4 @@
-package com.areastory.user.response;
+package com.areastory.user.dto.response;
 
 
 import com.areastory.user.db.entity.Follow;
@@ -19,9 +19,9 @@ public class FollowingResp {
 
     public static FollowingResp fromEntity(Follow follow) {
         return FollowingResp.builder()
-                .userId(follow.getFollowingUserId().getUserId())
-                .nickname(follow.getFollowingUserId().getNickname())
-                .profile(follow.getFollowingUserId().getProfile())
+                .userId(follow.getFollowingUser().getUserId())
+                .nickname(follow.getFollowingUser().getNickname())
+                .profile(follow.getFollowingUser().getProfile())
                 .build();
     }
 }

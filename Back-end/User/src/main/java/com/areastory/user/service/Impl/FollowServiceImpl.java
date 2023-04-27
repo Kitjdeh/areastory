@@ -1,11 +1,14 @@
 package com.areastory.user.service.Impl;
 
 import com.areastory.user.db.entity.Follow;
+import com.areastory.user.db.entity.FollowId;
 import com.areastory.user.db.entity.User;
 import com.areastory.user.db.repository.FollowRepository;
 import com.areastory.user.db.repository.UserRepository;
-import com.areastory.user.response.FollowerResp;
-import com.areastory.user.response.FollowingResp;
+import com.areastory.user.dto.response.FollowerResp;
+import com.areastory.user.dto.response.FollowingResp;
+import com.areastory.user.kafka.KafkaProperties;
+import com.areastory.user.kafka.UserProducer;
 import com.areastory.user.service.FollowService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +22,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class FollowServiceImpl implements FollowService {
 
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final UserProducer userProducer;
 
     public String searchCondition(String search) {
         if (search == null || search.isEmpty()) {
@@ -36,21 +39,21 @@ public class FollowServiceImpl implements FollowService {
 
     public List<FollowerResp> findFollowers(Long userId, int page, String search) {
         PageRequest pageRequest = PageRequest.of(page, 20);
-        return followRepository.findFollowerResps(userId, pageRequest, searchCondition(search));
+        return followRepository.findFollowerResp(userId, pageRequest, searchCondition(search));
     }
 
     @Override
     public List<FollowingResp> findFollowing(Long userId, int page, int type) {
-        PageRequest pageRequest = null;
+        PageRequest pageRequest;
         if (type == 1) {
-            pageRequest = PageRequest.of(page, 20, Sort.Direction.ASC, "followingUserId.nickname");
+            pageRequest = PageRequest.of(page, 20, Sort.Direction.ASC, "followingUser.nickname");
         } else if (type == 2) {
             pageRequest = PageRequest.of(page, 20, Sort.Direction.ASC, "createdAt");
         } else {
             pageRequest = PageRequest.of(page, 20, Sort.Direction.DESC, "createdAt");
         }
-        return followRepository.findByFollowerUserId_UserId(userId, pageRequest)
-                .stream().map(m -> FollowingResp.fromEntity(m)).collect(
+        return followRepository.findByFollowerUser_UserId(userId, pageRequest)
+                .stream().map(FollowingResp::fromEntity).collect(
                         Collectors.toList());
     }
 
@@ -61,44 +64,57 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
+    @Transactional
     public Boolean addFollower(Long userId, Long followingId) {
-
-        if (!followRepository.existsByFollowerUserId_UserIdAndFollowingUserId_UserId(userId, followingId)) {
-            User user = userRepository.findById(userId).orElse(null);
-            User followingUser = userRepository.findById(followingId).orElse(null);
-
-            followRepository.save(Follow.follow(user, followingUser));
-            userRepository.updateFollowingAddCount(userId);
-            userRepository.updateFollowAddCount(followingId);
-            return true;
-        } else {
+        FollowId followId = new FollowId(userId, followingId);
+        if (followRepository.existsById(followId))
             return false;
-        }
+        User user = userRepository.findById(userId).orElseThrow();
+        User followingUser = userRepository.findById(followingId).orElseThrow();
+
+        followRepository.save(Follow.follow(user, followingUser));
+
+        user.addFollowing();
+        followingUser.addFollow();
+
+        userProducer.send(user, KafkaProperties.UPDATE);
+        userProducer.send(followingUser, KafkaProperties.UPDATE);
+        return true;
     }
 
     @Override
+    @Transactional
     public Boolean deleteFollowing(Long userId, Long followingId) {
-
-        if (followRepository.existsByFollowerUserId_UserIdAndFollowingUserId_UserId(userId, followingId)) {
-            followRepository.deleteByFollowerUserId_UserIdAndFollowingUserId_UserId(userId, followingId);
-            userRepository.updateFollowingDisCount(userId);
-            userRepository.updateFollowDisCount(followingId);
-            return true;
-        } else {
+        FollowId followId = new FollowId(userId, followingId);
+        if (!followRepository.existsById(followId)) {
             return false;
         }
+        followRepository.deleteById(followId);
+        User user = userRepository.findById(userId).orElseThrow();
+        User followingUser = userRepository.findById(followingId).orElseThrow();
+
+        user.deleteFollowing();
+        followingUser.deleteFollow();
+
+        userProducer.send(user, KafkaProperties.UPDATE);
+        userProducer.send(followingUser, KafkaProperties.UPDATE);
+        return true;
     }
 
     @Override
+    @Transactional
     public Boolean deleteFollower(Long userId, Long followerId) {
-
-        if (followRepository.existsByFollowerUserId_UserIdAndFollowingUserId_UserId(followerId, userId)) {
-            followRepository.deleteByFollowerUserId_UserIdAndFollowingUserId_UserId(followerId, userId);
-            userRepository.updateFollowDisCount(userId);
-            userRepository.updateFollowingDisCount(followerId);
-            return true;
-        } else {
+        FollowId followId = new FollowId(followerId, userId);
+        if (!followRepository.existsById(followId)) {
             return false;
         }
+        followRepository.deleteById(followId);
+        User user = userRepository.findById(userId).orElseThrow();
+        User followerUser = userRepository.findById(followerId).orElseThrow();
+        user.deleteFollow();
+        followerUser.deleteFollowing();
+        userProducer.send(user, KafkaProperties.UPDATE);
+        userProducer.send(followerUser, KafkaProperties.UPDATE);
+        return true;
     }
 }

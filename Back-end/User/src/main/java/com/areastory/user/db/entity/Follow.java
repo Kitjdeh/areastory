@@ -17,17 +17,17 @@ public class Follow extends ArticleBaseTime implements Serializable {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "follower_user_id")
-    private User followerUserId;
+    private User followerUser;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "following_user_id")
-    private User followingUserId;
+    private User followingUser;
 
     public static Follow follow(User followerUser, User followingUser) {
         return Follow.builder()
-                .followerUserId(followerUser)
-                .followingUserId(followingUser)
+                .followerUser(followerUser)
+                .followingUser(followingUser)
                 .build();
     }
 }
