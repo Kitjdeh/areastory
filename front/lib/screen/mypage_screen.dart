@@ -42,7 +42,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           isDismissible: true,
                           builder: (BuildContext context) {
                             return Container(
-                              height: 200,
+                              height: 300,
                               width: MediaQuery
                                   .of(context)
                                   .size
@@ -53,15 +53,40 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   TextButton.icon(
-                                    // 아마 라우터로 페이지 이동시켜야될듯?
                                     onPressed: () {
-                                      print("설정 및 개인정보");
+                                      Navigator.of(context).pop();
+                                      print("설정");
                                     },
                                     icon: Icon(Icons.settings),
-                                    label: Text("설정 및 개인정보"),
+                                    label: Text("설정"),
                                   ),
                                   TextButton.icon(
                                     onPressed: () {
+                                      Navigator.of(context).pop();
+                                      print("개인정보 수정");
+                                    },
+                                    icon: Icon(Icons.settings),
+                                    label: Text("개인정보 수정"),
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      Beamer.of(context).beamToNamed('/mypage/follow');
+                                    },
+                                    icon: Icon(Icons.settings),
+                                    label: Text("팔로잉/팔로워"),
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      print("설정");
+                                    },
+                                    icon: Icon(Icons.settings),
+                                    label: Text("사용자 검색"),
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
                                       print("로그아웃");
                                     },
                                     icon: Icon(Icons.logout),
@@ -69,6 +94,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                   ),
                                   TextButton.icon(
                                     onPressed: () {
+                                      Navigator.of(context).pop();
                                       print("서비스 탈퇴");
                                     },
                                     icon: Icon(Icons.accessible_outlined),
@@ -136,23 +162,23 @@ class _MyPageScreenState extends State<MyPageScreen> {
               ),
             ),
 
-            // 3. 프로필 편집, 체지방 28% 버튼
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                    ),
-                    onPressed: () {
-                    },
-                    child: Text("프로필 편집")),
-                ElevatedButton(
-                    onPressed: () {
-                      Beamer.of(context).beamToNamed('/mypage/follow');
-                    },
-                    child: Text("팔로워/팔로잉")),
-              ],
-            ),
+            // // 3. 프로필 편집, 체지방 28% 버튼
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: [
+            //     ElevatedButton(
+            //         style: ElevatedButton.styleFrom(
+            //         ),
+            //         onPressed: () {
+            //         },
+            //         child: Text("프로필 편집")),
+            //     ElevatedButton(
+            //         onPressed: () {
+            //           Beamer.of(context).beamToNamed('/mypage/follow');
+            //         },
+            //         child: Text("팔로워/팔로잉")),
+            //   ],
+            // ),
             // 4. 사진첩 및 지도 탭바
             MypageTabbar(),
           ],
