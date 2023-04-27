@@ -5,9 +5,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -15,13 +13,19 @@ import javax.persistence.IdClass;
 @IdClass(ArticleLikePK.class)
 public class ArticleLike extends BaseTime {
     @Id
-    private Long userId;
-    @Id
+    @JoinColumn(name = "user_id")
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Long articleId;
+    private User user;
 
-    public ArticleLike(Long userId, Long articleId) {
-        this.userId = userId;
-        this.articleId = articleId;
+    @Id
+    @JoinColumn(name = "article_id")
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Article article;
+
+    public ArticleLike(User user, Article article) {
+        this.user = user;
+        this.article = article;
     }
 }

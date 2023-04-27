@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -20,6 +22,7 @@ public class Article extends BaseTime {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     private String content;
@@ -56,10 +59,6 @@ public class Article extends BaseTime {
 
     public void updateContent(String content) {
         this.content = content;
-    }
-
-    public void updateImage(String image) {
-        this.image = image;
     }
 
     public void addCommentCount() {

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -24,19 +26,20 @@ public class Comment extends BaseTime {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
-//    @ManyToOne
-//    @JoinColumn(name = "article_id")
-//    private Article article;
+    @ManyToOne
+    @JoinColumn(name = "article_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Article article;
 
-    private Long articleId;
 
     @Builder
-    public Comment(String content, User user, Long articleId) {
+    public Comment(String content, User user, Article article) {
         this.content = content;
         this.user = user;
-        this.articleId = articleId;
+        this.article = article;
     }
 
     public void updateContent(String content) {

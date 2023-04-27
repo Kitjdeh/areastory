@@ -37,7 +37,7 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
         JPAQuery<Long> commentSize = query
                 .select(comment.count())
                 .from(comment)
-                .where(comment.articleId.eq(commentReq.getArticleId()));
+                .where(comment.article.articleId.eq(commentReq.getArticleId()));
 
         return PageableExecutionUtils.getPage(comments, pageable, commentSize::fetchOne);
     }
@@ -60,19 +60,19 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
     private JPAQuery<CommentDto> getCommentQuery(CommentReq commentReq) {
         return query.select(Projections.constructor(CommentDto.class,
                         comment.commentId,
-                        comment.articleId,
+                        comment.article.articleId,
                         comment.user.nickname,
                         comment.user.profile,
                         comment.content,
                         comment.likeCount,
                         comment.createdAt,
                         new CaseBuilder()
-                                .when(commentLike.userId.eq(commentReq.getUserId()))
+                                .when(commentLike.user.userId.eq(commentReq.getUserId()))
                                 .then(true)
                                 .otherwise(false)))
                 .from(comment)
                 .leftJoin(commentLike)
-                .on(commentLike.userId.eq(commentReq.getUserId()), commentLike.commentId.eq(comment.commentId))
-                .where(comment.articleId.eq(commentReq.getArticleId()));
+                .on(commentLike.user.userId.eq(commentReq.getUserId()), commentLike.comment.commentId.eq(comment.commentId))
+                .where(comment.article.articleId.eq(commentReq.getArticleId()));
     }
 }

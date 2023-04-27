@@ -18,7 +18,7 @@ public interface ArticleService {
 
     ArticleDto selectArticle(Long userId, Long articleId);
 
-    boolean updateArticle(ArticleUpdateParam param, MultipartFile picture) throws IOException;
+    boolean updateArticle(ArticleUpdateParam param);
 
     boolean deleteArticle(Long userId, Long articleId);
 

@@ -63,14 +63,14 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
                         article.likeCount,
                         article.commentCount,
                         new CaseBuilder()
-                                .when(articleLike.userId.eq(userId))
+                                .when(articleLike.user.userId.eq(userId))
                                 .then(true)
                                 .otherwise(false),
                         article.createdAt
                 ))
                 .from(article)
                 .leftJoin(articleLike)
-                .on(articleLike.userId.eq(userId), articleLike.articleId.eq(article.articleId));
+                .on(articleLike.user.userId.eq(userId), articleLike.article.articleId.eq(article.articleId));
     }
 
     private OrderSpecifier<?> getOrderSpecifier(Pageable pageable) {

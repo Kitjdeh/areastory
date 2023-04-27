@@ -4,21 +4,18 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Id;
 import java.io.Serializable;
 
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode
 public class CommentLikePK implements Serializable {
-    @Id
-    private Long userId;
+    private Long user;
 
-    @Id
-    private Long commentId;
+    private Long comment;
 
-    public CommentLikePK(Long userId, Long commentId) {
-        this.userId = userId;
-        this.commentId = commentId;
+    public CommentLikePK(Long user, Long comment) {
+        this.user = user;
+        this.comment = comment;
     }
 }

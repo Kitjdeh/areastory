@@ -42,10 +42,172 @@ public class CommentServiceImplTest {
     @BeforeAll
     static void setup(@Autowired UserRepository userRepository,
                       @Autowired ArticleRepository articleRepository) {
+//        //user 정보 세팅
+//        userList = userRepository.findAll();
+//        //게시글 저장
+//        articleList = articleRepository.findAll();
         //user 정보 세팅
-        userList = userRepository.findAll();
+        userList = new ArrayList<>();
+        userList.add(User.builder()
+                .nickname("원원")
+                .profile("사진1")
+                .provider("kakao")
+                .providerId("11111")
+                .build());
+        userList.add(User.builder()
+                .nickname("투투")
+                .profile("사진2")
+                .provider("kakao")
+                .providerId("22222")
+                .build());
+        userList.add(User.builder()
+                .nickname("쓰쓰")
+                .profile("사진3")
+                .provider("kakao")
+                .providerId("33333")
+                .build());
+        userList.add(User.builder()
+                .nickname("포포")
+                .profile("사진14")
+                .provider("kakao")
+                .providerId("44444")
+                .build());
+        userList.add(User.builder()
+                .nickname("파파")
+                .profile("사진5")
+                .provider("kakao")
+                .providerId("55555")
+                .build());
+        userList = userRepository.saveAll(userList);
         //게시글 저장
-        articleList = articleRepository.findAll();
+        articleList = new ArrayList<>();
+        articleList.add(Article.builder()
+                .user(userList.get(0))
+                .content("경기도 1번 게시물")
+                .image("경기도 1번 게시물 사진")
+                .doName("경기도")
+                .si("수원시")
+                .gu("장안구")
+                .dong("이목동")
+                .build());
+        articleList.add(Article.builder()
+                .user(userList.get(1))
+                .content("경기도 2번 게시물")
+                .image("경기도 2번 게시물 사진")
+                .doName("경기도")
+                .si("수원시")
+                .gu("장안구")
+                .dong("이목동")
+                .build());
+        articleList.add(Article.builder()
+                .user(userList.get(2))
+                .content("경기도 3번 게시물")
+                .image("경기도 3번 게시물 사진")
+                .doName("경기도")
+                .si("수원시")
+                .gu("장안구")
+                .dong("이목동")
+                .build());
+        articleList.add(Article.builder()
+                .user(userList.get(3))
+                .content("경기도 4번 게시물")
+                .image("경기도 4번 게시물 사진")
+                .doName("경기도")
+                .si("수원시")
+                .gu("장안구")
+                .dong("파장동")
+                .build());
+        articleList.add(Article.builder()
+                .user(userList.get(4))
+                .content("경기도 5번 게시물")
+                .image("경기도 5번 게시물 사진")
+                .doName("경기도")
+                .si("수원시")
+                .gu("영통구")
+                .dong("율전동")
+                .build());
+        articleList.add(Article.builder()
+                .user(userList.get(0))
+                .content("서울 관악구 1번 게시물")
+                .image("서울 관악구 1번 게시물 사진")
+                .si("서울시")
+                .gu("관악구")
+                .dong("신림동")
+                .build());
+        articleList.add(Article.builder()
+                .user(userList.get(1))
+                .content("서울 관악구 2번 게시물")
+                .image("게시글 사진")
+                .si("서울시")
+                .gu("관악구")
+                .dong("신림동")
+                .build());
+
+        articleList.add(Article.builder()
+                .user(userList.get(2))
+                .content("서울 관악구 3번 게시물")
+                .image("서울 관악구 3번 게시물 사진")
+                .si("서울시")
+                .gu("관악구")
+                .dong("신림동")
+                .build());
+        articleList.add(Article.builder()
+                .user(userList.get(3))
+                .content("서울 관악구 4번 게시물")
+                .image("서울 관악구 4번 게시물 사진")
+                .si("서울시")
+                .gu("관악구")
+                .dong("신림동")
+                .build());
+        articleList.add(Article.builder()
+                .user(userList.get(4))
+                .content("서울 관악구 5번 게시물")
+                .image("강아지 사진 링크")
+                .si("서울시")
+                .gu("관악구")
+                .dong("신림동")
+                .build());
+        articleList.add(Article.builder()
+                .user(userList.get(0))
+                .content("서울 강남구 1번 게시물")
+                .image("서울 강남구 1번 게시물 사진")
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼동")
+                .build());
+        articleList.add(Article.builder()
+                .user(userList.get(1))
+                .content("서울 강남구 2번 게시물")
+                .image("서울 강남구 2번 게시물 사진")
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼동")
+                .build());
+        articleList.add(Article.builder()
+                .user(userList.get(2))
+                .content("서울 강남구 3번 게시물")
+                .image("서울 강남구 3번 게시물 사진")
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼동")
+                .build());
+        articleList.add(Article.builder()
+                .user(userList.get(3))
+                .content("서울 강남구 4번 게시물")
+                .image("서울 강남구 4번 게시물 사진")
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼동")
+                .build());
+        articleList.add(Article.builder()
+                .user(userList.get(4))
+                .content("서울 강남구 5번 게시물")
+                .image("서울 강남구 5번 게시물 사진")
+                .si("서울시")
+                .gu("강남구")
+                .dong("역삼동")
+                .build());
+        articleList = articleRepository.saveAll(articleList);
     }
 
 
@@ -93,29 +255,29 @@ public class CommentServiceImplTest {
     void addLike(@Autowired CommentLikeRepository commentLikeRepository, @Autowired CommentRepository commentRepository) {
         List<CommentLike> commentLikeList = new ArrayList<>();
         //3번 댓글에 좋아요 5개
-        commentLikeList.add(new CommentLike(userList.get(0).getUserId(), commentList.get(2).getCommentId()));
-        commentLikeList.add(new CommentLike(userList.get(1).getUserId(), commentList.get(2).getCommentId()));
-        commentLikeList.add(new CommentLike(userList.get(2).getUserId(), commentList.get(2).getCommentId()));
-        commentLikeList.add(new CommentLike(userList.get(3).getUserId(), commentList.get(2).getCommentId()));
-        commentLikeList.add(new CommentLike(userList.get(4).getUserId(), commentList.get(2).getCommentId()));
+        commentLikeList.add(new CommentLike(userList.get(0), commentList.get(2)));
+        commentLikeList.add(new CommentLike(userList.get(1), commentList.get(2)));
+        commentLikeList.add(new CommentLike(userList.get(2), commentList.get(2)));
+        commentLikeList.add(new CommentLike(userList.get(3), commentList.get(2)));
+        commentLikeList.add(new CommentLike(userList.get(4), commentList.get(2)));
 
         //2번 댓글에 좋아요 3개 => 중복 체크
-        commentLikeList.add(new CommentLike(userList.get(1).getUserId(), commentList.get(1).getCommentId()));
-        commentLikeList.add(new CommentLike(userList.get(1).getUserId(), commentList.get(1).getCommentId()));
-        commentLikeList.add(new CommentLike(userList.get(3).getUserId(), commentList.get(1).getCommentId()));
-        commentLikeList.add(new CommentLike(userList.get(4).getUserId(), commentList.get(1).getCommentId()));
+        commentLikeList.add(new CommentLike(userList.get(1), commentList.get(1)));
+        commentLikeList.add(new CommentLike(userList.get(1), commentList.get(1)));
+        commentLikeList.add(new CommentLike(userList.get(3), commentList.get(1)));
+        commentLikeList.add(new CommentLike(userList.get(4), commentList.get(1)));
 
         //1번 댓글에 좋아요 3개
-        commentLikeList.add(new CommentLike(userList.get(1).getUserId(), commentList.get(0).getCommentId()));
-        commentLikeList.add(new CommentLike(userList.get(2).getUserId(), commentList.get(0).getCommentId()));
-        commentLikeList.add(new CommentLike(userList.get(3).getUserId(), commentList.get(0).getCommentId()));
+        commentLikeList.add(new CommentLike(userList.get(1), commentList.get(0)));
+        commentLikeList.add(new CommentLike(userList.get(2), commentList.get(0)));
+        commentLikeList.add(new CommentLike(userList.get(3), commentList.get(0)));
 
         //4번 댓글에 좋아요 2개
-        commentLikeList.add(new CommentLike(userList.get(2).getUserId(), commentList.get(3).getCommentId()));
-        commentLikeList.add(new CommentLike(userList.get(3).getUserId(), commentList.get(3).getCommentId()));
+        commentLikeList.add(new CommentLike(userList.get(2), commentList.get(3)));
+        commentLikeList.add(new CommentLike(userList.get(3), commentList.get(3)));
 
         for (CommentLike commentLike : commentLikeList) {
-            commentService.addCommentLike(commentLike.getUserId(), commentLike.getCommentId());
+            commentService.addCommentLike(commentLike.getUser().getUserId(), commentLike.getComment().getCommentId());
         }
 
         List<CommentLike> checkCommentLikes = commentLikeRepository.findAll();
@@ -173,16 +335,16 @@ public class CommentServiceImplTest {
         List<CommentLike> commentLikeDeletes = new ArrayList<>();
 
         //3번 유저가 단 댓글 좋아요 삭제 (5개 => 3개)
-        commentLikeDeletes.add(new CommentLike(userList.get(2).getUserId(), commentList.get(0).getCommentId()));
-        commentLikeDeletes.add(new CommentLike(userList.get(2).getUserId(), commentList.get(2).getCommentId()));
+        commentLikeDeletes.add(new CommentLike(userList.get(2), commentList.get(0)));
+        commentLikeDeletes.add(new CommentLike(userList.get(2), commentList.get(2)));
         //좋아요를 안누른 댓글 좋아요 취소해보기(1번 사람이 1번 댓글)
         assertFalse(commentService.deleteCommentLike(userList.get(0).getUserId(), commentList.get(0).getCommentId()));
         //1번 댓글 2번 연속 삭제 (똑같은 사람이 두번 눌렀을 때)
-        commentLikeDeletes.add(new CommentLike(userList.get(3).getUserId(), commentList.get(0).getCommentId()));
-        commentLikeDeletes.add(new CommentLike(userList.get(3).getUserId(), commentList.get(0).getCommentId()));
+        commentLikeDeletes.add(new CommentLike(userList.get(3), commentList.get(0)));
+        commentLikeDeletes.add(new CommentLike(userList.get(3), commentList.get(0)));
 
         for (CommentLike commentLikeDelete : commentLikeDeletes) {
-            commentService.deleteCommentLike(commentLikeDelete.getUserId(), commentLikeDelete.getCommentId());
+            commentService.deleteCommentLike(commentLikeDelete.getUser().getUserId(), commentLikeDelete.getComment().getCommentId());
         }
         List<CommentLike> checkCommentLike = commentLikeRepository.findAll();
         List<Comment> comments = commentRepository.findAll();
@@ -216,7 +378,8 @@ public class CommentServiceImplTest {
     @DisplayName("댓글 삭제 테스트")
     void deleteArticle(@Autowired CommentRepository commentRepository) {
         //1번이 자기가 쓴 commentId 1번 삭제
-        commentService.deleteComment(new CommentDeleteDto(userList.get(0).getUserId(), commentList.get(0).getCommentId(), articleList.get(0).getArticleId()));
+        CommentDeleteDto commentDeleteDto = new CommentDeleteDto(userList.get(0).getUserId(), commentList.get(0).getCommentId(), articleList.get(0).getArticleId());
+        commentService.deleteComment(commentDeleteDto);
         List<Comment> comments = commentRepository.findAll();
         assertEquals(7, comments.size());
 

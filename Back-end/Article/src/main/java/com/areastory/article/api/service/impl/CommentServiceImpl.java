@@ -1,10 +1,7 @@
 package com.areastory.article.api.service.impl;
 
 import com.areastory.article.api.service.CommentService;
-import com.areastory.article.db.entity.Article;
-import com.areastory.article.db.entity.Comment;
-import com.areastory.article.db.entity.CommentLike;
-import com.areastory.article.db.entity.CommentLikePK;
+import com.areastory.article.db.entity.*;
 import com.areastory.article.db.repository.ArticleRepository;
 import com.areastory.article.db.repository.CommentLikeRepository;
 import com.areastory.article.db.repository.CommentRepository;
@@ -15,6 +12,9 @@ import com.areastory.article.dto.common.CommentUpdateDto;
 import com.areastory.article.dto.request.CommentReq;
 import com.areastory.article.dto.request.CommentWriteReq;
 import com.areastory.article.dto.response.CommentResp;
+import com.areastory.article.kafka.ArticleProducer;
+import com.areastory.article.kafka.KafkaProperties;
+import com.areastory.article.kafka.NotificationProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +31,8 @@ public class CommentServiceImpl implements CommentService {
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final CommentLikeRepository commentLikeRepository;
+    private final NotificationProducer notificationProducer;
+    private final ArticleProducer articleProducer;
 
     @Override
     @Transactional
@@ -39,11 +41,13 @@ public class CommentServiceImpl implements CommentService {
         Article article = articleRepository.findById(commentWriteReq.getArticleId()).orElseThrow();
         article.addCommentCount();
         //comment 저장
-        commentRepository.save(Comment.builder()
+        Comment comment = commentRepository.save(Comment.builder()
                 .user(userRepository.findById(commentWriteReq.getUserId()).orElseThrow())
                 .content(commentWriteReq.getContent())
-                .articleId(commentWriteReq.getArticleId())
+                .article(article)
                 .build());
+        notificationProducer.send(comment);
+        articleProducer.send(article, KafkaProperties.UPDATE);
     }
 
     @Override
@@ -82,28 +86,34 @@ public class CommentServiceImpl implements CommentService {
         Article article = articleRepository.findById(commentDeleteDto.getArticleId()).orElseThrow();
         article.deleteCommentCount();
         //comment 삭제하기
-        commentRepository.delete(comment);
+        commentRepository.deleteById(comment.getCommentId());
+        articleProducer.send(article, KafkaProperties.UPDATE);
         return true;
     }
 
     @Override
     @Transactional
     public boolean addCommentLike(Long userId, Long commentId) {
-        if (commentLikeRepository.existsById(new CommentLikePK(userId, commentId)))
-            return false;
-        commentLikeRepository.save(new CommentLike(userId, commentId));
+        User user = userRepository.findById(userId).orElseThrow();
         Comment comment = commentRepository.findById(commentId).orElseThrow();
+        if (commentLikeRepository.existsById(new CommentLikePK(user.getUserId(), comment.getCommentId())))
+            return false;
+        CommentLike commentLike = new CommentLike(user, comment);
+        commentLike = commentLikeRepository.save(commentLike);
         comment.addLikeCount();
+        notificationProducer.send(commentLike);
         return true;
     }
 
     @Override
     @Transactional
     public boolean deleteCommentLike(Long userId, Long commentId) {
-        if (!commentLikeRepository.existsById(new CommentLikePK(userId, commentId)))
-            return false;
-        commentLikeRepository.delete(new CommentLike(userId, commentId));
+        User user = userRepository.findById(userId).orElseThrow();
         Comment comment = commentRepository.findById(commentId).orElseThrow();
+        if (!commentLikeRepository.existsById(new CommentLikePK(user.getUserId(), comment.getCommentId())))
+            return false;
+
+        commentLikeRepository.delete(new CommentLike(user, comment));
         comment.removeLikeCount();
         return true;
     }

@@ -13,6 +13,9 @@ import com.areastory.article.dto.request.ArticleReq;
 import com.areastory.article.dto.request.ArticleUpdateParam;
 import com.areastory.article.dto.request.ArticleWriteReq;
 import com.areastory.article.dto.response.ArticleResp;
+import com.areastory.article.kafka.ArticleProducer;
+import com.areastory.article.kafka.KafkaProperties;
+import com.areastory.article.kafka.NotificationProducer;
 import com.areastory.article.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +36,8 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleLikeRepository articleLikeRepository;
     private final UserRepository userRepository;
     private final FileUtil fileUtil;
+    private final NotificationProducer notificationProducer;
+    private final ArticleProducer articleProducer;
 
     @Transactional
     @Override
@@ -44,7 +49,7 @@ public class ArticleServiceImpl implements ArticleService {
             imageUrl = fileUtil.upload(picture, "picture");
         }
 
-        articleRepository.save(Article.builder()
+        Article article = articleRepository.save(Article.builder()
                 .user(user)
                 .content(articleWriteReq.getContent())
                 .image(imageUrl)
@@ -56,6 +61,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .eup(articleWriteReq.getEup())
                 .myeon(articleWriteReq.getMyeon())
                 .build());
+        articleProducer.send(article, KafkaProperties.INSERT);
     }
 
     @Override
@@ -77,7 +83,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Transactional
     @Override
-    public boolean updateArticle(ArticleUpdateParam param, MultipartFile picture) throws IOException {
+    public boolean updateArticle(ArticleUpdateParam param) {
         Article article = articleRepository.findById(param.getArticleId()).get();
 
         //게시글 수정 권한이 없을 때
@@ -88,12 +94,7 @@ public class ArticleServiceImpl implements ArticleService {
         if (StringUtils.hasText(param.getContent())) {
             article.updateContent(param.getContent());
         }
-
-        if (picture != null) {
-            fileUtil.deleteFile(article.getImage());
-            String url = fileUtil.upload(picture, "picture");
-            article.updateImage(url);
-        }
+        articleProducer.send(article, KafkaProperties.UPDATE);
         return true;
     }
 
@@ -105,28 +106,34 @@ public class ArticleServiceImpl implements ArticleService {
             return false;
         }
         articleRepository.delete(article);
+        articleProducer.send(article, KafkaProperties.DELETE);
         return true;
     }
 
     @Transactional
     @Override
     public boolean addArticleLike(Long userId, Long articleId) {
-        if (articleLikeRepository.existsById(new ArticleLikePK(userId, articleId)))
-            return false;
-        articleLikeRepository.save(new ArticleLike(userId, articleId));
         Article article = articleRepository.findById(articleId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
+        if (articleLikeRepository.existsById(new ArticleLikePK(user.getUserId(), article.getArticleId())))
+            return false;
+        ArticleLike articleLike = articleLikeRepository.save(new ArticleLike(user, article));
         article.addLikeCount();
+        notificationProducer.send(articleLike);
+        articleProducer.send(article, KafkaProperties.UPDATE);
         return true;
     }
 
     @Transactional
     @Override
     public boolean deleteArticleLike(Long userId, Long articleId) {
-        if (!articleLikeRepository.existsById(new ArticleLikePK(userId, articleId)))
-            return false;
-        articleLikeRepository.delete(new ArticleLike(userId, articleId));
         Article article = articleRepository.findById(articleId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
+        if (!articleLikeRepository.existsById(new ArticleLikePK(user.getUserId(), article.getArticleId())))
+            return false;
+        articleLikeRepository.delete(new ArticleLike(user, article));
         article.removeLikeCount();
+        articleProducer.send(article, KafkaProperties.UPDATE);
         return true;
     }
 }

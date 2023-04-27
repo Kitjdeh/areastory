@@ -51,13 +51,12 @@ public class ArticleController {
     /*
     게시물 수정
      */
-    @PutMapping("/articles/{articleId}")
+    @PatchMapping("/articles/{articleId}")
     public ResponseEntity<?> updateArticle(@PathVariable Long articleId,
-                                           @RequestPart(required = false) ArticleUpdateParam param,
-                                           @RequestPart(value = "picture", required = false) MultipartFile picture) throws IOException {
+                                           @RequestPart(required = false) ArticleUpdateParam param) {
 
         param.setArticleId(articleId);
-        boolean check = articleService.updateArticle(param, picture);
+        boolean check = articleService.updateArticle(param);
         if (!check) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

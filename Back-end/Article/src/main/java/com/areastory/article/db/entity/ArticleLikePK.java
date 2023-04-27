@@ -4,21 +4,18 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Id;
 import java.io.Serializable;
 
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode
 public class ArticleLikePK implements Serializable {
-    @Id
-    private Long userId;
-    @Id
-    private Long articleId;
+    private Long user;
+    private Long article;
 
-    public ArticleLikePK(Long userId, Long articleId) {
-        this.userId = userId;
-        this.articleId = articleId;
+    public ArticleLikePK(Long user, Long article) {
+        this.user = user;
+        this.article = article;
     }
 
 }

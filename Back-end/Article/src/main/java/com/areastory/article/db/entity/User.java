@@ -3,34 +3,27 @@ package com.areastory.article.db.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.Setter;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 @Getter
 @NoArgsConstructor
 public class User {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
-
+    @Setter
     private String nickname;
+    @Setter
     private String profile;
     private String provider;
-    private String providerId;
-
-    @ColumnDefault("0")
-    private Long followCount;
-    @ColumnDefault("0")
-    private Long followingCount;
+    private Long providerId;
 
     @Builder
-    public User(String nickname, String profile, String provider, String providerId) {
+    public User(Long userId, String nickname, String profile, String provider, Long providerId) {
+        this.userId = userId;
         this.nickname = nickname;
         this.profile = profile;
         this.provider = provider;

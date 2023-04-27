@@ -43,30 +43,35 @@ public class ArticleServiceImplTest {
         //user 정보 세팅
         userList = new ArrayList<>();
         userList.add(User.builder()
+                .userId(1L)
                 .nickname("원원")
                 .profile("사진1")
                 .provider("kakao")
                 .providerId("11111")
                 .build());
         userList.add(User.builder()
+                .userId(2L)
                 .nickname("투투")
                 .profile("사진2")
                 .provider("kakao")
                 .providerId("22222")
                 .build());
         userList.add(User.builder()
+                .userId(3L)
                 .nickname("쓰쓰")
                 .profile("사진3")
                 .provider("kakao")
                 .providerId("33333")
                 .build());
         userList.add(User.builder()
+                .userId(4L)
                 .nickname("포포")
                 .profile("사진14")
                 .provider("kakao")
                 .providerId("44444")
                 .build());
         userList.add(User.builder()
+                .userId(5L)
                 .nickname("파파")
                 .profile("사진5")
                 .provider("kakao")
@@ -128,17 +133,10 @@ public class ArticleServiceImplTest {
                 .gu("관악구")
                 .dong("신림동")
                 .build());
-
-        //이후 게시글 사진 수정 테스트를 해야하므로 여기 사진 집어넣기
-        String path = "사진 테스트.png";
-        String contentType = "image/png";
-        String dirName = "test";
-        MockMultipartFile file = new MockMultipartFile("test", path, contentType, "test".getBytes());
-        String urlPath = fileUtil.upload(file, dirName);
         articleList.add(Article.builder()
                 .user(userList.get(1))
                 .content("서울 관악구 2번 게시물")
-                .image(urlPath)
+                .image("게시글 사진")
                 .si("서울시")
                 .gu("관악구")
                 .dong("신림동")
@@ -208,7 +206,7 @@ public class ArticleServiceImplTest {
                 .gu("강남구")
                 .dong("역삼동")
                 .build());
-        articleList = articleRepository.saveAll(articleList);
+        articleRepository.saveAll(articleList);
     }
 
     /*
@@ -222,29 +220,29 @@ public class ArticleServiceImplTest {
     void addLike(@Autowired ArticleLikeRepository articleLikeRepository, @Autowired ArticleRepository articleRepository) {
         List<ArticleLike> articleLikes = new ArrayList<>();
         //3번 게시물에 좋아요 5개
-        articleLikes.add(new ArticleLike(userList.get(0).getUserId(), articleList.get(2).getArticleId()));
-        articleLikes.add(new ArticleLike(userList.get(1).getUserId(), articleList.get(2).getArticleId()));
-        articleLikes.add(new ArticleLike(userList.get(2).getUserId(), articleList.get(2).getArticleId()));
-        articleLikes.add(new ArticleLike(userList.get(3).getUserId(), articleList.get(2).getArticleId()));
-        articleLikes.add(new ArticleLike(userList.get(4).getUserId(), articleList.get(2).getArticleId()));
+        articleLikes.add(new ArticleLike(userList.get(0), articleList.get(2)));
+        articleLikes.add(new ArticleLike(userList.get(1), articleList.get(2)));
+        articleLikes.add(new ArticleLike(userList.get(2), articleList.get(2)));
+        articleLikes.add(new ArticleLike(userList.get(3), articleList.get(2)));
+        articleLikes.add(new ArticleLike(userList.get(4), articleList.get(2)));
 
         //2번 게시물에 좋아요 3개 => 중복 체크
-        articleLikes.add(new ArticleLike(userList.get(1).getUserId(), articleList.get(1).getArticleId()));
-        articleLikes.add(new ArticleLike(userList.get(1).getUserId(), articleList.get(1).getArticleId()));
-        articleLikes.add(new ArticleLike(userList.get(3).getUserId(), articleList.get(1).getArticleId()));
-        articleLikes.add(new ArticleLike(userList.get(4).getUserId(), articleList.get(1).getArticleId()));
+        articleLikes.add(new ArticleLike(userList.get(1), articleList.get(1)));
+        articleLikes.add(new ArticleLike(userList.get(1), articleList.get(1)));
+        articleLikes.add(new ArticleLike(userList.get(3), articleList.get(1)));
+        articleLikes.add(new ArticleLike(userList.get(4), articleList.get(1)));
 
         //1번게시물에 좋아요 3개
-        articleLikes.add(new ArticleLike(userList.get(1).getUserId(), articleList.get(0).getArticleId()));
-        articleLikes.add(new ArticleLike(userList.get(2).getUserId(), articleList.get(0).getArticleId()));
-        articleLikes.add(new ArticleLike(userList.get(3).getUserId(), articleList.get(0).getArticleId()));
+        articleLikes.add(new ArticleLike(userList.get(1), articleList.get(0)));
+        articleLikes.add(new ArticleLike(userList.get(2), articleList.get(0)));
+        articleLikes.add(new ArticleLike(userList.get(3), articleList.get(0)));
 
         //4번 게시물에 좋아요 2개
-        articleLikes.add(new ArticleLike(userList.get(2).getUserId(), articleList.get(3).getArticleId()));
-        articleLikes.add(new ArticleLike(userList.get(3).getUserId(), articleList.get(3).getArticleId()));
+        articleLikes.add(new ArticleLike(userList.get(2), articleList.get(3)));
+        articleLikes.add(new ArticleLike(userList.get(3), articleList.get(3)));
 
         for (ArticleLike articleLike : articleLikes) {
-            articleService.addArticleLike(articleLike.getUserId(), articleLike.getArticleId());
+            articleService.addArticleLike(articleLike.getUser().getUserId(), articleLike.getArticle().getArticleId());
         }
         List<ArticleLike> checkArticleLikes = articleLikeRepository.findAll();
         List<Article> articles = articleRepository.findAll();
@@ -266,16 +264,16 @@ public class ArticleServiceImplTest {
         List<ArticleLike> articleLikesDelete = new ArrayList<>();
 
         //3번 게시물 좋아요 삭제 (5개 => 3개)
-        articleLikesDelete.add(new ArticleLike(userList.get(0).getUserId(), articleList.get(2).getArticleId()));
-        articleLikesDelete.add(new ArticleLike(userList.get(1).getUserId(), articleList.get(2).getArticleId()));
+        articleLikesDelete.add(new ArticleLike(userList.get(0), articleList.get(2)));
+        articleLikesDelete.add(new ArticleLike(userList.get(1), articleList.get(2)));
         //좋아요를 안누른 게시물 좋아요 취소해보기(1번 사람이 2번 게시물)
-        articleLikesDelete.add(new ArticleLike(userList.get(0).getUserId(), articleList.get(1).getArticleId()));
+        articleLikesDelete.add(new ArticleLike(userList.get(0), articleList.get(1)));
         //4번 게시물 2번 연속 삭제 (똑같은 사람이 두번 눌렀을 때)
-        articleLikesDelete.add(new ArticleLike(userList.get(2).getUserId(), articleList.get(3).getArticleId()));
-        articleLikesDelete.add(new ArticleLike(userList.get(2).getUserId(), articleList.get(3).getArticleId()));
+        articleLikesDelete.add(new ArticleLike(userList.get(2), articleList.get(3)));
+        articleLikesDelete.add(new ArticleLike(userList.get(2), articleList.get(3)));
 
         for (ArticleLike articleLikeDelete : articleLikesDelete) {
-            articleService.deleteArticleLike(articleLikeDelete.getUserId(), articleLikeDelete.getArticleId());
+            articleService.deleteArticleLike(articleLikeDelete.getUser().getUserId(), articleLikeDelete.getArticle().getArticleId());
         }
         List<ArticleLike> checkArticleLikes = articleLikeRepository.findAll();
         List<Article> articles = articleRepository.findAll();
@@ -360,19 +358,12 @@ public class ArticleServiceImplTest {
 
         //6번 게시물 내용만 수정
         ArticleUpdateParam firstParam = new ArticleUpdateParam(userList.get(0).getUserId(), articleList.get(5).getArticleId(), "update test");
-        articleService.updateArticle(firstParam, null);
+        articleService.updateArticle(firstParam);
 
         Article article = articleRepository.findById(6L).get();
         assertEquals("update test", article.getContent());
         assertEquals("서울 관악구 1번 게시물 사진", article.getImage());
 
-        //7번 게시물 내용 + 사진 수정
-        ArticleUpdateParam secondParam = new ArticleUpdateParam(userList.get(1).getUserId(), articleList.get(6).getArticleId(), "content, picture update");
-        articleService.updateArticle(secondParam, file);
-
-        article = articleRepository.findById(7L).get();
-        assertEquals("content, picture update", article.getContent());
-        assertEquals(urlPath, article.getImage());
 
     }
 
@@ -392,8 +383,8 @@ public class ArticleServiceImplTest {
     @Order(6)
     @DisplayName("게시물 삭제 테스트")
     void deleteArticle(@Autowired ArticleRepository articleRepository) {
-        //1번이 쓴 11번 게시물 삭제
-        articleService.deleteArticle(userList.get(0).getUserId(), articleList.get(10).getArticleId());
+        //3번이 쓴 3번 게시물 삭제
+        articleService.deleteArticle(userList.get(2).getUserId(), articleList.get(2).getArticleId());
         List<Article> articles = articleRepository.findAll();
         assertEquals(14, articles.size());
 

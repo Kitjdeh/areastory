@@ -2,10 +2,10 @@ package com.areastory.article.db.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -13,13 +13,19 @@ import javax.persistence.IdClass;
 @IdClass(CommentLikePK.class)
 public class CommentLike {
     @Id
-    private Long userId;
+    @JoinColumn(name = "user_id")
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
 
     @Id
-    private Long commentId;
+    @JoinColumn(name = "comment_id")
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Comment comment;
 
-    public CommentLike(Long userId, Long commentId) {
-        this.userId = userId;
-        this.commentId = commentId;
+    public CommentLike(User user, Comment comment) {
+        this.user = user;
+        this.comment = comment;
     }
 }
