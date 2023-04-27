@@ -1,8 +1,6 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:front/component/mypage/follow/follow.dart';
 import 'package:front/component/mypage/mypage_tabbar.dart';
-import 'package:front/constant/mypage_tabs.dart';
-import 'package:front/screen/home_screen.dart';
 
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({Key? key}) : super(key: key);
@@ -13,18 +11,9 @@ class MyPageScreen extends StatefulWidget {
 
 class _MyPageScreenState extends State<MyPageScreen> {
 
-  bool showMyPageScreen = true;
-
   @override
   Widget build(BuildContext context) {
-    return showMyPageScreen ? _buildMyPageScreen() :
-    FollowScreen(
-      onShowMyPageScreenChanged: (val){
-        setState(() {
-          showMyPageScreen = val;
-        });
-      },
-    );
+    return _buildMyPageScreen();
   }
 
   Widget _buildMyPageScreen() {
@@ -155,14 +144,11 @@ class _MyPageScreenState extends State<MyPageScreen> {
                     style: ElevatedButton.styleFrom(
                     ),
                     onPressed: () {
-
                     },
                     child: Text("프로필 편집")),
                 ElevatedButton(
                     onPressed: () {
-                      setState(() {
-                        showMyPageScreen = false;
-                      });
+                      Beamer.of(context).beamToNamed('/mypage/follow');
                     },
                     child: Text("팔로워/팔로잉")),
               ],

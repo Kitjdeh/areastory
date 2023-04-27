@@ -36,6 +36,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   image_picker: ^0.8.7+4
+  beamer: ^1.5.3
+  # 비머 혹은 고라우터를 사용하겠다.
+
 
 dev_dependencies:
   flutter_test:

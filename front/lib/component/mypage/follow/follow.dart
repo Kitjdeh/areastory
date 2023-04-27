@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 
-class FollowScreen extends StatefulWidget {
-  final ValueChanged<bool> onShowMyPageScreenChanged;
+class MypageFollowScreen extends StatefulWidget {
 
-  const FollowScreen({required this.onShowMyPageScreenChanged ,Key? key}) : super(key: key);
+  const MypageFollowScreen({Key? key}) : super(key: key);
 
   @override
-  State<FollowScreen> createState() => _FollowScreenState();
+  State<MypageFollowScreen> createState() => _MypageFollowScreenState();
 }
 
-class _FollowScreenState extends State<FollowScreen> {
+class _MypageFollowScreenState extends State<MypageFollowScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            widget.onShowMyPageScreenChanged(true);
+            Navigator.of(context).pop();
           },
           child: Text('감자'),
         ),
