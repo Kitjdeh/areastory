@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
-@Commit
 @Transactional
 class FollowControllerTest {
 
