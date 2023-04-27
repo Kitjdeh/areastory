@@ -1,26 +1,3 @@
-#spring:
-#  profiles:
-#    active: test
-#  datasource:
-#    url: jdbc:h2:tcp://localhost/~/User
-#    username: sa
-#    password:
-#    driver-class-name: org.h2.Driver
-#  jpa:
-#    hibernate:
-#      ddl-auto: create
-#      naming:
-#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-#    properties:
-#      hibernate:
-#        # show_sql: true
-#        format_sql: true
-#        use_sql_comments: true
-#    database: h2
-#logging.level:
-#  org.hibernate.SQL: debug
-#  org.hibernate.type:
-
 spring:
   profiles:
     active: test
@@ -33,7 +10,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: areastory
     #    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/areastory
-    url: jdbc:mysql://3.39.250.180:3306/areastory
+    url: jdbc:mysql://3.39.250.180:3306/areastory_test
     password: 1234
   jpa:
     hibernate:
