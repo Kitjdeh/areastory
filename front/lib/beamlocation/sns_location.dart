@@ -7,7 +7,9 @@ import 'package:front/screen/sns.dart';
 class SnsLocation extends BeamLocation<BeamState> {
   SnsLocation(super.routeInformation);
   @override
-  List<String> get pathPatterns => ['/*'];
+  List<String> get pathPatterns => [''
+      '/*'
+  ];
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) => [
@@ -18,12 +20,14 @@ class SnsLocation extends BeamLocation<BeamState> {
           child: SnsScreen(),
           // child: MapScreen(label: 'A', detailsPath: '/a/details'),
         ),
-        if (state.uri.pathSegments.length == 2)
+        if (state.uri.pathSegments.length == 2 &&
+            state.uri.pathSegments[1] == 'comment')
           const BeamPage(
             key: ValueKey('sns/comment'),
             child: SnsCommentScreen(),
           ),
-        if (state.uri.pathSegments.length == 2)
+        if (state.uri.pathSegments.length == 2 &&
+            state.uri.pathSegments[1] == 'like')
           const BeamPage(
             key: ValueKey('sns/like'),
             child: SnsLikeScreen(),
