@@ -17,6 +17,7 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class ArticleController {
     private final ArticleService articleService;
 

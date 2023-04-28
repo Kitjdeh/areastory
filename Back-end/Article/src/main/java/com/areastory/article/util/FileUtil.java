@@ -25,7 +25,8 @@ public class FileUtil {
     private String bucket;
 
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
-
+        if (multipartFile == null || multipartFile.isEmpty())
+            return null;
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File로 전환이 실패했습니다."));
 
@@ -85,6 +86,7 @@ public class FileUtil {
     }
 
     private Optional<File> convert(MultipartFile file) throws IOException {
+
         File convertFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
         if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {

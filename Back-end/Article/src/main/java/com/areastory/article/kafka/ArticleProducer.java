@@ -22,6 +22,13 @@ public class ArticleProducer {
                 .likeCount(article.getLikeCount())
                 .commentCount(article.getCommentCount())
                 .createdAt(article.getCreatedAt())
+                .doName(article.getDoName())
+                .si(article.getSi())
+                .gun(article.getGun())
+                .gu(article.getGu())
+                .dong(article.getDong())
+                .eup(article.getEup())
+                .myeon(article.getMyeon())
                 .build();
         articleTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_ARTICLE, article.getUser().getUserId(), articleKafkaDto));
     }
