@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:front/component/mypage/follow/follow.dart';
 import 'package:front/constant/home_tabs.dart';
-import 'package:front/screen/camera_test.dart';
+import 'package:front/screen/camera.dart';
 import 'package:front/screen/mypage.dart';
 import 'package:front/screen/sns.dart';
 import 'package:image_picker/image_picker.dart';
@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         // 인덱스에 맞춰서 각 페이지를 넣어야 한다.
         Text('지도'),
         SnsScreen(),
-        CameraExample(),
+        CameraScreen(),
         Text("랜덤"),
         MyPageScreen()
       ]),

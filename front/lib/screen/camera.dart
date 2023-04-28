@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
-class CameraExample extends StatefulWidget {
-  const CameraExample({Key? key}) : super(key: key);
+class CameraScreen extends StatefulWidget {
+  const CameraScreen({Key? key}) : super(key: key);
 
   @override
-  _CameraExampleState createState() => _CameraExampleState();
+  _CameraScreenState createState() => _CameraScreenState();
 }
 
-class _CameraExampleState extends State<CameraExample> {
+class _CameraScreenState extends State<CameraScreen> {
   final FocusNode _focusNode1 = FocusNode();
   final FocusNode _focusNode2 = FocusNode();
   bool _isSwitched = false;
