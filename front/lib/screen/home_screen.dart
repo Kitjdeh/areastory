@@ -103,6 +103,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
       bottomNavigationBar: BottomNavigationBar(
+        /// selectedFontSize: 0, /// 왜인지 작동은 하지 않는다. 이건 폰트사이즈고
+        type: BottomNavigationBarType.fixed,  /// 이건 바텀내비게이션 탭 자체를 고정시키는것.
         currentIndex: _currentIndex,
         /// 선택 유무 Icon 색깔 선정
         selectedItemColor: Colors.black,

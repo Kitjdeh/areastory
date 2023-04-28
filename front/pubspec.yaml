@@ -37,6 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   image_picker: ^0.8.7+4
   beamer: ^1.5.3
+  flutter_native_splash: ^2.2.19
+  kakao_flutter_sdk_user: ^1.4.1 # 카카오 로그인
   # 비머 혹은 고라우터를 사용하겠다.
 
 

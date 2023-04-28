@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:front/screen/home_screen.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() {
   /// 이게 뭐지?
