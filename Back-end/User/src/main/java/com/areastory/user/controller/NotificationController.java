@@ -17,7 +17,7 @@ public class NotificationController {
 
     @GetMapping("/notifications")
     public ResponseEntity<NotificationResp> selectAllNotification(Long userId,
-                                                                  @PageableDefault(sort = {"likeCount"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable) {
+                                                                  @PageableDefault(sort = {"notificationId"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable) {
         NotificationResp notificationResp = notificationService.selectAllNotifications(userId, pageable);
         return ResponseEntity.ok(notificationResp);
     }
