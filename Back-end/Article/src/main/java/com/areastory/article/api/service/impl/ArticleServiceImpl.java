@@ -9,6 +9,7 @@ import com.areastory.article.db.repository.ArticleLikeRepository;
 import com.areastory.article.db.repository.ArticleRepository;
 import com.areastory.article.db.repository.UserRepository;
 import com.areastory.article.dto.common.ArticleDto;
+import com.areastory.article.dto.common.ArticleRespDto;
 import com.areastory.article.dto.request.ArticleReq;
 import com.areastory.article.dto.request.ArticleUpdateParam;
 import com.areastory.article.dto.request.ArticleWriteReq;
@@ -66,13 +67,15 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleResp selectAllArticle(ArticleReq articleReq, Pageable pageable) {
-        Page<ArticleDto> articles = articleRepository.findAll(articleReq, pageable);
-
+        Page<ArticleRespDto> articles = articleRepository.findAll(articleReq, pageable);
         return ArticleResp.builder()
                 .articles(articles.getContent())
                 .pageSize(articles.getPageable().getPageSize())
                 .totalPageNumber(articles.getTotalPages())
                 .totalCount(articles.getTotalElements())
+                .pageNumber(articles.getPageable().getPageNumber())
+                .nextPage(articles.hasNext())
+                .previousPage(articles.hasPrevious())
                 .build();
     }
 

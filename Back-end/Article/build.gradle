@@ -57,10 +57,10 @@ dependencies {
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 
 }
-
-test {
-    useJUnitPlatform()
-}
+//
+//test {
+//    useJUnitPlatform()
+//}
 
 def querydslDir = "$buildDir/generated/querydsl"
 

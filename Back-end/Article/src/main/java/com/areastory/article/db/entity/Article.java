@@ -42,6 +42,8 @@ public class Article extends BaseTime {
     private String eup;
     private String myeon;
 
+    private String location;
+
 
     @Builder
     public Article(User user, String content, String image, String doName, String si, String gun, String gu, String dong, String eup, String myeon) {

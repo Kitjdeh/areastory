@@ -1,6 +1,7 @@
 package com.areastory.article.db.repository.surpport;
 
 import com.areastory.article.dto.common.ArticleDto;
+import com.areastory.article.dto.common.ArticleRespDto;
 import com.areastory.article.dto.request.ArticleReq;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.areastory.article.db.entity.QArticle.article;
 import static com.areastory.article.db.entity.QArticleLike.articleLike;
@@ -29,22 +31,21 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
     private final JPAQueryFactory query;
 
     @Override
-    public Page<ArticleDto> findAll(ArticleReq articleReq, Pageable pageable) {
-        List<ArticleDto> articleList = getArticlesQuery(articleReq.getUserId())
+    public Page<ArticleRespDto> findAll(ArticleReq articleReq, Pageable pageable) {
+        List<ArticleRespDto> articleList = getArticlesQuery(articleReq.getUserId())
                 .where(eqDo(articleReq.getDoName()), eqSi(articleReq.getSi()), eqGun(articleReq.getGun()), eqGu(articleReq.getGu()),
                         eqDong(articleReq.getDong()), eqEup(articleReq.getEup()), eqMyeon(articleReq.getMyeon()))
                 .orderBy(getOrderSpecifier(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch();
-
+                .fetch().stream().map(this::toArticleRespDto).collect(Collectors.toList());
+//        articleList.stream().map(this::toArticleRespDto).collect(Collectors.toList());
         JPAQuery<Long> articleSize = query
                 .select(article.count())
                 .from(article);
 
         return PageableExecutionUtils.getPage(articleList, pageable, articleSize::fetchOne);
     }
-
 
     @Override
     public ArticleDto findById(Long userId, Long articleId) {
@@ -54,14 +55,23 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
     }
 
     private JPAQuery<ArticleDto> getArticlesQuery(Long userId) {
+        //위치 정보 불러오기
         return query.select(Projections.constructor(ArticleDto.class,
                         article.articleId,
+                        article.user.userId,
                         article.user.nickname,
                         article.user.profile,
                         article.content,
                         article.image,
                         article.likeCount,
                         article.commentCount,
+                        article.doName,
+                        article.si,
+                        article.gun,
+                        article.gu,
+                        article.dong,
+                        article.eup,
+                        article.myeon,
                         new CaseBuilder()
                                 .when(articleLike.user.userId.eq(userId))
                                 .then(true)
@@ -73,6 +83,7 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
                 .on(articleLike.user.userId.eq(userId), articleLike.article.articleId.eq(article.articleId));
     }
 
+
     private OrderSpecifier<?> getOrderSpecifier(Pageable pageable) {
         if (!pageable.getSort().isEmpty()) {
             for (Sort.Order order : pageable.getSort()) {
@@ -80,8 +91,8 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
                 switch (order.getProperty()) {
                     case "likeCount":
                         return new OrderSpecifier<>(direction, article.likeCount);
-                    case "createdAt":
-                        return new OrderSpecifier<>(direction, article.createdAt);
+                    case "articleId":
+                        return new OrderSpecifier<>(direction, article.articleId);
                 }
             }
         }

@@ -1,6 +1,6 @@
 package com.areastory.article.dto.response;
 
-import com.areastory.article.dto.common.ArticleDto;
+import com.areastory.article.dto.common.ArticleRespDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,6 +13,9 @@ public class ArticleResp {
     private Integer pageSize;
     private Integer totalPageNumber;
     private Long totalCount;
+    private Integer pageNumber;
+    private boolean nextPage;
+    private boolean previousPage;
 
-    private List<ArticleDto> articles;
+    private List<ArticleRespDto> articles;
 }
