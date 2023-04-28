@@ -15,7 +15,7 @@ public class NotificationKafkaDto implements Serializable {
     private String type;
     private Long articleId;
     private Long commentId;
-    private String nickname;
-    private String profile;
+    private Long userId;
+    private Long otherUserId;
     private String image;
 }

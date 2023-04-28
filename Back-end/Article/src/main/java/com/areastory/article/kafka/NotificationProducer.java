@@ -13,36 +13,39 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class NotificationProducer {
     private final KafkaTemplate<Long, NotificationKafkaDto> kafkaTemplate;
+
     public void send(ArticleLike articleLike) {
         NotificationKafkaDto articleLikeNotificationKafkaDto = NotificationKafkaDto.builder()
                 .type(KafkaProperties.ARTICLE_LIKE)
-                .nickname(articleLike.getUser().getNickname())
-                .profile(articleLike.getUser().getProfile())
+                .userId(articleLike.getArticle().getUser().getUserId())
+                .otherUserId(articleLike.getUser().getUserId())
                 .articleId(articleLike.getArticle().getArticleId())
                 .image(articleLike.getArticle().getImage())
                 .build();
-        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, articleLike.getArticle().getUser().getUserId(), articleLikeNotificationKafkaDto));
+        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, articleLikeNotificationKafkaDto.getUserId(), articleLikeNotificationKafkaDto));
     }
+
     public void send(Comment comment) {
         NotificationKafkaDto commentNotificationKafkaDto = NotificationKafkaDto.builder()
                 .type(KafkaProperties.COMMENT)
-                .nickname(comment.getUser().getNickname())
-                .profile(comment.getUser().getProfile())
+                .userId(comment.getArticle().getUser().getUserId())
+                .otherUserId(comment.getUser().getUserId())
                 .articleId(comment.getArticle().getArticleId())
                 .commentId(comment.getCommentId())
                 .image(comment.getArticle().getImage())
                 .build();
-        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, comment.getArticle().getUser().getUserId(), commentNotificationKafkaDto));
+        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, commentNotificationKafkaDto.getUserId(), commentNotificationKafkaDto));
     }
+
     public void send(CommentLike commentLike) {
         NotificationKafkaDto commentLikeNotificationKafkaDto = NotificationKafkaDto.builder()
                 .type(KafkaProperties.COMMENT_LIKE)
-                .nickname(commentLike.getComment().getUser().getNickname())
-                .profile(commentLike.getComment().getUser().getProfile())
+                .otherUserId(commentLike.getUser().getUserId())
+                .userId(commentLike.getComment().getUser().getUserId())
                 .articleId(commentLike.getComment().getArticle().getArticleId())
                 .commentId(commentLike.getComment().getCommentId())
                 .image(commentLike.getComment().getArticle().getImage())
                 .build();
-        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, commentLike.getComment().getArticle().getUser().getUserId(), commentLikeNotificationKafkaDto));
+        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, commentLikeNotificationKafkaDto.getUserId(), commentLikeNotificationKafkaDto));
     }
 }
