@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ArticleWriteReq {
     private Long userId;
+    private Boolean publicYn;
     private String content;
     private String doName;
     private String si;

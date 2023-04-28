@@ -3,7 +3,6 @@ package com.areastory.article.kafka;
 import com.areastory.article.db.entity.Article;
 import com.areastory.article.dto.common.ArticleKafkaDto;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +29,6 @@ public class ArticleProducer {
                 .eup(article.getEup())
                 .myeon(article.getMyeon())
                 .build();
-        articleTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_ARTICLE, article.getUser().getUserId(), articleKafkaDto));
+//        articleTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_ARTICLE, article.getUser().getUserId(), articleKafkaDto));
     }
 }

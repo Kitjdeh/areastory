@@ -42,11 +42,11 @@ public class Article extends BaseTime {
     private String eup;
     private String myeon;
 
-    private String location;
+    private Boolean publicYn;
 
 
     @Builder
-    public Article(User user, String content, String image, String doName, String si, String gun, String gu, String dong, String eup, String myeon) {
+    public Article(User user, String content, String image, String doName, String si, String gun, String gu, String dong, String eup, String myeon, Boolean publicYn) {
         this.user = user;
         this.content = content;
         this.image = image;
@@ -57,7 +57,9 @@ public class Article extends BaseTime {
         this.dong = dong;
         this.eup = eup;
         this.myeon = myeon;
+        this.publicYn = publicYn;
     }
+
 
     public void updateContent(String content) {
         this.content = content;

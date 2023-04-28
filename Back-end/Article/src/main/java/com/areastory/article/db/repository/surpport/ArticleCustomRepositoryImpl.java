@@ -33,13 +33,13 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
     @Override
     public Page<ArticleRespDto> findAll(ArticleReq articleReq, Pageable pageable) {
         List<ArticleRespDto> articleList = getArticlesQuery(articleReq.getUserId())
-                .where(eqDo(articleReq.getDoName()), eqSi(articleReq.getSi()), eqGun(articleReq.getGun()), eqGu(articleReq.getGu()),
-                        eqDong(articleReq.getDong()), eqEup(articleReq.getEup()), eqMyeon(articleReq.getMyeon()))
+                .where(article.publicYn.eq(true), eqDo(articleReq.getDoName()), eqSi(articleReq.getSi()), eqGun(articleReq.getGun()),
+                        eqGu(articleReq.getGu()), eqEup(articleReq.getEup()), eqMyeon(articleReq.getMyeon()), eqDong(articleReq.getDong()))
                 .orderBy(getOrderSpecifier(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch().stream().map(this::toArticleRespDto).collect(Collectors.toList());
-//        articleList.stream().map(this::toArticleRespDto).collect(Collectors.toList());
+
         JPAQuery<Long> articleSize = query
                 .select(article.count())
                 .from(article);
@@ -65,18 +65,18 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
                         article.image,
                         article.likeCount,
                         article.commentCount,
+                        new CaseBuilder()
+                                .when(articleLike.user.userId.eq(userId))
+                                .then(true)
+                                .otherwise(false),
+                        article.createdAt,
                         article.doName,
                         article.si,
                         article.gun,
                         article.gu,
                         article.dong,
                         article.eup,
-                        article.myeon,
-                        new CaseBuilder()
-                                .when(articleLike.user.userId.eq(userId))
-                                .then(true)
-                                .otherwise(false),
-                        article.createdAt
+                        article.myeon
                 ))
                 .from(article)
                 .leftJoin(articleLike)

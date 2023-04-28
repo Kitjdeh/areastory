@@ -54,6 +54,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .user(user)
                 .content(articleWriteReq.getContent())
                 .image(imageUrl)
+                .publicYn(articleWriteReq.getPublicYn())
                 .doName(articleWriteReq.getDoName())
                 .si(articleWriteReq.getSi())
                 .gun(articleWriteReq.getGun())
