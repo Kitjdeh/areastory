@@ -66,12 +66,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void signUp(UserReq userReq, MultipartFile profile) throws IOException {
-        User user;
-        if (profile == null || profile.isEmpty()) {
-            user = userRepository.save(UserReq.toEntity(userReq, null));
-        } else {
-            user = userRepository.save(UserReq.toEntity(userReq, s3Util.saveUploadFile(profile)));
-        }
+        User user = userRepository.save(UserReq.toEntity(userReq, s3Util.saveUploadFile(profile)));
         userProducer.send(user, KafkaProperties.INSERT);
         emitters.addWaiting(user.getUserId());
     }
