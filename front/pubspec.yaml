@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   image_picker: ^0.8.7+4
   beamer: ^1.5.3
+  flutter_native_splash: ^2.2.19
   # 비머 혹은 고라우터를 사용하겠다.
 
 
