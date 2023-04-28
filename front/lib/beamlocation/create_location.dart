@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
-import 'package:front/screen/camera.dart';
+import 'package:front/screen/camera_screen.dart';
 
 class CreateLocation extends BeamLocation<BeamState> {
   CreateLocation(super.routeInformation);

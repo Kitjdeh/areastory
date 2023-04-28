@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:front/component/sns/article.dart';
+import 'package:front/component/sns/article/article.dart';
 import 'package:front/const/article_test.dart';
 
 class SnsScreen extends StatefulWidget {
@@ -46,50 +46,36 @@ class _SnsScreenState extends State<SnsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(40),
-        child: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkResponse(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: Image.asset(
-                  'asset/img/logo.png',
-                  height: 25,
-                ),
-              ),
-              Row(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.search,
-                      color: Colors.black,
-                      size: 25,
-                    ),
-                    onPressed: () {
-                      // Perform search action
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.more_vert,
-                      color: Colors.black,
-                      size: 25,
-                    ),
-                    onPressed: () {
-                      // Show more options
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Image.asset(
+          'asset/img/logo.png',
+          height: 120,
+          width: 120,
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Colors.black,
+              size: 25,
+            ),
+            onPressed: () {
+              // Perform search action
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.more_vert,
+              color: Colors.black,
+              size: 25,
+            ),
+            onPressed: () {
+              // Show more options
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(
