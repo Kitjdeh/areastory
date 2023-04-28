@@ -1,3 +1,4 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 class ArticleComponent extends StatefulWidget {
@@ -41,6 +42,71 @@ class _ArticleComponentState extends State<ArticleComponent> {
 
     return Column(
       children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 10,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      ClipOval(
+                        child: Image.network(
+                          widget.profile,
+                          width: 35,
+                          height: 35,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.nickname,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Text(
+                            '서울특별시 강남구 언주로',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.transparent, // 버튼의 배경색을 투명색으로 설정
+                      onSurface: Colors.transparent, // 눌렸을 때 버튼의 표면색을 투명색으로 설정
+                      side: BorderSide(color: Colors.white), // 보더 색상을 하얀색으로 설정
+                    ),
+                    child: Text(
+                      '팔로우',
+                      style: TextStyle(
+                        color: Colors.white, // 텍스트 색상을 하얀색으로 설정
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
         Container(
           height: widget.height,
           decoration: BoxDecoration(
@@ -48,76 +114,6 @@ class _ArticleComponentState extends State<ArticleComponent> {
               fit: BoxFit.cover,
               image: NetworkImage(widget.image),
             ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                height: 5,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        ClipOval(
-                          child: Image.network(
-                            widget.profile,
-                            width: 35,
-                            height: 35,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.nickname,
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Text(
-                              '서울특별시 강남구 언주로',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.transparent, // 버튼의 배경색을 투명색으로 설정
-                        onSurface:
-                            Colors.transparent, // 눌렸을 때 버튼의 표면색을 투명색으로 설정
-                        side:
-                            BorderSide(color: Colors.white), // 보더 색상을 하얀색으로 설정
-                      ),
-                      child: Text(
-                        '팔로우',
-                        style: TextStyle(
-                          color: Colors.white, // 텍스트 색상을 하얀색으로 설정
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
         ),
         Container(
@@ -142,9 +138,14 @@ class _ArticleComponentState extends State<ArticleComponent> {
                           height: 30,
                         ),
                       ),
-                      Image.asset(
-                        'asset/img/comment.png',
-                        height: 30,
+                      GestureDetector(
+                        onTap: () {
+                          Beamer.of(context).beamToNamed('/sns/comment');
+                        },
+                        child: Image.asset(
+                          'asset/img/comment.png',
+                          height: 30,
+                        ),
                       ),
                     ],
                   ),
@@ -152,12 +153,17 @@ class _ArticleComponentState extends State<ArticleComponent> {
                     padding: EdgeInsets.symmetric(
                       horizontal: 6,
                     ),
-                    child: Text(
-                      '좋아요 ' + widget.likeCount.toString() + '개',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    child: GestureDetector(
+                      onTap: () {
+                        Beamer.of(context).beamToNamed('/sns/like');
+                      },
+                      child: Text(
+                        '좋아요 ' + widget.likeCount.toString() + '개',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -239,12 +245,17 @@ class _ArticleComponentState extends State<ArticleComponent> {
                     SizedBox(
                       height: 5,
                     ),
-                    Text(
-                      '댓글 ${widget.commentCount}개 모두 보기',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                    GestureDetector(
+                      onTap: () {
+                        Beamer.of(context).beamToNamed('/sns/comment');
+                      },
+                      child: Text(
+                        '댓글 ${widget.commentCount}개 모두 보기',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black38,
+                        ),
                       ),
                     ),
                   ],
