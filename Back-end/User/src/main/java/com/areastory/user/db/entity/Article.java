@@ -3,13 +3,14 @@ package com.areastory.user.db.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Article extends ArticleBaseTime {
+public class Article {
 
     @Id
     private Long articleId;
@@ -23,6 +24,7 @@ public class Article extends ArticleBaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+    private LocalDateTime createdAt;
 
     public Article(String content, String image, User user) {
         this.content = content;
