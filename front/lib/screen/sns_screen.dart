@@ -46,36 +46,39 @@ class _SnsScreenState extends State<SnsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Image.asset(
-          'asset/img/logo.png',
-          height: 120,
-          width: 120,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(30.0),
+        child: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: Image.asset(
+            'asset/img/logo.png',
+            height: 120,
+            width: 120,
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(
+                Icons.search,
+                color: Colors.black,
+                size: 25,
+              ),
+              onPressed: () {
+                // Perform search action
+              },
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.more_vert,
+                color: Colors.black,
+                size: 25,
+              ),
+              onPressed: () {
+                // Show more options
+              },
+            ),
+          ],
         ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.search,
-              color: Colors.black,
-              size: 25,
-            ),
-            onPressed: () {
-              // Perform search action
-            },
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.more_vert,
-              color: Colors.black,
-              size: 25,
-            ),
-            onPressed: () {
-              // Show more options
-            },
-          ),
-        ],
       ),
       body: SafeArea(
         child: Column(
