@@ -19,9 +19,7 @@ spring:
   jpa:
     database: mysql
     hibernate:
-      ddl-auto: update
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: create
     show-sql: true
     generate-ddl: true
   servlet:
