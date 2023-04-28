@@ -8,6 +8,7 @@ import 'package:front/beamlocation/sns_location.dart';
 import 'package:front/constant/home_tabs.dart';
 
 
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -99,6 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+
 
       bottomNavigationBar: BottomNavigationBar(
         /// selectedFontSize: 0, /// 왜인지 작동은 하지 않는다. 이건 폰트사이즈고

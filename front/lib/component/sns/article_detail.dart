@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ArticleComponent extends StatelessWidget {
+class ArticleDetailComponent extends StatelessWidget {
   final String nickname;
   final String image;
   final String profile;
@@ -11,17 +11,17 @@ class ArticleComponent extends StatelessWidget {
   final Function(bool) onUpdateIsChildActive;
   double? height;
 
-  ArticleComponent(
+  ArticleDetailComponent(
       {required this.nickname,
-      this.height,
-      required this.image,
-      required this.profile,
-      required this.content,
-      required this.likeCount,
-      required this.commentCount,
-      required this.isLike,
-      required this.onUpdateIsChildActive,
-      Key? key})
+        this.height,
+        required this.image,
+        required this.profile,
+        required this.content,
+        required this.likeCount,
+        required this.commentCount,
+        required this.isLike,
+        required this.onUpdateIsChildActive,
+        Key? key})
       : super(key: key);
 
   @override

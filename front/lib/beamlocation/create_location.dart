@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
-import 'package:front/screen/camera_test.dart';
+import 'package:front/screen/camera.dart';
 
 class CreateLocation extends BeamLocation<BeamState> {
   CreateLocation(super.routeInformation);
@@ -13,7 +13,7 @@ class CreateLocation extends BeamLocation<BeamState> {
       key: ValueKey('create'),
       // title: 'Tab A',
       type: BeamPageType.noTransition,
-      child: CameraExample(),
+      child: CameraScreen(),
       // child: MapScreen(label: 'A', detailsPath: '/a/details'),
     ),
     // if (state.uri.pathSegments.length == 2)

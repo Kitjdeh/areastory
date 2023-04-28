@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:front/component/article.dart';
+import 'package:front/component/sns/article.dart';
 import 'package:front/const/article_test.dart';
-import 'package:front/const/colors.dart';
 
 class SnsScreen extends StatefulWidget {
   const SnsScreen({Key? key}) : super(key: key);
@@ -13,6 +12,7 @@ class SnsScreen extends StatefulWidget {
 class _SnsScreenState extends State<SnsScreen> {
   int _currentPage = 1;
   List _articles = [];
+  final ScrollController _scrollController = ScrollController();
 
   // void _loadMoreData() async {
   void _loadMoreData() async {
@@ -20,11 +20,19 @@ class _SnsScreenState extends State<SnsScreen> {
     // _articles.addAll(newArticles["articles"]);
     if (_currentPage == 1) {
       _articles.addAll(articleTest["articles"]);
-    } else {
+    } else if (_currentPage == 2) {
       _articles.addAll(articleTest2["articles"]);
+    } else if (_currentPage == 3) {
+      _articles.addAll(articleTest3["articles"]);
     }
     await _currentPage++;
-    setState(() {});
+    setState(() {
+      // scrollToIndex(5);
+    });
+  }
+
+  void scrollToIndex(int index) {
+    _scrollController.jumpTo(index * 520); // jumpTo 메서드를 사용하여 스크롤합니다.
   }
 
   void _updateIsChildActive(bool isChildActive) {
@@ -37,43 +45,55 @@ class _SnsScreenState extends State<SnsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFECF9FF),
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(40),
+        child: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              InkResponse(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Image.asset(
+                  'asset/img/logo.png',
+                  height: 25,
+                ),
+              ),
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.search,
+                      color: Colors.black,
+                      size: 25,
+                    ),
+                    onPressed: () {
+                      // Perform search action
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.more_vert,
+                      color: Colors.black,
+                      size: 25,
+                    ),
+                    onPressed: () {
+                      // Show more options
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Image.asset(
-                  'asset/img/logo.png',
-                  height: 50,
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: PopupMenuButton(
-                    itemBuilder: (BuildContext context) {
-                      return [
-                        PopupMenuItem(
-                          child: Text('Option 1'),
-                          value: 1,
-                        ),
-                        PopupMenuItem(
-                          child: Text('Option 2'),
-                          value: 2,
-                        ),
-                        PopupMenuItem(
-                          child: Text('Option 3'),
-                          value: 3,
-                        ),
-                      ];
-                    },
-                    onSelected: (value) {
-                      // Do something when an option is selected
-                    },
-                  ),
-                ),
-              ],
-            ),
             SizedBox(
               height: 10,
             ),
@@ -81,10 +101,10 @@ class _SnsScreenState extends State<SnsScreen> {
               child: Container(
                 child: RefreshIndicator(
                   onRefresh: () async {
-                    // 서버 요청
                     await Future.delayed(Duration(seconds: 3));
                   },
                   child: ListView.separated(
+                    controller: _scrollController,
                     itemCount: _articles.length + 1,
                     itemBuilder: (BuildContext context, int index) {
                       if (index < _articles.length) {
