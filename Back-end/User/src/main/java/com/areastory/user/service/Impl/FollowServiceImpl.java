@@ -8,6 +8,7 @@ import com.areastory.user.db.repository.UserRepository;
 import com.areastory.user.dto.response.FollowerResp;
 import com.areastory.user.dto.response.FollowingResp;
 import com.areastory.user.kafka.KafkaProperties;
+import com.areastory.user.kafka.NotificationProducer;
 import com.areastory.user.kafka.UserProducer;
 import com.areastory.user.service.FollowService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class FollowServiceImpl implements FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
     private final UserProducer userProducer;
+    private final NotificationProducer notificationProducer;
 
     public String searchCondition(String search) {
         if (search == null || search.isEmpty()) {
@@ -72,11 +74,12 @@ public class FollowServiceImpl implements FollowService {
         User user = userRepository.findById(userId).orElseThrow();
         User followingUser = userRepository.findById(followingId).orElseThrow();
 
-        followRepository.save(Follow.follow(user, followingUser));
+        Follow follow = followRepository.save(Follow.follow(user, followingUser));
 
         user.addFollowing();
         followingUser.addFollow();
 
+        notificationProducer.send(follow);
         userProducer.send(user, KafkaProperties.UPDATE);
         userProducer.send(followingUser, KafkaProperties.UPDATE);
         return true;

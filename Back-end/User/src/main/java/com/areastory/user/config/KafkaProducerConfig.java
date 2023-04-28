@@ -1,5 +1,6 @@
 package com.areastory.user.config;
 
+import com.areastory.user.dto.common.NotificationKafkaDto;
 import com.areastory.user.dto.common.UserKafkaDto;
 import com.areastory.user.kafka.KafkaProperties;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -19,6 +20,16 @@ public class KafkaProducerConfig {
     @Bean
     public ProducerFactory<Long, UserKafkaDto> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
+
+    @Bean
+    public ProducerFactory<Long, NotificationKafkaDto> notificationProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
+
+    @Bean
+    public KafkaTemplate<Long, NotificationKafkaDto> notificationTemplate() {
+        return new KafkaTemplate<>(notificationProducerFactory());
     }
 
     @Bean

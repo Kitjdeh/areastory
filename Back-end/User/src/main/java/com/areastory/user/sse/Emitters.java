@@ -1,6 +1,6 @@
 package com.areastory.user.sse;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.areastory.user.dto.common.NotificationDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
@@ -29,6 +29,11 @@ public class Emitters {
             this.emitterMap.remove(userId);    // 만료되면 리스트에서 삭제
         });
         emitter.onTimeout(emitter::complete);
+        try {
+            emitter.send(SseEmitter.event().name("SSE CONNECTED").data("SSE CONNECTED"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return emitter;
     }
 
@@ -58,19 +63,15 @@ public class Emitters {
         emitterMap.remove(userId);
     }
 
-    private void send(Long userId, String name, SseResponse sseResponse) {
-        String message;
-        try {
-            message = om.writeValueAsString(sseResponse);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    public void send(Long userId, NotificationDto notificationDto) {
         try {
             emitterMap.get(userId).send(SseEmitter.event()
-                    .name(name)
-                    .data(message));
+                    .name(notificationDto.getType())
+                    .data(om.writeValueAsString(notificationDto)));
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (NullPointerException e) {
+            System.out.println("사용자를 찾을 수 없음");
         }
     }
 }
