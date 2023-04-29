@@ -65,6 +65,10 @@ public class Article extends BaseTime {
         this.content = content;
     }
 
+    public void updatePublicYn(Boolean publicYn) {
+        this.publicYn = publicYn;
+    }
+
     public void addCommentCount() {
         this.commentCount++;
     }

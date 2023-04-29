@@ -8,12 +8,13 @@ import com.areastory.article.db.entity.User;
 import com.areastory.article.db.repository.ArticleLikeRepository;
 import com.areastory.article.db.repository.ArticleRepository;
 import com.areastory.article.db.repository.UserRepository;
-import com.areastory.article.dto.common.ArticleDto;
 import com.areastory.article.dto.common.ArticleRespDto;
+import com.areastory.article.dto.common.UserDto;
 import com.areastory.article.dto.request.ArticleReq;
 import com.areastory.article.dto.request.ArticleUpdateParam;
 import com.areastory.article.dto.request.ArticleWriteReq;
 import com.areastory.article.dto.response.ArticleResp;
+import com.areastory.article.dto.response.LikeResp;
 import com.areastory.article.kafka.ArticleProducer;
 import com.areastory.article.kafka.KafkaProperties;
 import com.areastory.article.kafka.NotificationProducer;
@@ -74,14 +75,14 @@ public class ArticleServiceImpl implements ArticleService {
                 .pageSize(articles.getPageable().getPageSize())
                 .totalPageNumber(articles.getTotalPages())
                 .totalCount(articles.getTotalElements())
-                .pageNumber(articles.getPageable().getPageNumber())
+                .pageNumber(articles.getPageable().getPageNumber() + 1)
                 .nextPage(articles.hasNext())
                 .previousPage(articles.hasPrevious())
                 .build();
     }
 
     @Override
-    public ArticleDto selectArticle(Long userId, Long articleId) {
+    public ArticleRespDto selectArticle(Long userId, Long articleId) {
         return articleRepository.findById(userId, articleId);
     }
 
@@ -98,6 +99,12 @@ public class ArticleServiceImpl implements ArticleService {
         if (StringUtils.hasText(param.getContent())) {
             article.updateContent(param.getContent());
         }
+
+        //현재 article의 상태와 update될 공개여부의 상태가 다르면 변경
+        if (article.getPublicYn() != param.getPublicYn()) {
+            article.updatePublicYn(param.getPublicYn());
+        }
+
         articleProducer.send(article, KafkaProperties.UPDATE);
         return true;
     }
@@ -139,5 +146,19 @@ public class ArticleServiceImpl implements ArticleService {
         article.removeLikeCount();
         articleProducer.send(article, KafkaProperties.UPDATE);
         return true;
+    }
+
+    @Override
+    public LikeResp selectAllLikeList(Long userId, Long articleId, Pageable pageable) {
+        Page<UserDto> likes = articleRepository.findAllLike(userId, articleId, pageable);
+        return LikeResp.builder()
+                .users(likes.getContent())
+                .pageSize(likes.getPageable().getPageSize())
+                .totalPageNumber(likes.getTotalPages())
+                .totalCount(likes.getTotalElements())
+                .pageNumber(likes.getPageable().getPageNumber() + 1)
+                .nextPage(likes.hasNext())
+                .previousPage(likes.hasPrevious())
+                .build();
     }
 }

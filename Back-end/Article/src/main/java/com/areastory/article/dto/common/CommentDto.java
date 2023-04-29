@@ -16,10 +16,10 @@ public class CommentDto {
     private String content;
     private Long likeCount;
     private LocalDateTime createdAt;
-    private Boolean isLike;
+    private Boolean likeYn;
 
     @QueryProjection
-    public CommentDto(Long commentId, Long articleId, String nickname, String profile, String content, Long likeCount, LocalDateTime createdAt, Boolean isLike) {
+    public CommentDto(Long commentId, Long articleId, String nickname, String profile, String content, Long likeCount, LocalDateTime createdAt, Boolean likeYn) {
         this.commentId = commentId;
         this.articleId = articleId;
         this.nickname = nickname;
@@ -27,6 +27,6 @@ public class CommentDto {
         this.content = content;
         this.likeCount = likeCount;
         this.createdAt = createdAt;
-        this.isLike = isLike;
+        this.likeYn = likeYn;
     }
 }

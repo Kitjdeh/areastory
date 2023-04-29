@@ -14,8 +14,8 @@ public class ArticleRespDto extends ArticleCommonDto {
     private String location;
 
     @Builder
-    public ArticleRespDto(Long articleId, Long userId, String nickname, String profile, String content, String image, Long likeCount, Long commentCount, Boolean isLike, LocalDateTime createdAt, String location) {
-        super(articleId, userId, nickname, profile, content, image, likeCount, commentCount, isLike, createdAt);
+    public ArticleRespDto(Long articleId, Long userId, String nickname, String profile, String content, String image, Long likeCount, Long commentCount, Boolean likeYn, LocalDateTime createdAt, String location) {
+        super(articleId, userId, nickname, profile, content, image, likeCount, commentCount, likeYn, createdAt);
         this.location = location;
     }
 }

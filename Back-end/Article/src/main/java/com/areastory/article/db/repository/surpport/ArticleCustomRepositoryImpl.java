@@ -2,6 +2,7 @@ package com.areastory.article.db.repository.surpport;
 
 import com.areastory.article.dto.common.ArticleDto;
 import com.areastory.article.dto.common.ArticleRespDto;
+import com.areastory.article.dto.common.UserDto;
 import com.areastory.article.dto.request.ArticleReq;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -18,11 +19,14 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.areastory.article.db.entity.QArticle.article;
 import static com.areastory.article.db.entity.QArticleLike.articleLike;
+import static com.areastory.article.db.entity.QFollow.follow;
 
 
 @Repository
@@ -35,7 +39,7 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
         List<ArticleRespDto> articleList = getArticlesQuery(articleReq.getUserId())
                 .where(article.publicYn.eq(true), eqDo(articleReq.getDoName()), eqSi(articleReq.getSi()), eqGun(articleReq.getGun()),
                         eqGu(articleReq.getGu()), eqEup(articleReq.getEup()), eqMyeon(articleReq.getMyeon()), eqDong(articleReq.getDong()))
-                .orderBy(getOrderSpecifier(pageable))
+                .orderBy(getOrderSpecifier(pageable).toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch().stream().map(this::toArticleRespDto).collect(Collectors.toList());
@@ -48,10 +52,36 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
     }
 
     @Override
-    public ArticleDto findById(Long userId, Long articleId) {
-        return getArticlesQuery(userId)
+    public ArticleRespDto findById(Long userId, Long articleId) {
+        return toArticleRespDto(Objects.requireNonNull(getArticlesQuery(userId)
                 .where(article.articleId.eq(articleId))
-                .fetchOne();
+                .fetchOne(), articleId + "의 게시글이 없음"));
+    }
+
+    @Override
+    public Page<UserDto> findAllLike(Long userId, Long articleId, Pageable pageable) {
+        List<UserDto> likeList = query.select(Projections.constructor(UserDto.class,
+                        articleLike.user.userId,
+                        articleLike.user.nickname,
+                        articleLike.user.profile,
+                        new CaseBuilder()
+                                .when(follow.followUser.userId.eq(userId))
+                                .then(true)
+                                .otherwise(false)
+                ))
+                .from(articleLike)
+                .leftJoin(follow)
+                .on(follow.followingUser.userId.eq(articleLike.user.userId))
+                .where(articleLike.article.articleId.eq(articleId), articleLike.user.userId.ne(userId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> likeListSize = query
+                .select(articleLike.count())
+                .from(articleLike)
+                .where(articleLike.article.articleId.eq(articleId));
+        return PageableExecutionUtils.getPage(likeList, pageable, likeListSize::fetchOne);
     }
 
     private JPAQuery<ArticleDto> getArticlesQuery(Long userId) {
@@ -80,23 +110,29 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
                 ))
                 .from(article)
                 .leftJoin(articleLike)
-                .on(articleLike.user.userId.eq(userId), articleLike.article.articleId.eq(article.articleId));
+                .on(articleLike.user.userId.eq(userId), articleLike.article.eq(article));
     }
 
 
-    private OrderSpecifier<?> getOrderSpecifier(Pageable pageable) {
+    private List<OrderSpecifier> getOrderSpecifier(Pageable pageable) {
+        List<OrderSpecifier> orders = new ArrayList<>();
+
         if (!pageable.getSort().isEmpty()) {
             for (Sort.Order order : pageable.getSort()) {
                 Order direction = Order.DESC;
                 switch (order.getProperty()) {
                     case "likeCount":
-                        return new OrderSpecifier<>(direction, article.likeCount);
-                    case "articleId":
-                        return new OrderSpecifier<>(direction, article.articleId);
+                        orders.add(new OrderSpecifier<>(direction, article.likeCount));
+                        orders.add(new OrderSpecifier<>(direction, article.createdAt));
+                        break;
+                    case "createdAt":
+                        orders.add(new OrderSpecifier<>(direction, article.createdAt));
+                        orders.add(new OrderSpecifier<>(direction, article.likeCount));
+                        break;
                 }
             }
         }
-        return null;
+        return orders;
     }
 
     private BooleanExpression eqDo(String doName) {

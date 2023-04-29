@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ArticleReq {
     private Long userId;
-    private Boolean isOpen;
     private String doName;
     private String si;
     private String gun;
@@ -18,9 +17,8 @@ public class ArticleReq {
     private String myeon;
 
     @Builder
-    public ArticleReq(Long userId, Boolean isOpen, String doName, String si, String gun, String gu, String dong, String eup, String myeon) {
+    public ArticleReq(Long userId, String doName, String si, String gun, String gu, String dong, String eup, String myeon) {
         this.userId = userId;
-        this.isOpen = isOpen;
         this.doName = doName;
         this.si = si;
         this.gun = gun;

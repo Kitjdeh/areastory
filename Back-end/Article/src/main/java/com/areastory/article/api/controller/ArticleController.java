@@ -17,14 +17,14 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/articles")
 public class ArticleController {
     private final ArticleService articleService;
 
     /*
     게시물 작성
      */
-    @PostMapping("/articles")
+    @PostMapping
     public ResponseEntity<?> writeArticle(@RequestPart(value = "picture", required = false) MultipartFile picture,
                                           @RequestPart ArticleWriteReq articleWriteReq) throws IOException {
         articleService.addArticle(articleWriteReq, picture);
@@ -35,24 +35,24 @@ public class ArticleController {
     모든 게시물 불러오기
     한페이지당 개수는 15개, 정렬은 좋아요 순으로
      */
-    @GetMapping("/articles")
+    @GetMapping
     public ResponseEntity<?> selectAllArticle(@RequestBody ArticleReq articleReq,
                                               @PageableDefault(sort = {"likeCount"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable) {
-        return new ResponseEntity<>(articleService.selectAllArticle(articleReq, pageable), HttpStatus.OK);
+        return ResponseEntity.ok(articleService.selectAllArticle(articleReq, pageable));
     }
 
     /*
     특정 게시물 불러오기
      */
-    @GetMapping("/articles/{articleId}")
+    @GetMapping("/{articleId}")
     public ResponseEntity<?> selectArticle(Long userId, @PathVariable Long articleId) {
-        return new ResponseEntity<>(articleService.selectArticle(userId, articleId), HttpStatus.OK);
+        return ResponseEntity.ok(articleService.selectArticle(userId, articleId));
     }
 
     /*
     게시물 수정
      */
-    @PatchMapping("/articles/{articleId}")
+    @PatchMapping("/{articleId}")
     public ResponseEntity<?> updateArticle(@PathVariable Long articleId,
                                            @RequestPart(required = false) ArticleUpdateParam param) {
 
@@ -67,7 +67,7 @@ public class ArticleController {
     /*
     게시글 삭제
      */
-    @DeleteMapping("/articles/{articleId}")
+    @DeleteMapping("/{articleId}")
     public ResponseEntity<?> deleteArticle(Long userId, @PathVariable Long articleId) {
 
         if (!articleService.deleteArticle(userId, articleId)) {
@@ -80,7 +80,7 @@ public class ArticleController {
     /*
     게시글 좋아요 누르기
      */
-    @PostMapping("/articles/like/{articleId}")
+    @PostMapping("/like/{articleId}")
     public ResponseEntity<?> addLike(@PathVariable Long articleId, Long userId) {
         if (!articleService.addArticleLike(userId, articleId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -91,7 +91,7 @@ public class ArticleController {
     /*
     게시글 좋아요 취소
      */
-    @DeleteMapping("/articles/like/{articleId}")
+    @DeleteMapping("/like/{articleId}")
     public ResponseEntity<?> deleteLike(@PathVariable Long articleId, Long userId) {
         if (!articleService.deleteArticleLike(userId, articleId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -99,4 +99,12 @@ public class ArticleController {
         return ResponseEntity.ok().build();
     }
 
+    /*
+    해당 게시글에 좋아요 누른 사람들 목록 보기
+     */
+    @GetMapping("/like/{articleId}")
+    public ResponseEntity<?> getLikeList(@PathVariable Long articleId, Long userId,
+                                         @PageableDefault(size = 15) Pageable pageable) {
+        return ResponseEntity.ok(articleService.selectAllLikeList(userId, articleId, pageable));
+    }
 }

@@ -13,4 +13,5 @@ public class ArticleUpdateParam {
     private Long userId;
     private Long articleId;
     private String content;
+    private Boolean publicYn;
 }

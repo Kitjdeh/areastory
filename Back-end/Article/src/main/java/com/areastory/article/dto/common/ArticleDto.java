@@ -19,8 +19,8 @@ public class ArticleDto extends ArticleCommonDto {
     private String eup;
     private String myeon;
 
-    public ArticleDto(Long articleId, Long userId, String nickname, String profile, String content, String image, Long likeCount, Long commentCount, Boolean isLike, LocalDateTime createdAt, String doName, String si, String gun, String gu, String dong, String eup, String myeon) {
-        super(articleId, userId, nickname, profile, content, image, likeCount, commentCount, isLike, createdAt);
+    public ArticleDto(Long articleId, Long userId, String nickname, String profile, String content, String image, Long likeCount, Long commentCount, Boolean likeYn, LocalDateTime createdAt, String doName, String si, String gun, String gu, String dong, String eup, String myeon) {
+        super(articleId, userId, nickname, profile, content, image, likeCount, commentCount, likeYn, createdAt);
         this.doName = doName;
         this.si = si;
         this.gun = gun;
