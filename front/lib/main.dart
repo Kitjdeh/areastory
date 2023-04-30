@@ -1,12 +1,22 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:front/component/signup/login.dart';
 import 'package:front/screen/home_screen.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: "local.env");
   /// 이게 뭐지?
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  KakaoSdk.init(nativeAppKey: dotenv.get('KAKAO_KEY'));
+
+  // runApp(MyApp());
+  runApp(
+    MaterialApp(
+      home: LoginScreen(),
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {

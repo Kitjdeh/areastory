@@ -1,4 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:front/component/signup/kakao_login.dart';
+import 'package:front/component/signup/login_view_model.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -8,13 +12,43 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final dio = Dio();
+  final viewModel = LoginViewModel(KakaoLogin());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          // Image(image: Image.asset())
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: () async {
+                await viewModel.login();
+                setState(() {
+
+                });
+                print("감자");
+                /// 로그인시 카카오가 던져주는 키값
+                print(viewModel.user?.id);
+                print(viewModel.user?.kakaoAccount?.profile?.nickname);
+                print(viewModel.user?.kakaoAccount?.profile?.profileImageUrl);
+
+              },
+              child: Text("로그인"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await viewModel.logout();
+                setState(() {
+
+                });
+              },
+              child: Text("로그아웃"),
+            )
+
+          ],
+        ),
       ),
     );
   }
