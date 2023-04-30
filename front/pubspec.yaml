@@ -49,6 +49,7 @@ dependencies:
   flutter_svg_provider: ^1.0.3
   widget_mask: ^1.0.0+0
   polygon: ^0.1.0
+  http: ^0.13.4+2
 
 
 

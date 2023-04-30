@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front/component/sns/article/article.dart';
+import 'package:front/component/sns/article/article_detail.dart';
 import 'package:front/const/article_test.dart';
 
 class SnsScreen extends StatefulWidget {
@@ -83,6 +84,34 @@ class _SnsScreenState extends State<SnsScreen> {
       body: SafeArea(
         child: Column(
           children: [
+            ElevatedButton(
+              child: Text('Show Article Detail'),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  isScrollControlled: true,
+                  builder: (BuildContext context) {
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height*0.8,
+                      child: Center(
+                        child: ArticleDetailComponent(
+                          nickname: '치킨먹고싶다',
+                          image:
+                              'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg',
+                          profile:
+                              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKFOtP8DmiYHZ-HkHpmLq9Oydg8JB4CuyOVg&usqp=CAU',
+                          content: '왜이리 화나있너 ;;; ㅎㅎㅎㅎㅎㅎㅎㅎ',
+                          likeCount: 33,
+                          commentCount: 14,
+                          isLike: true,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
             SizedBox(
               height: 10,
             ),
