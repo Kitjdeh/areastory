@@ -55,10 +55,7 @@ class _MapScreenState extends State<MapScreen> {
               }
               if (snapshot.data == '위치 권한이 허가되었습니다.') {
                 return Column(
-                  children: [
-                    // _CustomMap(),
-                    _ChoolCheckButton()
-                  ],
+                  children: [_CustomMap(), _ChoolCheckButton()],
                 );
               }
               return Center(child: Text(snapshot.data));
@@ -115,19 +112,27 @@ class _CustomMapState extends State<_CustomMap> {
   double _zoom = 6.0;
   var currentcenter = LatLng(37.60732175555233, 127.0710794642477);
   void minuszoom() {
-    _zoom = mapController.zoom -1;
+    _zoom = mapController.zoom - 1;
     this.currentcenter = mapController.center;
     mapController.move(currentcenter, _zoom);
     print(_zoom);
-    _zoom <=8.0  ? _loadGeoJson('asset/map/ctp_korea.geojson'): null;
+    _zoom > 12.0
+        ? _loadGeoJson('asset/map/minimal.json')
+        : _zoom > 9.0
+            ? _loadGeoJson('asset/map/sigungookorea.json')
+            : _loadGeoJson('asset/map/ctp_korea.geojson');
   }
+
   void pluszoom() {
-    _zoom = mapController.zoom +1;
+    _zoom = mapController.zoom + 1;
     this.currentcenter = mapController.center;
     mapController.move(currentcenter, _zoom);
     print(_zoom);
-    _zoom >8.0 ? _loadGeoJson('asset/map/korea.geojson'): null;
-
+    _zoom > 12.0
+        ? _loadGeoJson('asset/map/minimal.json')
+        : _zoom > 9.0
+            ? _loadGeoJson('asset/map/sigungookorea.json')
+            : _loadGeoJson('asset/map/ctp_korea.geojson');
   }
 
   @override
@@ -139,6 +144,7 @@ class _CustomMapState extends State<_CustomMap> {
   }
 
   Future<void> _loadGeoJson(String link) async {
+    _polygon = [];
     // geojson을 정의한다.
     final geojson = GeoJson();
     // 준비된 geojson 파일을 불러온다.
@@ -187,12 +193,12 @@ class _CustomMapState extends State<_CustomMap> {
             cnt % 5 == 0
                 ? urlStr = sangjunurl
                 : cnt % 5 == 1
-                ? urlStr = seoul2url
-                : cnt % 5 == 2
-                ? urlStr = sugyeongurl
-                : cnt % 5 == 3
-                ? urlStr = suminurl
-                : urlStr = a302url;
+                    ? urlStr = seoul2url
+                    : cnt % 5 == 2
+                        ? urlStr = sugyeongurl
+                        : cnt % 5 == 3
+                            ? urlStr = suminurl
+                            : urlStr = a302url;
 
             urls.add(urlStr);
             cnt = cnt + 1;
@@ -223,16 +229,15 @@ class _CustomMapState extends State<_CustomMap> {
           );
           // print(_polygon.first);
           String urlStr = '';
-
           cnt % 5 == 0
               ? urlStr = sangjunurl
               : cnt % 5 == 1
-              ? urlStr = seoul2url
-              : cnt % 5 == 2
-              ? urlStr = sugyeongurl
-              : cnt % 5 == 3
-              ? urlStr = suminurl
-              : urlStr = a302url;
+                  ? urlStr = seoul2url
+                  : cnt % 5 == 2
+                      ? urlStr = sugyeongurl
+                      : cnt % 5 == 3
+                          ? urlStr = suminurl
+                          : urlStr = a302url;
 
           urls.add(urlStr);
           cnt = cnt + 1;
@@ -242,6 +247,7 @@ class _CustomMapState extends State<_CustomMap> {
       ;
     }
     setState(() {});
+    print("_polygon.length${_polygon.length}");
   }
 
   Widget build(BuildContext context) {
@@ -300,43 +306,72 @@ class _CustomMapState extends State<_CustomMap> {
           FlutterMap(
             mapController: mapController,
             options: MapOptions(
-                maxZoom: 20,
-                minZoom: 6,
-                center: LatLng(37.60732175555233, 127.0710794642477),
-                zoom: _zoom),
+              maxZoom: 20,
+              minZoom: 6,
+              center: LatLng(37.60732175555233, 127.0710794642477),
+              zoom: _zoom,
+              onPositionChanged: (pos, hasGesture) {
+                // 현재 보이는 화면의 경계를 계산
+                final bounds = mapController.bounds!;
+                final sw = bounds.southWest;
+                final ne = bounds.northEast;
+
+                // 화면 내에 있는 폴리곤만 필터링
+                final visiblePolygons = _polygon.where((p) {
+                  return p.any((point) {
+                    return point.latitude >= sw!.latitude &&
+                        point.latitude <= ne!.latitude &&
+                        point.longitude >= sw.longitude &&
+                        point.longitude <= ne!.longitude;
+                  });
+                }).toList();
+                _polygon = visiblePolygons;
+                print(
+                    '_polygon.length${_polygon.length} / visiblePolygons${visiblePolygons.length}');
+
+                // CustomPolygonLayer에 화면 내 폴리곤만 전달
+                // _polygonLayer.polygons = visiblePolygons.map((e) => Polygon(
+                //   isFilled: false,
+                //   borderColor: Colors.black,
+                //   points: e,
+                //   borderStrokeWidth: 3.0,
+                // )).toList();
+              },
+            ),
             children: [
-              TileLayer(
-                urlTemplate:
-                "https://api.mapbox.com/styles/v1/kitjdeh/clgooh3g6003601q5bh4jc1u6/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoia2l0amRlaCIsImEiOiJjbGduZjRybTIwYTIxM3Bta2ZyNTFscXFoIn0.tq4mI6als9na84abG7RP5w",
-                additionalOptions: {
-                  "access_token":
-                  "pk.eyJ1Ijoia2l0amRlaCIsImEiOiJjbGduZjRybTIwYTIxM3Bta2ZyNTFscXFoIn0.tq4mI6als9na84abG7RP5w",
-                  'id': 'mapbox.mapbox-traffic-v1'
-                },
-                // userAgentPackageName: 'com.example.app',
-              ),
-              PolygonLayer(
-                polygons: _polygon
-                    .map((e) => Polygon(
-                  // image: AssetImage('asset/img/sangjun.PNG'),
-                  isFilled: false,
-                  points: e,
-                  // color: Colors.red,
-                  borderColor: Colors.white,
-                  borderStrokeWidth: 2.0,
-                ))
-                    .toList(),
-                // polygonCulling: ,
-              ),
+              // TileLayer(
+              //   urlTemplate:
+              //   "https://api.mapbox.com/styles/v1/kitjdeh/clgooh3g6003601q5bh4jc1u6/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoia2l0amRlaCIsImEiOiJjbGduZjRybTIwYTIxM3Bta2ZyNTFscXFoIn0.tq4mI6als9na84abG7RP5w",
+              //   additionalOptions: {
+              //     "access_token":
+              //     "pk.eyJ1Ijoia2l0amRlaCIsImEiOiJjbGduZjRybTIwYTIxM3Bta2ZyNTFscXFoIn0.tq4mI6als9na84abG7RP5w",
+              //     'id': 'mapbox.mapbox-traffic-v1'
+              //   },
+              //   // userAgentPackageName: 'com.example.app',
+              // ),
+              // PolygonLayer(
+              //   polygons: _polygon
+              //       .map((e) => Polygon(
+              //     // image: AssetImage('asset/img/sangjun.PNG'),
+              //     isFilled: false,
+              //     points: e,
+              //     // color: Colors.red,
+              //     borderColor: Colors.white,
+              //     borderStrokeWidth: 2.0,
+              //   ))
+              //       .toList(),
+              //   // polygonCulling: ,
+              // ),
               CustomPolygonLayer(
                   urls: urls,
                   polygons: _polygon
                       .map((e) => Polygon(
-                    isFilled: false,
-                    points: e,
-                    // color: Colors.red,
-                    borderStrokeWidth: 3.0,
-                  ))
+                            isFilled: false,
+                            borderColor: Colors.black,
+                            points: e,
+                            // color: Colors.red,
+                            borderStrokeWidth: 3.0,
+                          ))
                       .toList()),
             ],
           ),
