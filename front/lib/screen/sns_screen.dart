@@ -49,10 +49,14 @@ class _SnsScreenState extends State<SnsScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Image.asset(
-          'asset/img/logo.png',
-          height: 120,
-          width: 120,
+        title: Container(
+          color: Colors.red,
+          alignment: Alignment.center,
+          child: Image.asset(
+            'asset/img/logo.png',
+            height: 120,
+            width: 120,
+          ),
         ),
         actions: [
           IconButton(
