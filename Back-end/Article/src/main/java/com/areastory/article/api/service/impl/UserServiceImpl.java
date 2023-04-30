@@ -4,6 +4,8 @@ import com.areastory.article.api.service.UserService;
 import com.areastory.article.db.entity.User;
 import com.areastory.article.db.repository.UserRepository;
 import com.areastory.article.dto.common.UserKafkaDto;
+import com.areastory.article.exception.CustomException;
+import com.areastory.article.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(UserKafkaDto userKafkaDto) {
-        User user = userRepository.findById(userKafkaDto.getUserId()).orElseThrow();
+        User user = userRepository.findById(userKafkaDto.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         user.setNickname(userKafkaDto.getNickname());
         user.setProfile(userKafkaDto.getProfile());
     }

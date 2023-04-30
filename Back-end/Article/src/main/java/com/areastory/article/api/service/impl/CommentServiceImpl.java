@@ -9,9 +9,13 @@ import com.areastory.article.db.repository.UserRepository;
 import com.areastory.article.dto.common.CommentDeleteDto;
 import com.areastory.article.dto.common.CommentDto;
 import com.areastory.article.dto.common.CommentUpdateDto;
+import com.areastory.article.dto.common.UserDto;
 import com.areastory.article.dto.request.CommentReq;
 import com.areastory.article.dto.request.CommentWriteReq;
 import com.areastory.article.dto.response.CommentResp;
+import com.areastory.article.dto.response.LikeResp;
+import com.areastory.article.exception.CustomException;
+import com.areastory.article.exception.ErrorCode;
 import com.areastory.article.kafka.ArticleProducer;
 import com.areastory.article.kafka.KafkaProperties;
 import com.areastory.article.kafka.NotificationProducer;
@@ -38,11 +42,11 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public void addComment(CommentWriteReq commentWriteReq) {
         //article commentCount 늘려주기 위함
-        Article article = articleRepository.findById(commentWriteReq.getArticleId()).orElseThrow();
+        Article article = articleRepository.findById(commentWriteReq.getArticleId()).orElseThrow(() -> new CustomException(ErrorCode.ARTICLE_NOT_FOUND));
         article.addCommentCount();
         //comment 저장
         Comment comment = commentRepository.save(Comment.builder()
-                .user(userRepository.findById(commentWriteReq.getUserId()).orElseThrow())
+                .user(userRepository.findById(commentWriteReq.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)))
                 .content(commentWriteReq.getContent())
                 .article(article)
                 .build());
@@ -59,63 +63,77 @@ public class CommentServiceImpl implements CommentService {
                 .pageSize(comments.getPageable().getPageSize())
                 .totalPageNumber(comments.getTotalPages())
                 .totalCount(comments.getTotalElements())
+                .pageNumber(comments.getPageable().getPageNumber() + 1)
+                .nextPage(comments.hasNext())
+                .previousPage(comments.hasPrevious())
                 .build();
     }
 
     @Override
     @Transactional
-    public boolean updateComment(CommentUpdateDto commentUpdateDto) {
-        Comment comment = commentRepository.findById(commentUpdateDto.getCommentId()).orElseThrow();
+    public void updateComment(CommentUpdateDto commentUpdateDto) {
+        Comment comment = commentRepository.findById(commentUpdateDto.getCommentId()).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
         if (!Objects.equals(comment.getUser().getUserId(), commentUpdateDto.getUserId())) {
-            return false;
+            throw new CustomException(ErrorCode.UNAUTHORIZED_REQUEST);
         }
         comment.updateContent(commentUpdateDto.getContent());
-        return true;
     }
 
     @Override
     @Transactional
-    public boolean deleteComment(CommentDeleteDto commentDeleteDto) {
+    public void deleteComment(CommentDeleteDto commentDeleteDto) {
         //comment 불러오기
-        Comment comment = commentRepository.findById(commentDeleteDto.getCommentId()).orElseThrow();
-        //comment 쓴사람 아니면 false 리턴
+        Comment comment = commentRepository.findById(commentDeleteDto.getCommentId()).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        //comment 쓴사람 아니면 예외처리
         if (!Objects.equals(comment.getUser().getUserId(), commentDeleteDto.getUserId())) {
-            return false;
+            throw new CustomException(ErrorCode.UNAUTHORIZED_REQUEST);
         }
         //article commentCount 줄이기 위함
-        Article article = articleRepository.findById(commentDeleteDto.getArticleId()).orElseThrow();
+        Article article = articleRepository.findById(commentDeleteDto.getArticleId()).orElseThrow(() -> new CustomException(ErrorCode.ARTICLE_NOT_FOUND));
         article.deleteCommentCount();
         //comment 삭제하기
         commentRepository.deleteById(comment.getCommentId());
         articleProducer.send(article, KafkaProperties.UPDATE);
-        return true;
     }
 
     @Override
     @Transactional
-    public boolean addCommentLike(Long userId, Long commentId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
-        if (commentLikeRepository.existsById(new CommentLikePK(user.getUserId(), comment.getCommentId())))
-            return false;
-        CommentLike commentLike = new CommentLike(user, comment);
-        commentLike = commentLikeRepository.save(commentLike);
+    public void addCommentLike(Long userId, Long commentId) {
+        if (commentLikeRepository.existsById(new CommentLikePK(userId, commentId))) {
+            throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
+        }
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        CommentLike commentLike = commentLikeRepository.save(new CommentLike(user, comment));
         comment.addLikeCount();
         notificationProducer.send(commentLike);
-        return true;
     }
 
     @Override
     @Transactional
-    public boolean deleteCommentLike(Long userId, Long commentId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
-        if (!commentLikeRepository.existsById(new CommentLikePK(user.getUserId(), comment.getCommentId())))
-            return false;
-
+    public void deleteCommentLike(Long userId, Long commentId) {
+        if (!commentLikeRepository.existsById(new CommentLikePK(userId, commentId))) {
+            throw new CustomException(ErrorCode.LIKE_NOT_FOUND);
+        }
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
         commentLikeRepository.delete(new CommentLike(user, comment));
         comment.removeLikeCount();
-        return true;
     }
+
+    @Override
+    public LikeResp selectAllLikeList(Long userId, Long commentId, Pageable pageable) {
+        Page<UserDto> likes = commentRepository.findAllLike(userId, commentId, pageable);
+        return LikeResp.builder()
+                .users(likes.getContent())
+                .pageSize(likes.getPageable().getPageSize())
+                .totalPageNumber(likes.getTotalPages())
+                .totalCount(likes.getTotalElements())
+                .pageNumber(likes.getPageable().getPageNumber() + 1)
+                .nextPage(likes.hasNext())
+                .previousPage(likes.hasPrevious())
+                .build();
+    }
+
 
 }

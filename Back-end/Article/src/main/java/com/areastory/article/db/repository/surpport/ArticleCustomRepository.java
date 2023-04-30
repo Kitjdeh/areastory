@@ -15,6 +15,8 @@ public interface ArticleCustomRepository {
 
     ArticleRespDto findById(Long userId, Long articleId);
 
+    Page<UserDto> findAllLike(Long userId, Long articleId, Pageable pageable);
+
     default ArticleRespDto toArticleRespDto(ArticleDto articleDto) {
         return ArticleRespDto.builder()
                 .articleId(articleDto.getArticleId())
@@ -44,5 +46,4 @@ public interface ArticleCustomRepository {
         return sb.substring(0, sb.length() - 1);
     }
 
-    Page<UserDto> findAllLike(Long userId, Long articleId, Pageable pageable);
 }

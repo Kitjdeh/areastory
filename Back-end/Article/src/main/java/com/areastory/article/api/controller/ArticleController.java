@@ -8,12 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,8 +23,9 @@ public class ArticleController {
      */
     @PostMapping
     public ResponseEntity<?> writeArticle(@RequestPart(value = "picture", required = false) MultipartFile picture,
-                                          @RequestPart ArticleWriteReq articleWriteReq) throws IOException {
+                                          @RequestPart ArticleWriteReq articleWriteReq) {
         articleService.addArticle(articleWriteReq, picture);
+
         return ResponseEntity.ok().build();
     }
 
@@ -55,12 +53,8 @@ public class ArticleController {
     @PatchMapping("/{articleId}")
     public ResponseEntity<?> updateArticle(@PathVariable Long articleId,
                                            @RequestPart(required = false) ArticleUpdateParam param) {
-
         param.setArticleId(articleId);
-        boolean check = articleService.updateArticle(param);
-        if (!check) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        articleService.updateArticle(param);
         return ResponseEntity.ok().build();
     }
 
@@ -69,11 +63,7 @@ public class ArticleController {
      */
     @DeleteMapping("/{articleId}")
     public ResponseEntity<?> deleteArticle(Long userId, @PathVariable Long articleId) {
-
-        if (!articleService.deleteArticle(userId, articleId)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
+        articleService.deleteArticle(userId, articleId);
         return ResponseEntity.ok().build();
     }
 
@@ -82,9 +72,7 @@ public class ArticleController {
      */
     @PostMapping("/like/{articleId}")
     public ResponseEntity<?> addLike(@PathVariable Long articleId, Long userId) {
-        if (!articleService.addArticleLike(userId, articleId)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        articleService.addArticleLike(userId, articleId);
         return ResponseEntity.ok().build();
     }
 
@@ -93,9 +81,7 @@ public class ArticleController {
      */
     @DeleteMapping("/like/{articleId}")
     public ResponseEntity<?> deleteLike(@PathVariable Long articleId, Long userId) {
-        if (!articleService.deleteArticleLike(userId, articleId)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        articleService.deleteArticleLike(userId, articleId);
         return ResponseEntity.ok().build();
     }
 

@@ -3,7 +3,8 @@ package com.areastory.article.util;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.areastory.article.exception.NoFileException;
+import com.areastory.article.exception.CustomException;
+import com.areastory.article.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -24,11 +25,11 @@ public class FileUtil {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
+    public String upload(MultipartFile multipartFile, String dirName) {
         if (multipartFile == null || multipartFile.isEmpty())
             return null;
         File uploadFile = convert(multipartFile)
-                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File로 전환이 실패했습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.FAIL_CONVERT));
 
         return upload(uploadFile, dirName);
     }
@@ -50,7 +51,7 @@ public class FileUtil {
                 amazonS3Client.deleteObject(bucket, fileKey);
             }
         } catch (Exception e) {
-            throw new NoFileException("파일 삭제 불가");
+            throw new CustomException(ErrorCode.FILE_NOT_FOUND);
         }
     }
 //
@@ -85,14 +86,18 @@ public class FileUtil {
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
-    private Optional<File> convert(MultipartFile file) throws IOException {
+    private Optional<File> convert(MultipartFile file) {
 
         File convertFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
-        if (convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
+        try {
+            if (convertFile.createNewFile()) {
+                try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+                    fos.write(file.getBytes());
+                }
+                return Optional.of(convertFile);
             }
-            return Optional.of(convertFile);
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.FAIL_CONVERT);
         }
 
         return Optional.empty();

@@ -9,21 +9,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/articles/{articleId}")
+@RequestMapping("/api/articles/{articleId}/comments")
 public class CommentController {
     private final CommentService commentService;
-
 
     /*
     댓글 작성
      */
-    @PostMapping("/comments")
+    @PostMapping
     public ResponseEntity<?> writeComment(@PathVariable Long articleId, @RequestBody CommentWriteReq commentWriteReq) {
         commentWriteReq.setArticleId(articleId);
         commentService.addComment(commentWriteReq);
@@ -31,19 +29,19 @@ public class CommentController {
     }
 
     /*
-    해당 게시글의 댓글 가져오기 => 게시글 자세히 가져올 때 댓글 리스트를 넣는데 모든 댓글을 부르는 게 필요할까?
+    해당 게시글의 댓글 가져오기
      */
-    @GetMapping("/comments")
+    @GetMapping
     public ResponseEntity<?> selectAllComment(Long userId,
                                               @PathVariable Long articleId,
-                                              @PageableDefault(size = 15, sort = "likeCount", direction = Sort.Direction.DESC) Pageable pageable) {
+                                              @PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(commentService.selectAllComment(new CommentReq(userId, articleId), pageable));
     }
 
     /*
     댓글 수정
      */
-    @PutMapping("/comments/{commentId}")
+    @PatchMapping("/{commentId}")
     public ResponseEntity<?> updateComment(Long userId, @PathVariable Long commentId, String content) {
         CommentUpdateDto commentUpdateDto = CommentUpdateDto.builder()
                 .userId(userId)
@@ -51,17 +49,14 @@ public class CommentController {
                 .content(content)
                 .build();
 
-        boolean check = commentService.updateComment(commentUpdateDto);
-        if (!check) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        commentService.updateComment(commentUpdateDto);
         return ResponseEntity.ok().build();
     }
 
     /*
     댓글 삭제
      */
-    @DeleteMapping("/comments/{commentId}")
+    @DeleteMapping("/{commentId}")
     public ResponseEntity<?> deleteComment(
             @PathVariable Long articleId, Long userId, @PathVariable Long commentId) {
 
@@ -70,11 +65,7 @@ public class CommentController {
                 .commentId(commentId)
                 .articleId(articleId)
                 .build();
-        boolean check = commentService.deleteComment(commentDeleteDto);
-
-        if (!check) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        commentService.deleteComment(commentDeleteDto);
         return ResponseEntity.ok().build();
     }
 
@@ -82,22 +73,27 @@ public class CommentController {
     /*
     댓글 좋아요 누르기
      */
-    @PostMapping("/comments/like/{commentId}")
+    @PostMapping("/like/{commentId}")
     public ResponseEntity<?> addLike(@PathVariable Long commentId, Long userId) {
-        if (!commentService.addCommentLike(userId, commentId)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        commentService.addCommentLike(userId, commentId);
         return ResponseEntity.ok().build();
     }
 
     /*
     댓글 좋아요 취소
      */
-    @DeleteMapping("/comments/like/{commentId}")
+    @DeleteMapping("/like/{commentId}")
     public ResponseEntity<?> deleteLike(@PathVariable Long commentId, Long userId) {
-        if (!commentService.deleteCommentLike(userId, commentId)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        commentService.deleteCommentLike(userId, commentId);
         return ResponseEntity.ok().build();
+    }
+
+    /*
+   해당 댓글에 좋아요 누른 사람들 목록 보기
+    */
+    @GetMapping("/like/{commentId}")
+    public ResponseEntity<?> getLikeList(@PathVariable Long commentId, Long userId,
+                                         @PageableDefault(size = 15) Pageable pageable) {
+        return ResponseEntity.ok(commentService.selectAllLikeList(userId, commentId, pageable));
     }
 }

@@ -81,6 +81,7 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
                 .select(articleLike.count())
                 .from(articleLike)
                 .where(articleLike.article.articleId.eq(articleId));
+
         return PageableExecutionUtils.getPage(likeList, pageable, likeListSize::fetchOne);
     }
 
@@ -115,24 +116,24 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
 
 
     private List<OrderSpecifier> getOrderSpecifier(Pageable pageable) {
-        List<OrderSpecifier> orders = new ArrayList<>();
+        List<OrderSpecifier> articleOrders = new ArrayList<>();
 
         if (!pageable.getSort().isEmpty()) {
             for (Sort.Order order : pageable.getSort()) {
                 Order direction = Order.DESC;
                 switch (order.getProperty()) {
                     case "likeCount":
-                        orders.add(new OrderSpecifier<>(direction, article.likeCount));
-                        orders.add(new OrderSpecifier<>(direction, article.createdAt));
+                        articleOrders.add(new OrderSpecifier<>(direction, article.likeCount));
+                        articleOrders.add(new OrderSpecifier<>(direction, article.createdAt));
                         break;
                     case "createdAt":
-                        orders.add(new OrderSpecifier<>(direction, article.createdAt));
-                        orders.add(new OrderSpecifier<>(direction, article.likeCount));
+                        articleOrders.add(new OrderSpecifier<>(direction, article.createdAt));
+                        articleOrders.add(new OrderSpecifier<>(direction, article.likeCount));
                         break;
                 }
             }
         }
-        return orders;
+        return articleOrders;
     }
 
     private BooleanExpression eqDo(String doName) {

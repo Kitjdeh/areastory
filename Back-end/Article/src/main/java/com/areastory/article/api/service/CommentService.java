@@ -5,6 +5,7 @@ import com.areastory.article.dto.common.CommentUpdateDto;
 import com.areastory.article.dto.request.CommentReq;
 import com.areastory.article.dto.request.CommentWriteReq;
 import com.areastory.article.dto.response.CommentResp;
+import com.areastory.article.dto.response.LikeResp;
 import org.springframework.data.domain.Pageable;
 
 public interface CommentService {
@@ -13,11 +14,13 @@ public interface CommentService {
 
     CommentResp selectAllComment(CommentReq commentReq, Pageable pageable);
 
-    boolean updateComment(CommentUpdateDto commentUpdateDto);
+    void updateComment(CommentUpdateDto commentUpdateDto);
 
-    boolean deleteComment(CommentDeleteDto commentDeleteDto);
+    void deleteComment(CommentDeleteDto commentDeleteDto);
 
-    boolean addCommentLike(Long userId, Long commentId);
+    void addCommentLike(Long userId, Long commentId);
 
-    boolean deleteCommentLike(Long userId, Long commentId);
+    void deleteCommentLike(Long userId, Long commentId);
+
+    LikeResp selectAllLikeList(Long userId, Long commentId, Pageable pageable);
 }

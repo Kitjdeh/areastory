@@ -15,6 +15,8 @@ import com.areastory.article.dto.request.ArticleUpdateParam;
 import com.areastory.article.dto.request.ArticleWriteReq;
 import com.areastory.article.dto.response.ArticleResp;
 import com.areastory.article.dto.response.LikeResp;
+import com.areastory.article.exception.CustomException;
+import com.areastory.article.exception.ErrorCode;
 import com.areastory.article.kafka.ArticleProducer;
 import com.areastory.article.kafka.KafkaProperties;
 import com.areastory.article.kafka.NotificationProducer;
@@ -27,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Objects;
 
 @Service
@@ -43,8 +44,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Transactional
     @Override
-    public void addArticle(ArticleWriteReq articleWriteReq, MultipartFile picture) throws IOException {
-        User user = userRepository.findById(articleWriteReq.getUserId()).orElseThrow();
+    public void addArticle(ArticleWriteReq articleWriteReq, MultipartFile picture) {
+        User user = userRepository.findById(articleWriteReq.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         String imageUrl = "";
         if (picture != null) {
@@ -88,12 +89,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Transactional
     @Override
-    public boolean updateArticle(ArticleUpdateParam param) {
-        Article article = articleRepository.findById(param.getArticleId()).get();
+    public void updateArticle(ArticleUpdateParam param) {
+        Article article = articleRepository.findById(param.getArticleId()).orElseThrow(() -> new CustomException(ErrorCode.ARTICLE_NOT_FOUND));
 
         //게시글 수정 권한이 없을 때
         if (!Objects.equals(article.getUser().getUserId(), param.getUserId())) {
-            return false;
+            throw new CustomException(ErrorCode.UNAUTHORIZED_REQUEST);
         }
 
         if (StringUtils.hasText(param.getContent())) {
@@ -106,46 +107,45 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         articleProducer.send(article, KafkaProperties.UPDATE);
-        return true;
     }
 
     @Transactional
     @Override
-    public boolean deleteArticle(Long userId, Long articleId) {
-        Article article = articleRepository.findById(articleId).get();
+    public void deleteArticle(Long userId, Long articleId) {
+        Article article = articleRepository.findById(articleId).orElseThrow(() -> new CustomException(ErrorCode.ARTICLE_NOT_FOUND));
         if (!Objects.equals(article.getUser().getUserId(), userId)) {
-            return false;
+            throw new CustomException(ErrorCode.UNAUTHORIZED_REQUEST);
         }
+        fileUtil.deleteFile(article.getImage());
         articleRepository.delete(article);
         articleProducer.send(article, KafkaProperties.DELETE);
-        return true;
     }
 
     @Transactional
     @Override
-    public boolean addArticleLike(Long userId, Long articleId) {
-        Article article = articleRepository.findById(articleId).orElseThrow();
-        User user = userRepository.findById(userId).orElseThrow();
-        if (articleLikeRepository.existsById(new ArticleLikePK(user.getUserId(), article.getArticleId())))
-            return false;
+    public void addArticleLike(Long userId, Long articleId) {
+        if (articleLikeRepository.existsById(new ArticleLikePK(userId, articleId))) {
+            throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
+        }
+        Article article = articleRepository.findById(articleId).orElseThrow(() -> new CustomException(ErrorCode.ARTICLE_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         ArticleLike articleLike = articleLikeRepository.save(new ArticleLike(user, article));
         article.addLikeCount();
         notificationProducer.send(articleLike);
         articleProducer.send(article, KafkaProperties.UPDATE);
-        return true;
     }
 
     @Transactional
     @Override
-    public boolean deleteArticleLike(Long userId, Long articleId) {
-        Article article = articleRepository.findById(articleId).orElseThrow();
-        User user = userRepository.findById(userId).orElseThrow();
-        if (!articleLikeRepository.existsById(new ArticleLikePK(user.getUserId(), article.getArticleId())))
-            return false;
+    public void deleteArticleLike(Long userId, Long articleId) {
+        if (!articleLikeRepository.existsById(new ArticleLikePK(userId, articleId))) {
+            throw new CustomException(ErrorCode.LIKE_NOT_FOUND);
+        }
+        Article article = articleRepository.findById(articleId).orElseThrow(() -> new CustomException(ErrorCode.ARTICLE_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         articleLikeRepository.delete(new ArticleLike(user, article));
         article.removeLikeCount();
         articleProducer.send(article, KafkaProperties.UPDATE);
-        return true;
     }
 
     @Override

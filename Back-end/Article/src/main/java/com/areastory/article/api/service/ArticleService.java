@@ -9,23 +9,21 @@ import com.areastory.article.dto.response.LikeResp;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 public interface ArticleService {
 
-    void addArticle(ArticleWriteReq articleWriteReq, MultipartFile picture) throws IOException;
+    void addArticle(ArticleWriteReq articleWriteReq, MultipartFile picture);
 
     ArticleResp selectAllArticle(ArticleReq articleReq, Pageable pageable);
 
     ArticleRespDto selectArticle(Long userId, Long articleId);
 
-    boolean updateArticle(ArticleUpdateParam param);
+    void updateArticle(ArticleUpdateParam param);
 
-    boolean deleteArticle(Long userId, Long articleId);
+    void deleteArticle(Long userId, Long articleId);
 
-    boolean addArticleLike(Long userId, Long articleId);
+    void addArticleLike(Long userId, Long articleId);
 
-    boolean deleteArticleLike(Long userId, Long articleId);
+    void deleteArticleLike(Long userId, Long articleId);
 
     LikeResp selectAllLikeList(Long userId, Long articleId, Pageable pageable);
 }

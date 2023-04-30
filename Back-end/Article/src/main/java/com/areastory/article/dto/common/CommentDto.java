@@ -1,6 +1,5 @@
 package com.areastory.article.dto.common;
 
-import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +10,7 @@ import java.time.LocalDateTime;
 public class CommentDto {
     private Long commentId;
     private Long articleId;
+    private Long userId;
     private String nickname;
     private String profile;
     private String content;
@@ -18,10 +18,10 @@ public class CommentDto {
     private LocalDateTime createdAt;
     private Boolean likeYn;
 
-    @QueryProjection
-    public CommentDto(Long commentId, Long articleId, String nickname, String profile, String content, Long likeCount, LocalDateTime createdAt, Boolean likeYn) {
+    public CommentDto(Long commentId, Long articleId, Long userId, String nickname, String profile, String content, Long likeCount, LocalDateTime createdAt, Boolean likeYn) {
         this.commentId = commentId;
         this.articleId = articleId;
+        this.userId = userId;
         this.nickname = nickname;
         this.profile = profile;
         this.content = content;

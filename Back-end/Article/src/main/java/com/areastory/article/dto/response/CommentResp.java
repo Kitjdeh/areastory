@@ -12,5 +12,9 @@ public class CommentResp {
     private Integer pageSize;
     private Integer totalPageNumber;
     private Long totalCount;
+    private Integer pageNumber;
+    private boolean nextPage;
+    private boolean previousPage;
+
     private List<CommentDto> comments;
 }
