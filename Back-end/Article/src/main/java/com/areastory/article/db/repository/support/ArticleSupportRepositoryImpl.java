@@ -1,4 +1,4 @@
-package com.areastory.article.db.repository.surpport;
+package com.areastory.article.db.repository.support;
 
 import com.areastory.article.dto.common.ArticleDto;
 import com.areastory.article.dto.common.ArticleRespDto;
@@ -31,7 +31,7 @@ import static com.areastory.article.db.entity.QFollow.follow;
 
 @Repository
 @RequiredArgsConstructor
-public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
+public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
     private final JPAQueryFactory query;
 
     @Override

@@ -1,4 +1,4 @@
-package com.areastory.article.db.repository.surpport;
+package com.areastory.article.db.repository.support;
 
 import com.areastory.article.dto.common.ArticleDto;
 import com.areastory.article.dto.common.ArticleRespDto;
@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Arrays;
 import java.util.List;
 
-public interface ArticleCustomRepository {
+public interface ArticleSupportRepository {
     Page<ArticleRespDto> findAll(ArticleReq articleReq, Pageable pageable);
 
     ArticleRespDto findById(Long userId, Long articleId);

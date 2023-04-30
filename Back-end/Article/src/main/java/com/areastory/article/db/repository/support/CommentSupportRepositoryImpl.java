@@ -1,4 +1,4 @@
-package com.areastory.article.db.repository.surpport;
+package com.areastory.article.db.repository.support;
 
 import com.areastory.article.dto.common.CommentDto;
 import com.areastory.article.dto.common.UserDto;
@@ -25,7 +25,7 @@ import static com.areastory.article.db.entity.QFollow.follow;
 
 @Repository
 @RequiredArgsConstructor
-public class CommentCustomRepositoryImpl implements CommentCustomRepository {
+public class CommentSupportRepositoryImpl implements CommentSupportRepository {
 
     private final JPAQueryFactory query;
 
