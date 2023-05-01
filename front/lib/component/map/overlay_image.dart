@@ -45,12 +45,12 @@ class OverlayImage extends CustomOverlayImage {
 
   OverlayImage(
       {required this.bounds,
-        required this.url,
-        required this.polygon,
-        required this.offset,
-        required this.imageProvider,
-        this.opacity = 1.0,
-        this.gaplessPlayback = false});
+      required this.url,
+      required this.polygon,
+      required this.offset,
+      required this.imageProvider,
+      this.opacity = 1.0,
+      this.gaplessPlayback = false});
 
   @override
   Positioned buildPositionedForOverlay(FlutterMapState map) {
@@ -65,12 +65,14 @@ class OverlayImage extends CustomOverlayImage {
     final maxLng = bound.east;
     final maxLat = bound.north;
     final minLat = bound.south;
-    final polLng = bound.south - bound.north;
-    final polLat = bound.east - bound.west;
-    final width = bounds.size.x.toDouble();
-    final height = bounds.size.y.toDouble();
+
     final midLat = (maxLat + minLat) / 2;
     final midLng = (maxLng + minLng) / 2;
+
+    // final polLng = bound.south - bound.north;
+    // final polLat = bound.east - bound.west;
+    // final width = bounds.size.x.toDouble();
+    // final height = bounds.size.y.toDouble();
     // print('polLat${polLat}');
     // print('polLat${1/polLat}');
     // print('polLng${polLng}');
@@ -126,9 +128,9 @@ class OverlayImage extends CustomOverlayImage {
     final List<Offset> listoffset = this
         .polygon
         .map((e) => Offset(
-      // (e.longitude -  bounds.size.x.toDouble()) / polLng,(e.latitude -bounds.size.y.toDouble()) / polLat))
-        (e.longitude - midLng) / (maxLng - midLng),
-        (e.latitude - midLat) / (midLat - maxLat)))
+            // (e.longitude -  bounds.size.x.toDouble()) / polLng,(e.latitude -bounds.size.y.toDouble()) / polLat))
+            (e.longitude - midLng) / (maxLng - midLng),
+            (e.latitude - midLat) / (midLat - maxLat)))
         .toList();
     // listoffset.add(Offset(-1,1));
     // final List<Offset> listoffset = this
@@ -162,8 +164,8 @@ class OverlayImage extends CustomOverlayImage {
             color: Colors.blue,
             image: DecorationImage(
                 image:
-                // AssetImage(url)
-                NetworkImage(url)
+                    // AssetImage(url)
+                    NetworkImage(url)
                 // AssetImage('asset/img/doji.jpg')
                 ,
                 fit: BoxFit.cover),
@@ -172,7 +174,6 @@ class OverlayImage extends CustomOverlayImage {
               // polygon: polygon,
             ),
           ),
-          // child: buildImageForOverlay()
         ));
   }
 }
