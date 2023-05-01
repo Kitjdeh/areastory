@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:front/component/sns/article/article.dart';
 import 'package:front/component/sns/article/article_detail.dart';
 import 'package:front/const/article_test.dart';
+import 'package:front/const/auto_search_test.dart';
 
 class SnsScreen extends StatefulWidget {
   const SnsScreen({Key? key}) : super(key: key);
@@ -13,6 +14,7 @@ class SnsScreen extends StatefulWidget {
 class _SnsScreenState extends State<SnsScreen> {
   int _currentPage = 1;
   List _articles = [];
+
   final ScrollController _scrollController = ScrollController();
 
   // void _loadMoreData() async {
@@ -65,9 +67,12 @@ class _SnsScreenState extends State<SnsScreen> {
                 size: 25,
               ),
               onPressed: () {
-                // Perform search action
+                // Show more options
               },
             ),
+            Container(
+                width: 150,
+                child: LocationSearch()),
             IconButton(
               icon: Icon(
                 Icons.more_vert,
@@ -93,7 +98,7 @@ class _SnsScreenState extends State<SnsScreen> {
                   isScrollControlled: true,
                   builder: (BuildContext context) {
                     return SizedBox(
-                      height: MediaQuery.of(context).size.height*0.8,
+                      height: MediaQuery.of(context).size.height * 0.8,
                       child: Center(
                         child: ArticleDetailComponent(
                           nickname: '치킨먹고싶다',

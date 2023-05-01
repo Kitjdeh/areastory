@@ -133,9 +133,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
                           widget.onUpdateIsChildActive(true);
                           try {
                             final myData = await getData(1);
-                            print('22');
-                            print(myData);
-                            print(myData.msg); // "존재하지 않는 회원" 출력
+                            print(myData.msg);
                           } catch (e) {
                             print(e); // 요청 실패
                           }

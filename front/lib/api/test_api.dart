@@ -1,19 +1,19 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 
 Future<MyDataClass> getData(params) async {
-  final response =
-      await http.get(Uri.parse('https://k8a302.p.ssafy.io/api/users/${params}'));
-  print(response);
-  if (response.statusCode == 404) {
-    print('11');
-    // 성공적인 응답을 받았을 때
-    final jsonData = json.decode(response.body);
-    final myData = MyDataClass.fromJson(jsonData);
+  final dio = Dio(BaseOptions(
+    baseUrl: 'https://k8a302.p.ssafy.io/api/users/',
+  ));
+  final response = await dio.get(params.toString());
 
+  if (response.statusCode == 200) {
+    final jsonData = json.decode(response.toString());
+    final myData = MyDataClass.fromJson(jsonData);
     return myData;
   } else {
-    throw Exception('Failed to get data'); // 요청 실패
+    throw Exception('Failed to get data');
   }
 }
 

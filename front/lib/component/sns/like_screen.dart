@@ -4,6 +4,7 @@ import 'package:front/component/sns/like/like.dart';
 import 'package:front/const/comment_test.dart';
 import 'package:front/const/like_test.dart';
 
+
 class SnsLikeScreen extends StatefulWidget {
   const SnsLikeScreen({Key? key}) : super(key: key);
 
@@ -14,7 +15,9 @@ class SnsLikeScreen extends StatefulWidget {
 class _SnsLikeScreenState extends State<SnsLikeScreen> {
   int _currentPage = 1;
   List _likes = [];
+
   final ScrollController _scrollController = ScrollController();
+
 
 // void _loadMoreData() async {
   void _loadMoreData() async {
