@@ -17,7 +17,7 @@ void main() async {
   runApp(
     MaterialApp(
       routes: {
-        '/signup': (context) => SignUpScreen(),
+        // '/signup': (context) => SignUpScreen(),
       },
       home: LoginScreen(),
     )
