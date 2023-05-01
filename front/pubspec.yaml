@@ -41,6 +41,7 @@ dependencies:
   kakao_flutter_sdk_user: ^1.4.1 # 카카오 로그인
   dio: ^4.0.6 #  http통신용, 카카오플러터때문에 버전 맞춤
   flutter_dotenv: ^5.0.2 # 환경변수 관리영 라이브러리
+  path_provider: ^2.0.14 # 내 앨범에서 사진 가져오기위한 경로잡아주는 라이브러리
   google_maps_flutter: ^2.2.5
   geolocator: ^9.0.2
   geojson: ^1.0.0
