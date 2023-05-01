@@ -7,6 +7,7 @@ import com.areastory.user.db.repository.FollowRepository;
 import com.areastory.user.db.repository.UserRepository;
 import com.areastory.user.dto.response.FollowerResp;
 import com.areastory.user.dto.response.FollowingResp;
+import com.areastory.user.kafka.FollowProducer;
 import com.areastory.user.kafka.KafkaProperties;
 import com.areastory.user.kafka.NotificationProducer;
 import com.areastory.user.kafka.UserProducer;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +31,7 @@ public class FollowServiceImpl implements FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
     private final UserProducer userProducer;
+    private final FollowProducer followProducer;
     private final NotificationProducer notificationProducer;
 
     public String searchCondition(String search) {
@@ -80,6 +83,7 @@ public class FollowServiceImpl implements FollowService {
         followingUser.addFollow();
 
         notificationProducer.send(follow);
+        followProducer.send(follow, KafkaProperties.INSERT);
         userProducer.send(user, KafkaProperties.UPDATE);
         userProducer.send(followingUser, KafkaProperties.UPDATE);
         return true;
@@ -89,35 +93,29 @@ public class FollowServiceImpl implements FollowService {
     @Transactional
     public Boolean deleteFollowing(Long userId, Long followingId) {
         FollowId followId = new FollowId(userId, followingId);
-        if (!followRepository.existsById(followId)) {
-            return false;
-        }
-        followRepository.deleteById(followId);
-        User user = userRepository.findById(userId).orElseThrow();
-        User followingUser = userRepository.findById(followingId).orElseThrow();
-
-        user.deleteFollowing();
-        followingUser.deleteFollow();
-
-        userProducer.send(user, KafkaProperties.UPDATE);
-        userProducer.send(followingUser, KafkaProperties.UPDATE);
-        return true;
+        return deleteFollow(followId);
     }
 
     @Override
     @Transactional
     public Boolean deleteFollower(Long userId, Long followerId) {
         FollowId followId = new FollowId(followerId, userId);
-        if (!followRepository.existsById(followId)) {
+        return deleteFollow(followId);
+    }
+
+    private Boolean deleteFollow(FollowId followId) {
+        Optional<Follow> followOptional = followRepository.findById(followId);
+        if (followOptional.isEmpty())
             return false;
-        }
-        followRepository.deleteById(followId);
-        User user = userRepository.findById(userId).orElseThrow();
-        User followerUser = userRepository.findById(followerId).orElseThrow();
+        Follow follow = followOptional.get();
+        followRepository.delete(follow);
+        User user = follow.getFollowingUser();
+        User otherUser = follow.getFollowerUser();
         user.deleteFollow();
-        followerUser.deleteFollowing();
+        otherUser.deleteFollowing();
+        followProducer.send(follow, KafkaProperties.DELETE);
         userProducer.send(user, KafkaProperties.UPDATE);
-        userProducer.send(followerUser, KafkaProperties.UPDATE);
+        userProducer.send(otherUser, KafkaProperties.UPDATE);
         return true;
     }
 }

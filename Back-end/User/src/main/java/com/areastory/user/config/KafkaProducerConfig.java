@@ -1,5 +1,6 @@
 package com.areastory.user.config;
 
+import com.areastory.user.dto.common.FollowKafkaDto;
 import com.areastory.user.dto.common.NotificationKafkaDto;
 import com.areastory.user.dto.common.UserKafkaDto;
 import com.areastory.user.kafka.KafkaProperties;
@@ -18,8 +19,23 @@ import java.util.Map;
 @Configuration
 public class KafkaProducerConfig {
     @Bean
-    public ProducerFactory<Long, UserKafkaDto> producerFactory() {
+    public ProducerFactory<Long, FollowKafkaDto> followProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
+
+    @Bean
+    public KafkaTemplate<Long, FollowKafkaDto> followTemplate() {
+        return new KafkaTemplate<>(followProducerFactory());
+    }
+
+    @Bean
+    public ProducerFactory<Long, UserKafkaDto> userProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
+
+    @Bean
+    public KafkaTemplate<Long, UserKafkaDto> userTemplate() {
+        return new KafkaTemplate<>(userProducerFactory());
     }
 
     @Bean
@@ -30,11 +46,6 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<Long, NotificationKafkaDto> notificationTemplate() {
         return new KafkaTemplate<>(notificationProducerFactory());
-    }
-
-    @Bean
-    public KafkaTemplate<Long, UserKafkaDto> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
     }
 
     @Bean

@@ -13,8 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class Emitters {
     @Getter
-    private final Map<Long, CustomEmitter> emitterMap;
-    private final Map<Long, CustomEmitter> emitterWatingMap;
+    private final Map<Long, SseEmitter> emitterMap;
+    private final Map<Long, SseEmitter> emitterWatingMap;
     private final ObjectMapper om;
 
     public Emitters(ObjectMapper om) {
@@ -23,8 +23,8 @@ public class Emitters {
         emitterWatingMap = new ConcurrentHashMap<>();
     }
 
-    private CustomEmitter create(Long userId) {
-        CustomEmitter emitter = new CustomEmitter(userId, 1000 * 60 * 60 * 24 * 30L); // 30일
+    private SseEmitter create(Long userId) {
+        SseEmitter emitter = new SseEmitter(1000 * 60 * 60 * 24 * 30L); // 30일
         emitter.onCompletion(() -> {
             this.emitterMap.remove(userId);    // 만료되면 리스트에서 삭제
         });
@@ -46,7 +46,7 @@ public class Emitters {
     }
 
     public void getValid(Long userId) {
-        CustomEmitter emitter = emitterWatingMap.get(userId);
+        SseEmitter emitter = emitterWatingMap.get(userId);
         emitterWatingMap.remove(userId);
         if (emitter == null) {
             emitter = create(userId);
