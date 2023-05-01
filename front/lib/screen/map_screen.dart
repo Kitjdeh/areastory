@@ -3,16 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:front/component/map/customoverlay.dart';
+import 'package:front/component/sns/article/article_detail.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geojson/geojson.dart';
 import 'package:image_editor/image_editor.dart';
 import 'package:latlong2/latlong.dart';
 import 'dart:async' show Future;
-// import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svg_provider;
-//
-// import 'custompolygonlayer.dart';
 
 String sangjunurl = 'https://source.unsplash.com/random/?party';
 //     String seoul2url =
@@ -107,7 +105,10 @@ class _CustomMapState extends State<_CustomMap> {
   List<LatLng> points = [];
   List<LatLng> pointss = [];
   List<LatLng> pointsss = [];
+  List<String> areaname = [];
+
   List<List<LatLng>> _polygon = [];
+  List<List<LatLng>> layoutpolygon = [];
   List<String> urls = [];
   double _zoom = 6.0;
   var currentcenter = LatLng(37.60732175555233, 127.0710794642477);
@@ -145,6 +146,7 @@ class _CustomMapState extends State<_CustomMap> {
 
   Future<void> _loadGeoJson(String link) async {
     _polygon = [];
+    layoutpolygon = [];
     // geojson을 정의한다.
     final geojson = GeoJson();
     // 준비된 geojson 파일을 불러온다.
@@ -175,20 +177,10 @@ class _CustomMapState extends State<_CustomMap> {
                   .add(LatLng(geoPoint.latitude, geoPoint.longitude));
               // points.add(LatLng(geoPoint.latitude, geoPoint.longitude));
             }
-            cnt == 16 ? points = _polygonLatLong : null;
             _polygon.add(
               _polygonLatLong,
             );
             String urlStr = '';
-            // cnt % 5 == 0
-            //     ? urlStr = 'asset/img/han1.jpg'
-            //     : cnt % 5 == 1
-            //         ? urlStr = 'asset/img/han2.jpg'
-            //         : cnt % 5 == 2
-            //             ? urlStr = 'asset/img/han1.jpg'
-            //             : cnt % 5 == 3
-            //                 ? urlStr = 'asset/img/han2.jpg'
-            //                 : urlStr = 'asset/img/han1.jpg';
             cnt % 5 == 0
                 ? urlStr = sangjunurl
                 : cnt % 5 == 1
@@ -198,7 +190,6 @@ class _CustomMapState extends State<_CustomMap> {
                         : cnt % 5 == 3
                             ? urlStr = suminurl
                             : urlStr = a302url;
-
             urls.add(urlStr);
             cnt = cnt + 1;
           }
@@ -226,7 +217,6 @@ class _CustomMapState extends State<_CustomMap> {
           _polygon.add(
             _polygonLatLong,
           );
-          // print(_polygon.first);
           String urlStr = '';
           cnt % 5 == 0
               ? urlStr = sangjunurl
@@ -237,7 +227,6 @@ class _CustomMapState extends State<_CustomMap> {
                       : cnt % 5 == 3
                           ? urlStr = suminurl
                           : urlStr = a302url;
-
           urls.add(urlStr);
           cnt = cnt + 1;
         }
@@ -245,59 +234,11 @@ class _CustomMapState extends State<_CustomMap> {
       }
       ;
     }
+    layoutpolygon = _polygon;
     setState(() {});
-    print("_polygon.length${_polygon.length}");
   }
 
   Widget build(BuildContext context) {
-    final List<LatLng> polygonCoordinates = [
-      LatLng(37.60732175555233, 127.0710794642477),
-      LatLng(37.6066865079674, 127.07117300612306),
-      LatLng(37.60641900709428, 127.0712175242668),
-      LatLng(37.6063472023207, 127.07122683433018),
-      LatLng(37.60630665469006, 127.07123264016441),
-      LatLng(37.60588679726323, 127.071323560853),
-      LatLng(37.60539685487283, 127.07137972707606),
-      LatLng(37.60505780666327, 127.07147017791564),
-      LatLng(37.60463909252257, 127.07153189045819),
-      LatLng(37.60378180651472, 127.07191240763314),
-      LatLng(37.60316414547188, 127.07226129868538),
-      LatLng(37.60287574165555, 127.07241019089496),
-      LatLng(37.60276282511056, 127.07243414811516),
-      LatLng(37.6027017196143, 127.072450544463),
-      LatLng(37.60267524343905, 127.0724593636769),
-      LatLng(37.60260427693679, 127.07248282835786),
-      LatLng(37.60206415705306, 127.07264528334021),
-      LatLng(37.60170003919122, 127.07275588033198),
-      LatLng(37.60168623389839, 127.07275958152081),
-      LatLng(37.60154318242388, 127.07279341778424),
-      LatLng(37.60153867665675, 127.07279482901345),
-      LatLng(37.60142406469747, 127.0728361209621)
-    ];
-    Image buildImageForOverlay() {
-      return Image(
-        image: AssetImage('asset/img/angry.gif'),
-        fit: BoxFit.fill,
-        colorBlendMode: BlendMode.modulate,
-        gaplessPlayback: false,
-      );
-    }
-
-    ImageProvider<Object> buildWhiteForOverlay() {
-      return AssetImage('asset/img/sangjun.PNG');
-    }
-    // final data = await rootBundle.loadString('asset/map/seoul.geojson');
-    // final Uint8List TestImg = rootBundle.load('asset/img/sangjun.PNG').buffer.asUint8List();
-
-    final overlayImages = <BaseOverlayImage>[
-      OverlayImage(
-        bounds: LatLngBounds.fromPoints(points),
-        opacity: 1.0,
-        imageProvider: buildWhiteForOverlay(),
-      ),
-    ];
-    // ClipImage(polygonCoordinates, Image.asset('asset/img/sangjun.PNG'));
-
     return Expanded(
       flex: 3,
       child: Stack(
@@ -309,12 +250,14 @@ class _CustomMapState extends State<_CustomMap> {
               minZoom: 6,
               center: LatLng(37.60732175555233, 127.0710794642477),
               zoom: _zoom,
+              interactiveFlags: InteractiveFlag.drag |
+                  InteractiveFlag.doubleTapZoom |
+                  InteractiveFlag.pinchZoom,
               onPositionChanged: (pos, hasGesture) {
                 // 현재 보이는 화면의 경계를 계산
                 final bounds = mapController.bounds!;
                 final sw = bounds.southWest;
                 final ne = bounds.northEast;
-
                 // 화면 내에 있는 폴리곤만 필터링
                 final visiblePolygons = _polygon.where((p) {
                   return p.any((point) {
@@ -324,68 +267,96 @@ class _CustomMapState extends State<_CustomMap> {
                         point.longitude <= ne!.longitude;
                   });
                 }).toList();
-                _polygon = visiblePolygons;
-                print(
-                    '_polygon.length${_polygon.length} / visiblePolygons${visiblePolygons.length}');
-
-                // CustomPolygonLayer에 화면 내 폴리곤만 전달
-                // _polygonLayer.polygons = visiblePolygons.map((e) => Polygon(
-                //   isFilled: false,
-                //   borderColor: Colors.black,
-                //   points: e,
-                //   borderStrokeWidth: 3.0,
-                // )).toList();
+                layoutpolygon = visiblePolygons;
               },
             ),
-            children: [
-              // TileLayer(
-              //   urlTemplate:
-              //   "https://api.mapbox.com/styles/v1/kitjdeh/clgooh3g6003601q5bh4jc1u6/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoia2l0amRlaCIsImEiOiJjbGduZjRybTIwYTIxM3Bta2ZyNTFscXFoIn0.tq4mI6als9na84abG7RP5w",
-              //   additionalOptions: {
-              //     "access_token":
-              //     "pk.eyJ1Ijoia2l0amRlaCIsImEiOiJjbGduZjRybTIwYTIxM3Bta2ZyNTFscXFoIn0.tq4mI6als9na84abG7RP5w",
-              //     'id': 'mapbox.mapbox-traffic-v1'
-              //   },
-              //   // userAgentPackageName: 'com.example.app',
-              // ),
-              // PolygonLayer(
-              //   polygons: _polygon
-              //       .map((e) => Polygon(
-              //     // image: AssetImage('asset/img/sangjun.PNG'),
-              //     isFilled: false,
-              //     points: e,
-              //     // color: Colors.red,
-              //     borderColor: Colors.white,
-              //     borderStrokeWidth: 2.0,
-              //   ))
-              //       .toList(),
-              //   // polygonCulling: ,
-              // ),
-              CustomPolygonLayer(
-                  urls: urls,
-                  polygons: _polygon
-                      .map((e) => Polygon(
-                            isFilled: false,
-                            borderColor: Colors.black,
-                            points: e,
-                            // color: Colors.red,
-                            borderStrokeWidth: 3.0,
-                          ))
-                      .toList()),
-            ],
+
+            // TileLayer(
+            //   urlTemplate:
+            //   "https://api.mapbox.com/styles/v1/kitjdeh/clgooh3g6003601q5bh4jc1u6/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoia2l0amRlaCIsImEiOiJjbGduZjRybTIwYTIxM3Bta2ZyNTFscXFoIn0.tq4mI6als9na84abG7RP5w",
+            //   additionalOptions: {
+            //     "access_token":
+            //     "pk.eyJ1Ijoia2l0amRlaCIsImEiOiJjbGduZjRybTIwYTIxM3Bta2ZyNTFscXFoIn0.tq4mI6als9na84abG7RP5w",
+            //     'id': 'mapbox.mapbox-traffic-v1'
+            //   },
+            //   // userAgentPackageName: 'com.example.app',
+            // ),
+            // children: [
+            //   PolygonLayer(
+            //       polygons: _polygon
+            //           .map((e) => Polygon(
+            //
+            //         // image: AssetImage('asset/img/sangjun.PNG'),
+            //         isFilled: false,
+            //         points: e,
+            //         // color: Colors.red,
+            //         borderColor: Colors.red,
+            //         borderStrokeWidth: 2.0,
+            //       ))
+            //           .toList(),
+            //       // polygonCulling: ,
+            //     ),
+            // ],
+            //
+            children: _polygon.map((points) {
+              final index = _polygon.indexOf(points);
+              // final lastindex = _polygon.indexOf(_polygon.last);
+              // LatLng(latitude:33.967342, longitude:126.284978)
+              print(index);
+              return GestureDetector(
+                onTap: () {
+                  print(index);
+                },
+                child: CustomPolygonLayer(
+                  index: 1,
+                  urls: [urls[index]],
+                  polygons: [
+                    Polygon(
+                      isFilled: false,
+                      borderColor: index % 2 == 0 ? Colors.black : Colors.blue,
+                      points: points,
+                      borderStrokeWidth: 3.0,
+                    )
+                  ],
+                ),
+              );
+            }).toList(),
+            // children: [
+            //   CustomPolygonLayer(
+            //       urls: urls,
+            //       polygons: _polygon
+            //           .map((e) => Polygon(
+            //                 isFilled: false,
+            //                 borderColor: Colors.black,
+            //                 points: e,
+            //                 // color: Colors.red,
+            //                 borderStrokeWidth: 3.0,
+            //               ))
+            //           .toList()),
+            // ],
           ),
           Column(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              FloatingActionButton(
-                  onPressed: () {
-                    pluszoom();
-                  },
-                  child: Text('+')),
-              FloatingActionButton(
-                  onPressed: () {
-                    minuszoom();
-                  },
-                  child: Text('-')),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    children: [
+                      FloatingActionButton(
+                          onPressed: () {
+                            pluszoom();
+                          },
+                          child: Text('+')),
+                      FloatingActionButton(
+                          onPressed: () {
+                            minuszoom();
+                          },
+                          child: Text('-')),
+                    ],
+                  ),
+                ],
+              ),
             ],
           ),
         ],
@@ -403,22 +374,22 @@ class _ChoolCheckButton extends StatelessWidget {
   }
 }
 
-class MessageClipper extends CustomClipper<Path> {
-  final List<LatLng> polygons;
-  MessageClipper({required this.polygons});
-  @override
-  Path getClip(Size size) {
-    var path = Path();
-    polygons.map((e) => path.add(e));
-    // path.addAll(polygons);
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper oldClipper) {
-    return false;
-  }
-}
+// class MessageClipper extends CustomClipper<Path> {
+//   final List<LatLng> polygons;
+//   MessageClipper({required this.polygons});
+//   @override
+//   Path getClip(Size size) {
+//     var path = Path();
+//     polygons.map((e) => path.add(e));
+//     // path.addAll(polygons);
+//     return path;
+//   }
+//
+//   @override
+//   bool shouldReclip(CustomClipper oldClipper) {
+//     return false;
+//   }
+// }
 // Future<void> _drawPolygonWithImage() async {
 //   final Uint8List imageBytes = await rootBundle.load('asset/img/sangjun.PNG');
 //   final ui.Codec codec = await ui.instantiateImageCodec(imageBytes);

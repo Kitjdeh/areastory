@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'package:flutter/material.dart';
 import 'package:front/component/map/overlay_image.dart' as CustomOverlay;
 
 import 'package:flutter/services.dart';
@@ -21,6 +22,7 @@ enum PolygonLabelPlacement {
 class CustomPolygonLayer extends StatelessWidget {
   final List<Polygon> polygons;
   final List<String> urls;
+  final int index;
 
   /// screen space culling of polygons based on bounding box
   final bool polygonCulling;
@@ -29,7 +31,8 @@ class CustomPolygonLayer extends StatelessWidget {
       {super.key,
       this.polygons = const [],
       this.polygonCulling = false,
-      this.urls = const []}) {
+      this.urls = const [],
+      this.index = 0}) {
     if (polygonCulling) {
       for (final polygon in polygons) {
         polygon.boundingBox = LatLngBounds.fromPoints(polygon.points);

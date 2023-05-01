@@ -78,24 +78,11 @@ flutter:
 
   assets:
     - asset/img/
-<<<<<<< HEAD
+
     - asset/map/
-#    - asset/map/mapdata.json
-#    - asset/map/seoul.geojson
-#    - asset/map/seemapdata.json
-#    - asset/map/geonggi.geojson
-#    - asset/map/sigungookorea.json
-#    - asset/map/korea.geojson
-#    - asset/map/ctp_korea.geojson
-=======
-    - asset/map/mapdata.json
-    - asset/map/seoul.geojson
-    - asset/map/seemapdata.json
-    - asset/map/geonggi.geojson
-    - asset/map/korea.geojson
-    - asset/map/ctp_korea.geojson
+
     - local.env
->>>>>>> 5d81669d4e8b79ca1ab972e28d8f57b3511ecb82
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
