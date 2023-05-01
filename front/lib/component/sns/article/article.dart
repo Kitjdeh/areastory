@@ -1,5 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:front/api/test_api.dart';
 
 class ArticleComponent extends StatefulWidget {
   final String nickname;
@@ -128,8 +129,16 @@ class _ArticleComponentState extends State<ArticleComponent> {
                   Row(
                     children: [
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           widget.onUpdateIsChildActive(true);
+                          try {
+                            final myData = await getData(1);
+                            print('22');
+                            print(myData);
+                            print(myData.msg); // "존재하지 않는 회원" 출력
+                          } catch (e) {
+                            print(e); // 요청 실패
+                          }
                         },
                         child: Image.asset(
                           widget.isLike

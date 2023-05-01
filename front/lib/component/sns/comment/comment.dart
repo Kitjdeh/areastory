@@ -22,6 +22,22 @@ class CommentComponent extends StatelessWidget {
     required this.onUpdateIsChildActive,
   }) : super(key: key);
 
+  String _formatDate(String createdAt) {
+    final now = DateTime.now();
+    final dateTime = DateTime.parse(createdAt);
+    final difference = now.difference(dateTime);
+
+    if (difference.inSeconds < 60) {
+      return '${difference.inSeconds}초 전';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes}분 전';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours}시간 전';
+    } else {
+      return '${difference.inDays}일 전';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -29,9 +45,12 @@ class CommentComponent extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(
+            width: 10,
+          ),
           CircleAvatar(
             radius: 20,
-            backgroundImage: AssetImage(writerProfile),
+            backgroundImage: NetworkImage(writerProfile),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -39,21 +58,44 @@ class CommentComponent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      writer,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          writer,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          _formatDate(createdAt),
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 10),
-                    Text(
-                      createdAt,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
-                      ),
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            onUpdateIsChildActive(false);
+                          },
+                          child: Image.asset(
+                            isLike
+                                ? 'asset/img/like.png'
+                                : 'asset/img/nolike.png',
+                            height: 30,
+                          ),
+                        ),
+                        Text('$likeCount'),
+                      ],
                     ),
                   ],
                 ),
@@ -65,31 +107,6 @@ class CommentComponent extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 5),
-                Row(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        onUpdateIsChildActive(false);
-                      },
-                      child: Icon(
-                        Icons.thumb_up_alt_outlined,
-                        color: isLike ? Colors.blue : Colors.grey,
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    Text('$likeCount'),
-                    const SizedBox(width: 10),
-                    InkWell(
-                      onTap: () {
-                        onUpdateIsChildActive(true);
-                      },
-                      child: Icon(
-                        Icons.comment_outlined,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),

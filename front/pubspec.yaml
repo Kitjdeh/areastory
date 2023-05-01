@@ -39,7 +39,8 @@ dependencies:
   beamer: ^1.5.3
   flutter_native_splash: ^2.2.19
   kakao_flutter_sdk_user: ^1.4.1 # 카카오 로그인
-  # 비머 혹은 고라우터를 사용하겠다.
+  dio: ^4.0.6 #  http통신용, 카카오플러터때문에 버전 맞춤
+  flutter_dotenv: ^5.0.2 # 환경변수 관리영 라이브러리
   google_maps_flutter: ^2.2.5
   geolocator: ^9.0.2
   geojson: ^1.0.0
@@ -49,6 +50,7 @@ dependencies:
   flutter_svg_provider: ^1.0.3
   widget_mask: ^1.0.0+0
   polygon: ^0.1.0
+  http: ^0.13.4+2
 
 
 
@@ -76,6 +78,7 @@ flutter:
 
   assets:
     - asset/img/
+<<<<<<< HEAD
     - asset/map/
 #    - asset/map/mapdata.json
 #    - asset/map/seoul.geojson
@@ -84,6 +87,15 @@ flutter:
 #    - asset/map/sigungookorea.json
 #    - asset/map/korea.geojson
 #    - asset/map/ctp_korea.geojson
+=======
+    - asset/map/mapdata.json
+    - asset/map/seoul.geojson
+    - asset/map/seemapdata.json
+    - asset/map/geonggi.geojson
+    - asset/map/korea.geojson
+    - asset/map/ctp_korea.geojson
+    - local.env
+>>>>>>> 5d81669d4e8b79ca1ab972e28d8f57b3511ecb82
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

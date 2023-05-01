@@ -189,7 +189,6 @@ class _CustomMapState extends State<_CustomMap> {
             //             : cnt % 5 == 3
             //                 ? urlStr = 'asset/img/han2.jpg'
             //                 : urlStr = 'asset/img/han1.jpg';
-
             cnt % 5 == 0
                 ? urlStr = sangjunurl
                 : cnt % 5 == 1

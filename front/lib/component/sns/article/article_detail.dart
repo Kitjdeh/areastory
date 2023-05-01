@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ArticleDetailComponent extends StatelessWidget {
+class ArticleDetailComponent extends StatefulWidget {
   final String nickname;
   final String image;
   final String profile;
@@ -8,22 +8,25 @@ class ArticleDetailComponent extends StatelessWidget {
   final int likeCount;
   final int commentCount;
   final bool isLike;
-  final Function(bool) onUpdateIsChildActive;
   double? height;
 
   ArticleDetailComponent(
       {required this.nickname,
-        this.height,
-        required this.image,
-        required this.profile,
-        required this.content,
-        required this.likeCount,
-        required this.commentCount,
-        required this.isLike,
-        required this.onUpdateIsChildActive,
-        Key? key})
+      this.height,
+      required this.image,
+      required this.profile,
+      required this.content,
+      required this.likeCount,
+      required this.commentCount,
+      required this.isLike,
+      Key? key})
       : super(key: key);
 
+  @override
+  State<ArticleDetailComponent> createState() => _ArticleDetailComponentState();
+}
+
+class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -43,7 +46,7 @@ class ArticleDetailComponent extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Container(
-            height: height ?? 500,
+            height: widget.height ?? 500,
             child: Column(
               children: [
                 Container(
@@ -56,7 +59,7 @@ class ArticleDetailComponent extends StatelessWidget {
                       ),
                       ClipOval(
                         child: Image.network(
-                          profile,
+                          widget.profile,
                           width: 45,
                           height: 45,
                           fit: BoxFit.cover,
@@ -70,7 +73,7 @@ class ArticleDetailComponent extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            nickname,
+                            widget.nickname,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -93,7 +96,7 @@ class ArticleDetailComponent extends StatelessWidget {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: NetworkImage(image),
+                        image: NetworkImage(widget.image),
                       ),
                     ),
                     child: Column(
@@ -114,11 +117,9 @@ class ArticleDetailComponent extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: GestureDetector(
-                                    onTap: () {
-                                      onUpdateIsChildActive(true);
-                                    },
+                                    onTap: () {},
                                     child: Image.asset(
-                                      isLike
+                                      widget.isLike
                                           ? 'asset/img/like.png'
                                           : 'asset/img/nolike.png',
                                       height: 30,
@@ -127,7 +128,7 @@ class ArticleDetailComponent extends StatelessWidget {
                                 ),
                                 Expanded(
                                   child: Text(
-                                    likeCount.toString(),
+                                    widget.likeCount.toString(),
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -155,7 +156,7 @@ class ArticleDetailComponent extends StatelessWidget {
                                 ),
                                 Expanded(
                                   child: Text(
-                                    commentCount.toString(),
+                                    widget.commentCount.toString(),
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -175,7 +176,7 @@ class ArticleDetailComponent extends StatelessWidget {
                             ),
                             child: Center(
                               child: Text(
-                                content,
+                                widget.content,
                                 style: TextStyle(
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
