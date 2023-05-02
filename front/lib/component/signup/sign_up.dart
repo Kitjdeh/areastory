@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter_client_sse/flutter_client_sse.dart';
+// import 'package:flutter_client_sse/flutter_client_sse.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -116,18 +116,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   if (res.statusCode == 200){
                     print("회원가입성공. SSE 시작합니다");
                     /// 로그인 성공시 페이지 이동.
-                    SSEClient.subscribeToSSE(
-                        url:
-                        '${dotenv.get('BASE_URL')}/api/sse',
-                        header: {
-                          // "Accept": "text/event-stream",
-                          "providerId": kakaoid.toString(),
-                          "Cache-Control": "no-cache",
-                        }).listen((event) {
-                      print('Id: ' + event.id!);
-                      print('Event: ' + event.event!);
-                      print('Data: ' + event.data!);
-                    });
+                    // SSEClient.subscribeToSSE(
+                    //     url:
+                    //     '${dotenv.get('BASE_URL')}/api/sse',
+                    //     header: {
+                    //       // "Accept": "text/event-stream",
+                    //       "providerId": kakaoid.toString(),
+                    //       "Cache-Control": "no-cache",
+                    //     }).listen((event) {
+                    //   print('Id: ' + event.id!);
+                    //   print('Event: ' + event.event!);
+                    //   print('Data: ' + event.data!);
+                    // });
                     // html.EventSource eventSource =html.EventSource(
                     //     '${dotenv.get('BASE_URL')}/api/sse'
                     // );
