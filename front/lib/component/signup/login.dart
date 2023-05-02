@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:front/api/login/kakao/kakao_login.dart';
 import 'package:front/api/login/kakao/login_view_model.dart';
 import 'package:front/api/login/login.dart';
+import 'package:front/main.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -44,10 +45,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   }else{
                     print("로그인 SSE 시작합니다");
                     /// 로그인 성공시 페이지 이동.
-                    // Navigator.pushReplacement(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => MyApp()),
-                    // );
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyApp()),
+                    );
                   }
                 }catch(e){
                   print(e);
