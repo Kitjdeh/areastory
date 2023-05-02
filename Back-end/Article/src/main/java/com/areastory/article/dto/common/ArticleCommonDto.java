@@ -20,7 +20,8 @@ public class ArticleCommonDto {
     private String profile;
     private String content;
     private String image;
-    private Long likeCount;
+    private Long dailyLikeCount;
+    private Long totalLikeCount;
     private Long commentCount;
     private Boolean likeYn;
 

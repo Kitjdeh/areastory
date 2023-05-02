@@ -29,7 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -130,7 +132,7 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = articleRepository.findById(articleId).orElseThrow(() -> new CustomException(ErrorCode.ARTICLE_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         ArticleLike articleLike = articleLikeRepository.save(new ArticleLike(user, article));
-        article.addLikeCount();
+        article.addTotalLikeCount();
         notificationProducer.send(articleLike);
         articleProducer.send(article, KafkaProperties.UPDATE);
     }
@@ -138,13 +140,21 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     @Override
     public void deleteArticleLike(Long userId, Long articleId) {
-        if (!articleLikeRepository.existsById(new ArticleLikePK(userId, articleId))) {
+        ArticleLikePK articleLikePK = new ArticleLikePK(userId, articleId);
+        Optional<ArticleLike> optionalArticleLike = articleLikeRepository.findById(articleLikePK);
+        if (optionalArticleLike.isEmpty()) {
             throw new CustomException(ErrorCode.LIKE_NOT_FOUND);
         }
-        Article article = articleRepository.findById(articleId).orElseThrow(() -> new CustomException(ErrorCode.ARTICLE_NOT_FOUND));
-        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        articleLikeRepository.delete(new ArticleLike(user, article));
-        article.removeLikeCount();
+        ArticleLike articleLike = optionalArticleLike.get();
+
+        Article article = articleRepository.findById(articleId).orElseThrow();
+        // 하루 전이라면 daily like count도 감소시켜야 함
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1).withHour(0).withMinute(0).withSecond(0);
+        if (yesterday.isBefore(articleLike.getCreatedAt())) {
+            article.removeDailyLikeCount();
+        }
+        article.removeTotalLikeCount();
+        articleLikeRepository.deleteById(articleLikePK);
         articleProducer.send(article, KafkaProperties.UPDATE);
     }
 

@@ -111,7 +111,8 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
                         article.user.profile,
                         article.content,
                         article.image,
-                        article.likeCount,
+                        article.dailyLikeCount,
+                        article.totalLikeCount,
                         article.commentCount,
                         new CaseBuilder()
                                 .when(articleLike.user.userId.eq(userId))
@@ -140,12 +141,12 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
                 Order direction = Order.DESC;
                 switch (order.getProperty()) {
                     case "likeCount":
-                        articleOrders.add(new OrderSpecifier<>(direction, article.likeCount));
+                        articleOrders.add(new OrderSpecifier<>(direction, article.dailyLikeCount));
                         articleOrders.add(new OrderSpecifier<>(direction, article.articleId));
                         break;
                     case "articleId":
                         articleOrders.add(new OrderSpecifier<>(direction, article.articleId));
-                        articleOrders.add(new OrderSpecifier<>(direction, article.likeCount));
+                        articleOrders.add(new OrderSpecifier<>(direction, article.dailyLikeCount));
                         break;
                 }
             }

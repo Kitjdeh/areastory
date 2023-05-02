@@ -14,9 +14,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @DynamicInsert
-@Table(indexes = {@Index(name = "idx_location", columnList = "do,si,gun,gu,dong,eup,myeon"),
-        @Index(name = "idx_user_id", columnList = "user_id"),
-        @Index(name="idx_like_count", columnList = "like_count")})
+@Table(indexes = {@Index(name = "idx_location", columnList = "do,si,gun,gu,dong,eup,myeon,daily_like_count")})
 public class Article extends BaseTime {
 
     @Id
@@ -33,8 +31,10 @@ public class Article extends BaseTime {
     @Column(length = 200)
     private String image;
     @ColumnDefault("0")
-    @Column(name="like_count")
-    private Long likeCount;
+    @Column(name = "daily_like_count")
+    private Long dailyLikeCount;
+    @ColumnDefault("0")
+    private Long totalLikeCount;
 
     @ColumnDefault("0")
     private Long commentCount;
@@ -89,11 +89,16 @@ public class Article extends BaseTime {
         this.commentCount--;
     }
 
-    public void addLikeCount() {
-        this.likeCount++;
+    public void addTotalLikeCount() {
+        this.totalLikeCount++;
+        this.dailyLikeCount++;
     }
 
-    public void removeLikeCount() {
-        this.likeCount--;
+    public void removeTotalLikeCount() {
+        this.totalLikeCount--;
+    }
+
+    public void removeDailyLikeCount() {
+        this.dailyLikeCount--;
     }
 }

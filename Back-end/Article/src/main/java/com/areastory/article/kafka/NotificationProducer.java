@@ -5,6 +5,7 @@ import com.areastory.article.db.entity.Comment;
 import com.areastory.article.db.entity.CommentLike;
 import com.areastory.article.dto.common.NotificationKafkaDto;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,7 @@ public class NotificationProducer {
                 .articleId(articleLike.getArticle().getArticleId())
                 .image(articleLike.getArticle().getImage())
                 .build();
-//        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, articleLikeNotificationKafkaDto.getUserId(), articleLikeNotificationKafkaDto));
+        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, articleLikeNotificationKafkaDto.getUserId(), articleLikeNotificationKafkaDto));
     }
 
     public void send(Comment comment) {
@@ -33,7 +34,7 @@ public class NotificationProducer {
                 .commentId(comment.getCommentId())
                 .image(comment.getArticle().getImage())
                 .build();
-//        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, commentNotificationKafkaDto.getUserId(), commentNotificationKafkaDto));
+        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, commentNotificationKafkaDto.getUserId(), commentNotificationKafkaDto));
     }
 
     public void send(CommentLike commentLike) {
@@ -45,6 +46,6 @@ public class NotificationProducer {
                 .commentId(commentLike.getComment().getCommentId())
                 .image(commentLike.getComment().getArticle().getImage())
                 .build();
-//        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, commentLikeNotificationKafkaDto.getUserId(), commentLikeNotificationKafkaDto));
+        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, commentLikeNotificationKafkaDto.getUserId(), commentLikeNotificationKafkaDto));
     }
 }
