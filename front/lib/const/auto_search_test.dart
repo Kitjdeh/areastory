@@ -27,9 +27,7 @@ class _LocationSearchState extends State<LocationSearch> {
     for (var table in excel.tables.keys) {
       for (var row in excel.tables[table]!.rows) {
         var option = '${row[0]?.value} ${row[1]?.value} ${row[2]?.value}';
-        // print('>>>');
-        // print(option);
-        // print('>>>');
+
         options.add(option.toString());
       }
     }

@@ -154,6 +154,15 @@ class _ArticleComponentState extends State<ArticleComponent> {
                           height: 30,
                         ),
                       ),
+                      GestureDetector(
+                        onTap: () {
+                          Beamer.of(context).beamToNamed('/sns/chat');
+                        },
+                        child: Image.asset(
+                          'asset/img/comment.png',
+                          height: 30,
+                        ),
+                      ),
                     ],
                   ),
                   Padding(

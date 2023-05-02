@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart' as http;
+
 
 Future<MyDataClass> getData(params) async {
   final dio = Dio(BaseOptions(
