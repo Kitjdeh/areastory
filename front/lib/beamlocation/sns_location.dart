@@ -3,6 +3,7 @@ import 'package:beamer/beamer.dart';
 import 'package:front/component/sns/comment_screen.dart';
 import 'package:front/component/sns/like_screen.dart';
 import 'package:front/screen/sns_screen.dart';
+import 'package:front/socket/socket_test.dart';
 
 class SnsLocation extends BeamLocation<BeamState> {
   SnsLocation(super.routeInformation);
@@ -32,6 +33,12 @@ class SnsLocation extends BeamLocation<BeamState> {
           const BeamPage(
             key: ValueKey('sns/like'),
             child: SnsLikeScreen(),
+          ),
+        if (state.uri.pathSegments.length == 2 &&
+            state.uri.pathSegments[1] == 'chat')
+          const BeamPage(
+            key: ValueKey('sns/chat'),
+            child: LiveChatTest(),
           ),
       ];
 }

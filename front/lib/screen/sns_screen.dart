@@ -4,6 +4,8 @@ import 'package:front/component/sns/article/article_detail.dart';
 import 'package:front/const/article_test.dart';
 import 'package:front/const/auto_search_test.dart';
 
+const List<String> list = <String>['인기순', '최신순'];
+
 class SnsScreen extends StatefulWidget {
   const SnsScreen({Key? key}) : super(key: key);
 
@@ -14,6 +16,7 @@ class SnsScreen extends StatefulWidget {
 class _SnsScreenState extends State<SnsScreen> {
   int _currentPage = 1;
   List _articles = [];
+  String dropdownValue = list.first;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -60,63 +63,72 @@ class _SnsScreenState extends State<SnsScreen> {
             width: 120,
           ),
           actions: [
-            IconButton(
-              icon: Icon(
-                Icons.search,
-                color: Colors.black,
-                size: 25,
-              ),
-              onPressed: () {
-                // Show more options
-              },
-            ),
             Container(
-                width: 150,
-                child: LocationSearch()),
-            IconButton(
-              icon: Icon(
-                Icons.more_vert,
-                color: Colors.black,
-                size: 25,
+              margin: EdgeInsets.only(top: 5),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.grey,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(5),
               ),
-              onPressed: () {
-                // Show more options
-              },
+              width: 190,
+              child: LocationSearch(),
             ),
+            DropdownButton<String>(
+              value: dropdownValue,
+              style: const TextStyle(color: Colors.black),
+              underline: null,
+              autofocus: true,
+              dropdownColor: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+              onChanged: (String? value) {
+                // This is called when the user selects an item.
+                setState(() {
+                  dropdownValue = value!;
+                });
+              },
+              items: list.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            )
           ],
         ),
       ),
       body: SafeArea(
         child: Column(
           children: [
-            ElevatedButton(
-              child: Text('Show Article Detail'),
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  backgroundColor: Colors.transparent,
-                  isScrollControlled: true,
-                  builder: (BuildContext context) {
-                    return SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.8,
-                      child: Center(
-                        child: ArticleDetailComponent(
-                          nickname: '치킨먹고싶다',
-                          image:
-                              'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg',
-                          profile:
-                              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKFOtP8DmiYHZ-HkHpmLq9Oydg8JB4CuyOVg&usqp=CAU',
-                          content: '왜이리 화나있너 ;;; ㅎㅎㅎㅎㅎㅎㅎㅎ',
-                          likeCount: 33,
-                          commentCount: 14,
-                          isLike: true,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+            // ElevatedButton(
+            //   child: Text('Show Article Detail'),
+            //   onPressed: () {
+            //     showModalBottomSheet(
+            //       context: context,
+            //       backgroundColor: Colors.transparent,
+            //       isScrollControlled: true,
+            //       builder: (BuildContext context) {
+            //         return SizedBox(
+            //           height: MediaQuery.of(context).size.height * 0.8,
+            //           child: Center(
+            //             child: ArticleDetailComponent(
+            //               nickname: '치킨먹고싶다',
+            //               image:
+            //                   'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg',
+            //               profile:
+            //                   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKFOtP8DmiYHZ-HkHpmLq9Oydg8JB4CuyOVg&usqp=CAU',
+            //               content: '왜이리 화나있너 ;;; ㅎㅎㅎㅎㅎㅎㅎㅎ',
+            //               likeCount: 33,
+            //               commentCount: 14,
+            //               isLike: true,
+            //             ),
+            //           ),
+            //         );
+            //       },
+            //     );
+            //   },
+            // ),
             SizedBox(
               height: 10,
             ),

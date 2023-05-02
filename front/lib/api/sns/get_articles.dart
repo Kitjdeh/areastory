@@ -1,16 +1,16 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
-Future<List<Article>> getArticles(params) async {
-  final response = await http.get(Uri.parse(
-      'http://j8a302.p.ssafy.io:8080/api/v1/article-info/2?localDate=${params}'));
+Future<ArticleData> getArticles(String params) async {
+  final dio = Dio(BaseOptions(
+    baseUrl: 'https://k8a302.p.ssafy.io/api/articles/',
+  ));
+  final response = await dio.get(params.toString());
 
   if (response.statusCode == 200) {
-    final jsonData = json.decode(response.body);
+    final jsonData = response.data;
     final articleData = ArticleData.fromJson(jsonData);
 
-    var articles = articleData.articles;
-    return articles;
+    return articleData;
   } else {
     throw Exception('Failed to load articles');
   }
