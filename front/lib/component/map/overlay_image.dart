@@ -45,12 +45,12 @@ class OverlayImage extends CustomOverlayImage {
 
   OverlayImage(
       {required this.bounds,
-      required this.url,
-      required this.polygon,
-      required this.offset,
-      required this.imageProvider,
-      this.opacity = 1.0,
-      this.gaplessPlayback = false});
+        required this.url,
+        required this.polygon,
+        required this.offset,
+        required this.imageProvider,
+        this.opacity = 1.0,
+        this.gaplessPlayback = false});
 
   @override
   Positioned buildPositionedForOverlay(FlutterMapState map) {
@@ -128,32 +128,12 @@ class OverlayImage extends CustomOverlayImage {
     final List<Offset> listoffset = this
         .polygon
         .map((e) => Offset(
-            // (e.longitude -  bounds.size.x.toDouble()) / polLng,(e.latitude -bounds.size.y.toDouble()) / polLat))
-            (e.longitude - midLng) / (maxLng - midLng),
-            (e.latitude - midLat) / (midLat - maxLat)))
+      // (e.longitude -  bounds.size.x.toDouble()) / polLng,(e.latitude -bounds.size.y.toDouble()) / polLat))
+        (e.longitude - midLng) / (maxLng - midLng),
+        (e.latitude - midLat) / (midLat - maxLat)))
         .toList();
-    // listoffset.add(Offset(-1,1));
-    // final List<Offset> listoffset = this
-    //     .polygon
-    //     .map((e) => Offset(
-    //         (e.longitude - minLng) * height, (e.latitude - minLat) * -width))
-    //     .toList();
-    // print(listoffset);
-    // print(this.polygon.first);
-    // print(listoffset.first.dx);
-    // print(bounds);
-
-    // print('listoffset${listoffset}');
-    // print('offset${offset}');
-    //
-    // print('aasdfasdf${bounds.topLeft.x.toDouble()}');
-    // print('sgsdsdf${listoffset.first.dx}');
-    // print('${bounds.topLeft.x.toDouble() - listoffset.first.dx}');
-    // print('ttttt${bounds.topLeft.x.toDouble() -bounds.topRight.x.toDouble()}');
-    // print('aasdfasdf${listoffset.first.dx}');
     final polygon = newpolygon.Polygon(listoffset);
-    // final polygon = newpolygon.Polygon(offset);
-    // print(polygon.vertices);
+
     return Positioned(
         left: bounds.topLeft.x.toDouble(),
         top: bounds.topLeft.y.toDouble(),
@@ -164,8 +144,8 @@ class OverlayImage extends CustomOverlayImage {
             color: Colors.blue,
             image: DecorationImage(
                 image:
-                    // AssetImage(url)
-                    NetworkImage(url)
+                // AssetImage(url)
+                NetworkImage(url)
                 // AssetImage('asset/img/doji.jpg')
                 ,
                 fit: BoxFit.cover),
