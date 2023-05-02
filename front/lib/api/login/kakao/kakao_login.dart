@@ -1,4 +1,4 @@
-import 'package:front/component/signup/social_login.dart';
+import 'package:front/api/login/kakao/social_login.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 class KakaoLogin implements SocialLogin {
