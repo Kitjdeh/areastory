@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/login/kakao/kakao_login.dart';
 import 'package:front/api/login/kakao/login_view_model.dart';
 import 'package:front/api/login/login.dart';
@@ -13,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final storage = new FlutterSecureStorage(); /// flutter sercure storage에 연결.
   final dio = Dio();
   final viewModel = LoginViewModel(KakaoLogin());
 
@@ -44,6 +46,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                   }else{
                     print("로그인 SSE 시작합니다");
+                    /// 로그인 성공시 storage에 저장
+                    await storage.write(key: "providerId", value: viewModel.user?.id.toString());
                     /// 로그인 성공시 페이지 이동.
                     Navigator.pushReplacement(
                       context,
@@ -63,6 +67,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 setState(() {
 
                 });
+                /// 로그아웃시
+                await storage.delete(key: "providerId");
               },
               child: Text("로그아웃"),
             )

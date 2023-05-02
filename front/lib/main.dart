@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/component/signup/login.dart';
 import 'package:front/component/signup/sign_up.dart';
 import 'package:front/screen/home_screen.dart';
@@ -12,6 +13,9 @@ void main() async {
   //     NoCheckCertificateHttpOverrides(); // 생성된 HttpOverrides 객체 등록
   WidgetsFlutterBinding.ensureInitialized();
   KakaoSdk.init(nativeAppKey: dotenv.get('KAKAO_KEY'));
+  final storage = new FlutterSecureStorage(); /// flutter sercure storage에 연결.
+
+  String? providerId = await storage.read(key: 'providerId');
 
   // runApp(MyApp());
   runApp(
@@ -19,7 +23,7 @@ void main() async {
       routes: {
         '/signup': (context) => SignUpScreen(),
       },
-      home: LoginScreen(),
+      home: providerId != null ? MyApp() : LoginScreen(),
     )
   );
 }

@@ -1,5 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/component/mypage/mypage_tabbar.dart';
 
 class MyPageScreen extends StatefulWidget {
@@ -10,7 +11,7 @@ class MyPageScreen extends StatefulWidget {
 }
 
 class _MyPageScreenState extends State<MyPageScreen> {
-
+  final storage = new FlutterSecureStorage();
   @override
   Widget build(BuildContext context) {
     return _buildMyPageScreen();
@@ -61,7 +62,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                     label: Text("설정"),
                                   ),
                                   TextButton.icon(
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      String? providerId = await storage.read(key: "providerId");
+                                      print("감자ㅁㄴㅇㅁㅇㅁㄴㅇㅁ");
+                                      print(providerId);
                                       Navigator.of(context).pop();
                                       print("개인정보 수정");
                                     },
