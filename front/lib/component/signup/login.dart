@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:front/api/login/kakao/kakao_login.dart';
 import 'package:front/api/login/kakao/login_view_model.dart';
 import 'package:front/api/login/login.dart';
-import 'package:front/component/signup/sign_up.dart';
-import 'package:front/main.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -30,11 +28,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 setState(() {
 
                 });
-                print("감자");
                 /// 로그인시 카카오가 던져주는 키값
-                print(viewModel.user?.id);
-                print(viewModel.user?.kakaoAccount?.profile?.nickname);
-                print(viewModel.user?.kakaoAccount?.profile?.profileImageUrl);
+                // print(viewModel.user?.id);
+                // print(viewModel.user?.kakaoAccount?.profile?.nickname);
+                // print(viewModel.user?.kakaoAccount?.profile?.profileImageUrl);
                 try{
                   final res = await getLogin(viewModel.user?.id);
                   print(res);
@@ -44,13 +41,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       '/signup',
                       arguments: viewModel.user,
                     );
+                  }else{
+                    print("로그인 SSE 시작합니다");
+                    /// 로그인 성공시 페이지 이동.
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => MyApp()),
+                    // );
                   }
                 }catch(e){
-                  /// 로그인 성공시 페이지 이동.
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyApp()),
-                  );
+                  print(e);
+                  print("에러다다다다다다");
                 }
               },
               child: Text("로그인"),

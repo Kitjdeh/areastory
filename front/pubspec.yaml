@@ -53,8 +53,10 @@ dependencies:
   polygon: ^0.1.0
   http: ^0.13.4+2
   excel: ^2.1.0
-
-
+  http_parser: ^4.0.2   # 콘텐츠타입 파싱용
+  flutter_secure_storage: ^8.0.0  # 로그인시, 유정 providerId저장용
+  universal_html: ^2.2.1 # sse 4트
+  flutter_client_sse: ^1.0.0 # sse 5트
 
 dev_dependencies:
   flutter_test:
