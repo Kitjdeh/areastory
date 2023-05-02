@@ -31,7 +31,8 @@ public class CommentSupportRepositoryImpl implements CommentSupportRepository {
 
     @Override
     public Page<CommentDto> findAll(CommentReq commentReq, Pageable pageable) {
-        List<CommentDto> comments = getCommentQuery(commentReq)
+        List<CommentDto> comments = getCommentQuery(commentReq.getUserId())
+                .where(comment.article.articleId.eq(commentReq.getArticleId()))
                 .orderBy(getOrderSpecifier(pageable).toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -72,6 +73,23 @@ public class CommentSupportRepositoryImpl implements CommentSupportRepository {
         return PageableExecutionUtils.getPage(likeList, pageable, likeListSize::fetchOne);
     }
 
+    @Override
+    public Page<CommentDto> findMyLikeList(Long userId, Pageable pageable) {
+        List<CommentDto> comments = getCommentQuery(userId)
+                .where(comment.user.userId.eq(userId))
+                .orderBy(getOrderSpecifier(pageable).toArray(OrderSpecifier[]::new))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> commentSize = query
+                .select(comment.count())
+                .from(comment)
+                .where(comment.user.userId.eq(userId));
+
+        return PageableExecutionUtils.getPage(comments, pageable, commentSize::fetchOne);
+    }
+
     private List<OrderSpecifier> getOrderSpecifier(Pageable pageable) {
         List<OrderSpecifier> commentOrders = new ArrayList<>();
 
@@ -81,10 +99,10 @@ public class CommentSupportRepositoryImpl implements CommentSupportRepository {
                 switch (order.getProperty()) {
                     case "likeCount":
                         commentOrders.add(new OrderSpecifier<>(direction, comment.likeCount));
-                        commentOrders.add(new OrderSpecifier<>(direction, comment.createdAt));
+                        commentOrders.add(new OrderSpecifier<>(direction, comment.commentId));
                         break;
-                    case "createdAt":
-                        commentOrders.add(new OrderSpecifier<>(direction, comment.createdAt));
+                    case "commentId":
+                        commentOrders.add(new OrderSpecifier<>(direction, comment.commentId));
                         commentOrders.add(new OrderSpecifier<>(direction, comment.likeCount));
                         break;
                 }
@@ -93,7 +111,7 @@ public class CommentSupportRepositoryImpl implements CommentSupportRepository {
         return commentOrders;
     }
 
-    private JPAQuery<CommentDto> getCommentQuery(CommentReq commentReq) {
+    private JPAQuery<CommentDto> getCommentQuery(Long userId) {
         return query.select(Projections.constructor(CommentDto.class,
                         comment.commentId,
                         comment.article.articleId,
@@ -104,12 +122,11 @@ public class CommentSupportRepositoryImpl implements CommentSupportRepository {
                         comment.likeCount,
                         comment.createdAt,
                         new CaseBuilder()
-                                .when(commentLike.user.userId.eq(commentReq.getUserId()))
+                                .when(commentLike.user.userId.eq(userId))
                                 .then(true)
                                 .otherwise(false)))
                 .from(comment)
                 .leftJoin(commentLike)
-                .on(commentLike.user.userId.eq(commentReq.getUserId()), commentLike.comment.commentId.eq(comment.commentId))
-                .where(comment.article.articleId.eq(commentReq.getArticleId()));
+                .on(commentLike.user.userId.eq(userId), commentLike.comment.commentId.eq(comment.commentId));
     }
 }

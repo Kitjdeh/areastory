@@ -96,4 +96,13 @@ public class CommentController {
                                          @PageableDefault(size = 15) Pageable pageable) {
         return ResponseEntity.ok(commentService.selectAllLikeList(userId, commentId, pageable));
     }
+
+    /*
+    내가 단 댓글 목록 보기
+    */
+    @GetMapping("/myLike/{userId}")
+    public ResponseEntity<?> getMyLikeList(@PathVariable Long userId,
+                                           @PageableDefault(sort = "commentId", direction = Sort.Direction.DESC, size = 15) Pageable pageable) {
+        return ResponseEntity.ok(commentService.selectMyLikeList(userId, pageable));
+    }
 }

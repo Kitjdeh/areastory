@@ -135,5 +135,20 @@ public class CommentServiceImpl implements CommentService {
                 .build();
     }
 
+    @Override
+    public CommentResp selectMyLikeList(Long userId, Pageable pageable) {
+        Page<CommentDto> comments = commentRepository.findMyLikeList(userId, pageable);
+
+        return CommentResp.builder()
+                .comments(comments.getContent())
+                .pageSize(comments.getPageable().getPageSize())
+                .totalPageNumber(comments.getTotalPages())
+                .totalCount(comments.getTotalElements())
+                .pageNumber(comments.getPageable().getPageNumber() + 1)
+                .nextPage(comments.hasNext())
+                .previousPage(comments.hasPrevious())
+                .build();
+    }
+
 
 }

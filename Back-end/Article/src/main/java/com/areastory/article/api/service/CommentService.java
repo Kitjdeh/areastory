@@ -23,4 +23,6 @@ public interface CommentService {
     void deleteCommentLike(Long userId, Long commentId);
 
     LikeResp selectAllLikeList(Long userId, Long commentId, Pageable pageable);
+
+    CommentResp selectMyLikeList(Long userId, Pageable pageable);
 }

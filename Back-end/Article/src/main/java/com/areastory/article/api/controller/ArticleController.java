@@ -97,7 +97,6 @@ public class ArticleController {
     /*
     내가 좋아요 눌렀던 게시글 목록 보기
      */
-
     @GetMapping("/myLike/{userId}")
     public ResponseEntity<?> getMyLikeList(@PathVariable Long userId,
                                            @PageableDefault(sort = "articleId", direction = Sort.Direction.DESC, size = 15) Pageable pageable) {
