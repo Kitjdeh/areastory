@@ -116,7 +116,7 @@ class _CustomMapState extends State<_CustomMap> {
   List<Mapdata> smallareaData = [];
   List<Mapdata> nowareadata = [];
   Mapdata? localareadata;
-  double _zoom = 7.0;
+  double _zoom = 9.0;
   var currentcenter = LatLng(37.60732175555233, 127.0710794642477);
   void minuszoom() {
     _zoom = mapController.zoom - 1;
@@ -150,10 +150,10 @@ class _CustomMapState extends State<_CustomMap> {
   @override
   void initState() {
     super.initState();
-    _loadGeoJson('asset/map/minimal.json');
-    _loadGeoJson('asset/map/sigungookorea.json');
-    _loadGeoJson('asset/map/ctp_korea.geojson');
-    nowareadata = bigareaData;
+    // _loadGeoJson('asset/map/minimal.json');
+    // _loadGeoJson('asset/map/sigungookorea.json');
+    // _loadGeoJson('asset/map/ctp_korea.geojson');
+    // nowareadata = bigareaData;
     // mapController.zoom > 12.0
     //     ? nowareadata = smallareaData
     //     : mapController.zoom > 9.0
@@ -267,6 +267,24 @@ class _CustomMapState extends State<_CustomMap> {
     //     : mapController.zoom > 9.0
     //     ? nowareadata = middleareaData
     //     : nowareadata = bigareaData;
+    List<Widget> customPolygonLayers = [];
+    for (var mapdata in nowareadata) {
+      customPolygonLayers.add(
+        CustomPolygonLayer(
+          index: 1,
+          urls: [mapdata.urls ?? ''],
+          area: mapdata.areaname ?? '',
+          polygons: [
+            Polygon(
+              isFilled: false,
+              borderColor: Colors.white30,
+              points: mapdata.polygons!,
+              borderStrokeWidth: 3.0,
+            ),
+          ],
+        ),
+      );
+    }
     return Expanded(
       flex: 3,
       child: Stack(
@@ -281,6 +299,28 @@ class _CustomMapState extends State<_CustomMap> {
               interactiveFlags: InteractiveFlag.drag |
                   InteractiveFlag.doubleTapZoom |
                   InteractiveFlag.pinchZoom,
+              onMapReady: () async {
+                print("1nowareadata.length${nowareadata.length}");
+                await _loadGeoJson('asset/map/minimal.json');
+                await _loadGeoJson('asset/map/sigungookorea.json');
+                await _loadGeoJson('asset/map/ctp_korea.geojson');
+                nowareadata = middleareaData;
+                print("2nowareadata.length${nowareadata.length}");
+                final bounds = mapController.bounds;
+                final sw = bounds!.southWest;
+                final ne = bounds!.northEast;
+                // 화면 내에 있는 폴리곤만 필터링
+                final visibleMapdata = nowareadata.where((p) {
+                  return p.polygons!.any((point) {
+                    return point.latitude >= sw!.latitude &&
+                        point.latitude <= ne!.latitude &&
+                        point.longitude >= sw.longitude &&
+                        point.longitude <= ne!.longitude;
+                  });
+                }).toList();
+                nowareadata = visibleMapdata;
+                print("3nowareadata.length${nowareadata.length}");
+              },
               onPositionChanged: (pos, hasGesture) {
                 // print('before${nowareadata.length}');
                 // 현재 보이는 화면의 경계를 계산
@@ -298,32 +338,52 @@ class _CustomMapState extends State<_CustomMap> {
                 }).toList();
                 // print('after${nowareadata.length} ${visibleMapdata.length}');
                 nowareadata = visibleMapdata;
-                // layoutpolygon = visiblePolygons;
-                // final visiblePolygons = _polygon.where((p) {
-                //   return p.any((point) {
-                //     return point.latitude >= sw!.latitude &&
-                //         point.latitude <= ne!.latitude &&
-                //         point.longitude >= sw.longitude &&
-                //         point.longitude <= ne!.longitude;
-                //   });
-                // }).toList();
-                // layoutpolygon = visiblePolygons;
               },
             ),
-            children: nowareadata.map((mapdata) {
-              return CustomPolygonLayer(
+            children: [
+              PolygonLayer(
+                polygons: bigareaData
+                    .map((e) => Polygon(
+                  // image: AssetImage('asset/img/sangjun.PNG'),
+                  isFilled: false,
+                  points: e.polygons!,
+                  // color: Colors.red,
+                  borderColor: Colors.red,
+                  borderStrokeWidth: 10.0,
+                ))
+                    .toList(),
+                // polygonCulling: ,
+              ),
+              for (var mapdata in nowareadata)
+                CustomPolygonLayer(
                   index: 1,
                   urls: [mapdata.urls ?? ''],
                   area: mapdata.areaname ?? '',
                   polygons: [
                     Polygon(
                       isFilled: false,
-                      borderColor: Colors.black,
+                      borderColor: Colors.white30,
                       points: mapdata.polygons!,
-                      borderStrokeWidth: 3.0,
-                    )
-                  ]);
-            }).toList(),
+                      borderStrokeWidth: 2.0,
+                    ),
+                  ],
+                ),
+
+            ],
+            // children: nowareadata.map((mapdata) {
+            //   return CustomPolygonLayer(
+            //       index: 1,
+            //       urls: [mapdata.urls ?? ''],
+            //       area: mapdata.areaname ?? '',
+            //       polygons: [
+            //         Polygon(
+            //           isFilled: false,
+            //           borderColor: Colors.white30,
+            //           points: mapdata.polygons!,
+            //           borderStrokeWidth: 3.0,
+            //         )
+            //       ]);
+            // }).toList()
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
