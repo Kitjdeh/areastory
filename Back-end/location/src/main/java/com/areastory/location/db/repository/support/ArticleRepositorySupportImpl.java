@@ -58,7 +58,7 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
     private JPAQuery<ArticleSub> getSubQuery(List<LocationDto> locationList) {
         return query
                 .select(Projections.constructor(ArticleSub.class,
-                        article.likeCount.max(),
+                        article.dailyLikeCount.max(),
                         article.doName,
                         article.si,
                         article.gun,
@@ -95,12 +95,12 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
         booleanExpression = eqEup(booleanExpression, locationDto.getEup());
         booleanExpression = eqMyeon(booleanExpression, locationDto.getMyeon());
         if (locationDto instanceof ArticleSub)
-            booleanExpression = eqLikeCount(booleanExpression, ((ArticleSub) locationDto).getLikeCount());
+            booleanExpression = eqLikeCount(booleanExpression, ((ArticleSub) locationDto).getDailyLikeCount());
         return booleanExpression;
     }
 
     private BooleanExpression eqLikeCount(BooleanExpression be, Long likeCount) {
-        BooleanExpression eq = article.likeCount.eq(likeCount);
+        BooleanExpression eq = article.dailyLikeCount.eq(likeCount);
         if (be == null)
             return eq;
         if (eq == null)

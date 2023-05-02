@@ -5,19 +5,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
+import javax.persistence.Index;
 import javax.persistence.MappedSuperclass;
 
 @Getter
 @MappedSuperclass
 @NoArgsConstructor
 public class Location {
-    @Column(name = "do")
+    @Column(name = "do", length = 4)
     private String doName;
+    @Column(length = 10)
     private String si;
+    @Column(length = 10)
     private String gun;
+    @Column(length = 10)
     private String gu;
+    @Column(length = 10)
     private String dong;
+    @Column(length = 10)
     private String eup;
+    @Column(length = 10)
     private String myeon;
 
     @Builder

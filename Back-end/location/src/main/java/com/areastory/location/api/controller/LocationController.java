@@ -15,7 +15,7 @@ import java.util.List;
 public class LocationController {
     private final LocationService locationService;
 
-    @PostMapping("/map")
+    @GetMapping("/map")
     public ResponseEntity<List<LocationResp>> getMap(@RequestBody List<LocationDto> locationList) {
         try {
             return ResponseEntity.ok(locationService.getMapImages(locationList));
@@ -25,7 +25,7 @@ public class LocationController {
         }
     }
 
-    @PostMapping("/map/{userId}")
+    @GetMapping("/map/{userId}")
     public ResponseEntity<List<LocationResp>> getUserMap(@PathVariable Long userId, @RequestBody List<LocationDto> locationList) {
         try {
             return ResponseEntity.ok(locationService.getUserMapImages(userId, locationList));

@@ -4,30 +4,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "article")
+@Table(name = "article", indexes = @Index(name = "idx_location", columnList = "do,si,gun,gu,dong,eup,myeon,daily_like_count"))
 public class Article extends Location {
     @Id
     private Long articleId;
     private Long userId;
+    @Column(length = 200)
     private String image;
     @Setter
-    private Long likeCount;
+    @Column(name="daily_like_count")
+    private Long dailyLikeCount;
     private LocalDateTime createdAt;
 
-    public Article(Long articleId, Location location, Long userId, String image, Long likeCount, LocalDateTime createdAt) {
+    public Article(Long articleId, Location location, Long userId, String image, Long dailyLikeCount, LocalDateTime createdAt) {
         super(location);
         this.articleId = articleId;
         this.userId = userId;
         this.image = image;
-        this.likeCount = likeCount;
+        this.dailyLikeCount = dailyLikeCount;
         this.createdAt = createdAt;
     }
 
@@ -39,7 +39,7 @@ public class Article extends Location {
         private Long articleId;
         private Long userId;
         private String image;
-        private Long likeCount;
+        private Long dailyLikeCount;
         private Location location;
         private LocalDateTime createdAt;
 
@@ -58,8 +58,8 @@ public class Article extends Location {
             return this;
         }
 
-        public Builder likeCount(Long likeCount) {
-            this.likeCount = likeCount;
+        public Builder dailyLikeCount(Long dailyLikeCount) {
+            this.dailyLikeCount = dailyLikeCount;
             return this;
         }
 
@@ -74,7 +74,7 @@ public class Article extends Location {
         }
 
         public Article build() {
-            return new Article(articleId, location, userId, image, likeCount, createdAt);
+            return new Article(articleId, location, userId, image, dailyLikeCount, createdAt);
         }
     }
 }

@@ -31,7 +31,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .articleId(articleKafkaDto.getArticleId())
                 .userId(articleKafkaDto.getUserId())
                 .image(articleKafkaDto.getImage())
-                .likeCount(articleKafkaDto.getLikeCount())
+                .dailyLikeCount(articleKafkaDto.getDailyLikeCount())
                 .createdAt(articleKafkaDto.getCreatedAt())
                 .location(location)
                 .build();
@@ -42,7 +42,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public void updateArticle(ArticleKafkaDto articleKafkaDto) {
         Article article = articleRepository.findById(articleKafkaDto.getArticleId()).orElseThrow();
-        article.setLikeCount(articleKafkaDto.getLikeCount());
+        article.setDailyLikeCount(articleKafkaDto.getDailyLikeCount());
     }
 
     @Override
