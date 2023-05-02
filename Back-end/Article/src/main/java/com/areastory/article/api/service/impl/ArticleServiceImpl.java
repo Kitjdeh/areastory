@@ -161,4 +161,18 @@ public class ArticleServiceImpl implements ArticleService {
                 .previousPage(likes.hasPrevious())
                 .build();
     }
+
+    @Override
+    public ArticleResp selectMyLikeList(Long userId, Pageable pageable) {
+        Page<ArticleRespDto> likes = articleRepository.findMyLikeList(userId, pageable);
+        return ArticleResp.builder()
+                .articles(likes.getContent())
+                .pageSize(likes.getPageable().getPageSize())
+                .totalPageNumber(likes.getTotalPages())
+                .totalCount(likes.getTotalElements())
+                .pageNumber(likes.getPageable().getPageNumber() + 1)
+                .nextPage(likes.hasNext())
+                .previousPage(likes.hasPrevious())
+                .build();
+    }
 }

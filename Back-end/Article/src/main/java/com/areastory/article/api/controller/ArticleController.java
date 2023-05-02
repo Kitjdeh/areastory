@@ -93,4 +93,14 @@ public class ArticleController {
                                          @PageableDefault(size = 15) Pageable pageable) {
         return ResponseEntity.ok(articleService.selectAllLikeList(userId, articleId, pageable));
     }
+
+    /*
+    내가 좋아요 눌렀던 게시글 목록 보기
+     */
+
+    @GetMapping("/myLike/{userId}")
+    public ResponseEntity<?> getMyLikeList(@PathVariable Long userId,
+                                           @PageableDefault(sort = "articleId", direction = Sort.Direction.DESC, size = 15) Pageable pageable) {
+        return ResponseEntity.ok(articleService.selectMyLikeList(userId, pageable));
+    }
 }

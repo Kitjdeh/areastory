@@ -17,6 +17,8 @@ public interface ArticleSupportRepository {
 
     Page<UserDto> findAllLike(Long userId, Long articleId, Pageable pageable);
 
+    Page<ArticleRespDto> findMyLikeList(Long userId, Pageable pageable);
+
     default ArticleRespDto toArticleRespDto(ArticleDto articleDto) {
         return ArticleRespDto.builder()
                 .articleId(articleDto.getArticleId())

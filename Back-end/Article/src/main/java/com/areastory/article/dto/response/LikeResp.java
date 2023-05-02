@@ -13,8 +13,8 @@ public class LikeResp {
     private Integer totalPageNumber;
     private Long totalCount;
     private Integer pageNumber;
-    private boolean nextPage;
-    private boolean previousPage;
+    private Boolean nextPage;
+    private Boolean previousPage;
 
     private List<UserDto> users;
 }

@@ -85,6 +85,23 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
         return PageableExecutionUtils.getPage(likeList, pageable, likeListSize::fetchOne);
     }
 
+    @Override
+    public Page<ArticleRespDto> findMyLikeList(Long userId, Pageable pageable) {
+        List<ArticleRespDto> myLikeList = getArticlesQuery(userId)
+                .where(articleLike.user.userId.eq(userId))
+                .orderBy(getOrderSpecifier(pageable).toArray(OrderSpecifier[]::new))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch().stream().map(this::toArticleRespDto).collect(Collectors.toList());
+
+        JPAQuery<Long> myLikeListSize = query
+                .select(articleLike.count())
+                .from(articleLike)
+                .where(articleLike.user.userId.eq(userId));
+
+        return PageableExecutionUtils.getPage(myLikeList, pageable, myLikeListSize::fetchOne);
+    }
+
     private JPAQuery<ArticleDto> getArticlesQuery(Long userId) {
         //위치 정보 불러오기
         return query.select(Projections.constructor(ArticleDto.class,
@@ -124,10 +141,10 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
                 switch (order.getProperty()) {
                     case "likeCount":
                         articleOrders.add(new OrderSpecifier<>(direction, article.likeCount));
-                        articleOrders.add(new OrderSpecifier<>(direction, article.createdAt));
+                        articleOrders.add(new OrderSpecifier<>(direction, article.articleId));
                         break;
-                    case "createdAt":
-                        articleOrders.add(new OrderSpecifier<>(direction, article.createdAt));
+                    case "articleId":
+                        articleOrders.add(new OrderSpecifier<>(direction, article.articleId));
                         articleOrders.add(new OrderSpecifier<>(direction, article.likeCount));
                         break;
                 }
