@@ -14,14 +14,17 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @DynamicInsert
+@Table(indexes = {@Index(name = "idx_like_count", columnList = "like_count"), @Index(name = "idx_user_id", columnList = "user_id")})
 public class Comment extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
+    @Column(length = 100)
     private String content;
 
     @ColumnDefault("0")
+    @Column(name = "like_count")
     private Long likeCount;
 
     @ManyToOne

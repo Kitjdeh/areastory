@@ -14,6 +14,9 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @DynamicInsert
+@Table(indexes = {@Index(name = "idx_location", columnList = "do,si,gun,gu,dong,eup,myeon"),
+        @Index(name = "idx_user_id", columnList = "user_id"),
+        @Index(name="idx_like_count", columnList = "like_count")})
 public class Article extends BaseTime {
 
     @Id
@@ -25,21 +28,30 @@ public class Article extends BaseTime {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
+    @Column(length = 100)
     private String content;
+    @Column(length = 200)
     private String image;
     @ColumnDefault("0")
+    @Column(name="like_count")
     private Long likeCount;
 
     @ColumnDefault("0")
     private Long commentCount;
 
-    @Column(name = "do")
+    @Column(name = "do", length = 4)
     private String doName;
+    @Column(length = 10)
     private String si;
+    @Column(length = 10)
     private String gun;
+    @Column(length = 10)
     private String gu;
+    @Column(length = 10)
     private String dong;
+    @Column(length = 10)
     private String eup;
+    @Column(length = 10)
     private String myeon;
 
     private Boolean publicYn;

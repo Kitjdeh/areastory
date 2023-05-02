@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -15,9 +16,12 @@ public class User {
     @Id
     private Long userId;
     @Setter
+    @Column(length = 10)
     private String nickname;
     @Setter
+    @Column(length = 200)
     private String profile;
+    @Column(length = 10)
     private String provider;
     private Long providerId;
 
