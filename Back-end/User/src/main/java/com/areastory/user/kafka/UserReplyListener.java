@@ -12,6 +12,11 @@ public class UserReplyListener {
 
     @KafkaListener(id = KafkaProperties.GROUP_NAME_USER_REPLY, topics = KafkaProperties.USER_REPLY, containerFactory = "userReplyContainerFactory")
     public void articleListen(Long userId) {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         userService.validateUser(userId);
         System.out.println("validated : " + userId);
     }

@@ -7,7 +7,6 @@ import com.areastory.user.db.repository.UserRepository;
 import com.areastory.user.dto.common.NotificationKafkaDto;
 import com.areastory.user.dto.response.NotificationResp;
 import com.areastory.user.service.NotificationService;
-import com.areastory.user.sse.Emitters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
-    private final Emitters emitters;
 
     @Override
     @Transactional
@@ -30,7 +28,6 @@ public class NotificationServiceImpl implements NotificationService {
         User user = userRepository.findById(notificationKafkaDto.getUserId()).orElseThrow();
         User otherUser = userRepository.findById(notificationKafkaDto.getOtherUserId()).orElseThrow();
         Notification notification = notificationRepository.save(toEntity(notificationKafkaDto, user, otherUser));
-        emitters.send(notification.getUser().getUserId(), toDto(notification));
     }
 
     @Override

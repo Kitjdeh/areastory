@@ -46,10 +46,11 @@ public class UserController {
 
     // 신규 회원일 경우 회원가입 시도
     @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestPart UserReq userReq, @RequestPart("profile") MultipartFile profile) {
+    public ResponseEntity<?> signUp(@RequestPart UserReq userReq, @RequestPart(value = "profile") MultipartFile profile) {
         try {
             userService.signUp(userReq, profile);
         } catch (IOException e) {
+            System.out.println("파일 업로드 실패");
             throw new RuntimeException(e);
         }
         return responseDefault.success(true, "회원 가입 성공", null);

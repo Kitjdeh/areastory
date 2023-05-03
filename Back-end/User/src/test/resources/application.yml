@@ -1,11 +1,11 @@
 spring:
   profiles:
     active: test
-#  datasource:
-#    url: jdbc:h2:tcp://localhost/~/User
-#    username: sa
-#    password:
-#    driver-class-name: org.h2.Driver
+  #  datasource:
+  #    url: jdbc:h2:tcp://localhost/~/User
+  #    username: sa
+  #    password:
+  #    driver-class-name: org.h2.Driver
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: areastory
@@ -14,7 +14,7 @@ spring:
     password: 1234
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         # show_sql: true

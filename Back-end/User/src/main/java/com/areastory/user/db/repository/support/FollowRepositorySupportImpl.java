@@ -45,7 +45,7 @@ public class FollowRepositorySupportImpl implements FollowRepositorySupport {
                         ))
                 .from(follow)
                 .where(follow.followingUser.userId.eq(userId), follow.followerUser.nickname.like(search))
-                .orderBy(follow.followerUser.nickname.asc())
+                .orderBy(follow.createdAt.desc())
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
                 .fetch();
@@ -67,7 +67,7 @@ public class FollowRepositorySupportImpl implements FollowRepositorySupport {
                         follow.followingUser.profile)
                 .from(follow)
                 .where(follow.followerUser.userId.eq(userId), follow.followingUser.nickname.like(search))
-                .orderBy(follow.followingUser.nickname.asc())
+                .orderBy(follow.createdAt.desc())
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
                 .fetch();

@@ -12,13 +12,17 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Notification {
+@Table(indexes = @Index(name = "idx_notification", columnList = "user_id, checked, notification_id"))
+public class Notification extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "notification_id")
     private Long notificationId;
+    @Column(length = 6)
     private String type;
     private Long articleId;
     private Long commentId;
+    @Column(length = 200)
     private String image;
     private Boolean checked;
     @ManyToOne

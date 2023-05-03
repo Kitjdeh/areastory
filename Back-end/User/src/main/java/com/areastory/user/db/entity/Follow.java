@@ -12,7 +12,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 @ToString
-public class Follow implements Serializable {
+@Table(name = "follow", indexes = {
+        @Index(name = "idx_created_at_follower", columnList = "follower_user_id,created_at"),
+        @Index(name = "idx_created_at_following", columnList = "following_user_id, created_at")})
+public class Follow extends BaseTime implements Serializable {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)

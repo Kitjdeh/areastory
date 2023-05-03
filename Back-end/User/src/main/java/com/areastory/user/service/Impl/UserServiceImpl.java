@@ -9,7 +9,6 @@ import com.areastory.user.dto.response.UserResp;
 import com.areastory.user.kafka.KafkaProperties;
 import com.areastory.user.kafka.UserProducer;
 import com.areastory.user.service.UserService;
-import com.areastory.user.sse.Emitters;
 import com.areastory.user.util.S3Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,14 +30,13 @@ public class UserServiceImpl implements UserService {
     private final ArticleRepository articleRepository;
     private final S3Util s3Util;
     private final UserProducer userProducer;
-    private final Emitters emitters;
 
     @Override
     @Transactional
     public void validateUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
         user.setValid();
-        emitters.getValid(userId);
+//        emitters.getValid(userId);
     }
 
     @Override
@@ -54,13 +52,11 @@ public class UserServiceImpl implements UserService {
         if (findUser == null) {
             return UserResp.fromEntity(false);
         }
-        emitters.add(findUser.getUserId());
         return UserResp.fromEntity(findUser, true);
     }
 
     @Override
     public void logout(Long userId) {
-        emitters.remove(userId);
     }
 
     @Override
@@ -68,7 +64,6 @@ public class UserServiceImpl implements UserService {
     public void signUp(UserReq userReq, MultipartFile profile) throws IOException {
         User user = userRepository.save(UserReq.toEntity(userReq, s3Util.saveUploadFile(profile)));
         userProducer.send(user, KafkaProperties.INSERT);
-        emitters.addWaiting(user.getUserId());
     }
 
     @Override

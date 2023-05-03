@@ -22,7 +22,7 @@ public class ArticleResp {
         return ArticleResp.builder()
                 .content(article.getContent())
                 .image(article.getImage())
-                .like_count(article.getLikeCount())
+                .like_count(article.getTotalLikeCount())
                 .comment_count(article.getCommentCount())
                 .build();
     }

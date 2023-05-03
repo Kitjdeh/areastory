@@ -10,15 +10,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Table(name = "article", indexes = @Index(name = "idx_user_id", columnList = "user_id, article_id"))
 public class Article {
 
     @Id
+    @Column(name = "article_id")
     private Long articleId;
     @Setter
+    @Column(length = 100)
     private String content;
+    @Column(length = 200)
     private String image;
     @Setter
-    private Long likeCount;
+    private Long totalLikeCount;
     @Setter
     private Long commentCount;
     @ManyToOne(fetch = FetchType.LAZY)
