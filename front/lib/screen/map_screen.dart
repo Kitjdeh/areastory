@@ -105,18 +105,15 @@ class _CustomMapState extends State<_CustomMap> {
   List<String> arealist = [];
   Map<int, String> areadata = {};
   List<List<LatLng>> _polygon = [];
-  List<List<LatLng>> layoutpolygon = [];
-  List<List<LatLng>> bigpolygon = [];
-  List<List<LatLng>> middlepolygon = [];
-  List<List<LatLng>> smallpolygon = [];
   List<String> urls = [];
   List<Mapdata> allareaData = [];
   List<Mapdata> bigareaData = [];
   List<Mapdata> middleareaData = [];
   List<Mapdata> smallareaData = [];
   List<Mapdata> nowareadata = [];
+  List<Mapdata> nowallareadata = [];
   Mapdata? localareadata;
-  double _zoom = 9.0;
+  double _zoom = 12.0;
   var currentcenter = LatLng(37.60732175555233, 127.0710794642477);
   void minuszoom() {
     _zoom = mapController.zoom - 1;
@@ -125,10 +122,10 @@ class _CustomMapState extends State<_CustomMap> {
     print(_zoom);
     setState(() {
       _zoom > 12.0
-          ? nowareadata = smallareaData
+          ? nowallareadata = smallareaData
           : _zoom > 9.0
-              ? nowareadata = middleareaData
-              : nowareadata = bigareaData;
+              ? nowallareadata = middleareaData
+              : nowallareadata = bigareaData;
     });
   }
 
@@ -140,10 +137,10 @@ class _CustomMapState extends State<_CustomMap> {
 
     setState(() {
       _zoom > 12.0
-          ? nowareadata = smallareaData
+          ? nowallareadata = smallareaData
           : _zoom > 9.0
-              ? nowareadata = middleareaData
-              : nowareadata = bigareaData;
+              ? nowallareadata = middleareaData
+              : nowallareadata = bigareaData;
     });
   }
 
@@ -164,7 +161,7 @@ class _CustomMapState extends State<_CustomMap> {
   Future<void> _loadGeoJson(String link) async {
     List<Mapdata> allareaData = [];
     _polygon = [];
-    layoutpolygon = [];
+
     // geojson을 정의한다.
     final geojson = GeoJson();
     // 준비된 geojson 파일을 불러온다.
@@ -220,8 +217,6 @@ class _CustomMapState extends State<_CustomMap> {
             : link == 'asset/map/ctp_korea.geojson'
                 ? areaname = feature.properties!['CTP_KOR_NM']
                 : areaname = feature.properties!['SIG_KOR_NM'];
-        // String A = feature.properties!['SIG_KOR_NM'];
-        // final B = feature.properties;
         // 해당 geometry를 polygones로 정의(ex 종로구의 geometry추출(=GeoJsonMultiPolygon)
         final polygones = feature.geometry as GeoJsonPolygon;
         // geometry(종로구)를 구성하는 polygon 호출 (=geojsonpolygon)
@@ -261,12 +256,6 @@ class _CustomMapState extends State<_CustomMap> {
   }
 
   Widget build(BuildContext context) {
-    // print(mapController.zoom);
-    // mapController.zoom > 12.0
-    //     ? nowareadata = smallareaData
-    //     : mapController.zoom > 9.0
-    //     ? nowareadata = middleareaData
-    //     : nowareadata = bigareaData;
     List<Widget> customPolygonLayers = [];
     for (var mapdata in nowareadata) {
       customPolygonLayers.add(
@@ -300,17 +289,17 @@ class _CustomMapState extends State<_CustomMap> {
                   InteractiveFlag.doubleTapZoom |
                   InteractiveFlag.pinchZoom,
               onMapReady: () async {
-                print("1nowareadata.length${nowareadata.length}");
-                await _loadGeoJson('asset/map/minimal.json');
-                await _loadGeoJson('asset/map/sigungookorea.json');
+                print("1nowareadata.length${nowallareadata.length}");
                 await _loadGeoJson('asset/map/ctp_korea.geojson');
-                nowareadata = middleareaData;
-                print("2nowareadata.length${nowareadata.length}");
+                await _loadGeoJson('asset/map/sigungookorea.json');
+                await _loadGeoJson('asset/map/minimal.json');
+                nowallareadata = smallareaData;
+                print("2nowareadata.length${nowallareadata.length}");
                 final bounds = mapController.bounds;
                 final sw = bounds!.southWest;
                 final ne = bounds!.northEast;
                 // 화면 내에 있는 폴리곤만 필터링
-                final visibleMapdata = nowareadata.where((p) {
+                final visibleMapdata = nowallareadata.where((p) {
                   return p.polygons!.any((point) {
                     return point.latitude >= sw!.latitude &&
                         point.latitude <= ne!.latitude &&
@@ -319,16 +308,17 @@ class _CustomMapState extends State<_CustomMap> {
                   });
                 }).toList();
                 nowareadata = visibleMapdata;
-                print("3nowareadata.length${nowareadata.length}");
+                // print("3nowareadata.length${nowareadata.length}");
               },
               onPositionChanged: (pos, hasGesture) {
-                // print('before${nowareadata.length}');
+                // print('nowallareadata${nowallareadata.length}');
                 // 현재 보이는 화면의 경계를 계산
                 final bounds = mapController.bounds!;
                 final sw = bounds.southWest;
                 final ne = bounds.northEast;
                 // 화면 내에 있는 폴리곤만 필터링
-                final visibleMapdata = nowareadata.where((p) {
+
+                final visibleMapdata = nowallareadata.where((p) {
                   return p.polygons!.any((point) {
                     return point.latitude >= sw!.latitude &&
                         point.latitude <= ne!.latitude &&
@@ -336,8 +326,14 @@ class _CustomMapState extends State<_CustomMap> {
                         point.longitude <= ne!.longitude;
                   });
                 }).toList();
-                // print('after${nowareadata.length} ${visibleMapdata.length}');
+                // final arealist = [];
+// print(bounds.northEast);
+//                 print('${nowallareadata.length}');
                 nowareadata = visibleMapdata;
+                setState(() {
+                  nowareadata = visibleMapdata;
+                });
+                nowareadata.map((e) => print(e.areaname));
               },
             ),
             children: [
@@ -377,20 +373,6 @@ class _CustomMapState extends State<_CustomMap> {
                   ],
                 ),
             ],
-            // children: nowareadata.map((mapdata) {
-            //   return CustomPolygonLayer(
-            //       index: 1,
-            //       urls: [mapdata.urls ?? ''],
-            //       area: mapdata.areaname ?? '',
-            //       polygons: [
-            //         Polygon(
-            //           isFilled: false,
-            //           borderColor: Colors.white30,
-            //           points: mapdata.polygons!,
-            //           borderStrokeWidth: 3.0,
-            //         )
-            //       ]);
-            // }).toList()
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
