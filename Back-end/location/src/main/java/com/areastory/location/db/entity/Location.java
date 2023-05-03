@@ -12,7 +12,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 @NoArgsConstructor
 public class Location {
-    @Column(name = "do", length = 4)
+    @Column(name = "do", length = 7)
     private String doName;
     @Column(length = 10)
     private String si;
