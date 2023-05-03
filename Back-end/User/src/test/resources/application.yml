@@ -8,10 +8,10 @@ spring:
   #    driver-class-name: org.h2.Driver
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: areastory
+    username: k8a302
     #    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/areastory
     url: jdbc:mysql://3.39.250.180:3306/areastory_test
-    password: 1234
+    password: ssafy12!
   jpa:
     hibernate:
       ddl-auto: update
