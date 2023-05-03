@@ -12,5 +12,10 @@ import java.io.Serializable;
 public class ChattingPK implements Serializable {
     private Long user;
 
-    private Long chatRoom;
+    private String chatRoom;
+
+    public ChattingPK(Long user, String chatRoom) {
+        this.user = user;
+        this.chatRoom = chatRoom;
+    }
 }

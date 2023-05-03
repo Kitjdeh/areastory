@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -46,6 +47,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 .build();
     }
 
+    @Transactional
+    @Override
     public ChatMessageResp saveMessage(ChatMessageReq messageReq) {
         User user = userRepository.findById(messageReq.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -72,6 +75,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 .build();
     }
 
+    @Transactional
     @Override
     public ChatMessageResp enterRoom(ChatMessageReq messageReq) {
         User user = userRepository.findById(messageReq.getUserId())
@@ -90,6 +94,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 .build();
     }
 
+    @Transactional
     @Override
     public ChatMessageResp outRoom(ChatMessageReq messageReq) {
         User user = userRepository.findById(messageReq.getUserId())

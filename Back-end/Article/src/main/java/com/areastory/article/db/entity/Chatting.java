@@ -19,7 +19,7 @@ public class Chatting {
     private User user;
 
     @Id
-    @JoinColumn(name = "comment_id")
+    @JoinColumn(name = "room_id")
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private ChatRoom chatRoom;

@@ -27,7 +27,6 @@ public class ChatController {
     //입장, 대화, 나가기의 값에 따라 서비스 처리
     @MessageMapping("/chat/message")
     public void message(ChatMessageReq message) {
-        System.out.println("메세지 종류>>> " + message.getType());
         ChatMessageResp chatMessageResp = null;
         /*
         채팅방의 인원수를 하나 증가
