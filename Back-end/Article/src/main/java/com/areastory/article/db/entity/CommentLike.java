@@ -11,7 +11,8 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @IdClass(CommentLikePK.class)
-public class CommentLike {
+@Table(indexes = @Index(name = "idx_created_at", columnList = "comment_id, created_at"))
+public class CommentLike extends BaseTime {
     @Id
     @JoinColumn(name = "user_id")
     @ManyToOne

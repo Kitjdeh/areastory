@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @DynamicInsert
-@Table(indexes = {@Index(name = "idx_like_count", columnList = "like_count"), @Index(name = "idx_user_id", columnList = "user_id")})
+@Table(indexes = {@Index(name = "idx_like_count", columnList = "article_id, like_count"), @Index(name = "idx_user_id", columnList = "user_id")})
 public class Comment extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

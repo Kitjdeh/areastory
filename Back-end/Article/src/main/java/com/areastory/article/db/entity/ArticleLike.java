@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @IdClass(ArticleLikePK.class)
+@Table(indexes = @Index(name = "idx_created_at", columnList = "article_id, created_at"))
 public class ArticleLike extends BaseTime {
     @Id
     @JoinColumn(name = "user_id")

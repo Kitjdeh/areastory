@@ -39,7 +39,7 @@ public class Article extends BaseTime {
     @ColumnDefault("0")
     private Long commentCount;
 
-    @Column(name = "do", length = 4)
+    @Column(name = "do", length = 7)
     private String doName;
     @Column(length = 10)
     private String si;
