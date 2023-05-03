@@ -99,6 +99,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
+        s3Util.deleteFile(user.getProfile());
         userRepository.delete(user);
         userProducer.send(user, KafkaProperties.DELETE);
     }
