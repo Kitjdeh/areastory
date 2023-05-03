@@ -100,7 +100,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
                                       });
                                       /// 로그아웃시
-                                      await storage.delete(key: "providerId");
+                                      await storage.delete(key: "userId");
                                       Navigator.of(context).pop();
                                       print("로그아웃");
                                       Navigator.pushAndRemoveUntil(

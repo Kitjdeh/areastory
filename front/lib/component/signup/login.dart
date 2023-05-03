@@ -49,10 +49,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     /// 로그인 성공시 storage에 저장
                     await storage.write(key: "userId", value: res.data['userId'].toString());
                     /// 로그인 성공시 페이지 이동.
-                    // Navigator.pushReplacement(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => MyApp()),
-                    // );
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyApp()),
+                    );
                   }
                 }catch(e){
                   print(e);
@@ -68,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 });
                 /// 로그아웃시
-                await storage.delete(key: "providerId");
+                await storage.delete(key: "userId");
               },
               child: Text("로그아웃"),
             )
