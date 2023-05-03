@@ -20,6 +20,8 @@ void main() async {
         '/signup': (context) => SignUpScreen(),
       },
       home: LoginScreen(),
+      // home:MyApp(),
+
     )
   );
 }

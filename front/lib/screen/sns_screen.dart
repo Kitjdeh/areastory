@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front/api/sns/get_articles.dart';
 import 'package:front/component/sns/article/article.dart';
 import 'package:front/component/sns/article/article_detail.dart';
 import 'package:front/const/article_test.dart';
@@ -17,6 +18,42 @@ class _SnsScreenState extends State<SnsScreen> {
   int _currentPage = 1;
   List _articles = [];
   String dropdownValue = list.first;
+
+  @override
+  void initState() {
+    super.initState();
+    printArticles();
+  }
+
+  void printArticles() async {
+    final articleData = await getArticles({
+      'sort': '?sort=likeCount',
+      'userId': 2756369012,
+      'doName': null,
+      'si': null,
+      'gun': null,
+      'gu': null,
+      'dong': null,
+      'eup': null,
+      'myeon': null
+    });
+    print(articleData);
+    print(articleData);
+    print(articleData);
+    if (articleData.articles != null)
+      for (final article in articleData.articles!) {
+        print(article.articleId);
+        print(article.nickname);
+        print(article.profile);
+        print(article.content);
+        print(article.image);
+        print(article.likeCount);
+        print(article.commentCount);
+        print(article.likeYn);
+        print(article.createdAt);
+        print(article.location);
+      }
+  }
 
   final ScrollController _scrollController = ScrollController();
 

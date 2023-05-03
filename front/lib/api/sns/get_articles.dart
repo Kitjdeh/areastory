@@ -1,17 +1,29 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-Future<ArticleData> getArticles(String params) async {
+Future<ArticleData> getArticles(dynamic params) async {
   final dio = Dio(BaseOptions(
-    baseUrl: 'https://k8a302.p.ssafy.io/api/articles/',
+    baseUrl: '${dotenv.get('BASE_URL')}/api/articles',
   ));
-  final response = await dio.get(params.toString());
+  final response = await dio.get('${params['sort']}', queryParameters: {
+    'userId': params['userId'],
+    'doName': params['doName'],
+    'si': params['si'],
+    'gun': params['gun'],
+    'gu': params['gu'],
+    'dong': params['dong'],
+    'eup': params['eup'],
+    'myeon': params['myeon']
+  });
 
   if (response.statusCode == 200) {
-    final jsonData = response.data;
+    final jsonData = json.decode(response.toString());
     final articleData = ArticleData.fromJson(jsonData);
-
+    print('성공');
     return articleData;
   } else {
+    print('실패');
     throw Exception('Failed to load articles');
   }
 }
@@ -20,23 +32,34 @@ class ArticleData {
   final int pageSize;
   final int totalPageNumber;
   final int totalCount;
+  final int pageNumber;
+  final bool nextPage;
+  final bool previousPage;
   final List<Article> articles;
 
   ArticleData({
     required this.pageSize,
     required this.totalPageNumber,
     required this.totalCount,
-    required this.articles,
-  });
+    required this.pageNumber,
+    required this.nextPage,
+    required this.previousPage,
+    List<Article>? articles,
+  }) : this.articles = articles ?? [];
 
   factory ArticleData.fromJson(Map<String, dynamic> json) {
-    final List<dynamic> articlesJson = json['articles'];
-    final articles = articlesJson.map((e) => Article.fromJson(e)).toList();
+    final articlesList = json['articles'] as List<dynamic>;
+    final articles = articlesList
+        .map((articleJson) => Article.fromJson(articleJson))
+        .toList();
 
     return ArticleData(
       pageSize: json['pageSize'],
       totalPageNumber: json['totalPageNumber'],
       totalCount: json['totalCount'],
+      pageNumber: json['pageNumber'],
+      nextPage: json['nextPage'],
+      previousPage: json['previousPage'],
       articles: articles,
     );
   }
@@ -50,7 +73,7 @@ class Article {
   final String image;
   final int likeCount;
   final int commentCount;
-  final bool isLike;
+  final bool likeYn;
   final DateTime createdAt;
   final String location;
 
@@ -62,7 +85,7 @@ class Article {
     required this.image,
     required this.likeCount,
     required this.commentCount,
-    required this.isLike,
+    required this.likeYn,
     required this.createdAt,
     required this.location,
   });
@@ -74,9 +97,9 @@ class Article {
       profile: json['profile'],
       content: json['content'],
       image: json['image'],
-      likeCount: json['likeCount'],
+      likeCount: json['totalLikeCount '],
       commentCount: json['commentCount'],
-      isLike: json['isLike'],
+      likeYn: json['likeYn'],
       createdAt: DateTime.parse(json['createdAt']),
       location: json['location'],
     );
