@@ -15,19 +15,22 @@ public class ChatMessage extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatId;
 
-    private String sender; //보내는 사람 -> 추후 user로 변경
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user; //보내는 사람 -> 추후 user로 변경
 
     @Column(columnDefinition = "TEXT")
     private String content;
 
-
-    private String roomId;
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private ChatRoom chatRoom;
 
     @Builder
-    public ChatMessage(String sender, String content, String roomeId) {
-        this.sender = sender;
+    public ChatMessage(User user, String content, ChatRoom chatRoom) {
+        this.user = user;
         this.content = content;
-        this.roomId = roomeId;
+        this.chatRoom = chatRoom;
     }
 }
 

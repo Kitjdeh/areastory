@@ -1,19 +1,18 @@
 package com.areastory.article.api.service;
 
-import com.areastory.article.db.entity.ChatRoom;
-import com.areastory.article.dto.common.ChatMessageDto;
-
-import java.util.List;
+import com.areastory.article.dto.request.ChatMessageReq;
+import com.areastory.article.dto.response.ChatMessageResp;
+import com.areastory.article.dto.response.ChatRoomResp;
+import org.springframework.data.domain.Pageable;
 
 public interface ChatMessageService {
 
-    List<ChatRoom> findAllRoom();
+    ChatRoomResp findAllRoom(Long userId, Pageable pageable);
 
-    ChatRoom findRoomById(String roomId);
 
-    boolean existRoom(String roomName);
+    ChatMessageResp saveMessage(ChatMessageReq messageDto);
 
-    ChatRoom createRoom(String name);
+    ChatMessageResp enterRoom(ChatMessageReq messageDto);
 
-    void save(ChatMessageDto message);
+    ChatMessageResp outRoom(ChatMessageReq messageDto);
 }
