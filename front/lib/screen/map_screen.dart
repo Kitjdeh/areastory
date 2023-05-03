@@ -341,19 +341,27 @@ class _CustomMapState extends State<_CustomMap> {
               },
             ),
             children: [
-              PolygonLayer(
-                polygons: bigareaData
-                    .map((e) => Polygon(
-                  // image: AssetImage('asset/img/sangjun.PNG'),
-                  isFilled: false,
-                  points: e.polygons!,
-                  // color: Colors.red,
-                  borderColor: Colors.red,
-                  borderStrokeWidth: 10.0,
-                ))
-                    .toList(),
-                // polygonCulling: ,
-              ),
+              // PolygonLayer(
+              //   polygons: bigareaData
+              //       .map((e) => Polygon(
+              //     // image: AssetImage('asset/img/sangjun.PNG'),
+              //     isFilled: false,
+              //     points: e.polygons!,
+              //     // color: Colors.red,
+              //     borderColor: Colors.red,
+              //     borderStrokeWidth: 10.0,
+              //   ))
+              //       .toList(),
+              //   // polygonCulling: ,
+              // ),
+              // PolylineLayer(
+              //   polylines: bigareaData
+              //       .map((e) => Polyline(
+              //     points: e.polygons!,
+              //     color: Colors.red,
+              //   ))
+              //       .toList(),
+              // ),
               for (var mapdata in nowareadata)
                 CustomPolygonLayer(
                   index: 1,
@@ -368,7 +376,6 @@ class _CustomMapState extends State<_CustomMap> {
                     ),
                   ],
                 ),
-
             ],
             // children: nowareadata.map((mapdata) {
             //   return CustomPolygonLayer(
