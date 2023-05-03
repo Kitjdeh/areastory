@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "905360710252",
-    "project_id": "areastory-60cad",
-    "storage_bucket": "areastory-60cad.appspot.com"
+    "project_number": "495600762325",
+    "project_id": "areastory-c6f82",
+    "storage_bucket": "areastory-c6f82.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:905360710252:android:37a5578ea8e07a3a2e9649",
+        "mobilesdk_app_id": "1:495600762325:android:baf033be302a98782b915c",
         "android_client_info": {
           "package_name": "com.example.front"
         }
       },
       "oauth_client": [
         {
-          "client_id": "905360710252-fnf4tc792mr0ue2qifvv51a7bbtohvq5.apps.googleusercontent.com",
+          "client_id": "495600762325-8dj1efjmotq6q2kogv30r32q65lf7nba.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAD8zdCtATWvSH6vGptX6qgfhWmm7N42ww"
+          "current_key": "AIzaSyClzAdk8OnsoyKAgbSTK3mZt9bnmC3F8EQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "905360710252-fnf4tc792mr0ue2qifvv51a7bbtohvq5.apps.googleusercontent.com",
+              "client_id": "495600762325-8dj1efjmotq6q2kogv30r32q65lf7nba.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
