@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "905360710252",
+    "project_id": "areastory-60cad",
+    "storage_bucket": "areastory-60cad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:905360710252:android:37a5578ea8e07a3a2e9649",
+        "android_client_info": {
+          "package_name": "com.example.front"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "905360710252-fnf4tc792mr0ue2qifvv51a7bbtohvq5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAD8zdCtATWvSH6vGptX6qgfhWmm7N42ww"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "905360710252-fnf4tc792mr0ue2qifvv51a7bbtohvq5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

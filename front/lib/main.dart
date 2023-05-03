@@ -22,8 +22,10 @@ void main() async {
     MaterialApp(
       routes: {
         '/signup': (context) => SignUpScreen(),
+        '/login' : (context) => LoginScreen(),
       },
       home: providerId != null ? MyApp() : LoginScreen(),
+      // home: LoginScreen(),
     )
   );
 }
