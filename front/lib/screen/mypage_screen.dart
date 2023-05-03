@@ -1,4 +1,5 @@
 import 'package:beamer/beamer.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/login/kakao/kakao_login.dart';
@@ -68,11 +69,14 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                   ),
                                   TextButton.icon(
                                     onPressed: () async {
-                                      String? providerId = await storage.read(key: "providerId");
+                                      String? userId = await storage.read(key: "userId");
                                       print("감자ㅁㄴㅇㅁㅇㅁㄴㅇㅁ");
-                                      print(providerId);
+                                      print(userId);
                                       Navigator.of(context).pop();
                                       print("개인정보 수정");
+                                      String? token = await FirebaseMessaging.instance.getToken();
+
+                                      print("token : ${token ?? 'token NULL!'}");
                                     },
                                     icon: Icon(Icons.settings),
                                     label: Text("개인정보 수정"),
