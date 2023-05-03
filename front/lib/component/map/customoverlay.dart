@@ -11,6 +11,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map/src/layer/label.dart';
 import 'package:flutter_map/src/map/flutter_map_state.dart';
+import 'package:front/component/sns/article/article_detail.dart';
 import 'package:latlong2/latlong.dart' hide Path;
 import 'package:widget_mask/widget_mask.dart'; // conflict with Path from UI
 
@@ -23,16 +24,18 @@ class CustomPolygonLayer extends StatelessWidget {
   final List<Polygon> polygons;
   final List<String> urls;
   final int index;
+  final String area;
 
   /// screen space culling of polygons based on bounding box
   final bool polygonCulling;
 
   CustomPolygonLayer(
       {super.key,
-      this.polygons = const [],
-      this.polygonCulling = false,
-      this.urls = const [],
-      this.index = 0}) {
+        this.polygons = const [],
+        this.area = '',
+        this.polygonCulling = false,
+        this.urls = const [],
+        this.index = 0}) {
     if (polygonCulling) {
       for (final polygon in polygons) {
         polygon.boundingBox = LatLngBounds.fromPoints(polygon.points);
@@ -75,13 +78,14 @@ class CustomPolygonLayer extends StatelessWidget {
             // return NetworkImage('https://www.newsinside.kr/news/photo/202110/1119485_797392_2214.jpg');
           }
 
-          final overlayImages = <BaseOverlayImage>[
-            OverlayImage(
-              bounds: LatLngBounds.fromPoints(polygon.points),
-              opacity: 1.0,
-              imageProvider: buildWhiteForOverlay(),
-            ),
-          ];
+          //
+          // final overlayImages = <BaseOverlayImage>[
+          //   OverlayImage(
+          //     bounds: LatLngBounds.fromPoints(polygon.points),
+          //     opacity: 1.0,
+          //     imageProvider: buildWhiteForOverlay(),
+          //   ),
+          // ];
           final customoverlayImages = <CustomOverlay.CustomOverlayImage>[
             CustomOverlay.OverlayImage(
               url: urls[cnt],
@@ -96,13 +100,40 @@ class CustomPolygonLayer extends StatelessWidget {
           polygonsWidget.add(
             CustomPaint(
               key: polygon.key,
-              child: CustomOverlay.OverlayImageLayer(
-                  overlayImages: customoverlayImages),
-              painter: PolygonPainter(
+              child: GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    backgroundColor: Colors.transparent,
+                    isScrollControlled: true,
+                    builder: (BuildContext context) {
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: Center(
+                          child: ArticleDetailComponent(
+                            nickname: '${area}',
+                            image:
+                            'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg',
+                            profile:
+                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKFOtP8DmiYHZ-HkHpmLq9Oydg8JB4CuyOVg&usqp=CAU',
+                            content: '왜이리 화나있너 ;;; ㅎㅎㅎㅎㅎㅎㅎㅎ',
+                            likeCount: index,
+                            commentCount: index,
+                            isLike: true,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: CustomOverlay.OverlayImageLayer(
+                    overlayImages: customoverlayImages),
+              ),
+              foregroundPainter: PolygonPainter(
                 polygon,
                 map.rotationRad,
               ),
-              // foregroundPainter: PolygonPainter(polygon, map.rotationRad),
+              // painter: PolygonPainter(polygon, map.rotationRad),
               size: size,
             ),
           );
@@ -239,7 +270,7 @@ class PolygonPainter extends CustomPainter {
       canvas.clipRect(rect);
       paint
         ..style =
-            polygonOpt.isFilled ? PaintingStyle.fill : PaintingStyle.stroke
+        polygonOpt.isFilled ? PaintingStyle.fill : PaintingStyle.stroke
         ..color = polygonOpt.color;
 
       final path = Path();

@@ -44,8 +44,8 @@ class ArticleData {
     required this.pageNumber,
     required this.nextPage,
     required this.previousPage,
-    List<Article>? articles,
-  }) : this.articles = articles ?? [];
+    required this.articles,
+  });
 
   factory ArticleData.fromJson(Map<String, dynamic> json) {
     final articlesList = json['articles'] as List<dynamic>;
@@ -67,11 +67,13 @@ class ArticleData {
 
 class Article {
   final int articleId;
+  final int userId;
   final String nickname;
   final String profile;
   final String content;
   final String image;
-  final int likeCount;
+  final int dailyLikeCount;
+  final int totalLikeCount;
   final int commentCount;
   final bool likeYn;
   final DateTime createdAt;
@@ -79,11 +81,13 @@ class Article {
 
   Article({
     required this.articleId,
+    required this.userId,
     required this.nickname,
     required this.profile,
     required this.content,
     required this.image,
-    required this.likeCount,
+    required this.dailyLikeCount,
+    required this.totalLikeCount,
     required this.commentCount,
     required this.likeYn,
     required this.createdAt,
@@ -93,11 +97,13 @@ class Article {
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(
       articleId: json['articleId'],
+      userId: json['userId'],
       nickname: json['nickname'],
       profile: json['profile'],
       content: json['content'],
       image: json['image'],
-      likeCount: json['totalLikeCount '],
+      dailyLikeCount: json['dailyLikeCount'],
+      totalLikeCount: json['totalLikeCount'],
       commentCount: json['commentCount'],
       likeYn: json['likeYn'],
       createdAt: DateTime.parse(json['createdAt']),

@@ -28,7 +28,7 @@ class _SnsScreenState extends State<SnsScreen> {
   void printArticles() async {
     final articleData = await getArticles({
       'sort': '?sort=likeCount',
-      'userId': 2756369012,
+      'userId': 4,
       'doName': null,
       'si': null,
       'gun': null,
@@ -37,22 +37,26 @@ class _SnsScreenState extends State<SnsScreen> {
       'eup': null,
       'myeon': null
     });
+    print('>>>>>>');
     print(articleData);
     print(articleData);
     print(articleData);
-    if (articleData.articles != null)
-      for (final article in articleData.articles!) {
-        print(article.articleId);
-        print(article.nickname);
-        print(article.profile);
-        print(article.content);
-        print(article.image);
-        print(article.likeCount);
-        print(article.commentCount);
-        print(article.likeYn);
-        print(article.createdAt);
-        print(article.location);
-      }
+    print('>>>>>>');
+      if (articleData.articles != null)
+        for (final article in articleData.articles!) {
+          print('>>>>>>>>..');
+          print(article.articleId);
+          print(article.nickname);
+          print(article.profile);
+          print(article.content);
+          print(article.image);
+
+          print(article.commentCount);
+          print(article.likeYn);
+          print(article.createdAt);
+          print(article.location);
+          print('>>>>>>>>..');
+        }
   }
 
   final ScrollController _scrollController = ScrollController();

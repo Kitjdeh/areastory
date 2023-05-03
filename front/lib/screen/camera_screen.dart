@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:front/api/sns/create_article.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -23,6 +25,20 @@ class _CameraScreenState extends State<CameraScreen> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    // go();
+  }
+
+  void go() async {
+    final image = await MultipartFile.fromFile('path/to/image/file');
+    await createArticle(
+      userId: 1,
+      publicYn: true,
+      content: '여기 아주 좋네요',
+      si: '서울특별시',
+      gu: '강남구',
+      dong: '역삼동',
+      image: image,
+    );
   }
 
   @override

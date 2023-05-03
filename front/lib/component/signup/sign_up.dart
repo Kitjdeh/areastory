@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 // import 'package:flutter_client_sse/flutter_client_sse.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:front/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -55,6 +57,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final storage = new FlutterSecureStorage(); /// flutter sercure storage에 연결.
     final user = ModalRoute.of(context)?.settings.arguments as User?;
     int? kakaoid = user?.id?.toInt();
     String? nickname = user?.kakaoAccount?.profile?.nickname ?? "닉네임을 적어주세요.";
@@ -115,6 +118,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   );
                   if (res.statusCode == 200){
                     print("회원가입성공. SSE 시작합니다");
+                    /// 회원가입 성공시 storage에 저장
+                    await storage.write(key: "providerId", value: kakaoid.toString());
+                    /// 회원가입 성공시 페이지 이동.
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyApp()),
+                    );
                     /// 로그인 성공시 페이지 이동.
                     // SSEClient.subscribeToSSE(
                     //     url:

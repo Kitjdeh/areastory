@@ -1,6 +1,10 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:front/api/login/kakao/kakao_login.dart';
+import 'package:front/api/login/kakao/login_view_model.dart';
 import 'package:front/component/mypage/mypage_tabbar.dart';
+import 'package:front/component/signup/login.dart';
 
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({Key? key}) : super(key: key);
@@ -10,6 +14,8 @@ class MyPageScreen extends StatefulWidget {
 }
 
 class _MyPageScreenState extends State<MyPageScreen> {
+  final storage = new FlutterSecureStorage();
+  final viewModel = LoginViewModel(KakaoLogin());
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +67,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                     label: Text("설정"),
                                   ),
                                   TextButton.icon(
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      String? providerId = await storage.read(key: "providerId");
+                                      print("감자ㅁㄴㅇㅁㅇㅁㄴㅇㅁ");
+                                      print(providerId);
                                       Navigator.of(context).pop();
                                       print("개인정보 수정");
                                     },
@@ -85,9 +94,20 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                     label: Text("사용자 검색"),
                                   ),
                                   TextButton.icon(
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      await viewModel.logout();
+                                      setState(() {
+
+                                      });
+                                      /// 로그아웃시
+                                      await storage.delete(key: "providerId");
                                       Navigator.of(context).pop();
                                       print("로그아웃");
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                                            (route) => false,
+                                      );
                                     },
                                     icon: Icon(Icons.logout),
                                     label: Text("로그아웃"),
