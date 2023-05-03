@@ -49,7 +49,7 @@ public class UserController {
     public ResponseEntity<?> signUp(@RequestPart UserReq userReq, @RequestPart(value = "profile") MultipartFile profile) {
         try {
             userService.signUp(userReq, profile);
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("파일 업로드 실패");
             throw new RuntimeException(e);
         }

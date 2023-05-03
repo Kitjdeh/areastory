@@ -15,7 +15,7 @@ public class UserReq {
     private String provider; // 소셜 로그인 종류
     private Long providerId; // 소셜 로그인 아이디
 
-    public static User toEntity(UserReq userReq, String profile) {
+    public static User toEntity(UserReq userReq, String profile, String hashKey) {
         return User.builder()
                 .nickname(userReq.getNickname())
                 .profile(profile)
@@ -24,6 +24,7 @@ public class UserReq {
                 .followCount(0L)
                 .followingCount(0L)
                 .isValid(false)
+                .hashKey(hashKey)
                 .build();
     }
 }

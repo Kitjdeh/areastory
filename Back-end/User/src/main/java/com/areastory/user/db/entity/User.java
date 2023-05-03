@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Builder
 @ToString
 @DynamicInsert
-@Table(indexes = @Index(name = "idx_provider_id", columnList = "provider_id"))
+@Table(name = "users", indexes = @Index(name = "idx_provider_id", columnList = "provider_id"))
 public class User {
 
     @Id
@@ -36,6 +36,7 @@ public class User {
     private Long followingCount; // 팔로잉 수
     @ColumnDefault("0")
     private Boolean isValid;
+    private String hashKey;
 
     public User(String nickname, String profile, String provider, Long providerId) {
         this.nickname = nickname;

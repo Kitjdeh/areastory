@@ -9,6 +9,7 @@ import com.areastory.user.dto.response.UserResp;
 import com.areastory.user.kafka.KafkaProperties;
 import com.areastory.user.kafka.UserProducer;
 import com.areastory.user.service.UserService;
+import com.areastory.user.util.Sha256Util;
 import com.areastory.user.util.S3Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final ArticleRepository articleRepository;
     private final S3Util s3Util;
     private final UserProducer userProducer;
+    private final Sha256Util sha256Util;
 
     @Override
     @Transactional
@@ -61,8 +64,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void signUp(UserReq userReq, MultipartFile profile) throws IOException {
-        User user = userRepository.save(UserReq.toEntity(userReq, s3Util.saveUploadFile(profile)));
+    public void signUp(UserReq userReq, MultipartFile profile) throws IOException, NoSuchAlgorithmException {
+        User user = userRepository.save(UserReq.toEntity(userReq, s3Util.saveUploadFile(profile), sha256Util.sha256(userReq.getProviderId())));
         userProducer.send(user, KafkaProperties.INSERT);
     }
 

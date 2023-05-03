@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 public interface UserService {
 
@@ -18,7 +19,7 @@ public interface UserService {
 
     void logout(Long userId);
 
-    void signUp(UserReq userReq, MultipartFile profile) throws IOException;
+    void signUp(UserReq userReq, MultipartFile profile) throws IOException, NoSuchAlgorithmException;
 
     UserResp getUserDetail(Long userId);
 
