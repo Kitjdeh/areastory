@@ -48,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   }else{
                     print("로그인 SSE 시작합니다");
                     /// 로그인 성공시 storage에 저장
-                    await storage.write(key: "providerId", value: viewModel.user?.id.toString());
+                    await storage.write(key: "userId", value: res.data['userId'].toString());
                     /// 로그인 성공시 페이지 이동.
                     Navigator.pushReplacement(
                       context,
@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 });
                 /// 로그아웃시
-                await storage.delete(key: "providerId");
+                await storage.delete(key: "userId");
               },
               child: Text("로그아웃"),
             )

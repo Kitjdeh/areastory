@@ -37,11 +37,7 @@ class _SnsScreenState extends State<SnsScreen> {
       'eup': null,
       'myeon': null
     });
-    print('>>>>>>');
-    print(articleData);
-    print(articleData);
-    print(articleData);
-    print('>>>>>>');
+
       if (articleData.articles != null)
         for (final article in articleData.articles!) {
           print('>>>>>>>>..');

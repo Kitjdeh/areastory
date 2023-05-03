@@ -5,13 +5,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http_parser/http_parser.dart';
 
-Future<void> postArticle({
-  required bool publicYn,
+Future<void> postComment({
+  required int articleId,
   required String content,
-  required String si,
-  required String gu,
-  required String dong,
-  required File image,
 }) async {
   final dio = Dio(BaseOptions(
     baseUrl: '${dotenv.get('BASE_URL')}/api/articles',
@@ -20,27 +16,17 @@ Future<void> postArticle({
   final storage = new FlutterSecureStorage();
   final userId = await storage.read(key: 'userId');
 
-
-  final formData = FormData.fromMap({
-    'articleWriteReq': MultipartFile.fromString(
-        json.encode({
-          'userId': userId,
-          'publicYn': publicYn,
-          'content': content,
-          'si': si,
-          'gu': gu,
-          'dong': dong
-        }),
-        contentType: MediaType.parse('application/json')),
-    'picture': await MultipartFile.fromFile(
-      image!.path,
-      filename: image!.path.split('/').last,
-    )
-  });
-
   final response = await dio.post(
-    '',
-    data: formData,
+    '/$articleId/comments',
+    data: {
+      'userId': userId,
+      'content': content,
+    },
+    options: Options(
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    ),
   );
 
   if (response.statusCode == 200) {
