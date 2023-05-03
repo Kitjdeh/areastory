@@ -1,11 +1,11 @@
 package com.areastory.article.dto.request;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@Getter
+@Data
 public class ArticleReq {
     private Long userId;
     private String doName;

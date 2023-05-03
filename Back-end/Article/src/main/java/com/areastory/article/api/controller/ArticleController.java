@@ -34,7 +34,7 @@ public class ArticleController {
     한페이지당 개수는 15개, 정렬은 좋아요 순으로
      */
     @GetMapping
-    public ResponseEntity<?> selectAllArticle(@RequestBody ArticleReq articleReq,
+    public ResponseEntity<?> selectAllArticle(ArticleReq articleReq,
                                               @PageableDefault(sort = {"likeCount"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable) {
         return ResponseEntity.ok(articleService.selectAllArticle(articleReq, pageable));
     }
