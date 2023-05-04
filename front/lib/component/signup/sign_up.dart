@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-// import 'package:flutter_client_sse/flutter_client_sse.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/main.dart';
 import 'package:http/http.dart' as http;
@@ -11,7 +10,6 @@ import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-// import 'package:universal_html/html.dart' as html;
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -112,6 +110,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 });
 
                 try {
+                  print(formData);
                   final res = await Dio().post(
                       '${dotenv.get('BASE_URL')}/api/users/sign-up',
                       data: formData

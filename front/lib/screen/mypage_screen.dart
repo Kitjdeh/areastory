@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/login/kakao/kakao_login.dart';
 import 'package:front/api/login/kakao/login_view_model.dart';
@@ -76,7 +77,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       print("개인정보 수정");
                                       String? token = await FirebaseMessaging.instance.getToken();
 
-                                      print("token : ${token ?? 'token NULL!'}");
+                                      // print("token : ${token ?? 'token NULL!'}");
                                     },
                                     icon: Icon(Icons.settings),
                                     label: Text("개인정보 수정"),
@@ -109,11 +110,12 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       await storage.delete(key: "userId");
                                       Navigator.of(context).pop();
                                       print("로그아웃");
-                                      Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => LoginScreen()),
-                                            (route) => false,
-                                      );
+                                      SystemNavigator.pop();
+                                      // Navigator.pushAndRemoveUntil(
+                                      //   context,
+                                      //   MaterialPageRoute(builder: (context) => LoginScreen()),
+                                      //       (route) => false,
+                                      // );
                                     },
                                     icon: Icon(Icons.logout),
                                     label: Text("로그아웃"),
@@ -122,6 +124,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                       print("서비스 탈퇴");
+                                      SystemNavigator.pop();
                                     },
                                     icon: Icon(Icons.accessible_outlined),
                                     label: Text("서비스 탈퇴"),
