@@ -59,6 +59,7 @@ dependencies:
   firebase_core: ^2.10.0
   firebase_messaging: ^14.4.1
   flutter_local_notifications: ^14.0.0+1
+  permission_handler: ^10.2.0 # 사용자 권한 물어보기
 
 dev_dependencies:
   flutter_test:
