@@ -1,8 +1,14 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:front/api/follow/create_following.dart';
+import 'package:front/api/follow/delete_following.dart';
+import 'package:front/api/like/create_article_like.dart';
+import 'package:front/api/like/delete_article_like.dart';
 import 'package:front/api/test_api.dart';
 
 class ArticleComponent extends StatefulWidget {
+  final int articleId;
+  final int followingId;
   final String nickname;
   final String image;
   final String profile;
@@ -14,7 +20,9 @@ class ArticleComponent extends StatefulWidget {
   final double height;
 
   ArticleComponent(
-      {required this.nickname,
+      {required this.articleId,
+      required this.followingId,
+      required this.nickname,
       required this.height,
       required this.image,
       required this.profile,
@@ -32,6 +40,33 @@ class ArticleComponent extends StatefulWidget {
 
 class _ArticleComponentState extends State<ArticleComponent> {
   bool isExpanded = false;
+
+  void createFollowing(followingId) async {
+    await postFollowing(followingId: followingId);
+    await widget.onUpdateIsChildActive(true);
+    // 백수정 후 테스트해봐야함
+    setState(() {});
+  }
+
+  void delFollowing(followingId) async {
+    await deleteFollowing(followingId: followingId);
+    await widget.onUpdateIsChildActive(true);
+    // 백수정 후 테스트해봐야함
+    setState(() {});
+  }
+
+  void createArticleLike(articleId) async {
+    await postArticleLike(articleId: articleId);
+    await widget.onUpdateIsChildActive(true);
+    setState(() {});
+  }
+
+  void delArticleLike(articleId) async {
+    await deleteArticleLike(articleId: articleId);
+    await widget.onUpdateIsChildActive(true);
+    // 백수정 후 테스트해봐야함
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,13 +125,16 @@ class _ArticleComponentState extends State<ArticleComponent> {
                     ],
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      // widget.followYn ? delFollowing(widget.followingId) : createFollowing(widget.followingId);
+                    },
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.transparent, // 버튼의 배경색을 투명색으로 설정
-                      onSurface: Colors.transparent, // 눌렸을 때 버튼의 표면색을 투명색으로 설정
-                      side: BorderSide(color: Colors.white), // 보더 색상을 하얀색으로 설정
+                      // primary: widget.followYn ? Colors.transparent : Colors.blue,
+                      primary: Colors.blue,
+                      side: BorderSide(color: Colors.white),
                     ),
                     child: Text(
+                      // widget.followYn ? '팔로잉' : '팔로우',
                       '팔로우',
                       style: TextStyle(
                         color: Colors.white, // 텍스트 색상을 하얀색으로 설정
@@ -129,14 +167,10 @@ class _ArticleComponentState extends State<ArticleComponent> {
                   Row(
                     children: [
                       GestureDetector(
-                        onTap: () async {
-                          widget.onUpdateIsChildActive(true);
-                          try {
-                            final myData = await getData(1);
-                            print(myData.msg);
-                          } catch (e) {
-                            print(e); // 요청 실패
-                          }
+                        onTap: () {
+                          widget.isLike
+                              ? delArticleLike(widget.articleId)
+                              : createArticleLike(widget.articleId);
                         },
                         child: Image.asset(
                           widget.isLike

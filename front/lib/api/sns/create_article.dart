@@ -8,10 +8,10 @@ import 'package:http_parser/http_parser.dart';
 Future<void> postArticle({
   required bool publicYn,
   required String content,
-  required String si,
-  required String gu,
-  required String dong,
   required File image,
+  String? si,
+  String? gu,
+  String? dong,
 }) async {
   final dio = Dio(BaseOptions(
     baseUrl: '${dotenv.get('BASE_URL')}/api/articles',
@@ -19,7 +19,6 @@ Future<void> postArticle({
 
   final storage = new FlutterSecureStorage();
   final userId = await storage.read(key: 'userId');
-
 
   final formData = FormData.fromMap({
     'articleWriteReq': MultipartFile.fromString(
