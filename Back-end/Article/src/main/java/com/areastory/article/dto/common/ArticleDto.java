@@ -22,7 +22,6 @@ public class ArticleDto {
     private Long commentCount;
     private Boolean likeYn;
     private Boolean followYn;
-    //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
     private String dosi;
     private String sigungu;
