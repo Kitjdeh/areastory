@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Builder
 @ToString
 @DynamicInsert
-@Table(name = "users", indexes = @Index(name = "idx_provider_id", columnList = "provider_id"))
+@Table(indexes = @Index(name = "idx_provider_id", columnList = "provider_id"))
 public class User {
 
     @Id
