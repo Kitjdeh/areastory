@@ -5,6 +5,7 @@ import 'package:front/api/login/kakao/kakao_login.dart';
 import 'package:front/api/login/kakao/login_view_model.dart';
 import 'package:front/api/login/login.dart';
 import 'package:front/main.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);

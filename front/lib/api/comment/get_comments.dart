@@ -1,113 +1,106 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-Future<ArticleData> getArticles(dynamic params) async {
+Future<CommentData> getComments({
+  required int articleId,
+  required int page,
+}) async {
   final dio = Dio(BaseOptions(
     baseUrl: '${dotenv.get('BASE_URL')}/api/articles',
   ));
-  final response = await dio.get('${params['sort']}', queryParameters: {
-    'userId': params['userId'],
-    'doName': params['doName'],
-    'si': params['si'],
-    'gun': params['gun'],
-    'gu': params['gu'],
-    'dong': params['dong'],
-    'eup': params['eup'],
-    'myeon': params['myeon']
+
+  final storage = new FlutterSecureStorage();
+  final userId = await storage.read(key: 'userId');
+
+  final response = await dio.get('/$articleId/comments', queryParameters: {
+    'userId': userId,
+    'page': page,
   });
 
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());
-    final articleData = ArticleData.fromJson(jsonData);
+    final commentData = CommentData.fromJson(jsonData);
     print('성공');
-    return articleData;
+    return commentData;
   } else {
     print('실패');
     throw Exception('Failed to load articles');
   }
 }
 
-class ArticleData {
+class CommentData {
   final int pageSize;
   final int totalPageNumber;
   final int totalCount;
   final int pageNumber;
   final bool nextPage;
   final bool previousPage;
-  final List<Article> articles;
+  final List<Comment> comments;
 
-  ArticleData({
+  CommentData({
     required this.pageSize,
     required this.totalPageNumber,
     required this.totalCount,
     required this.pageNumber,
     required this.nextPage,
     required this.previousPage,
-    required this.articles,
+    required this.comments,
   });
 
-  factory ArticleData.fromJson(Map<String, dynamic> json) {
-    final articlesList = json['articles'] as List<dynamic>;
-    final articles = articlesList
-        .map((articleJson) => Article.fromJson(articleJson))
+  factory CommentData.fromJson(Map<String, dynamic> json) {
+    final commentsList = json['comments'] as List<dynamic>;
+    final comments = commentsList
+        .map((commentJson) => Comment.fromJson(commentJson))
         .toList();
 
-    return ArticleData(
+    return CommentData(
       pageSize: json['pageSize'],
       totalPageNumber: json['totalPageNumber'],
       totalCount: json['totalCount'],
       pageNumber: json['pageNumber'],
       nextPage: json['nextPage'],
       previousPage: json['previousPage'],
-      articles: articles,
+      comments: comments,
     );
   }
 }
 
-class Article {
+class Comment {
+  final int commentId;
   final int articleId;
   final int userId;
   final String nickname;
   final String profile;
   final String content;
-  final String image;
-  final int dailyLikeCount;
-  final int totalLikeCount;
-  final int commentCount;
+  final int likeCount;
   final bool likeYn;
   final DateTime createdAt;
-  final String location;
 
-  Article({
+  Comment({
+    required this.commentId,
     required this.articleId,
     required this.userId,
     required this.nickname,
     required this.profile,
     required this.content,
-    required this.image,
-    required this.dailyLikeCount,
-    required this.totalLikeCount,
-    required this.commentCount,
+    required this.likeCount,
     required this.likeYn,
     required this.createdAt,
-    required this.location,
   });
 
-  factory Article.fromJson(Map<String, dynamic> json) {
-    return Article(
+  factory Comment.fromJson(Map<String, dynamic> json) {
+    return Comment(
+      commentId: json['commentId'],
       articleId: json['articleId'],
       userId: json['userId'],
       nickname: json['nickname'],
       profile: json['profile'],
       content: json['content'],
-      image: json['image'],
-      dailyLikeCount: json['dailyLikeCount'],
-      totalLikeCount: json['totalLikeCount'],
-      commentCount: json['commentCount'],
+      likeCount: json['likeCount'],
       likeYn: json['likeYn'],
       createdAt: DateTime.parse(json['createdAt']),
-      location: json['location'],
     );
   }
 }

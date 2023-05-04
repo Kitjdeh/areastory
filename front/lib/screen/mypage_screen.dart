@@ -90,7 +90,9 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                     label: Text("팔로잉/팔로워"),
                                   ),
                                   TextButton.icon(
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      String? userId =  await storage.read(key: 'userId');
+                                      print(userId);
                                       Navigator.of(context).pop();
                                       print("설정");
                                     },

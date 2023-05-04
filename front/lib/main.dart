@@ -23,11 +23,18 @@ void main() async {
   //     NoCheckCertificateHttpOverrides(); // 생성된 HttpOverrides 객체 등록
   WidgetsFlutterBinding.ensureInitialized();
 
+  // KakaoSdk.init(nativeAppKey: dotenv.get('KAKAO_KEY'));
+  // final storage = new FlutterSecureStorage();
+
+  /// flutter sercure storage에 연결.
+
   /// 카카오 세팅
   KakaoSdk.init(nativeAppKey: dotenv.get('KAKAO_KEY'));
 
   /// 로그인 체크
-  final storage = new FlutterSecureStorage(); /// flutter sercure storage에 연결.
+  final storage = new FlutterSecureStorage();
+
+  /// flutter sercure storage에 연결.
   String? userId = await storage.read(key: 'userId');
 
   /// firebase 플랫폼별 초기화 실행.
@@ -66,16 +73,15 @@ void main() async {
   );
 
   // runApp(MyApp());
-  runApp(
-    MaterialApp(
-      routes: {
-        '/signup': (context) => SignUpScreen(),
-        '/login' : (context) => LoginScreen(),
-      },
-      home: userId != null ? MyApp() : LoginScreen(),
-      // home: LoginScreen(),
-    )
-  );
+
+  runApp(MaterialApp(
+    routes: {
+      '/signup': (context) => SignUpScreen(),
+      '/login': (context) => LoginScreen(),
+    },
+    home: userId != null ? MyApp() : LoginScreen(),
+    // home: LoginScreen(),
+  ));
 }
 
 class MyApp extends StatefulWidget {
@@ -94,7 +100,6 @@ class _MyAppState extends State<MyApp> {
       },
     ),
   );
-
     @override
     Widget build(BuildContext context) {
       return MaterialApp.router(

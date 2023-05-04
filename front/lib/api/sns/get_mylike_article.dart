@@ -1,21 +1,17 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-Future<ArticleData> getArticles(dynamic params) async {
+Future<ArticleData> getMyLikeArticle() async {
   final dio = Dio(BaseOptions(
-    baseUrl: '${dotenv.get('BASE_URL')}/api/articles',
+    baseUrl: '${dotenv.get('BASE_URL')}/api/articles/myLike',
   ));
-  final response = await dio.get('${params['sort']}', queryParameters: {
-    'userId': params['userId'],
-    'doName': params['doName'],
-    'si': params['si'],
-    'gun': params['gun'],
-    'gu': params['gu'],
-    'dong': params['dong'],
-    'eup': params['eup'],
-    'myeon': params['myeon']
-  });
+
+  final storage = new FlutterSecureStorage();
+  final userId = await storage.read(key: 'userId');
+
+  final response = await dio.get('/$userId');
 
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());

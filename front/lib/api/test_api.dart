@@ -11,6 +11,7 @@ Future<MyDataClass> getData(params) async {
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());
     final myData = MyDataClass.fromJson(jsonData);
+
     return myData;
   } else {
     throw Exception('Failed to get data');

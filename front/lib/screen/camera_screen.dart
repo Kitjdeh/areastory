@@ -1,6 +1,29 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:front/api/comment/create_comment.dart';
+import 'package:front/api/comment/delete_comment.dart';
+import 'package:front/api/comment/get_comments.dart';
+import 'package:front/api/comment/update_comment.dart';
+import 'package:front/api/follow/create_following.dart';
+import 'package:front/api/follow/delete_follower.dart';
+import 'package:front/api/follow/delete_following.dart';
+import 'package:front/api/follow/get_followers.dart';
+import 'package:front/api/follow/get_followings_search.dart';
+import 'package:front/api/follow/get_followings_sort.dart';
+import 'package:front/api/like/create_article_like.dart';
+import 'package:front/api/like/create_comment_like.dart';
+import 'package:front/api/like/delete_article_like.dart';
+import 'package:front/api/like/delete_comment_like.dart';
+import 'package:front/api/like/get_article_likes.dart';
+import 'package:front/api/like/get_comment_likes.dart';
+import 'package:front/api/sns/create_article.dart';
+import 'package:front/api/sns/get_article.dart';
+import 'package:front/api/sns/get_mylike_article.dart';
+import 'package:front/api/sns/update_article.dart';
+import 'package:front/api/sns/delete_article.dart';
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -13,16 +36,49 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen> {
   final FocusNode _focusNode1 = FocusNode();
   final FocusNode _focusNode2 = FocusNode();
+  final picker = ImagePicker();
   bool _isSwitched = false;
   ScrollController? _scrollController;
 
   File? _image;
-  final picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+  }
+
+  void createArticle(image) async {
+    await postArticle(
+      publicYn: true,
+      content: '여기 아주 좋네요',
+      si: '서울특별시',
+      gu: '강남구',
+      dong: '역삼동',
+      image: image,
+    );
+  }
+
+  void updateArticle() async {
+    await patchArticle(
+      articleId: 25,
+      publicYn: true,
+      content: '바꿨씁니다',
+    );
+  }
+
+  void delArticle() async {
+    await deleteArticle(
+      articleId: 25,
+    );
+  }
+
+  void getDetailArticle() async {
+    final a = await getFollowingsSort(
+      page: 0,
+      type: 1,
+    );
+    print(a[0].nickname);
   }
 
   @override
@@ -153,7 +209,12 @@ class _CameraScreenState extends State<CameraScreen> {
           ),
           // 등록 버튼
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              // createArticle(_image);
+              // updateArticle();
+              // delArticle();
+              getDetailArticle();
+            },
             child: Text('등록'),
           ),
         ],
