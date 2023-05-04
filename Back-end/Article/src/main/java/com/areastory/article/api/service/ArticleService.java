@@ -1,6 +1,6 @@
 package com.areastory.article.api.service;
 
-import com.areastory.article.dto.common.ArticleRespDto;
+import com.areastory.article.dto.common.ArticleDto;
 import com.areastory.article.dto.request.ArticleReq;
 import com.areastory.article.dto.request.ArticleUpdateParam;
 import com.areastory.article.dto.request.ArticleWriteReq;
@@ -16,7 +16,7 @@ public interface ArticleService {
 
     ArticleResp selectAllArticle(ArticleReq articleReq, Pageable pageable);
 
-    ArticleRespDto selectArticle(Long userId, Long articleId);
+    ArticleDto selectArticle(Long userId, Long articleId);
 
     void updateArticle(ArticleUpdateParam param);
 

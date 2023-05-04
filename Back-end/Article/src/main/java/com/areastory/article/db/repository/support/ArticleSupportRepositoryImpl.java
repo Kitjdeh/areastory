@@ -1,7 +1,6 @@
 package com.areastory.article.db.repository.support;
 
 import com.areastory.article.dto.common.ArticleDto;
-import com.areastory.article.dto.common.ArticleRespDto;
 import com.areastory.article.dto.common.UserDto;
 import com.areastory.article.dto.request.ArticleReq;
 import com.querydsl.core.types.Order;
@@ -21,8 +20,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.areastory.article.db.entity.QArticle.article;
 import static com.areastory.article.db.entity.QArticleLike.articleLike;
@@ -35,14 +32,14 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
     private final JPAQueryFactory query;
 
     @Override
-    public Page<ArticleRespDto> findAll(ArticleReq articleReq, Pageable pageable) {
-        List<ArticleRespDto> articleList = getArticlesQuery(articleReq.getUserId())
+    public Page<ArticleDto> findAll(ArticleReq articleReq, Pageable pageable) {
+        List<ArticleDto> articleList = getArticlesQuery(articleReq.getUserId())
                 .where(article.publicYn.eq(true), eqDosi(articleReq.getDosi()), eqSigungu(articleReq.getSigungu()),
                         eqDongeupmyeon(articleReq.getDongeupmyeon()))
                 .orderBy(getOrderSpecifier(pageable).toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch().stream().map(this::toArticleRespDto).collect(Collectors.toList());
+                .fetch();
 
         JPAQuery<Long> articleSize = query
                 .select(article.count())
@@ -52,10 +49,10 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
     }
 
     @Override
-    public ArticleRespDto findById(Long userId, Long articleId) {
-        return toArticleRespDto(Objects.requireNonNull(getArticlesQuery(userId)
+    public ArticleDto findById(Long userId, Long articleId) {
+        return getArticlesQuery(userId)
                 .where(article.articleId.eq(articleId))
-                .fetchOne(), articleId + "의 게시글이 없음"));
+                .fetchOne();
     }
 
     @Override
@@ -86,13 +83,13 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
     }
 
     @Override
-    public Page<ArticleRespDto> findMyLikeList(Long userId, Pageable pageable) {
-        List<ArticleRespDto> myLikeList = getArticlesQuery(userId)
+    public Page<ArticleDto> findMyLikeList(Long userId, Pageable pageable) {
+        List<ArticleDto> myLikeList = getArticlesQuery(userId)
                 .where(articleLike.user.userId.eq(userId))
                 .orderBy(getOrderSpecifier(pageable).toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch().stream().map(this::toArticleRespDto).collect(Collectors.toList());
+                .fetch();
 
         JPAQuery<Long> myLikeListSize = query
                 .select(articleLike.count())
@@ -118,6 +115,10 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
                                 .when(articleLike.user.userId.eq(userId))
                                 .then(true)
                                 .otherwise(false),
+                        new CaseBuilder()
+                                .when(follow.followUser.userId.eq(userId))
+                                .then(true)
+                                .otherwise(false),
                         article.createdAt,
                         article.dosi,
                         article.sigungu,
@@ -125,7 +126,9 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
                 ))
                 .from(article)
                 .leftJoin(articleLike)
-                .on(articleLike.user.userId.eq(userId), articleLike.article.eq(article));
+                .on(articleLike.user.userId.eq(userId), articleLike.article.eq(article))
+                .leftJoin(follow)
+                .on(follow.followingUser.userId.eq(articleLike.user.userId));
     }
 
 

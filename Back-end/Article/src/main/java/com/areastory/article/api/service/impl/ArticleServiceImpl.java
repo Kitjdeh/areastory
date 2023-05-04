@@ -8,7 +8,7 @@ import com.areastory.article.db.entity.User;
 import com.areastory.article.db.repository.ArticleLikeRepository;
 import com.areastory.article.db.repository.ArticleRepository;
 import com.areastory.article.db.repository.UserRepository;
-import com.areastory.article.dto.common.ArticleRespDto;
+import com.areastory.article.dto.common.ArticleDto;
 import com.areastory.article.dto.common.UserDto;
 import com.areastory.article.dto.request.ArticleReq;
 import com.areastory.article.dto.request.ArticleUpdateParam;
@@ -69,7 +69,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleResp selectAllArticle(ArticleReq articleReq, Pageable pageable) {
-        Page<ArticleRespDto> articles = articleRepository.findAll(articleReq, pageable);
+        Page<ArticleDto> articles = articleRepository.findAll(articleReq, pageable);
         return ArticleResp.builder()
                 .articles(articles.getContent())
                 .pageSize(articles.getPageable().getPageSize())
@@ -82,7 +82,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleRespDto selectArticle(Long userId, Long articleId) {
+    public ArticleDto selectArticle(Long userId, Long articleId) {
         return articleRepository.findById(userId, articleId);
     }
 
@@ -171,7 +171,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleResp selectMyLikeList(Long userId, Pageable pageable) {
-        Page<ArticleRespDto> likes = articleRepository.findMyLikeList(userId, pageable);
+        Page<ArticleDto> likes = articleRepository.findMyLikeList(userId, pageable);
         return ArticleResp.builder()
                 .articles(likes.getContent())
                 .pageSize(likes.getPageable().getPageSize())

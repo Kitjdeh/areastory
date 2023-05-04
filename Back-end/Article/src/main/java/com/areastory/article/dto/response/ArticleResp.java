@@ -1,6 +1,6 @@
 package com.areastory.article.dto.response;
 
-import com.areastory.article.dto.common.ArticleRespDto;
+import com.areastory.article.dto.common.ArticleDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,6 +17,6 @@ public class ArticleResp {
     private Boolean nextPage;
     private Boolean previousPage;
 
-    private List<ArticleRespDto> articles;
+    private List<ArticleDto> articles;
 
 }
