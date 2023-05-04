@@ -34,7 +34,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
               height: 50,
-              color: Colors.blue,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -141,7 +140,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
             ),
             // 2. 유저 프로필사진 및 게시글 정보
             Container(
-              color: Colors.red,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -149,7 +147,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
                   // 컨테이너는 넓이, 높이 설정안하면 -> 자동으로 최대크기
                   // sizedbox는 하나라도 설정안하면 -> 자동으로 child의 최대크기
                   Container(
-                    color: Colors.green,
                     width: 100,
                     height: 100,
                     // ClipRRect: R이 2개다. 그리고 강제로 차일드의 모양을 강제로 잡아주는 용도.
@@ -172,20 +169,36 @@ class _MyPageScreenState extends State<MyPageScreen> {
                     ],
                   ),
                   // 팔로워(수)
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("팔로워"),
-                      Text("52")
-                    ],
+                  GestureDetector(
+                    onTap: (){
+                      print("팔로워 리스트로 이동");
+                      Beamer.of(context).beamToNamed('/mypage/followList',
+                        data: {'index' : 0}
+                      );
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("팔로워"),
+                        Text("52")
+                      ],
+                    ),
                   ),
                   // 팔로잉(수)
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("팔로잉"),
-                      Text("46")
-                    ],
+                  GestureDetector(
+                    onTap: (){
+                      print("팔로잉 리스트로 이동");
+                      Beamer.of(context).beamToNamed('/mypage/followList',
+                          data: {'index' : 1}
+                      );
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("팔로잉"),
+                        Text("46")
+                      ],
+                    ),
                   ),
                 ],
               ),

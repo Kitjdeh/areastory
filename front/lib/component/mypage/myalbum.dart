@@ -40,7 +40,6 @@ class MyAlbum extends StatelessWidget {
     required int index,
     // double? height,
   }) {
-    print(index);
     return Container(
       // height: height ?? 300,
       // width: 300,

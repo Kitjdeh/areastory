@@ -1,3 +1,4 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:front/component/mypage/follow/follower.dart';
 import 'package:front/component/mypage/follow/following.dart';
@@ -14,6 +15,7 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
     with TickerProviderStateMixin {
   String? _inputValue;
   String? _categoryVal;
+
   late final TabController followcontroller;
 
   @override
@@ -21,6 +23,9 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
     super.initState();
 
     followcontroller = TabController(length: FOLLOWTABS.length, vsync: this);
+    // final location = 0;
+    // print(location);
+    // followcontroller.index = (context.currentBeamLocation.state.queryParameters['index'] as int?) ?? 0;
 
     followcontroller.addListener(() {
       setState(() {});

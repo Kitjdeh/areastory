@@ -31,9 +31,7 @@ class FollowerListScreen extends StatelessWidget {
   }) {
     return Container(
       height: height ?? 70,
-      color: Colors.green,
       child: Container(
-        color: Colors.red,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -42,7 +40,6 @@ class FollowerListScreen extends StatelessWidget {
             /// sizedbox는 하나라도 설정안하면 -> 자동으로 child의 최대크기
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20),
-              color: Colors.green,
               width: 70,
               height: 70,
 

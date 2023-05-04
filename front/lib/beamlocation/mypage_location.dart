@@ -19,7 +19,7 @@ class MypageLocation extends BeamLocation<BeamState> {
     ),
     if (state.uri.pathSegments.length == 2)
       const BeamPage(
-        key: ValueKey('mypage/follow'),
+        key: ValueKey('mypage/followList'),
         child: MypageFollowScreen(),
       ),
   ];

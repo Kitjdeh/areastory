@@ -5,15 +5,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/component/signup/login.dart';
 import 'package:front/component/signup/sign_up.dart';
 import 'package:front/firebase_options.dart';
+import 'package:front/permission/OverlayPermission.dart';
 import 'package:front/screen/home_screen.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-
 /// 앱이 백그라운드 상태일때 메시지 수신. 항상 main.dart의 최상위.
 
 @pragma('vm:entry-point')
@@ -64,19 +65,17 @@ Future<void> setupFlutterNotifications() async {
 }
 
 void showFlutterNotification(RemoteMessage message) {
-  print("show1");
-  print(message.notification);
-  print(message.notification?.android);
   RemoteNotification? notification = message.notification;
   AndroidNotification? android = message.notification?.android;
   if (notification != null && android != null && !kIsWeb) {
-    print("show2");
     flutterLocalNotificationsPlugin.show(
       notification.hashCode,
       notification.title,
       notification.body,
       NotificationDetails(
         android: AndroidNotificationDetails(
+          visibility: NotificationVisibility.public,
+          enableVibration: true,
           channel.id,
           channel.name,
           channelDescription: channel.description,
@@ -157,7 +156,15 @@ void main() async {
   );
 
   // runApp(MyApp());
-
+  // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+  //     .then((_) async {
+  //   print("권한설정 진행중");
+  //   final canDrawOverlays = await OverlayPermission.canDrawOverlays();
+  //   if (!canDrawOverlays) {
+  //     await OverlayPermission.requestOverlayPermission();
+  //   }
+  //   runApp(MyApp());
+  // });
   runApp(MaterialApp(
     routes: {
       '/signup': (context) => SignUpScreen(),
