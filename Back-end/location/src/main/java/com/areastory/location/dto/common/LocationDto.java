@@ -3,26 +3,22 @@ package com.areastory.location.dto.common;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.persistence.Column;
+
 @Getter
 public class LocationDto {
-    private final String doName;
-    private final String si;
-    private final String gun;
-    private final String gu;
-    private final String dong;
-    private final String eup;
-    private final String myeon;
+    private String dosi;
+    private String sigungu;
+    private String dongeupmyeon;
 
     @Builder
-    public LocationDto(String doName, String si, String gun, String gu, String dong, String eup, String myeon) {
-        this.doName = doName;
-        this.si = si;
-        this.gun = gun;
-        this.gu = gu;
-        this.dong = dong;
-        this.eup = eup;
-        this.myeon = myeon;
+    public LocationDto(String dosi, String sigungu, String dongeupmyeon) {
+        this.dosi = dosi;
+        this.sigungu = sigungu;
+        this.dongeupmyeon = dongeupmyeon;
     }
+
+
 
     @Override
     public int hashCode() {
@@ -35,12 +31,8 @@ public class LocationDto {
             return false;
         }
         LocationDto other = (LocationDto) obj;
-        return (other.doName == null || other.doName.equals(this.doName)) &&
-                (other.si == null || other.si.equals(this.si)) &&
-                (other.gun == null || other.gun.equals(this.gun)) &&
-                (other.gu == null || other.gu.equals(this.gu)) &&
-                (other.dong == null || other.dong.equals(this.dong)) &&
-                (other.eup == null || other.eup.equals(this.eup)) &&
-                (other.myeon == null || other.myeon.equals(this.myeon));
+        return (other.dosi == null || other.dosi.equals(this.dosi)) &&
+                (other.sigungu == null || other.sigungu.equals(this.sigungu)) &&
+                (other.dongeupmyeon == null || other.dongeupmyeon.equals(this.dongeupmyeon));
     }
 }

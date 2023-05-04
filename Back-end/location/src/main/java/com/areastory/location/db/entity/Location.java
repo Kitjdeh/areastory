@@ -12,40 +12,26 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 @NoArgsConstructor
 public class Location {
-    @Column(name = "do", length = 7)
-    private String doName;
     @Column(length = 10)
-    private String si;
+    private String dosi;
     @Column(length = 10)
-    private String gun;
+    private String sigungu;
     @Column(length = 10)
-    private String gu;
-    @Column(length = 10)
-    private String dong;
-    @Column(length = 10)
-    private String eup;
-    @Column(length = 10)
-    private String myeon;
+    private String dongeupmyeon;
 
     @Builder
-    public Location(String doName, String si, String gun, String gu, String dong, String eup, String myeon) {
-        this.doName = doName;
-        this.si = si;
-        this.gun = gun;
-        this.gu = gu;
-        this.dong = dong;
-        this.eup = eup;
-        this.myeon = myeon;
+    public Location(String dosi, String sigungu, String dongeupmyeon) {
+        this.dosi = dosi;
+        this.sigungu = sigungu;
+        this.dongeupmyeon = dongeupmyeon;
     }
 
+
+
     public Location(Location location) {
-        this.doName = location.getDoName();
-        this.si = location.getSi();
-        this.gun = location.getGun();
-        this.gu = location.getGu();
-        this.dong = location.getDong();
-        this.eup = location.getEup();
-        this.myeon = location.getMyeon();
+        this.dosi = location.dosi;
+        this.sigungu = location.sigungu;
+        this.dongeupmyeon = location.dongeupmyeon;
     }
 
 }

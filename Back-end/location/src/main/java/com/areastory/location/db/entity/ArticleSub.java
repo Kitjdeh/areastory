@@ -7,8 +7,8 @@ import lombok.Getter;
 public class ArticleSub extends LocationDto {
     private final Long dailyLikeCount;
 
-    public ArticleSub(Long dailyLikeCount, String doName, String si, String gun, String gu, String dong, String eup, String myeon) {
-        super(doName, si, gun, gu, dong, eup, myeon);
+    public ArticleSub(String dosi, String sigungu, String dongeupmyeon, Long dailyLikeCount) {
+        super(dosi, sigungu, dongeupmyeon);
         this.dailyLikeCount = dailyLikeCount;
     }
 }

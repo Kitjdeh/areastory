@@ -46,13 +46,9 @@ public class LocationServiceImpl implements LocationService {
         for (LocationDto locationDto : locationList) {
             LocationResp locationResp = articleMap.get(locationDto);
             articleMap.put(locationDto, LocationResp.builder()
-                    .doName(locationDto.getDoName())
-                    .si(locationDto.getSi())
-                    .gun(locationDto.getGun())
-                    .gu(locationDto.getGu())
-                    .dong(locationDto.getDong())
-                    .eup(locationDto.getEup())
-                    .myeon(locationDto.getMyeon())
+                    .dosi(locationDto.getDosi())
+                    .sigungu(locationDto.getSigungu())
+                    .dongeupmyeon(locationDto.getDongeupmyeon())
                     .image(locationResp.getImage())
                     .articleId(locationResp.getArticleId())
                     .build());

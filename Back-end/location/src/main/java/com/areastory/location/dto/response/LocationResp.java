@@ -15,8 +15,8 @@ public class LocationResp {
     private Long articleId;
 
     @Builder
-    public LocationResp(String doName, String si, String gun, String gu, String dong, String eup, String myeon, String image, Long articleId) {
-        this.locationDto = new LocationDto(doName, si, gun, gu, dong, eup, myeon);
+    public LocationResp(String dosi, String sigungu, String dongeupmyeon, String image, Long articleId) {
+        this.locationDto = new LocationDto(dosi, sigungu, dongeupmyeon);
         this.image = image;
         this.articleId = articleId;
     }

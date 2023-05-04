@@ -41,13 +41,9 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
     private JPAQuery<LocationResp> getMainQuery(List<ArticleSub> subList) {
         return query
                 .select(Projections.constructor(LocationResp.class,
-                        article.doName,
-                        article.si,
-                        article.gun,
-                        article.gu,
-                        article.dong,
-                        article.eup,
-                        article.myeon,
+                        article.dosi,
+                        article.sigungu,
+                        article.dongeupmyeon,
                         article.image,
                         article.articleId
                 ))
@@ -59,17 +55,15 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
         return query
                 .select(Projections.constructor(ArticleSub.class,
                         article.dailyLikeCount.max(),
-                        article.doName,
-                        article.si,
-                        article.gun,
-                        article.gu,
-                        article.dong,
-                        article.eup,
-                        article.myeon
+                        article.dosi,
+                        article.sigungu,
+                        article.dongeupmyeon
                 ))
                 .from(article)
                 .where(getWhereOr(locationList))
-                .groupBy(article.doName, article.si, article.gun, article.gu, article.dong, article.eup, article.myeon);
+                .groupBy(article.dosi,
+                        article.sigungu,
+                        article.dongeupmyeon);
     }
 
     private BooleanExpression getWhereOr(List<? extends LocationDto> locationList) {
@@ -87,13 +81,9 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
 
     private BooleanExpression getWhereAnd(LocationDto locationDto) {
         BooleanExpression booleanExpression = null;
-        booleanExpression = eqDo(booleanExpression, locationDto.getDoName());
-        booleanExpression = eqSi(booleanExpression, locationDto.getSi());
-        booleanExpression = eqGun(booleanExpression, locationDto.getGun());
-        booleanExpression = eqGu(booleanExpression, locationDto.getGu());
-        booleanExpression = eqDong(booleanExpression, locationDto.getDong());
-        booleanExpression = eqEup(booleanExpression, locationDto.getEup());
-        booleanExpression = eqMyeon(booleanExpression, locationDto.getMyeon());
+        booleanExpression = eqDosi(booleanExpression, locationDto.getDosi());
+        booleanExpression = eqSigungu(booleanExpression, locationDto.getSigungu());
+        booleanExpression = eqDongeupmyeon(booleanExpression, locationDto.getDongeupmyeon());
         if (locationDto instanceof ArticleSub)
             booleanExpression = eqLikeCount(booleanExpression, ((ArticleSub) locationDto).getDailyLikeCount());
         return booleanExpression;
@@ -108,10 +98,10 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
         return be.and(eq);
     }
 
-    private BooleanExpression eqDo(BooleanExpression be, String doName) {
+    private BooleanExpression eqDosi(BooleanExpression be, String dosi) {
         BooleanExpression eq = null;
-        if (StringUtils.hasText(doName)) {
-            eq = article.doName.eq(doName);
+        if (StringUtils.hasText(dosi)) {
+            eq = article.dosi.eq(dosi);
         }
         if (be == null)
             return eq;
@@ -120,10 +110,10 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
         return be.and(eq);
     }
 
-    private BooleanExpression eqSi(BooleanExpression be, String si) {
+    private BooleanExpression eqSigungu(BooleanExpression be, String sigungu) {
         BooleanExpression eq = null;
-        if (StringUtils.hasText(si)) {
-            eq = article.si.eq(si);
+        if (StringUtils.hasText(sigungu)) {
+            eq = article.sigungu.eq(sigungu);
         }
         if (be == null)
             return eq;
@@ -132,10 +122,10 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
         return be.and(eq);
     }
 
-    private BooleanExpression eqGun(BooleanExpression be, String gun) {
+    private BooleanExpression eqDongeupmyeon(BooleanExpression be, String dongeupmyeon) {
         BooleanExpression eq = null;
-        if (StringUtils.hasText(gun)) {
-            eq = article.gun.eq(gun);
+        if (StringUtils.hasText(dongeupmyeon)) {
+            eq = article.dongeupmyeon.eq(dongeupmyeon);
         }
         if (be == null)
             return eq;
@@ -143,54 +133,4 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
             return be;
         return be.and(eq);
     }
-
-    private BooleanExpression eqGu(BooleanExpression be, String gu) {
-        BooleanExpression eq = null;
-        if (StringUtils.hasText(gu)) {
-            eq = article.gu.eq(gu);
-        }
-        if (be == null)
-            return eq;
-        if (eq == null)
-            return be;
-        return be.and(eq);
-    }
-
-    private BooleanExpression eqDong(BooleanExpression be, String dong) {
-        BooleanExpression eq = null;
-        if (StringUtils.hasText(dong)) {
-            eq = article.dong.eq(dong);
-        }
-        if (be == null)
-            return eq;
-        if (eq == null)
-            return be;
-        return be.and(eq);
-    }
-
-    private BooleanExpression eqEup(BooleanExpression be, String eup) {
-        BooleanExpression eq = null;
-        if (StringUtils.hasText(eup)) {
-            eq = article.eup.eq(eup);
-        }
-        if (be == null)
-            return eq;
-        if (eq == null)
-            return be;
-        return be.and(eq);
-    }
-
-    private BooleanExpression eqMyeon(BooleanExpression be, String myeon) {
-        BooleanExpression eq = null;
-        if (StringUtils.hasText(myeon)) {
-            eq = article.myeon.eq(myeon);
-        }
-        if (be == null)
-            return eq;
-        if (eq == null)
-            return be;
-        return be.and(eq);
-    }
-
-
 }

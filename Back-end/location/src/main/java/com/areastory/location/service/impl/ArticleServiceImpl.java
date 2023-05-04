@@ -19,13 +19,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public void addArticle(ArticleKafkaDto articleKafkaDto) {
         Location location = Location.builder()
-                .doName(articleKafkaDto.getDoName())
-                .si(articleKafkaDto.getSi())
-                .gun(articleKafkaDto.getGun())
-                .gu(articleKafkaDto.getGu())
-                .dong(articleKafkaDto.getDong())
-                .eup(articleKafkaDto.getEup())
-                .myeon(articleKafkaDto.getMyeon())
+                .dosi(articleKafkaDto.getDosi())
+                .sigungu(articleKafkaDto.getSigungu())
+                .dongeupmyeon(articleKafkaDto.getDongeupmyeon())
                 .build();
         Article article = Article.articleBuilder()
                 .articleId(articleKafkaDto.getArticleId())
