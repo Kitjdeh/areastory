@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -13,6 +14,7 @@ import 'package:latlong2/latlong.dart';
 import 'dart:async' show Future;
 import 'dart:ui' as ui;
 import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svg_provider;
+import 'package:flutter/services.dart' show ByteData, rootBundle;
 
 String sangjunurl = 'https://source.unsplash.com/random/?party';
 String seoul2url = 'https://source.unsplash.com/random/?cat';
@@ -42,6 +44,7 @@ class _MapScreenState extends State<MapScreen> {
   // cameraposition 우주에서 바라보는 카메라 포지션
 
   static final double distance = 1000;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +106,7 @@ class _CustomMapState extends State<_CustomMap> {
   MapController mapController = MapController();
   List<LatLng> points = [];
   List<String> arealist = [];
-  Map<int, String> areadata = {};
+  Map<String, String> areadata = {};
   List<List<LatLng>> _polygon = [];
   List<String> urls = [];
   List<Mapdata> allareaData = [];
@@ -147,21 +150,39 @@ class _CustomMapState extends State<_CustomMap> {
   @override
   void initState() {
     super.initState();
-    // _loadGeoJson('asset/map/minimal.json');
-    // _loadGeoJson('asset/map/sigungookorea.json');
-    // _loadGeoJson('asset/map/ctp_korea.geojson');
-    // nowareadata = bigareaData;
-    // mapController.zoom > 12.0
-    //     ? nowareadata = smallareaData
-    //     : mapController.zoom > 9.0
-    //     ? nowareadata = middleareaData
-    //     : nowareadata = bigareaData;
+    // loadexcel();
+  }
+
+  Future<void> loadexcel() async {
+    ByteData data = await rootBundle.load('asset/map/areacode.xlsx');
+    // print(data.buffer);
+    var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    var excel = Excel.decodeBytes(bytes);
+    print(excel.tables.values.first.rows.length);
+    // var row = excel.tables.values.first.rows.first;
+    // var row = excel.tables.values.first.rows[2];
+    for (var table in excel.tables.keys) {
+      for (var row in excel.tables[table]!.rows) {
+        String num = row[0]!.value.toString();
+        String area = row[1]!.value.toString();
+        // print('row[0]!.value.toString()${row[0]!.value.toString()}');
+        // print('row[2]!.value.toString()${row[2]!.value.toString()}');
+        // print('row[1]!.value.toString()${row[1]!.value.toString()}');
+        areadata[num] = area;
+      }
+    }
+    print('areadata.values.first${areadata.values.first}');
+    print('areadata.values.first${areadata['1111010600']}');
+    // for (var row in excel.tables.values.first.rows) {
+    //
+    // }
   }
 
   Future<void> _loadGeoJson(String link) async {
+    Set<String> arealastletter = {};
     List<Mapdata> allareaData = [];
     _polygon = [];
-
+    print(areadata.length);
     // geojson을 정의한다.
     final geojson = GeoJson();
     // 준비된 geojson 파일을 불러온다.
@@ -175,13 +196,19 @@ class _CustomMapState extends State<_CustomMap> {
       // null 값을 대비하여 runtimetype 확인
       if (feature.geometry.runtimeType == GeoJsonMultiPolygon &&
           feature.properties != null) {
-        String areaname;
+        String areaname = '';
+        String areanum;
         link == 'asset/map/minimal.json'
-            ? areaname = feature.properties!['EMD_KOR_NM']
+            ? areanum = feature.properties!['EMD_CD']
+            // areaname = feature.properties!['EMD_KOR_NM'];
+
             : link == 'asset/map/ctp_korea.geojson'
-                ? areaname = feature.properties!['CTP_KOR_NM']
-                : areaname = feature.properties!['SIG_KOR_NM'];
+                ? areanum = feature.properties!['CTPRVN_CD']
+                : areanum = feature.properties!['SIG_CD'];
         // 해당 geometry를 polygones로 정의(ex 종로구의 geometry추출(=GeoJsonMultiPolygon)
+        // String lastLetter =
+        //     areaname.substring(areaname.length - 1); // 각 문자열의 맨 뒷글자를 추출.
+        // arealastletter.add(lastLetter);
         final polygones = feature.geometry as GeoJsonMultiPolygon;
         // geometry(종로구)를 구성하는 polygon 호출 (=geojsonpolygon)
         for (final polygone in polygones.polygons) {
@@ -198,7 +225,9 @@ class _CustomMapState extends State<_CustomMap> {
               _polygonLatLong,
             );
             urls.add(sangjunurl);
-            areadata[cnt] = areaname;
+            String areakey = areanum.toString().padRight(10, '0');
+            areaname = areadata[areakey] ?? '';
+            // areadata[cnt] = areaname;
             localareadata = Mapdata(
                 areaname: areaname,
                 polygons: _polygonLatLong,
@@ -211,12 +240,22 @@ class _CustomMapState extends State<_CustomMap> {
       ;
       if (feature.geometry.runtimeType == GeoJsonPolygon &&
           feature.properties != null) {
-        final String areaname;
+        String areaname = '';
+        String areanum;
         link == 'asset/map/minimal.json'
-            ? areaname = feature.properties!['EMD_KOR_NM']
+            ? areanum = feature.properties!['EMD_CD']
+            // areaname = feature.properties!['EMD_KOR_NM'];
             : link == 'asset/map/ctp_korea.geojson'
-                ? areaname = feature.properties!['CTP_KOR_NM']
-                : areaname = feature.properties!['SIG_KOR_NM'];
+                ? areanum = feature.properties!['CTPRVN_CD']
+                : areanum = feature.properties!['SIG_CD'];
+        // link == 'asset/map/minimal.json'
+        //     ? areaname = feature.properties!['EMD_KOR_NM']
+        //     : link == 'asset/map/ctp_korea.geojson'
+        //         ? areaname = feature.properties!['CTP_KOR_NM']
+        //         : areaname = feature.properties!['SIG_KOR_NM'];
+        // String lastLetter =
+        //     areaname.substring(areaname.length - 1); // 각 문자열의 맨 뒷글자를 추출합니다.
+        // arealastletter.add(lastLetter);
         // 해당 geometry를 polygones로 정의(ex 종로구의 geometry추출(=GeoJsonMultiPolygon)
         final polygones = feature.geometry as GeoJsonPolygon;
         // geometry(종로구)를 구성하는 polygon 호출 (=geojsonpolygon)
@@ -231,6 +270,9 @@ class _CustomMapState extends State<_CustomMap> {
           _polygon.add(
             _polygonLatLong,
           );
+          String areakey = areanum.toString().padRight(10, '0');
+          areaname = areadata[areakey] ?? '';
+          // print("areadata[areakey]테스트 ${areadata[areakey]} areakey${areakey} ");
           localareadata = Mapdata(
               areaname: areaname,
               polygons: _polygonLatLong,
@@ -253,6 +295,7 @@ class _CustomMapState extends State<_CustomMap> {
     }
     setState(() {});
     print('end${link}');
+    print('arealastletter${arealastletter}');
   }
 
   Widget build(BuildContext context) {
@@ -289,7 +332,10 @@ class _CustomMapState extends State<_CustomMap> {
                   InteractiveFlag.doubleTapZoom |
                   InteractiveFlag.pinchZoom,
               onMapReady: () async {
-                print("1nowareadata.length${nowallareadata.length}");
+                var requestlist = [];
+                var testlist = [];
+                // print("1nowareadata.length${nowallareadata.length}");
+                await loadexcel();
                 await _loadGeoJson('asset/map/ctp_korea.geojson');
                 await _loadGeoJson('asset/map/sigungookorea.json');
                 await _loadGeoJson('asset/map/minimal.json');
@@ -307,17 +353,21 @@ class _CustomMapState extends State<_CustomMap> {
                         point.longitude <= ne!.longitude;
                   });
                 }).toList();
-                nowareadata = visibleMapdata;
-                // print("3nowareadata.length${nowareadata.length}");
-              },
-              onPositionChanged: (pos, hasGesture) {
+                visibleMapdata.map((e) => requestlist.add(e.areaname));
+                var A = visibleMapdata.map((e) => e.areaname).toList();
+                // await nowareadata = visibleMapdata;
+                print(requestlist);
+                print("3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
+                print('A${A}');
+                },
+              onPositionChanged: (pos, hasGesture) async {
+                var requestlist = [];
                 // print('nowallareadata${nowallareadata.length}');
                 // 현재 보이는 화면의 경계를 계산
                 final bounds = mapController.bounds!;
                 final sw = bounds.southWest;
                 final ne = bounds.northEast;
                 // 화면 내에 있는 폴리곤만 필터링
-
                 final visibleMapdata = nowallareadata.where((p) {
                   return p.polygons!.any((point) {
                     return point.latitude >= sw!.latitude &&
@@ -326,14 +376,13 @@ class _CustomMapState extends State<_CustomMap> {
                         point.longitude <= ne!.longitude;
                   });
                 }).toList();
-                // final arealist = [];
-// print(bounds.northEast);
-//                 print('${nowallareadata.length}');
+                await visibleMapdata.map((e) => requestlist.add(e.areaname));
                 nowareadata = visibleMapdata;
                 setState(() {
                   nowareadata = visibleMapdata;
                 });
-                nowareadata.map((e) => print(e.areaname));
+                print(requestlist);
+                // nowareadata.map((e) => print(e.areaname));
               },
             ),
             children: [

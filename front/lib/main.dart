@@ -15,7 +15,7 @@ void main() async {
   KakaoSdk.init(nativeAppKey: dotenv.get('KAKAO_KEY'));
   final storage = new FlutterSecureStorage(); /// flutter sercure storage에 연결.
 
-  String? providerId = await storage.read(key: 'providerId');
+  String? userId = await storage.read(key: 'userId');
 
   // runApp(MyApp());
   runApp(
@@ -24,7 +24,7 @@ void main() async {
         '/signup': (context) => SignUpScreen(),
         '/login' : (context) => LoginScreen(),
       },
-      home: providerId != null ? MyApp() : LoginScreen(),
+      home: userId != null ? MyApp() : LoginScreen(),
       // home: LoginScreen(),
     )
   );
