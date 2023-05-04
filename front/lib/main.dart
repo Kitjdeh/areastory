@@ -7,9 +7,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/component/signup/login.dart';
 import 'package:front/component/signup/sign_up.dart';
+import 'package:front/controllers/app_controller.dart';
 import 'package:front/firebase_options.dart';
 import 'package:front/screen/home_screen.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:get/get.dart';
 
 /// 앱이 백그라운드 상태일때 메시지 수신. 항상 main.dart의 최상위.
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -22,9 +24,6 @@ void main() async {
   // HttpOverrides.global =
   //     NoCheckCertificateHttpOverrides(); // 생성된 HttpOverrides 객체 등록
   WidgetsFlutterBinding.ensureInitialized();
-
-  // KakaoSdk.init(nativeAppKey: dotenv.get('KAKAO_KEY'));
-  // final storage = new FlutterSecureStorage();
 
   /// flutter sercure storage에 연결.
 
@@ -71,6 +70,19 @@ void main() async {
     enableVibration: true, // 진동 여부
     enableLights: true, // 알림 조명 여부
   );
+  /// FlutterLocalNotificationsPlugin 인스턴스 생성
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  /// Android 채널 설정
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+      AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  /// notification
+  // final AppController c = Get.put(AppController());
 
   // runApp(MyApp());
 
