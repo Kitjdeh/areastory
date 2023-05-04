@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Data
@@ -19,9 +20,10 @@ public class NotificationKafkaDto implements Serializable {
     private Long otherUserId;
     private String otherUsername;
     private String image;
+    private LocalDateTime createdAt;
 
     @Builder
-    public NotificationKafkaDto(String type, Long articleId, String articleContent, Long commentId, String commentContent, Long userId, String username, Long otherUserId, String otherUsername, String image) {
+    public NotificationKafkaDto(String type, Long articleId, String articleContent, Long commentId, String commentContent, Long userId, String username, Long otherUserId, String otherUsername, String image, LocalDateTime createdAt) {
         this.type = type;
         this.articleId = articleId;
         this.articleContent = articleContent;
@@ -32,5 +34,6 @@ public class NotificationKafkaDto implements Serializable {
         this.otherUserId = otherUserId;
         this.otherUsername = otherUsername;
         this.image = image;
+        this.createdAt = createdAt;
     }
 }
