@@ -27,6 +27,7 @@ public class NotificationProducer {
                 .articleId(articleLike.getArticle().getArticleId())
                 .articleContent(articleLike.getArticle().getContent())
                 .image(articleLike.getArticle().getImage())
+                .createdAt(articleLike.getCreatedAt())
                 .build();
         kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, articleLikeNotificationKafkaDto.getUserId(), objectMapper.writeValueAsString(articleLikeNotificationKafkaDto)));
     }
@@ -43,6 +44,7 @@ public class NotificationProducer {
                 .commentId(comment.getCommentId())
                 .commentContent(comment.getContent())
                 .image(comment.getArticle().getImage())
+                .createdAt(comment.getCreatedAt())
                 .build();
         kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, commentNotificationKafkaDto.getUserId(), objectMapper.writeValueAsString(commentNotificationKafkaDto)));
     }
@@ -59,6 +61,7 @@ public class NotificationProducer {
                 .commentId(commentLike.getComment().getCommentId())
                 .commentContent(commentLike.getComment().getContent())
                 .image(commentLike.getComment().getArticle().getImage())
+                .createdAt(commentLike.getCreatedAt())
                 .build();
         kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, commentLikeNotificationKafkaDto.getUserId(), objectMapper.writeValueAsString(commentLikeNotificationKafkaDto)));
     }
