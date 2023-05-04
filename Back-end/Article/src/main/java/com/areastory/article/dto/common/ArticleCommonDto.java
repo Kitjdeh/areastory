@@ -24,6 +24,7 @@ public class ArticleCommonDto {
     private Long totalLikeCount;
     private Long commentCount;
     private Boolean likeYn;
+    private Boolean followYn;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

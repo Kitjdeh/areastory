@@ -8,23 +8,15 @@ import lombok.NoArgsConstructor;
 @Data
 public class ArticleReq {
     private Long userId;
-    private String doName;
-    private String si;
-    private String gun;
-    private String gu;
-    private String dong;
-    private String eup;
-    private String myeon;
+    private String dosi;
+    private String sigungu;
+    private String dongeupmyeon;
 
     @Builder
-    public ArticleReq(Long userId, String doName, String si, String gun, String gu, String dong, String eup, String myeon) {
+    public ArticleReq(Long userId, String dosi, String sigungu, String dongeupmyeon) {
         this.userId = userId;
-        this.doName = doName;
-        this.si = si;
-        this.gun = gun;
-        this.gu = gu;
-        this.dong = dong;
-        this.eup = eup;
-        this.myeon = myeon;
+        this.dosi = dosi;
+        this.sigungu = sigungu;
+        this.dongeupmyeon = dongeupmyeon;
     }
 }

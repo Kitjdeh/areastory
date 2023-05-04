@@ -32,9 +32,8 @@ public interface ArticleSupportRepository {
                 .commentCount(articleDto.getCommentCount())
                 .likeYn(articleDto.getLikeYn())
                 .createdAt(articleDto.getCreatedAt())
-                .location(toLocation(Arrays.asList(articleDto.getDoName()
-                        , articleDto.getSi(), articleDto.getGun(), articleDto.getGu()
-                        , articleDto.getDong(), articleDto.getEup(), articleDto.getMyeon())))
+                .location(toLocation(Arrays.asList(articleDto.getDosi()
+                        , articleDto.getSigungu(), articleDto.getDongeupmyeon())))
                 .build();
 
     }

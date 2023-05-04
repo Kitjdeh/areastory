@@ -14,8 +14,13 @@ import java.io.Serializable;
 public class NotificationKafkaDto implements Serializable {
     private String type;
     private Long articleId;
+    private String articleContent;
     private Long commentId;
+    private String commentContent;
     private Long userId;
+    private String username;
     private Long otherUserId;
+    private String otherUsername;
     private String image;
+    
 }

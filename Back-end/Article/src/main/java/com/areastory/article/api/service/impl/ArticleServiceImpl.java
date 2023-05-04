@@ -21,6 +21,7 @@ import com.areastory.article.kafka.ArticleProducer;
 import com.areastory.article.kafka.KafkaProperties;
 import com.areastory.article.kafka.NotificationProducer;
 import com.areastory.article.util.FileUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -59,13 +60,9 @@ public class ArticleServiceImpl implements ArticleService {
                 .content(articleWriteReq.getContent())
                 .image(imageUrl)
                 .publicYn(articleWriteReq.getPublicYn())
-                .doName(articleWriteReq.getDoName())
-                .si(articleWriteReq.getSi())
-                .gun(articleWriteReq.getGun())
-                .gu(articleWriteReq.getGu())
-                .dong(articleWriteReq.getDong())
-                .eup(articleWriteReq.getEup())
-                .myeon(articleWriteReq.getMyeon())
+                .dosi(articleWriteReq.getDosi())
+                .sigungu(articleWriteReq.getSigungu())
+                .dongeupmyeon(articleWriteReq.getDongeupmyeon())
                 .build());
         articleProducer.send(article, KafkaProperties.INSERT);
     }
@@ -125,7 +122,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Transactional
     @Override
-    public void addArticleLike(Long userId, Long articleId) {
+    public void addArticleLike(Long userId, Long articleId) throws JsonProcessingException {
         if (articleLikeRepository.existsById(new ArticleLikePK(userId, articleId))) {
             throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
         }

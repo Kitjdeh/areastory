@@ -37,8 +37,8 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
     @Override
     public Page<ArticleRespDto> findAll(ArticleReq articleReq, Pageable pageable) {
         List<ArticleRespDto> articleList = getArticlesQuery(articleReq.getUserId())
-                .where(article.publicYn.eq(true), eqDo(articleReq.getDoName()), eqSi(articleReq.getSi()), eqGun(articleReq.getGun()),
-                        eqGu(articleReq.getGu()), eqEup(articleReq.getEup()), eqMyeon(articleReq.getMyeon()), eqDong(articleReq.getDong()))
+                .where(article.publicYn.eq(true), eqDosi(articleReq.getDosi()), eqSigungu(articleReq.getSigungu()),
+                        eqDongeupmyeon(articleReq.getDongeupmyeon()))
                 .orderBy(getOrderSpecifier(pageable).toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -72,7 +72,7 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
                 .from(articleLike)
                 .leftJoin(follow)
                 .on(follow.followingUser.userId.eq(articleLike.user.userId))
-                .where(articleLike.article.articleId.eq(articleId), articleLike.user.userId.ne(userId))
+                .where(articleLike.article.articleId.eq(articleId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -119,13 +119,9 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
                                 .then(true)
                                 .otherwise(false),
                         article.createdAt,
-                        article.doName,
-                        article.si,
-                        article.gun,
-                        article.gu,
-                        article.dong,
-                        article.eup,
-                        article.myeon
+                        article.dosi,
+                        article.sigungu,
+                        article.dongeupmyeon
                 ))
                 .from(article)
                 .leftJoin(articleLike)
@@ -154,51 +150,23 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
         return articleOrders;
     }
 
-    private BooleanExpression eqDo(String doName) {
-        if (StringUtils.hasText(doName)) {
-            return article.doName.eq(doName);
+    private BooleanExpression eqDosi(String dosi) {
+        if (StringUtils.hasText(dosi)) {
+            return article.dosi.eq(dosi);
         }
         return null;
     }
 
-    private BooleanExpression eqSi(String si) {
-        if (StringUtils.hasText(si)) {
-            return article.si.eq(si);
+    private BooleanExpression eqSigungu(String sigungu) {
+        if (StringUtils.hasText(sigungu)) {
+            return article.sigungu.eq(sigungu);
         }
         return null;
     }
 
-    private BooleanExpression eqGun(String gun) {
-        if (StringUtils.hasText(gun)) {
-            return article.gun.eq(gun);
-        }
-        return null;
-    }
-
-    private BooleanExpression eqGu(String gu) {
-        if (StringUtils.hasText(gu)) {
-            return article.gu.eq(gu);
-        }
-        return null;
-    }
-
-    private BooleanExpression eqDong(String dong) {
-        if (StringUtils.hasText(dong)) {
-            return article.dong.eq(dong);
-        }
-        return null;
-    }
-
-    private BooleanExpression eqEup(String eup) {
-        if (StringUtils.hasText(eup)) {
-            return article.eup.eq(eup);
-        }
-        return null;
-    }
-
-    private BooleanExpression eqMyeon(String myeon) {
-        if (StringUtils.hasText(myeon)) {
-            return article.myeon.eq(myeon);
+    private BooleanExpression eqDongeupmyeon(String dongeupmyeon) {
+        if (StringUtils.hasText(dongeupmyeon)) {
+            return article.dongeupmyeon.eq(dongeupmyeon);
         }
         return null;
     }

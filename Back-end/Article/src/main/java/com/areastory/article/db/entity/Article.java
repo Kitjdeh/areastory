@@ -14,7 +14,10 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @DynamicInsert
-@Table(indexes = {@Index(name = "idx_location", columnList = "do,si,gun,gu,dong,eup,myeon,daily_like_count")})
+@Table(name = "article", indexes = {@Index(name = "idx_location", columnList = "dosi,daily_like_count"),
+        @Index(name = "idx_location", columnList = "dosi,sigungu,daily_like_count"),
+        @Index(name = "idx_location", columnList = "dosi,sigungu,dongeupmyeon,daily_like_count")
+})
 public class Article extends BaseTime {
 
     @Id
@@ -39,36 +42,28 @@ public class Article extends BaseTime {
     @ColumnDefault("0")
     private Long commentCount;
 
-    @Column(name = "do", length = 7)
-    private String doName;
     @Column(length = 10)
-    private String si;
+    private String dosi;
     @Column(length = 10)
-    private String gun;
+    private String sigungu;
     @Column(length = 10)
-    private String gu;
-    @Column(length = 10)
-    private String dong;
-    @Column(length = 10)
-    private String eup;
-    @Column(length = 10)
-    private String myeon;
+    private String dongeupmyeon;
 
     private Boolean publicYn;
 
 
     @Builder
-    public Article(User user, String content, String image, String doName, String si, String gun, String gu, String dong, String eup, String myeon, Boolean publicYn) {
+    public Article(Long articleId, User user, String content, String image, Long dailyLikeCount, Long totalLikeCount, Long commentCount, String dosi, String sigungu, String dongeupmyeon, Boolean publicYn) {
+        this.articleId = articleId;
         this.user = user;
         this.content = content;
         this.image = image;
-        this.doName = doName;
-        this.si = si;
-        this.gun = gun;
-        this.gu = gu;
-        this.dong = dong;
-        this.eup = eup;
-        this.myeon = myeon;
+        this.dailyLikeCount = dailyLikeCount;
+        this.totalLikeCount = totalLikeCount;
+        this.commentCount = commentCount;
+        this.dosi = dosi;
+        this.sigungu = sigungu;
+        this.dongeupmyeon = dongeupmyeon;
         this.publicYn = publicYn;
     }
 

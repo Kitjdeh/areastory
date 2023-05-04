@@ -11,22 +11,15 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ArticleDto extends ArticleCommonDto {
-    private String doName;
-    private String si;
-    private String gun;
-    private String gu;
-    private String dong;
-    private String eup;
-    private String myeon;
+    private String dosi;
+    private String sigungu;
+    private String dongeupmyeon;
 
-    public ArticleDto(Long articleId, Long userId, String nickname, String profile, String content, String image, Long dailyLikeCount, Long totalLikeCount, Long commentCount, Boolean likeYn, LocalDateTime createdAt, String doName, String si, String gun, String gu, String dong, String eup, String myeon) {
-        super(articleId, userId, nickname, profile, content, image, dailyLikeCount, totalLikeCount, commentCount, likeYn, createdAt);
-        this.doName = doName;
-        this.si = si;
-        this.gun = gun;
-        this.gu = gu;
-        this.dong = dong;
-        this.eup = eup;
-        this.myeon = myeon;
+
+    public ArticleDto(Long articleId, Long userId, String nickname, String profile, String content, String image, Long dailyLikeCount, Long totalLikeCount, Long commentCount, Boolean likeYn, Boolean followYn, LocalDateTime createdAt, String dosi, String sigungu, String dongeupmyeon) {
+        super(articleId, userId, nickname, profile, content, image, dailyLikeCount, totalLikeCount, commentCount, likeYn, followYn, createdAt);
+        this.dosi = dosi;
+        this.sigungu = sigungu;
+        this.dongeupmyeon = dongeupmyeon;
     }
 }

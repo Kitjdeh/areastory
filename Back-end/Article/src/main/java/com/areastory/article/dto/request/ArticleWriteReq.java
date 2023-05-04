@@ -11,11 +11,7 @@ public class ArticleWriteReq {
     private Long userId;
     private Boolean publicYn;
     private String content;
-    private String doName;
-    private String si;
-    private String gun;
-    private String gu;
-    private String dong;
-    private String eup;
-    private String myeon;
+    private String dosi;
+    private String sigungu;
+    private String dongeupmyeon;
 }
