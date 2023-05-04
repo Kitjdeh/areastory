@@ -26,49 +26,37 @@ class _SnsScreenState extends State<SnsScreen> {
   }
 
   void printArticles() async {
-    final articleData = await getArticles({
-      'sort': '?sort=likeCount',
-      'userId': 4,
-      'doName': null,
-      'si': null,
-      'gun': null,
-      'gu': null,
-      'dong': null,
-      'eup': null,
-      'myeon': null
-    });
-
-      if (articleData.articles != null)
-        for (final article in articleData.articles!) {
-          print('>>>>>>>>..');
-          print(article.articleId);
-          print(article.nickname);
-          print(article.profile);
-          print(article.content);
-          print(article.image);
-
-          print(article.commentCount);
-          print(article.likeYn);
-          print(article.createdAt);
-          print(article.location);
-          print('>>>>>>>>..');
-        }
+    final articleData = await getArticles(
+      sort: 'likeCount',
+      doName: null,
+      si: null,
+      gun: null,
+      gu: null,
+      dong: null,
+      eup: null,
+      myeon: null,
+    );
+    _articles.addAll(articleData.articles);
   }
 
   final ScrollController _scrollController = ScrollController();
 
-  // void _loadMoreData() async {
   void _loadMoreData() async {
-    // final newArticles = await api.fetchArticles(page: _currentPage + 1);
-    // _articles.addAll(newArticles["articles"]);
-    if (_currentPage == 1) {
-      _articles.addAll(articleTest["articles"]);
-    } else if (_currentPage == 2) {
-      _articles.addAll(articleTest2["articles"]);
-    } else if (_currentPage == 3) {
-      _articles.addAll(articleTest3["articles"]);
-    }
-    await _currentPage++;
+    // 나중에 페이지 추가해서 넣어야할듯??
+    // sort는 articleId or likeCount
+    final newArticles = await getArticles(
+      sort: 'likeCount',
+      doName: null,
+      si: null,
+      gun: null,
+      gu: null,
+      dong: null,
+      eup: null,
+      myeon: null,
+    );
+    _articles.addAll(newArticles.articles);
+    _currentPage++;
+
     setState(() {
       // scrollToIndex(5);
     });
@@ -78,10 +66,19 @@ class _SnsScreenState extends State<SnsScreen> {
     _scrollController.jumpTo(index * 520); // jumpTo 메서드를 사용하여 스크롤합니다.
   }
 
-  void _updateIsChildActive(bool isChildActive) {
+  void _updateIsChildActive(bool isChildActive) async {
+    final newArticles = await getArticles(
+      sort: 'likeCount',
+      doName: null,
+      si: null,
+      gun: null,
+      gu: null,
+      dong: null,
+      eup: null,
+      myeon: null,
+    );
+    _articles.addAll(newArticles.articles);
     setState(() {
-      print('성공!!!');
-      print(_currentPage);
     });
   }
 
@@ -181,13 +178,15 @@ class _SnsScreenState extends State<SnsScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       if (index < _articles.length) {
                         return ArticleComponent(
-                          nickname: _articles[index]["nickname"],
-                          image: _articles[index]["image"],
-                          profile: _articles[index]["profile"],
-                          content: _articles[index]["content"],
-                          likeCount: _articles[index]["likeCount"],
-                          commentCount: _articles[index]["commentCount"],
-                          isLike: _articles[index]["isLike"],
+                          articleId: _articles[index].articleId,
+                          followingId: _articles[index].userId,
+                          nickname: _articles[index].nickname,
+                          image: _articles[index].image,
+                          profile: _articles[index].profile,
+                          content: _articles[index].content,
+                          likeCount: _articles[index].totalLikeCount,
+                          commentCount: _articles[index].commentCount,
+                          isLike: _articles[index].likeYn,
                           height: 500,
                           onUpdateIsChildActive: _updateIsChildActive,
                         );

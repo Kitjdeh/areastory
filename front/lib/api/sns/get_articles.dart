@@ -1,20 +1,35 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-Future<ArticleData> getArticles(dynamic params) async {
+Future<ArticleData> getArticles({
+  String? sort,
+  String? doName,
+  String? si,
+  String? gun,
+  String? gu,
+  String? dong,
+  String? eup,
+  String? myeon,
+}) async {
   final dio = Dio(BaseOptions(
     baseUrl: '${dotenv.get('BASE_URL')}/api/articles',
   ));
-  final response = await dio.get('${params['sort']}', queryParameters: {
-    'userId': params['userId'],
-    'doName': params['doName'],
-    'si': params['si'],
-    'gun': params['gun'],
-    'gu': params['gu'],
-    'dong': params['dong'],
-    'eup': params['eup'],
-    'myeon': params['myeon']
+
+  final storage = new FlutterSecureStorage();
+  final userId = await storage.read(key: 'userId');
+
+  final response = await dio.get('', queryParameters: {
+    'sort' : sort,
+    'userId': userId,
+    'doName': doName,
+    'si': si,
+    'gun': gun,
+    'gu': gu,
+    'dong': dong,
+    'eup': eup,
+    'myeon': myeon
   });
 
   if (response.statusCode == 200) {

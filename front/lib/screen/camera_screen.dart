@@ -37,8 +37,9 @@ class _CameraScreenState extends State<CameraScreen> {
   final FocusNode _focusNode1 = FocusNode();
   final FocusNode _focusNode2 = FocusNode();
   final picker = ImagePicker();
-  bool _isSwitched = false;
+  bool _isSwitched = true;
   ScrollController? _scrollController;
+  TextEditingController contentController = TextEditingController();
 
   File? _image;
 
@@ -48,37 +49,16 @@ class _CameraScreenState extends State<CameraScreen> {
     _scrollController = ScrollController();
   }
 
-  void createArticle(image) async {
+  void createArticle(image, content) async {
     await postArticle(
-      publicYn: true,
-      content: '여기 아주 좋네요',
-      si: '서울특별시',
-      gu: '강남구',
-      dong: '역삼동',
+      publicYn: _isSwitched,
+      content: content.text,
       image: image,
+      // 시,구,군 다 null 이면 안됨!
+      si: 'Test',
+      gu: null,
+      dong: null,
     );
-  }
-
-  void updateArticle() async {
-    await patchArticle(
-      articleId: 25,
-      publicYn: true,
-      content: '바꿨씁니다',
-    );
-  }
-
-  void delArticle() async {
-    await deleteArticle(
-      articleId: 25,
-    );
-  }
-
-  void getDetailArticle() async {
-    final a = await getFollowingsSort(
-      page: 0,
-      type: 1,
-    );
-    print(a[0].nickname);
   }
 
   @override
@@ -188,6 +168,7 @@ class _CameraScreenState extends State<CameraScreen> {
             },
           ),
           TextFormField(
+            controller: contentController,
             focusNode: _focusNode2,
             decoration: InputDecoration(labelText: '내용'),
             onTap: () {
@@ -210,10 +191,7 @@ class _CameraScreenState extends State<CameraScreen> {
           // 등록 버튼
           ElevatedButton(
             onPressed: () {
-              // createArticle(_image);
-              // updateArticle();
-              // delArticle();
-              getDetailArticle();
+              createArticle(_image, contentController);
             },
             child: Text('등록'),
           ),
