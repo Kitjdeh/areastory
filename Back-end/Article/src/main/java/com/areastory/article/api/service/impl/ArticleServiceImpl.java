@@ -21,7 +21,6 @@ import com.areastory.article.kafka.ArticleProducer;
 import com.areastory.article.kafka.KafkaProperties;
 import com.areastory.article.kafka.NotificationProducer;
 import com.areastory.article.util.FileUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -122,7 +121,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Transactional
     @Override
-    public void addArticleLike(Long userId, Long articleId) throws JsonProcessingException {
+    public void addArticleLike(Long userId, Long articleId) {
         if (articleLikeRepository.existsById(new ArticleLikePK(userId, articleId))) {
             throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
         }

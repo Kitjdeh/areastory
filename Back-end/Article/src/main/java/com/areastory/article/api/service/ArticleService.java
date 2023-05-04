@@ -6,7 +6,6 @@ import com.areastory.article.dto.request.ArticleUpdateParam;
 import com.areastory.article.dto.request.ArticleWriteReq;
 import com.areastory.article.dto.response.ArticleResp;
 import com.areastory.article.dto.response.LikeResp;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +21,7 @@ public interface ArticleService {
 
     void deleteArticle(Long userId, Long articleId);
 
-    void addArticleLike(Long userId, Long articleId) throws JsonProcessingException;
+    void addArticleLike(Long userId, Long articleId);
 
     void deleteArticleLike(Long userId, Long articleId);
 

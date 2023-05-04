@@ -4,7 +4,6 @@ import com.areastory.article.api.service.ArticleService;
 import com.areastory.article.dto.request.ArticleReq;
 import com.areastory.article.dto.request.ArticleUpdateParam;
 import com.areastory.article.dto.request.ArticleWriteReq;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -73,11 +72,7 @@ public class ArticleController {
      */
     @PostMapping("/like/{articleId}")
     public ResponseEntity<?> addLike(@PathVariable Long articleId, Long userId) {
-        try {
-            articleService.addArticleLike(userId, articleId);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        articleService.addArticleLike(userId, articleId);
         return ResponseEntity.ok().build();
     }
 

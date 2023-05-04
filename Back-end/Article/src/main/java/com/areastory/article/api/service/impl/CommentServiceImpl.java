@@ -19,7 +19,6 @@ import com.areastory.article.exception.ErrorCode;
 import com.areastory.article.kafka.ArticleProducer;
 import com.areastory.article.kafka.KafkaProperties;
 import com.areastory.article.kafka.NotificationProducer;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +40,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void addComment(CommentWriteReq commentWriteReq) throws JsonProcessingException {
+    public void addComment(CommentWriteReq commentWriteReq) {
         //article commentCount 늘려주기 위함
         Article article = articleRepository.findById(commentWriteReq.getArticleId()).orElseThrow(() -> new CustomException(ErrorCode.ARTICLE_NOT_FOUND));
         article.addCommentCount();
@@ -99,7 +98,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void addCommentLike(Long userId, Long commentId) throws JsonProcessingException {
+    public void addCommentLike(Long userId, Long commentId) {
         if (commentLikeRepository.existsById(new CommentLikePK(userId, commentId))) {
             throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
         }

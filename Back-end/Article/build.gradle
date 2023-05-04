@@ -55,8 +55,8 @@ dependencies {
     implementation 'org.webjars:stomp-websocket:2.3.3-1'
 
     //자바 역직렬화 문제 해결 패키지
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
+//    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+//    implementation 'com.fasterxml.jackson.core:jackson-databind'
     //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'

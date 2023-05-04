@@ -4,8 +4,6 @@ import com.areastory.article.db.entity.ArticleLike;
 import com.areastory.article.db.entity.Comment;
 import com.areastory.article.db.entity.CommentLike;
 import com.areastory.article.dto.common.NotificationKafkaDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -14,10 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class NotificationProducer {
-    private final KafkaTemplate<Long, String> kafkaTemplate;
-    private final ObjectMapper objectMapper;
+    private final KafkaTemplate<Long, NotificationKafkaDto> kafkaTemplate;
 
-    public void send(ArticleLike articleLike) throws JsonProcessingException {
+    public void send(ArticleLike articleLike) {
         NotificationKafkaDto articleLikeNotificationKafkaDto = NotificationKafkaDto.builder()
                 .type(KafkaProperties.ARTICLE_LIKE)
                 .userId(articleLike.getArticle().getUser().getUserId())
@@ -29,10 +26,10 @@ public class NotificationProducer {
                 .image(articleLike.getArticle().getImage())
                 .createdAt(articleLike.getCreatedAt())
                 .build();
-        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, articleLikeNotificationKafkaDto.getUserId(), objectMapper.writeValueAsString(articleLikeNotificationKafkaDto)));
+        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, articleLikeNotificationKafkaDto.getUserId(), articleLikeNotificationKafkaDto));
     }
 
-    public void send(Comment comment) throws JsonProcessingException {
+    public void send(Comment comment) {
         NotificationKafkaDto commentNotificationKafkaDto = NotificationKafkaDto.builder()
                 .type(KafkaProperties.COMMENT)
                 .userId(comment.getArticle().getUser().getUserId())
@@ -46,10 +43,10 @@ public class NotificationProducer {
                 .image(comment.getArticle().getImage())
                 .createdAt(comment.getCreatedAt())
                 .build();
-        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, commentNotificationKafkaDto.getUserId(), objectMapper.writeValueAsString(commentNotificationKafkaDto)));
+        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, commentNotificationKafkaDto.getUserId(), commentNotificationKafkaDto));
     }
 
-    public void send(CommentLike commentLike) throws JsonProcessingException {
+    public void send(CommentLike commentLike) {
         NotificationKafkaDto commentLikeNotificationKafkaDto = NotificationKafkaDto.builder()
                 .type(KafkaProperties.COMMENT_LIKE)
                 .otherUserId(commentLike.getUser().getUserId())
@@ -63,6 +60,6 @@ public class NotificationProducer {
                 .image(commentLike.getComment().getArticle().getImage())
                 .createdAt(commentLike.getCreatedAt())
                 .build();
-        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, commentLikeNotificationKafkaDto.getUserId(), objectMapper.writeValueAsString(commentLikeNotificationKafkaDto)));
+        kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, commentLikeNotificationKafkaDto.getUserId(), commentLikeNotificationKafkaDto));
     }
 }

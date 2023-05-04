@@ -5,7 +5,6 @@ import com.areastory.article.dto.common.CommentDeleteDto;
 import com.areastory.article.dto.common.CommentUpdateDto;
 import com.areastory.article.dto.request.CommentReq;
 import com.areastory.article.dto.request.CommentWriteReq;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,11 +24,7 @@ public class CommentController {
     @PostMapping
     public ResponseEntity<?> writeComment(@PathVariable Long articleId, @RequestBody CommentWriteReq commentWriteReq) {
         commentWriteReq.setArticleId(articleId);
-        try {
-            commentService.addComment(commentWriteReq);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        commentService.addComment(commentWriteReq);
         return ResponseEntity.ok().build();
     }
 
@@ -80,11 +75,7 @@ public class CommentController {
      */
     @PostMapping("/like/{commentId}")
     public ResponseEntity<?> addLike(@PathVariable Long commentId, Long userId) {
-        try {
-            commentService.addCommentLike(userId, commentId);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        commentService.addCommentLike(userId, commentId);
         return ResponseEntity.ok().build();
     }
 
