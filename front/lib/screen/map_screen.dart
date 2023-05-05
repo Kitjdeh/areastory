@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:front/api/map/mapdata.dart';
 import 'package:front/component/map/customoverlay.dart';
 import 'package:front/component/sns/article/article_detail.dart';
 import 'package:geolocator/geolocator.dart';
@@ -224,7 +225,7 @@ class _CustomMapState extends State<_CustomMap> {
           mapinfo["dosi"] = dosi;
           // areaname = areadata[areanum]!;
           areaname = dosi;
-          print(areaname);
+          // print(areaname);
         }
         // areaname = feature.properties!['EMD_KOR_NM'];
         else {
@@ -442,7 +443,7 @@ class _CustomMapState extends State<_CustomMap> {
                   InteractiveFlag.doubleTapZoom |
                   InteractiveFlag.pinchZoom,
               onMapReady: () async {
-                var requestlist = [];
+                List<Map<String, String>> requestlist = [];
                 var testlist = [];
                 // print("1nowareadata.length${nowallareadata.length}");
                 await loadexcel();
@@ -463,7 +464,7 @@ class _CustomMapState extends State<_CustomMap> {
                         point.longitude <= ne!.longitude;
                   });
                 }).toList();
-                visibleMapdata.map((e) => requestlist.add(e.areaname));
+                visibleMapdata.map((e) => requestlist.add(e.mapinfo!));
                 var A = visibleMapdata.map((e) => e.mapinfo).toList();
                 var B = A.sublist(0, 10);
                 // await nowareadata = visibleMapdata;
@@ -471,9 +472,11 @@ class _CustomMapState extends State<_CustomMap> {
                 print(
                     "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
                 print('B${B} ${A.length}');
+                // final result = postAreaData(requestlist);
+                // print('postresult${result}');
               },
               onPositionChanged: (pos, hasGesture) async {
-                var requestlist = [];
+                List<Map<String, String>> requestlist = [];
                 // print('nowallareadata${nowallareadata.length}');
                 // 현재 보이는 화면의 경계를 계산
                 final bounds = mapController.bounds!;
@@ -488,7 +491,7 @@ class _CustomMapState extends State<_CustomMap> {
                         point.longitude <= ne!.longitude;
                   });
                 }).toList();
-                await visibleMapdata.map((e) => requestlist.add(e.areaname));
+                await visibleMapdata.map((e) => requestlist.add(e.mapinfo!));
                 nowareadata = visibleMapdata;
                 setState(() {
                   nowareadata = visibleMapdata;
@@ -496,10 +499,11 @@ class _CustomMapState extends State<_CustomMap> {
                 var A = visibleMapdata.map((e) => e.mapinfo).toList();
                 var B = A.sublist(0, 10);
                 // await nowareadata = visibleMapdata;
-                print(requestlist);
+                print('requestlist${requestlist}');
                 print(
                     "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
                 print('B${B} ${A.length}');
+
                 // print(requestlist);
                 // nowareadata.map((e) => print(e.areaname));
               },
