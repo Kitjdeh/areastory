@@ -5,22 +5,29 @@ import 'package:front/screen/mypage_screen.dart';
 
 class MypageLocation extends BeamLocation<BeamState> {
   MypageLocation(super.routeInformation);
-  @override
-  List<String> get pathPatterns => ['*'];
 
   @override
-  List<BeamPage> buildPages(BuildContext context, BeamState state) => [
-    const BeamPage(
-      key: ValueKey('mypage'),
-      // title: 'Tab A',
-      type: BeamPageType.noTransition,
-      child: MyPageScreen(),
-      // child: MapScreen(label: 'A', detailsPath: '/a/details'),
-    ),
-    if (state.uri.pathSegments.length == 2)
-      const BeamPage(
-        key: ValueKey('mypage/followList'),
-        child: MypageFollowScreen(),
+  List<String> get pathPatterns => ['/mypage/:userId/', '/mypage/followList/:index'];
+
+  @override
+  List<BeamPage> buildPages(BuildContext context, BeamState state) {
+    final index = state.pathParameters['index'].toString() ?? '0';
+    final userId = state.pathParameters['userId'].toString();
+
+    return [
+      if (state.uri.pathSegments.length == 2)
+       BeamPage(
+        key: ValueKey('mypage/$userId'),
+        // title: 'Tab A',
+        type: BeamPageType.noTransition,
+        child: MyPageScreen(userId: userId),
+        // child: MapScreen(label: 'A', detailsPath: '/a/details'),
       ),
-  ];
+      if (state.uri.pathSegments.length == 3)
+        BeamPage(
+          key: ValueKey('mypage/followList/$index'),
+          child: MypageFollowScreen(index: index),
+        ),
+    ];
+  }
 }

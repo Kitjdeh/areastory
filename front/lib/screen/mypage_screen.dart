@@ -5,11 +5,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/login/kakao/kakao_login.dart';
 import 'package:front/api/login/kakao/login_view_model.dart';
+import 'package:front/api/mypage/get_userInfo.dart';
 import 'package:front/component/mypage/mypage_tabbar.dart';
 import 'package:front/component/signup/login.dart';
 
 class MyPageScreen extends StatefulWidget {
-  const MyPageScreen({Key? key}) : super(key: key);
+  const MyPageScreen({Key? key, required this.userId}) : super(key: key);
+  final String userId;
 
   @override
   State<MyPageScreen> createState() => _MyPageScreenState();
@@ -18,6 +20,22 @@ class MyPageScreen extends StatefulWidget {
 class _MyPageScreenState extends State<MyPageScreen> {
   final storage = new FlutterSecureStorage();
   final viewModel = LoginViewModel(KakaoLogin());
+  late int userId;
+  Future<UserInfo>? _userInfo;
+  // late Future<UserInfo> _userInfo;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    userId = int.parse(widget.userId);
+    _userInfo = getUserInfo(userId: userId);
+    // getUserInfo(userId: userId).then((userInfo) {
+    //   setState(() {
+    //     _userInfo = userInfo;
+    //   });
+    // });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,9 +87,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                   ),
                                   TextButton.icon(
                                     onPressed: () async {
-                                      String? userId = await storage.read(key: "userId");
+                                      // String? userId = await storage.read(key: "userId");
                                       print("감자ㅁㄴㅇㅁㅇㅁㄴㅇㅁ");
                                       print(userId);
+                                      print(_userInfo.nickname);
                                       Navigator.of(context).pop();
                                       print("개인정보 수정");
                                       String? token = await FirebaseMessaging.instance.getToken();
@@ -91,7 +110,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                   ),
                                   TextButton.icon(
                                     onPressed: () async {
-                                      String? userId =  await storage.read(key: 'userId');
+                                      // String? userId =  await storage.read(key: 'userId');
                                       print(userId);
                                       Navigator.of(context).pop();
                                       print("설정");
@@ -172,8 +191,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                   GestureDetector(
                     onTap: (){
                       print("팔로워 리스트로 이동");
-                      Beamer.of(context).beamToNamed('/mypage/followList',
-                        // data: {'index' : 0}
+                      Beamer.of(context).beamToNamed('/mypage/followList/0',
                       );
                     },
                     child: Column(
@@ -188,8 +206,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                   GestureDetector(
                     onTap: (){
                       print("팔로잉 리스트로 이동");
-                      Beamer.of(context).beamToNamed('/mypage/followList',
-                          data: {'index' : 1}
+                      Beamer.of(context).beamToNamed('/mypage/followList/1',
                       );
                     },
                     child: Column(

@@ -5,7 +5,8 @@ import 'package:front/component/mypage/follow/following.dart';
 import 'package:front/constant/follow_tabs.dart';
 
 class MypageFollowScreen extends StatefulWidget {
-  const MypageFollowScreen({Key? key}) : super(key: key);
+  const MypageFollowScreen({Key? key, required this.index}) : super(key: key);
+  final String index;
 
   @override
   State<MypageFollowScreen> createState() => _MypageFollowScreenState();
@@ -14,21 +15,15 @@ class MypageFollowScreen extends StatefulWidget {
 class _MypageFollowScreenState extends State<MypageFollowScreen>
     with TickerProviderStateMixin {
   String? _inputValue;
-  String? _categoryVal;
-  late Map<String, dynamic> _data;
 
   late final TabController followcontroller;
 
   @override
   void initState() {
     super.initState();
-
     followcontroller = TabController(length: FOLLOWTABS.length, vsync: this);
-    // final location = 0;
-    // print(location);
-    // final val = context.currentBeamLocation.state;
+    followcontroller.index = int.parse(widget.index);
     // followcontroller.index = (context.currentBeamLocation.state.queryParameters['index'] as int?) ?? 0;
-
     followcontroller.addListener(() {
       setState(() {});
     });
