@@ -15,6 +15,7 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
     with TickerProviderStateMixin {
   String? _inputValue;
   String? _categoryVal;
+  late Map<String, dynamic> _data;
 
   late final TabController followcontroller;
 
@@ -25,8 +26,7 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
     followcontroller = TabController(length: FOLLOWTABS.length, vsync: this);
     // final location = 0;
     // print(location);
-    var val = context.currentBeamLocation.state;
-    print(val);
+    // final val = context.currentBeamLocation.state;
     // followcontroller.index = (context.currentBeamLocation.state.queryParameters['index'] as int?) ?? 0;
 
     followcontroller.addListener(() {

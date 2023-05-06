@@ -173,7 +173,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                     onTap: (){
                       print("팔로워 리스트로 이동");
                       Beamer.of(context).beamToNamed('/mypage/followList',
-                        data: {'index' : 0}
+                        // data: {'index' : 0}
                       );
                     },
                     child: Column(

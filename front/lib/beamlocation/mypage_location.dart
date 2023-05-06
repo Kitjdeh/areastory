@@ -6,7 +6,7 @@ import 'package:front/screen/mypage_screen.dart';
 class MypageLocation extends BeamLocation<BeamState> {
   MypageLocation(super.routeInformation);
   @override
-  List<String> get pathPatterns => ['/*'];
+  List<String> get pathPatterns => ['*'];
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) => [
