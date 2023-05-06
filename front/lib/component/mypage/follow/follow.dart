@@ -25,6 +25,8 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
     followcontroller = TabController(length: FOLLOWTABS.length, vsync: this);
     // final location = 0;
     // print(location);
+    var val = context.currentBeamLocation.state;
+    print(val);
     // followcontroller.index = (context.currentBeamLocation.state.queryParameters['index'] as int?) ?? 0;
 
     followcontroller.addListener(() {
