@@ -15,7 +15,7 @@ public interface UserService {
 
     Boolean findUser(Long userId);
 
-    UserResp login(Long providerId);
+    UserResp login(Long providerId, String registrationToken);
 
     void logout(Long userId);
 

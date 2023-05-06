@@ -62,12 +62,12 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConsumerFactory<Long, NotificationKafkaDto> notificationConsumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(sseConsumerConfigs(), new LongDeserializer(), new JsonDeserializer<>(NotificationKafkaDto.class, false));
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new LongDeserializer(), new JsonDeserializer<>(NotificationKafkaDto.class, false));
     }
 
     @Bean
     public ConsumerFactory<Long, ArticleKafkaDto> articleConsumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(sseConsumerConfigs(), new LongDeserializer(), new JsonDeserializer<>(ArticleKafkaDto.class, false));
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new LongDeserializer(), new JsonDeserializer<>(ArticleKafkaDto.class, false));
     }
 
     @Bean
@@ -83,7 +83,7 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public Map<String, Object> sseConsumerConfigs() {
+    public Map<String, Object> consumerConfigs() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaProperties.KAFKA_URL);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class);

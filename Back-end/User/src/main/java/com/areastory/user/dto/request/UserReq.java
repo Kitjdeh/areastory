@@ -14,8 +14,9 @@ public class UserReq {
     private String nickname; // 닉네임
     private String provider; // 소셜 로그인 종류
     private Long providerId; // 소셜 로그인 아이디
+    private String registrationToken;
 
-    public static User toEntity(UserReq userReq, String profile, String hashKey) {
+    public static User toEntity(UserReq userReq, String profile, String hashKey, String registrationToken) {
         return User.builder()
                 .nickname(userReq.getNickname())
                 .profile(profile)
@@ -25,6 +26,7 @@ public class UserReq {
                 .followingCount(0L)
                 .isValid(false)
                 .hashKey(hashKey)
+                .registrationToken(registrationToken)
                 .build();
     }
 }

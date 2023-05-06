@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Builder
 @ToString
 @DynamicInsert
-@Table(name = "users", indexes = @Index(name = "idx_provider_id", columnList = "provider_id"))
+@Table(indexes = @Index(name = "idx_provider_id", columnList = "provider_id"))
 public class User {
 
     @Id
@@ -37,8 +37,10 @@ public class User {
     @ColumnDefault("0")
     private Boolean isValid;
     private String hashKey;
+    @Setter
+    private String registrationToken;
 
-    public User(String nickname, String profile, String provider, Long providerId) {
+    public User(String nickname, String profile, String provider, Long providerId, String registrationToken) {
         this.nickname = nickname;
         this.profile = profile;
         this.provider = provider;
@@ -46,6 +48,7 @@ public class User {
         this.followCount = 0L;
         this.followingCount = 0L;
         this.isValid = false;
+        this.registrationToken = registrationToken;
     }
 
     public void deleteFollow() {

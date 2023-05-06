@@ -1,43 +1,43 @@
 package com.areastory.user.service;
 
 import com.areastory.user.db.entity.Notification;
-import com.areastory.user.db.entity.User;
 import com.areastory.user.dto.common.NotificationDto;
-import com.areastory.user.dto.common.NotificationKafkaDto;
 import com.areastory.user.dto.response.NotificationResp;
 import org.springframework.data.domain.Pageable;
 
 public interface NotificationService {
 
-    void addNotification(NotificationKafkaDto notificationKafkaDto);
+    void addNotification(NotificationDto notificationDto);
 
     boolean deleteNotification(Long userId, Long notificationId);
 
     NotificationResp selectAllNotifications(Long userId, Pageable pageable);
 
-    void checkNotification(Long notificationId);
+    void checkNotification(Long userId, Long notificationId);
 
-    default Notification toEntity(NotificationKafkaDto notificationKafkaDto, User user, User otherUser) {
+    void checkAllNotification(Long userId);
+
+    default Notification toEntity(NotificationDto notificationDto) {
         return Notification.builder()
-                .type(notificationKafkaDto.getType())
-                .articleId(notificationKafkaDto.getArticleId())
-                .commentId(notificationKafkaDto.getCommentId())
-                .image(notificationKafkaDto.getImage())
-                .user(user)
-                .otherUser(otherUser)
+                .title(notificationDto.getTitle())
+                .body(notificationDto.getBody())
+                .createdAt(notificationDto.getCreatedAt())
+                .articleId(notificationDto.getArticleId())
+                .commentId(notificationDto.getCommentId())
+                .userId(notificationDto.getUserId())
                 .build();
     }
 
     default NotificationDto toDto(Notification notification) {
         return NotificationDto.builder()
                 .notificationId(notification.getNotificationId())
-                .type(notification.getType())
+                .title(notification.getTitle())
+                .body(notification.getBody())
+                .checked(notification.getChecked())
+                .createdAt(notification.getCreatedAt())
                 .articleId(notification.getArticleId())
                 .commentId(notification.getCommentId())
-                .nickname(notification.getUser().getNickname())
-                .profile(notification.getUser().getProfile())
-                .image(notification.getImage())
-                .checked(notification.getChecked())
+                .userId(notification.getUserId())
                 .build();
     }
 }
