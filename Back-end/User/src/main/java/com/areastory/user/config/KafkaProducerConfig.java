@@ -6,6 +6,7 @@ import com.areastory.user.dto.common.UserKafkaDto;
 import com.areastory.user.kafka.KafkaProperties;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.LongSerializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -46,6 +47,16 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<Long, NotificationKafkaDto> notificationTemplate() {
         return new KafkaTemplate<>(notificationProducerFactory());
+    }
+
+    @Bean
+    public Map<String, Object> notificationProducerConfigs() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaProperties.KAFKA_URL);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        // See https://kafka.apache.org/documentation/#producerconfigs for more properties
+        return props;
     }
 
     @Bean

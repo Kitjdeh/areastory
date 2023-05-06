@@ -19,7 +19,9 @@ public class NotificationProducer {
         NotificationKafkaDto followNotificationKafkaDto = NotificationKafkaDto.builder()
                 .type(KafkaProperties.FOLLOW)
                 .userId(followingUser.getUserId())
+                .username(followingUser.getNickname())
                 .otherUserId(followerUser.getUserId())
+                .otherUsername(followerUser.getNickname())
                 .build();
         kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, followerUser.getUserId(), followNotificationKafkaDto));
     }

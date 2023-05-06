@@ -23,8 +23,14 @@ public class NotificationController {
     }
 
     @PatchMapping("/notifications/{notificationId}")
-    public ResponseEntity<NotificationResp> checkNotification(@PathVariable Long notificationId) {
-        notificationService.checkNotification(notificationId);
+    public ResponseEntity<NotificationResp> checkNotification(Long userId, @PathVariable Long notificationId) {
+        notificationService.checkNotification(userId, notificationId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/notifications")
+    public ResponseEntity<NotificationResp> checkAllNotification(Long userId) {
+        notificationService.checkAllNotification(userId);
         return ResponseEntity.ok().build();
     }
 

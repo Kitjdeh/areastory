@@ -10,8 +10,8 @@ import com.areastory.user.dto.response.UserResp;
 import com.areastory.user.kafka.KafkaProperties;
 import com.areastory.user.kafka.UserProducer;
 import com.areastory.user.service.UserService;
-import com.areastory.user.util.Sha256Util;
 import com.areastory.user.util.S3Util;
+import com.areastory.user.util.Sha256Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -51,11 +51,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResp login(Long providerId) {
+    @Transactional
+    public UserResp login(Long providerId, String registrationToken) {
         User findUser = userRepository.findByProviderId(providerId).orElse(null);
         if (findUser == null) {
             return UserResp.fromEntity(false);
         }
+        findUser.setRegistrationToken(registrationToken);
         return UserResp.fromEntity(findUser, true);
     }
 
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void signUp(UserReq userReq, MultipartFile profile) throws IOException, NoSuchAlgorithmException {
-        User user = userRepository.save(UserReq.toEntity(userReq, s3Util.saveUploadFile(profile), sha256Util.sha256(userReq.getProviderId())));
+        User user = userRepository.save(UserReq.toEntity(userReq, s3Util.saveUploadFile(profile), sha256Util.sha256(userReq.getProviderId()), userReq.getRegistrationToken()));
         userProducer.send(user, KafkaProperties.INSERT);
     }
 

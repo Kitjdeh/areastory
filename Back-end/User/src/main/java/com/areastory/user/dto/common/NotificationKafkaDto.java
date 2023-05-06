@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,8 +15,13 @@ import java.io.Serializable;
 public class NotificationKafkaDto implements Serializable {
     private String type;
     private Long articleId;
+    private String articleContent;
     private Long commentId;
+    private String commentContent;
     private Long userId;
+    private String username;
     private Long otherUserId;
+    private String otherUsername;
     private String image;
+    private LocalDateTime createdAt;
 }

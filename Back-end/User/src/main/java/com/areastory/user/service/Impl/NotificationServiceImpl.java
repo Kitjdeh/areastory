@@ -1,10 +1,9 @@
 package com.areastory.user.service.Impl;
 
 import com.areastory.user.db.entity.Notification;
-import com.areastory.user.db.entity.User;
 import com.areastory.user.db.repository.NotificationRepository;
 import com.areastory.user.db.repository.UserRepository;
-import com.areastory.user.dto.common.NotificationKafkaDto;
+import com.areastory.user.dto.common.NotificationDto;
 import com.areastory.user.dto.response.NotificationResp;
 import com.areastory.user.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -24,17 +23,15 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public void addNotification(NotificationKafkaDto notificationKafkaDto) {
-        User user = userRepository.findById(notificationKafkaDto.getUserId()).orElseThrow();
-        User otherUser = userRepository.findById(notificationKafkaDto.getOtherUserId()).orElseThrow();
-        Notification notification = notificationRepository.save(toEntity(notificationKafkaDto, user, otherUser));
+    public void addNotification(NotificationDto notificationDto) {
+        notificationRepository.save(toEntity(notificationDto));
     }
 
     @Override
     @Transactional
     public boolean deleteNotification(Long userId, Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId).orElseThrow();
-        if (!Objects.equals(notification.getUser().getUserId(), userId))
+        if (!Objects.equals(notification.getUserId(), userId))
             return false;
         notificationRepository.delete(notification);
         return true;
@@ -42,8 +39,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public NotificationResp selectAllNotifications(Long userId, Pageable pageable) {
-        User user = userRepository.findById(userId).orElseThrow();
-        Page<Notification> notifications = notificationRepository.findAllByUser(user, pageable);
+        Page<Notification> notifications = notificationRepository.findAllByUserId(userId, pageable);
         return NotificationResp.builder()
                 .notifications(notifications.getContent().stream().map(this::toDto).collect(Collectors.toList()))
                 .pageSize(notifications.getPageable().getPageSize())
@@ -54,8 +50,16 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public void checkNotification(Long notificationId) {
+    public void checkNotification(Long userId, Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId).orElseThrow();
+        if (!Objects.equals(notification.getUserId(), userId))
+            return;
         notification.check();
+    }
+
+    @Override
+    @Transactional
+    public void checkAllNotification(Long userId) {
+        notificationRepository.checkAll(userId);
     }
 }

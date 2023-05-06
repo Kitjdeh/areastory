@@ -13,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -30,8 +28,8 @@ public class UserController {
         존재 시, 유저 정보 반환
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam("providerId") Long providerId) {
-        UserResp userResp = userService.login(providerId);
+    public ResponseEntity<?> login(Long providerId, String registrationToken) {
+        UserResp userResp = userService.login(providerId, registrationToken);
         if (!userResp.getIsExist()) {
             return responseDefault.success(true, "신규 회원입니다.", userResp);
         }

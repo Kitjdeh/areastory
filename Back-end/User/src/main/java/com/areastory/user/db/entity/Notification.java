@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -18,19 +19,14 @@ public class Notification extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notification_id")
     private Long notificationId;
-    @Column(length = 6)
-    private String type;
+    private Boolean checked;
+    private String title;
+    private String body;
+    private LocalDateTime createdAt;
     private Long articleId;
     private Long commentId;
-    @Column(length = 200)
-    private String image;
-    private Boolean checked;
-    @ManyToOne
-    @JoinColumn(name = "other_user_id")
-    private User otherUser;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "user_id")
+    private Long userId;
 
     public void check() {
         this.checked = true;
