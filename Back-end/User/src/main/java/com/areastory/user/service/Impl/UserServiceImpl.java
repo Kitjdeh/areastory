@@ -5,6 +5,7 @@ import com.areastory.user.db.repository.ArticleRepository;
 import com.areastory.user.db.repository.UserRepository;
 import com.areastory.user.dto.request.UserReq;
 import com.areastory.user.dto.response.ArticleResp;
+import com.areastory.user.dto.response.UserDetailResp;
 import com.areastory.user.dto.response.UserResp;
 import com.areastory.user.kafka.KafkaProperties;
 import com.areastory.user.kafka.UserProducer;
@@ -70,7 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResp getUserDetail(Long userId) {
+    public UserResp getMyDetail(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
         return UserResp.fromEntity(user);
     }
@@ -91,6 +92,11 @@ public class UserServiceImpl implements UserService {
         String changedProfile = s3Util.saveUploadFile(profile);
         user.setProfile(changedProfile);
         userProducer.send(user, KafkaProperties.UPDATE);
+    }
+
+    @Override
+    public UserDetailResp getUserDetail(Long userId, Long myId) {
+        return userRepository.findUserDetailResp(userId, myId);
     }
 
     @Override

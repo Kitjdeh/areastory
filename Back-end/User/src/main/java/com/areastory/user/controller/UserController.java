@@ -59,24 +59,24 @@ public class UserController {
 
     // 유저 정보 조회
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getUserDetail(@PathVariable("userId") Long userId) {
+    public ResponseEntity<?> getUserDetail(@PathVariable("userId") Long userId, @RequestParam Long myId) {
         if (!userService.findUser(userId)) {
             return responseDefault.notFound(false, "존재하지 않는 회원", null);
         }
-        return responseDefault.success(true, "회원 정보 조회", userService.getUserDetail(userId));
+        return responseDefault.success(true, "회원 정보 조회", userService.getUserDetail(userId, myId));
     }
 
 
     // 닉네임 변경
-    @PutMapping("/{userId}")
-    public ResponseEntity<?> updateUserNickName(@PathVariable("userId") Long userId, @RequestBody UserInfoReq userInfoReq) {
+    @PatchMapping("/{userId}")
+    public ResponseEntity<?> updateUserNickName(@PathVariable("userId") Long userId, UserInfoReq userInfoReq) {
         userService.updateUserNickName(userId, userInfoReq.getNickname());
-        UserResp userResp = userService.getUserDetail(userId);
+        UserResp userResp = userService.getMyDetail(userId);
         return responseDefault.success(true, "이름 변경", userResp);
     }
 
     //프로필 이미지 변경
-    @PutMapping("/profile/{userId}")
+    @PatchMapping("/profile/{userId}")
     public ResponseEntity<?> updateProfile(@PathVariable("userId") Long userId, @RequestPart("profile") MultipartFile profile) {
         if (!userService.findUser(userId)) {
             return responseDefault.notFound(false, "존재하지 않는 회원", null);
