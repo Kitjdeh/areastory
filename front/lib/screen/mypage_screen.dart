@@ -20,23 +20,21 @@ class _MyPageScreenState extends State<MyPageScreen> {
   final storage = new FlutterSecureStorage();
   final viewModel = LoginViewModel(KakaoLogin());
   late int userId;
+  UserData? userdata;
   // Future<UserInfo>? _userInfo;
   // late Future<UserInfo> _userInfo;
 
   void getuserinfo(int userId) async {
-    print("감자가가가가");
     final userdata = await getUser(userId: userId);
-    print("유저데이터: $userdata");
+    this.userdata = userdata;
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    userId = int.parse(widget.userId);
-    print("고구마마가가가가각");
-    print(userId);
-    // _userInfo = getUserInfo(userId: userId);
+    this.userId = int.parse(widget.userId);
+    print(widget.userId);
     getuserinfo(userId);
   }
 
@@ -49,8 +47,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
     return Scaffold(
       body: SafeArea(
         child: Column(
-          children:
-          [
+          children: [
             // 1.닉네임, 설정버튼
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
@@ -58,7 +55,28 @@ class _MyPageScreenState extends State<MyPageScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("nickname"),
+                  // FutureBuilder<UserData>(
+                  //   future: getUser(userId: int.parse(widget.userId)),
+                  //   builder: (context, snapshot) {
+                  //     return Text(snapshot.data!.nickname.toString());
+                  //   }
+                  // ),
+                  FutureBuilder<UserData>(
+                      future: getUser(userId: int.parse(widget.userId)),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasData) {
+                          return Text(snapshot.data!.nickname.toString());
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return Text('No data');
+                        }
+                      }),
                   // 추후 아이콘 버튼 + Icon이미지 변경
                   IconButton(
                     icon: Icon(Icons.settings),
@@ -71,13 +89,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           builder: (BuildContext context) {
                             return Container(
                               height: 300,
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width,
+                              width: MediaQuery.of(context).size.width,
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   TextButton.icon(
@@ -96,7 +111,9 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       // print(_userInfo);
                                       Navigator.of(context).pop();
                                       print("개인정보 수정");
-                                      String? token = await FirebaseMessaging.instance.getToken();
+                                      String? token = await FirebaseMessaging
+                                          .instance
+                                          .getToken();
 
                                       // print("token : ${token ?? 'token NULL!'}");
                                     },
@@ -106,7 +123,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                   TextButton.icon(
                                     onPressed: () {
                                       Navigator.of(context).pop();
-                                      Beamer.of(context).beamToNamed('/mypage/follow');
+                                      Beamer.of(context)
+                                          .beamToNamed('/mypage/follow');
                                     },
                                     icon: Icon(Icons.settings),
                                     label: Text("팔로잉/팔로워"),
@@ -124,9 +142,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                   TextButton.icon(
                                     onPressed: () async {
                                       await viewModel.logout();
-                                      setState(() {
+                                      setState(() {});
 
-                                      });
                                       /// 로그아웃시
                                       await storage.delete(key: "userId");
                                       Navigator.of(context).pop();
@@ -153,75 +170,87 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                 ],
                               ),
                             );
-                          }
-                      );
+                          });
                     },
                   )
                 ],
               ),
             ),
             // 2. 유저 프로필사진 및 게시글 정보
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // 프로필 사진
-                  // 컨테이너는 넓이, 높이 설정안하면 -> 자동으로 최대크기
-                  // sizedbox는 하나라도 설정안하면 -> 자동으로 child의 최대크기
-                  Container(
-                    width: 100,
-                    height: 100,
-                    // ClipRRect: R이 2개다. 그리고 강제로 차일드의 모양을 강제로 잡아주는 용도.
-                    child: ClipRRect(
-                      // 가장 완벽한 원을 만드는 방법은 상위가 되었든 뭐든, 높이길이의 50%(높이=넓이)
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.asset(
-                        'asset/img/test01.jpg', fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
+            FutureBuilder<UserData>(
+              future: getUser(userId: int.parse(widget.userId)),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // 로딩중일 때 표시할 위젯
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  // 에러가 발생했을 때 표시할 위젯
+                  return Text('에러 발생: ${snapshot.error}');
+                } else if (!snapshot.hasData) {
+                  // 데이터가 없을 때 표시할 위젯
+                  return Text('데이터가 없습니다.');
+                } else {
+                  return Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        // 프로필 사진
+                        // 컨테이너는 넓이, 높이 설정안하면 -> 자동으로 최대크기
+                        // sizedbox는 하나라도 설정안하면 -> 자동으로 child의 최대크기
+                        Container(
+                          width: 100,
+                          height: 100,
+                          // ClipRRect: R이 2개다. 그리고 강제로 차일드의 모양을 강제로 잡아주는 용도.
+                          child: ClipRRect(
+                            // 가장 완벽한 원을 만드는 방법은 상위가 되었든 뭐든, 높이길이의 50%(높이=넓이)
+                            borderRadius: BorderRadius.circular(50),
+                            child: Image.asset(
+                              'asset/img/test01.jpg',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
 
-                  // 게시물(수)
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("게시물"),
-                      // 추후 데이터받아서 표시
-                      Text("28")
-                    ],
-                  ),
-                  // 팔로워(수)
-                  GestureDetector(
-                    onTap: (){
-                      print("팔로워 리스트로 이동");
-                      Beamer.of(context).beamToNamed('/mypage/followList/0',
-                      );
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("팔로워"),
-                        Text("52")
+                        // 게시물(수)
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("게시물"),
+                            // 추후 데이터받아서 표시
+                            Text("52")
+                          ],
+                        ),
+                        // 팔로워(수)
+                        GestureDetector(
+                          onTap: () {
+                            print("팔로워 리스트로 이동");
+                            Beamer.of(context).beamToNamed(
+                              '/mypage/followList/0',
+                            );
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [Text("팔로워"), Text(snapshot.data!.followCount.toString())],
+                          ),
+                        ),
+                        // 팔로잉(수)
+                        GestureDetector(
+                          onTap: () {
+                            print("팔로잉 리스트로 이동");
+                            Beamer.of(context).beamToNamed(
+                              '/mypage/followList/1',
+                            );
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [Text("팔로잉"), Text(snapshot.data!.followingCount.toString())],
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                  // 팔로잉(수)
-                  GestureDetector(
-                    onTap: (){
-                      print("팔로잉 리스트로 이동");
-                      Beamer.of(context).beamToNamed('/mypage/followList/1',
-                      );
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("팔로잉"),
-                        Text("46")
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                  );
+                }
+              },
             ),
 
             // // 3. 프로필 편집, 체지방 28% 버튼
