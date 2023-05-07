@@ -36,20 +36,20 @@ Future<UserData> getUser({
 }
 
 class UserData {
-  final int? userId;
-  final String? nickname;
-  final String? profile;
-  final bool? followYn;
-  final int? followCount;
-  final int? followingCount;
+  final int userId;
+  final String nickname;
+  final String profile;
+  final bool followYn;
+  final int followCount;
+  final int followingCount;
 
   UserData({
-    this.userId,
-    this.nickname,
-    this.profile,
-    this.followYn,
-    this.followCount,
-    this.followingCount,
+    required this.userId,
+    required this.nickname,
+    required this.profile,
+    required this.followYn,
+    required this.followCount,
+    required this.followingCount,
   });
 
   factory UserData.fromJson(Map<String, dynamic> json) {

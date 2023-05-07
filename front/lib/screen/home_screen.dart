@@ -8,8 +8,6 @@ import 'package:front/beamlocation/mypage_location.dart';
 import 'package:front/beamlocation/sns_location.dart';
 import 'package:front/constant/home_tabs.dart';
 
-
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -22,7 +20,6 @@ class _HomeScreenState extends State<HomeScreen> {
   late int _currentIndex;
   late String? userId;
   List<BeamerDelegate>? _routerDelegates;
-  
   // Future<void> getUserIdFromStorage() async {
   //   userId = await storage.read(key: "userId");
   // }
@@ -126,11 +123,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
-
       bottomNavigationBar: BottomNavigationBar(
         /// selectedFontSize: 0, /// 왜인지 작동은 하지 않는다. 이건 폰트사이즈고
-        type: BottomNavigationBarType.fixed,  /// 이건 바텀내비게이션 탭 자체를 고정시키는것.
+        type: BottomNavigationBarType.fixed,
+
+        /// 이건 바텀내비게이션 탭 자체를 고정시키는것.
         currentIndex: _currentIndex,
+
         /// 선택 유무 Icon 색깔 선정
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.grey,
@@ -138,7 +137,6 @@ class _HomeScreenState extends State<HomeScreen> {
         /// bottomNavigationBar은 label이 필수다. 그래서 show를 안하겠다는 설정을 해야한다.
         showSelectedLabels: false,
         showUnselectedLabels: false,
-
 
         /// 전환시, 현재 인덱스가 아니라면 빌드하지 말아라 -> 데이터 날리지마라.
         onTap: (index) {
@@ -158,12 +156,12 @@ class _HomeScreenState extends State<HomeScreen> {
         items: MAINTABS
             .map(
               (e) => BottomNavigationBarItem(
-            icon: Icon(
-              e.icon,
-            ),
-            label: e.label,
-          ),
-        )
+                icon: Icon(
+                  e.icon,
+                ),
+                label: e.label,
+              ),
+            )
             .toList(),
       ),
     );

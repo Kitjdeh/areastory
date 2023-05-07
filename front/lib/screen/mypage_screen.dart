@@ -108,7 +108,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       // String? userId = await storage.read(key: "userId");
                                       print("감자ㅁㄴㅇㅁㅇㅁㄴㅇㅁ");
                                       print(userId);
-                                      // print(_userInfo);
                                       Navigator.of(context).pop();
                                       print("개인정보 수정");
                                       String? token = await FirebaseMessaging
