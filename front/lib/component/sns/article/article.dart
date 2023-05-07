@@ -1,9 +1,11 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/follow/create_following.dart';
 import 'package:front/api/follow/delete_following.dart';
 import 'package:front/api/like/create_article_like.dart';
 import 'package:front/api/like/delete_article_like.dart';
+import 'package:front/api/sns/delete_article.dart';
 import 'package:front/api/sns/get_article.dart';
 import 'package:front/api/test_api.dart';
 
@@ -85,6 +87,8 @@ class _ArticleComponentState extends State<ArticleComponent> {
   @override
   Widget build(BuildContext context) {
     String displayText = widget.content;
+    final storage = new FlutterSecureStorage();
+    final userId = storage.read(key: 'userId');
 
     if (!isExpanded && widget.content.length > 10) {
       displayText = widget.content.substring(0, 10) + '...';
@@ -140,6 +144,19 @@ class _ArticleComponentState extends State<ArticleComponent> {
                       ),
                     ],
                   ),
+                  IconButton(
+                    icon: Icon(Icons.update),
+                    onPressed: () {
+                      // 삭제 버튼이 눌렸을 때 실행되는 코드 작성
+                    },
+                  ),
+                  if (userId == widget.followingId)
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        deleteArticle(articleId: widget.articleId);
+                      },
+                    ),
                   ElevatedButton(
                     onPressed: () {
                       detailData != null

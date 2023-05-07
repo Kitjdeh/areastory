@@ -9,7 +9,6 @@ Future<UserInfo> getUserInfo({
   final dio = Dio(BaseOptions(
     baseUrl: '${dotenv.get('BASE_URL')}/api/users',
   ));
-
   final response = await dio.get('/$userId', queryParameters: {
     'userId': userId,
   });
@@ -17,10 +16,10 @@ Future<UserInfo> getUserInfo({
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());
     final userInfo = UserInfo.fromJson(jsonData);
-    print('성공');
+    print('유저 정보 불러오기 성공');
     return userInfo;
   } else {
-    print('실패');
+    print('유저 정보 불러오기 실패');
     throw Exception('Failed to load articles');
   }
 }
