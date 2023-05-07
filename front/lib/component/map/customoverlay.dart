@@ -73,7 +73,11 @@ class CustomPolygonLayer extends StatelessWidget {
             }
           }
           ImageProvider<Object> buildWhiteForOverlay() {
-            return NetworkImage('asset/img/sangjun.PNG');
+            return
+                // FadeInImage(
+                //   placeholder: placeholder,
+                //   image: NetworkImage('asset/img/sangjun.PNG'));
+                NetworkImage('asset/img/sangjun.PNG');
             // AssetImage('asset/img/sangjun.PNG');
             // return NetworkImage('https://www.newsinside.kr/news/photo/202110/1119485_797392_2214.jpg');
           }
@@ -92,7 +96,7 @@ class CustomPolygonLayer extends StatelessWidget {
               offset: polygon.offsets,
               polygon: polygon.points,
               bounds: LatLngBounds.fromPoints(polygon.points),
-              opacity: 1.0,
+              opacity: 0.5,
               imageProvider: buildWhiteForOverlay(),
             ),
           ];

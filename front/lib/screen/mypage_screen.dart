@@ -1,14 +1,17 @@
 import 'package:beamer/beamer.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/login/kakao/kakao_login.dart';
 import 'package:front/api/login/kakao/login_view_model.dart';
+import 'package:front/api/mypage/get_userInfo.dart';
 import 'package:front/component/mypage/mypage_tabbar.dart';
 import 'package:front/component/signup/login.dart';
 
 class MyPageScreen extends StatefulWidget {
-  const MyPageScreen({Key? key}) : super(key: key);
+  const MyPageScreen({Key? key, required this.userId}) : super(key: key);
+  final String userId;
 
   @override
   State<MyPageScreen> createState() => _MyPageScreenState();
@@ -17,6 +20,22 @@ class MyPageScreen extends StatefulWidget {
 class _MyPageScreenState extends State<MyPageScreen> {
   final storage = new FlutterSecureStorage();
   final viewModel = LoginViewModel(KakaoLogin());
+  late int userId;
+  Future<UserInfo>? _userInfo;
+  // late Future<UserInfo> _userInfo;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    userId = int.parse(widget.userId);
+    _userInfo = getUserInfo(userId: userId);
+    // getUserInfo(userId: userId).then((userInfo) {
+    //   setState(() {
+    //     _userInfo = userInfo;
+    //   });
+    // });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +52,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
               height: 50,
-              color: Colors.blue,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -69,14 +87,15 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                   ),
                                   TextButton.icon(
                                     onPressed: () async {
-                                      String? userId = await storage.read(key: "userId");
+                                      // String? userId = await storage.read(key: "userId");
                                       print("감자ㅁㄴㅇㅁㅇㅁㄴㅇㅁ");
                                       print(userId);
+                                      print(_userInfo.nickname);
                                       Navigator.of(context).pop();
                                       print("개인정보 수정");
                                       String? token = await FirebaseMessaging.instance.getToken();
 
-                                      print("token : ${token ?? 'token NULL!'}");
+                                      // print("token : ${token ?? 'token NULL!'}");
                                     },
                                     icon: Icon(Icons.settings),
                                     label: Text("개인정보 수정"),
@@ -91,7 +110,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                   ),
                                   TextButton.icon(
                                     onPressed: () async {
-                                      String? userId =  await storage.read(key: 'userId');
+                                      // String? userId =  await storage.read(key: 'userId');
                                       print(userId);
                                       Navigator.of(context).pop();
                                       print("설정");
@@ -109,11 +128,12 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       await storage.delete(key: "userId");
                                       Navigator.of(context).pop();
                                       print("로그아웃");
-                                      Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => LoginScreen()),
-                                            (route) => false,
-                                      );
+                                      SystemNavigator.pop();
+                                      // Navigator.pushAndRemoveUntil(
+                                      //   context,
+                                      //   MaterialPageRoute(builder: (context) => LoginScreen()),
+                                      //       (route) => false,
+                                      // );
                                     },
                                     icon: Icon(Icons.logout),
                                     label: Text("로그아웃"),
@@ -122,6 +142,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                       print("서비스 탈퇴");
+                                      SystemNavigator.pop();
                                     },
                                     icon: Icon(Icons.accessible_outlined),
                                     label: Text("서비스 탈퇴"),
@@ -138,7 +159,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
             ),
             // 2. 유저 프로필사진 및 게시글 정보
             Container(
-              color: Colors.red,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -146,7 +166,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
                   // 컨테이너는 넓이, 높이 설정안하면 -> 자동으로 최대크기
                   // sizedbox는 하나라도 설정안하면 -> 자동으로 child의 최대크기
                   Container(
-                    color: Colors.green,
                     width: 100,
                     height: 100,
                     // ClipRRect: R이 2개다. 그리고 강제로 차일드의 모양을 강제로 잡아주는 용도.
@@ -169,20 +188,34 @@ class _MyPageScreenState extends State<MyPageScreen> {
                     ],
                   ),
                   // 팔로워(수)
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("팔로워"),
-                      Text("52")
-                    ],
+                  GestureDetector(
+                    onTap: (){
+                      print("팔로워 리스트로 이동");
+                      Beamer.of(context).beamToNamed('/mypage/followList/0',
+                      );
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("팔로워"),
+                        Text("52")
+                      ],
+                    ),
                   ),
                   // 팔로잉(수)
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("팔로잉"),
-                      Text("46")
-                    ],
+                  GestureDetector(
+                    onTap: (){
+                      print("팔로잉 리스트로 이동");
+                      Beamer.of(context).beamToNamed('/mypage/followList/1',
+                      );
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("팔로잉"),
+                        Text("46")
+                      ],
+                    ),
                   ),
                 ],
               ),

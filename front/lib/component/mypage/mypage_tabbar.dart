@@ -29,13 +29,12 @@ class _MypageTabbarState extends State<MypageTabbar>
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        color: Colors.green,
         child: Column(
           children: [
             TabBar(
               controller: mypagecontroller,
               tabs: MYPAGETABS
-            .map((e) => Tab(icon: Icon(e.icon),)).toList()),
+            .map((e) => Tab(icon: Icon(e.icon, color: Colors.black),)).toList()),
             Expanded(
               child: TabBarView(
                 controller: mypagecontroller,

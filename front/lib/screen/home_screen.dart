@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/beamlocation/create_location.dart';
 import 'package:front/beamlocation/follow_location.dart';
 import 'package:front/beamlocation/map_location.dart';
@@ -17,56 +18,123 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final storage = new FlutterSecureStorage();
   late int _currentIndex;
+  late String? userId;
+  late final List<BeamerDelegate> _routerDelegates;
+  
+  // Future<void> getUserIdFromStorage() async {
+  //   userId = await storage.read(key: "userId");
+  // }
 
+  Future<void> getUserIdFromStorage() async {
+    userId = await storage.read(key: "userId");
+    setState(() {
+      /// userId가 설정된 후에 delegate 목록을 만듭니다.
+      _routerDelegates = [
+        BeamerDelegate(
+          initialPath: '/map',
+          locationBuilder: (routeInformation, _) {
+            if (routeInformation.location!.contains('/map')) {
+              return MapLocation(routeInformation);
+            }
+            return NotFound(path: routeInformation.location!);
+          },
+        ),
+        BeamerDelegate(
+          initialPath: '/sns',
+          locationBuilder: (routeInformation, _) {
+            if (routeInformation.location!.contains('/sns')) {
+              return SnsLocation(routeInformation);
+            }
+            return NotFound(path: routeInformation.location!);
+          },
+        ),
+        BeamerDelegate(
+          initialPath: '/create',
+          locationBuilder: (routeInformation, _) {
+            if (routeInformation.location!.contains('/create')) {
+              return CreateLocation(routeInformation);
+            }
+            return NotFound(path: routeInformation.location!);
+          },
+        ),
+        BeamerDelegate(
+          initialPath: '/follow',
+          locationBuilder: (routeInformation, _) {
+            if (routeInformation.location!.contains('/follow')) {
+              return FollowLocation(routeInformation);
+            }
+            return NotFound(path: routeInformation.location!);
+          },
+        ),
+        BeamerDelegate(
+          initialPath: '/mypage/$userId',
+          locationBuilder: (routeInformation, _) {
+            if (routeInformation.location!.contains('/mypage')) {
+              return MypageLocation(routeInformation);
+            }
+            return NotFound(path: routeInformation.location!);
+          },
+        ),
+      ];
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUserIdFromStorage();
+  }
   /// 바텀내브바에 들어가는 최초의 path들
-  final _routerDelegates = [
-    BeamerDelegate(
-      initialPath: '/map',
-      locationBuilder: (routeInformation, _) {
-        if (routeInformation.location!.contains('/map')) {
-          return MapLocation(routeInformation);
-        }
-        return NotFound(path: routeInformation.location!);
-      },
-    ),
-    BeamerDelegate(
-      initialPath: '/sns',
-      locationBuilder: (routeInformation, _) {
-        if (routeInformation.location!.contains('/sns')) {
-          return SnsLocation(routeInformation);
-        }
-        return NotFound(path: routeInformation.location!);
-      },
-    ),
-    BeamerDelegate(
-      initialPath: '/create',
-      locationBuilder: (routeInformation, _) {
-        if (routeInformation.location!.contains('/create')) {
-          return CreateLocation(routeInformation);
-        }
-        return NotFound(path: routeInformation.location!);
-      },
-    ),
-    BeamerDelegate(
-      initialPath: '/follow',
-      locationBuilder: (routeInformation, _) {
-        if (routeInformation.location!.contains('/follow')) {
-          return FollowLocation(routeInformation);
-        }
-        return NotFound(path: routeInformation.location!);
-      },
-    ),
-    BeamerDelegate(
-      initialPath: '/mypage',
-      locationBuilder: (routeInformation, _) {
-        if (routeInformation.location!.contains('/mypage')) {
-          return MypageLocation(routeInformation);
-        }
-        return NotFound(path: routeInformation.location!);
-      },
-    ),
-  ];
+  // final _routerDelegates = [
+  //   BeamerDelegate(
+  //     initialPath: '/map',
+  //     locationBuilder: (routeInformation, _) {
+  //       if (routeInformation.location!.contains('/map')) {
+  //         return MapLocation(routeInformation);
+  //       }
+  //       return NotFound(path: routeInformation.location!);
+  //     },
+  //   ),
+  //   BeamerDelegate(
+  //     initialPath: '/sns',
+  //     locationBuilder: (routeInformation, _) {
+  //       if (routeInformation.location!.contains('/sns')) {
+  //         return SnsLocation(routeInformation);
+  //       }
+  //       return NotFound(path: routeInformation.location!);
+  //     },
+  //   ),
+  //   BeamerDelegate(
+  //     initialPath: '/create',
+  //     locationBuilder: (routeInformation, _) {
+  //       if (routeInformation.location!.contains('/create')) {
+  //         return CreateLocation(routeInformation);
+  //       }
+  //       return NotFound(path: routeInformation.location!);
+  //     },
+  //   ),
+  //   BeamerDelegate(
+  //     initialPath: '/follow',
+  //     locationBuilder: (routeInformation, _) {
+  //       if (routeInformation.location!.contains('/follow')) {
+  //         return FollowLocation(routeInformation);
+  //       }
+  //       return NotFound(path: routeInformation.location!);
+  //     },
+  //   ),
+  //   BeamerDelegate(
+  //     initialPath: '/mypage/$userId',
+  //     locationBuilder: (routeInformation, _) {
+  //       if (routeInformation.location!.contains('/mypage')) {
+  //         return MypageLocation(routeInformation);
+  //       }
+  //       return NotFound(path: routeInformation.location!);
+  //     },
+  //   ),
+  // ];
 
   /// 선택된 탭을 표시할때 사용.
   @override
@@ -122,11 +190,11 @@ class _HomeScreenState extends State<HomeScreen> {
             setState(() => _currentIndex = index);
             _routerDelegates[_currentIndex].update(rebuild: false);
           }
-          // else{
-          //   print("인덱스가 서로 같다!");
-          //   setState(() => _currentIndex = index);
-          //   _routerDelegates[_currentIndex].update();
-          // }
+          else{
+            print("인덱스가 서로 같다!");
+            setState(() => _currentIndex = index);
+            _routerDelegates[_currentIndex].update(rebuild: true);
+          }
         },
 
         /// 바텀에 실제 표시되는 아이콘들.

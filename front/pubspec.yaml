@@ -51,7 +51,7 @@ dependencies:
   flutter_svg_provider: ^1.0.3
   widget_mask: ^1.0.0+0
   polygon: ^0.1.0
-  http: ^0.13.4+2
+  http: ^0.13.6
   excel: ^2.1.0
   stomp_dart_client: ^0.4.4
   http_parser: ^4.0.2   # 콘텐츠타입 파싱용

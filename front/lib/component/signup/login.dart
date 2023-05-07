@@ -15,8 +15,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final storage = new FlutterSecureStorage(); /// flutter sercure storage에 연결.
-  final dio = Dio();
+  final storage = new FlutterSecureStorage();
+
+  /// flutter sercure storage에 연결.
+  // final dio = Dio();
   final viewModel = LoginViewModel(KakaoLogin());
 
   @override
@@ -28,36 +30,45 @@ class _LoginScreenState extends State<LoginScreen> {
           children: <Widget>[
             ElevatedButton(
               onPressed: () async {
+                final HASH = await KakaoSdk.origin;
+                // print('123123${HASH}');
                 await viewModel.login();
-                setState(() {
+                setState(() {});
 
-                });
                 /// 로그인시 카카오가 던져주는 키값
-                // print(viewModel.user?.id);
-                // print(viewModel.user?.kakaoAccount?.profile?.nickname);
-                // print(viewModel.user?.kakaoAccount?.profile?.profileImageUrl);
-                try{
+                print(viewModel.user?.id);
+                print(viewModel.user?.kakaoAccount?.profile?.nickname);
+                print(viewModel.user?.kakaoAccount?.profile?.profileImageUrl);
+                try {
                   final res = await getLogin(viewModel.user?.id);
                   print(res);
-                  if(res.msg == '신규 회원입니다.'){
+                  if (res.msg == '신규 회원입니다.') {
                     Navigator.pushNamed(
                       context,
                       '/signup',
                       arguments: viewModel.user,
                     );
-                  }else{
+                  } else {
                     print("로그인 SSE 시작합니다");
+
                     /// 로그인 성공시 storage에 저장
-                    await storage.write(key: "userId", value: res.data['userId'].toString());
+
+                    await storage.write(
+                        key: "userId", value: res.data['userId'].toString());
+
                     /// 로그인 성공시 페이지 이동.
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => MyApp()),
                     );
                   }
-                }catch(e){
+                } catch (e) {
                   print(e);
                   print("에러다다다다다다");
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyApp()),
+                  );
                 }
               },
               child: Text("로그인"),
@@ -65,15 +76,13 @@ class _LoginScreenState extends State<LoginScreen> {
             ElevatedButton(
               onPressed: () async {
                 await viewModel.logout();
-                setState(() {
+                setState(() {});
 
-                });
                 /// 로그아웃시
                 await storage.delete(key: "userId");
               },
               child: Text("로그아웃"),
             )
-
           ],
         ),
       ),

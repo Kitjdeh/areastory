@@ -1,29 +1,102 @@
+import 'dart:convert';
+import 'package:http/http.dart';
 import 'package:beamer/beamer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/component/signup/login.dart';
 import 'package:front/component/signup/sign_up.dart';
-import 'package:front/controllers/app_controller.dart';
 import 'package:front/firebase_options.dart';
+import 'package:front/permission/OverlayPermission.dart';
 import 'package:front/screen/home_screen.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-import 'package:get/get.dart';
-
 /// 앱이 백그라운드 상태일때 메시지 수신. 항상 main.dart의 최상위.
+
+@pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  print("Handling a background message: ${message.messageId}");
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await setupFlutterNotifications();
+  showFlutterNotification(message);
+  print(message);
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  print('Handling a background message ${message.messageId}');
 }
+late AndroidNotificationChannel channel;
+
+bool isFlutterLocalNotificationsInitialized = false;
+
+Future<void> setupFlutterNotifications() async {
+  if (isFlutterLocalNotificationsInitialized) {
+    return;
+  }
+  channel = const AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    description:
+    'This channel is used for important notifications.', // description
+    importance: Importance.high,
+  );
+
+  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  /// Create an Android Notification Channel.
+  ///
+  /// We use this channel in the `AndroidManifest.xml` file to override the
+  /// default FCM channel to enable heads up notifications.
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+      AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  /// Update the iOS foreground notification presentation options to allow
+  /// heads up notifications.
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+  isFlutterLocalNotificationsInitialized = true;
+}
+
+void showFlutterNotification(RemoteMessage message) {
+  RemoteNotification? notification = message.notification;
+  AndroidNotification? android = message.notification?.android;
+  if (notification != null && android != null && !kIsWeb) {
+    flutterLocalNotificationsPlugin.show(
+      notification.hashCode,
+      notification.title,
+      notification.body,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          visibility: NotificationVisibility.public,
+          enableVibration: true,
+          channel.id,
+          channel.name,
+          channelDescription: channel.description,
+          // TODO add a proper drawable resource to android, for now using
+          //      one that already exists in example app.
+          icon: 'launch_background',
+        ),
+      ),
+    );
+  }
+}
+late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 void main() async {
   await dotenv.load(fileName: "local.env");
   // HttpOverrides.global =
   //     NoCheckCertificateHttpOverrides(); // 생성된 HttpOverrides 객체 등록
   WidgetsFlutterBinding.ensureInitialized();
+
+  // KakaoSdk.init(nativeAppKey: dotenv.get('KAKAO_KEY'));
+  // final storage = new FlutterSecureStorage();
 
   /// flutter sercure storage에 연결.
 
@@ -41,12 +114,23 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${message.data}');
 
+    if (message.notification != null) {
+      print('Message also contained a notification: ${message.notification}');
+    }
+  });
+  if (!kIsWeb) {
+    await setupFlutterNotifications();
+  }
   var fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "${dotenv.get('FIREBASE_KEY')}");
 
   FirebaseMessaging.instance.onTokenRefresh
@@ -70,22 +154,17 @@ void main() async {
     enableVibration: true, // 진동 여부
     enableLights: true, // 알림 조명 여부
   );
-  /// FlutterLocalNotificationsPlugin 인스턴스 생성
-
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
-
-  /// Android 채널 설정
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
-
-  /// notification
-  // final AppController c = Get.put(AppController());
 
   // runApp(MyApp());
-
+  // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+  //     .then((_) async {
+  //   print("권한설정 진행중");
+  //   final canDrawOverlays = await OverlayPermission.canDrawOverlays();
+  //   if (!canDrawOverlays) {
+  //     await OverlayPermission.requestOverlayPermission();
+  //   }
+  //   runApp(MyApp());
+  // });
   runApp(MaterialApp(
     routes: {
       '/signup': (context) => SignUpScreen(),
@@ -104,26 +183,113 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  String? _token;
+  String? initialMessage;
+  bool _resolved = false;
   final routerDelegate = BeamerDelegate(
     initialPath: '/map',
     locationBuilder: RoutesLocationBuilder(
       routes: {
         '*': (context, state, data) => const HomeScreen(),
+        // '/login': (context, state, data) => const LoginScreen(),
       },
     ),
   );
-    @override
-    Widget build(BuildContext context) {
-      return MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(primarySwatch: Colors.indigo),
-        routerDelegate: routerDelegate,
-        routeInformationParser: BeamerParser(),
-        backButtonDispatcher: BeamerBackButtonDispatcher(
-          delegate: routerDelegate,
-        ),
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseMessaging.instance.getInitialMessage().then(
+          (value) => setState(
+            () {
+          _resolved = true;
+          initialMessage = value?.data.toString();
+        },
+      ),
+    );
+
+    FirebaseMessaging.onMessage.listen(showFlutterNotification);
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+      Navigator.pushNamed(
+        context,
+        '/message',
+        arguments: MessageArguments(message, true),
       );
+    });
+  }int _messageCount = 0;
+
+  /// The API endpoint here accepts a raw FCM payload for demonstration purposes.
+  String constructFCMPayload(String? token) {
+    _messageCount++;
+    return jsonEncode({
+      'token': token,
+      'data': {
+        'via': 'FlutterFire Cloud Messaging!!!',
+        'count': _messageCount.toString(),
+      },
+      'notification': {
+        'title': 'Hello FlutterFire!',
+        'body': 'This notification (#$_messageCount) was created via FCM!',
+      },
+    });
+  }
+
+  Future<void> onActionSelected(String value) async {
+    switch (value) {
+      case 'subscribe':
+        {
+          print(
+            'FlutterFire Messaging Example: Subscribing to topic "fcm_test".',
+          );
+          await FirebaseMessaging.instance.subscribeToTopic('fcm_test');
+          print(
+            'FlutterFire Messaging Example: Subscribing to topic "fcm_test" successful.',
+          );
+        }
+        break;
+      case 'unsubscribe':
+        {
+          print(
+            'FlutterFire Messaging Example: Unsubscribing from topic "fcm_test".',
+          );
+          await FirebaseMessaging.instance.unsubscribeFromTopic('fcm_test');
+          print(
+            'FlutterFire Messaging Example: Unsubscribing from topic "fcm_test" successful.',
+          );
+        }
+        break;
+      case 'get_apns_token':
+        {
+          if (defaultTargetPlatform == TargetPlatform.iOS ||
+              defaultTargetPlatform == TargetPlatform.macOS) {
+            print('FlutterFire Messaging Example: Getting APNs token...');
+            String? token = await FirebaseMessaging.instance.getAPNSToken();
+            print('FlutterFire Messaging Example: Got APNs token: $token');
+          } else {
+            print(
+              'FlutterFire Messaging Example: Getting an APNs token is only supported on iOS and macOS platforms.',
+            );
+          }
+        }
+        break;
+      default:
+        break;
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.indigo),
+      routerDelegate: routerDelegate,
+      routeInformationParser: BeamerParser(),
+      backButtonDispatcher: BeamerBackButtonDispatcher(
+        delegate: routerDelegate,
+      ),
+    );
+  }
 }
 
 // class NoCheckCertificateHttpOverrides extends HttpOverrides {
@@ -134,3 +300,13 @@ class _MyAppState extends State<MyApp> {
 //           (X509Certificate cert, String host, int port) => true;
 //   }
 // }
+class MessageArguments {
+  /// The RemoteMessage
+  final RemoteMessage message;
+
+  /// Whether this message caused the application to open.
+  final bool openedApplication;
+
+  // ignore: public_member_api_docs
+  MessageArguments(this.message, this.openedApplication);
+}
