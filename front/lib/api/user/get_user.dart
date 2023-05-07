@@ -13,17 +13,26 @@ Future<UserData> getUser({
   final storage = new FlutterSecureStorage();
   final myId = await storage.read(key: 'userId');
 
-  final response = await dio.get('/$userId', queryParameters: {
-    'myId': myId,
-  });
+  // print("유저아이디: $userId");
+  // print("마이아이디: $myId");
+  // print("주소: ${dotenv.get('BASE_URL')}");
 
-  if (response.statusCode == 200) {
-    final jsonData = json.decode(response.toString());
-    final userData = UserData.fromJson(jsonData);
-    print('게시글 요청 성공');
-    return userData;
-  } else {
-    print('실패');
+  try{
+    final response = await dio.get('/$userId', queryParameters: {
+      'myId': myId,
+    });
+    if (response.statusCode == 200) {
+        final jsonData = json.decode(response.toString());
+        final userData = UserData.fromJson(jsonData);
+        print('유저정보 요청 성공');
+        return userData;
+      } else {
+        print("유저 정보 요청 실패.");
+        throw Exception('Failed to load articles');
+      }
+  }catch(e){
+    print("유저 정보 요청 실패.");
+    print(e);
     throw Exception('Failed to load articles');
   }
 }

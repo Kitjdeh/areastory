@@ -5,9 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/login/kakao/kakao_login.dart';
 import 'package:front/api/login/kakao/login_view_model.dart';
-import 'package:front/api/mypage/get_userInfo.dart';
+import 'package:front/api/user/get_user.dart';
 import 'package:front/component/mypage/mypage_tabbar.dart';
-import 'package:front/component/signup/login.dart';
 
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({Key? key, required this.userId}) : super(key: key);
@@ -26,8 +25,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
   void getuserinfo(int userId) async {
     print("감자가가가가");
-    final userdata = await getUserInfo(userId: userId);
-    print(userdata);
+    final userdata = await getUser(userId: userId);
+    print("유저데이터: $userdata");
   }
 
   @override
