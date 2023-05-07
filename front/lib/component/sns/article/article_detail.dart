@@ -1,25 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:front/api/follow/create_following.dart';
+import 'package:front/api/follow/delete_following.dart';
+import 'package:front/api/like/create_article_like.dart';
+import 'package:front/api/like/delete_article_like.dart';
+import 'package:front/api/sns/get_article.dart';
 
 class ArticleDetailComponent extends StatefulWidget {
+  final int articleId;
+  final int followingId;
   final String nickname;
   final String image;
   final String profile;
   final String content;
-  final int likeCount;
+  final int dailyLikeCount;
+  final int totalLikeCount;
   final int commentCount;
-  final bool isLike;
-  double? height;
+  final bool likeYn;
+  final bool followYn;
+  final DateTime createdAt;
+  final String? dosi;
+  final String? sigungu;
+  final String? dongeupmyeon;
+  final double height;
 
   ArticleDetailComponent(
-      {required this.nickname,
-      this.height,
+      {required this.articleId,
+      required this.followingId,
+      required this.nickname,
+      required this.height,
       required this.image,
       required this.profile,
       required this.content,
-      required this.likeCount,
+      required this.dailyLikeCount,
+      required this.totalLikeCount,
       required this.commentCount,
-      required this.isLike,
-      Key? key})
+      required this.likeYn,
+      required this.followYn,
+      required this.createdAt,
+      this.dosi,
+      this.sigungu,
+      this.dongeupmyeon,
+      Key? key,
+      Object? snapshotData})
       : super(key: key);
 
   @override
@@ -27,6 +49,34 @@ class ArticleDetailComponent extends StatefulWidget {
 }
 
 class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
+  ArticleData? detailData;
+
+  void createFollowing(followingId) async {
+    await postFollowing(followingId: followingId);
+    detailData =
+        (await getArticle(articleId: widget.articleId)) as ArticleData?;
+    setState(() {});
+  }
+
+  void delFollowing(followingId) async {
+    await deleteFollowing(followingId: followingId);
+    detailData =
+        (await getArticle(articleId: widget.articleId)) as ArticleData?;
+    setState(() {});
+  }
+
+  void createArticleLike(articleId) async {
+    await postArticleLike(articleId: articleId);
+    detailData = (await getArticle(articleId: articleId)) as ArticleData?;
+    setState(() {});
+  }
+
+  void delArticleLike(articleId) async {
+    await deleteArticleLike(articleId: articleId);
+    detailData = (await getArticle(articleId: articleId)) as ArticleData?;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -117,18 +167,32 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                               children: [
                                 Expanded(
                                   child: GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      detailData != null
+                                          ? detailData!.likeYn
+                                              ? delArticleLike(widget.articleId)
+                                              : createArticleLike(
+                                                  widget.articleId)
+                                          : widget.likeYn
+                                              ? delArticleLike(widget.articleId)
+                                              : createArticleLike(
+                                                  widget.articleId);
+                                    },
                                     child: Image.asset(
-                                      widget.isLike
-                                          ? 'asset/img/like.png'
-                                          : 'asset/img/nolike.png',
+                                      detailData != null
+                                          ? detailData!.likeYn
+                                              ? 'asset/img/like.png'
+                                              : 'asset/img/nolike.png'
+                                          : widget.likeYn
+                                              ? 'asset/img/like.png'
+                                              : 'asset/img/nolike.png',
                                       height: 30,
                                     ),
                                   ),
                                 ),
                                 Expanded(
                                   child: Text(
-                                    widget.likeCount.toString(),
+                                    widget.totalLikeCount.toString(),
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,

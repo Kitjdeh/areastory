@@ -20,7 +20,7 @@ Future<ArticleData> getArticle({
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());
     final articleData = ArticleData.fromJson(jsonData);
-    print('성공');
+    print('게시글 요청 성공');
     return articleData;
   } else {
     print('실패');
@@ -39,23 +39,28 @@ class ArticleData {
   final int totalLikeCount;
   final int commentCount;
   final bool likeYn;
+  final bool followYn;
   final String createdAt;
-  final String? location;
+  String? dosi;
+  String? sigungu;
+  String? dongeupmyeon;
 
-  ArticleData({
-    required this.articleId,
-    required this.userId,
-    required this.nickname,
-    required this.content,
-    required this.dailyLikeCount,
-    required this.totalLikeCount,
-    required this.commentCount,
-    required this.likeYn,
-    required this.createdAt,
-    this.profile,
-    this.image,
-    this.location,
-  });
+  ArticleData(
+      {required this.articleId,
+      required this.userId,
+      required this.nickname,
+      required this.content,
+      required this.dailyLikeCount,
+      required this.totalLikeCount,
+      required this.commentCount,
+      required this.likeYn,
+      required this.followYn,
+      required this.createdAt,
+      this.profile,
+      this.image,
+      this.dosi,
+      this.sigungu,
+      this.dongeupmyeon});
 
   factory ArticleData.fromJson(Map<String, dynamic> json) {
     return ArticleData(
@@ -69,8 +74,11 @@ class ArticleData {
       totalLikeCount: json['totalLikeCount'],
       commentCount: json['commentCount'],
       likeYn: json['likeYn'],
+      followYn: json['followYn'],
       createdAt: json['createdAt'],
-      location: json['location'],
+      dosi: json['dosi'],
+      sigungu: json['sigungu'],
+      dongeupmyeon: json['dongeupmyeon'],
     );
   }
 }

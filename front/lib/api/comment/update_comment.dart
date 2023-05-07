@@ -26,7 +26,7 @@ Future<void> patchComment({
   );
 
   if (response.statusCode == 200) {
-    print('성공');
+    print('댓글 수정 성공');
   } else {
     print('실패');
     throw Exception('Failed to create article');

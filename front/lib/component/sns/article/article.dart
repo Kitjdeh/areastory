@@ -4,6 +4,7 @@ import 'package:front/api/follow/create_following.dart';
 import 'package:front/api/follow/delete_following.dart';
 import 'package:front/api/like/create_article_like.dart';
 import 'package:front/api/like/delete_article_like.dart';
+import 'package:front/api/sns/get_article.dart';
 import 'package:front/api/test_api.dart';
 
 class ArticleComponent extends StatefulWidget {
@@ -13,9 +14,15 @@ class ArticleComponent extends StatefulWidget {
   final String image;
   final String profile;
   final String content;
-  final int likeCount;
+  final int dailyLikeCount;
+  final int totalLikeCount;
   final int commentCount;
-  final bool isLike;
+  final bool likeYn;
+  final bool followYn;
+  final DateTime createdAt;
+  final String? dosi;
+  final String? sigungu;
+  final String? dongeupmyeon;
   final Function(bool) onUpdateIsChildActive;
   final double height;
 
@@ -27,11 +34,18 @@ class ArticleComponent extends StatefulWidget {
       required this.image,
       required this.profile,
       required this.content,
-      required this.likeCount,
+      required this.dailyLikeCount,
+      required this.totalLikeCount,
       required this.commentCount,
-      required this.isLike,
+      required this.likeYn,
+      required this.followYn,
+      required this.createdAt,
+      this.dosi,
+      this.sigungu,
+      this.dongeupmyeon,
       required this.onUpdateIsChildActive,
-      Key? key})
+      Key? key,
+      Object? snapshotData})
       : super(key: key);
 
   @override
@@ -40,31 +54,31 @@ class ArticleComponent extends StatefulWidget {
 
 class _ArticleComponentState extends State<ArticleComponent> {
   bool isExpanded = false;
+  ArticleData? detailData;
 
   void createFollowing(followingId) async {
     await postFollowing(followingId: followingId);
-    await widget.onUpdateIsChildActive(true);
-    // 백수정 후 테스트해봐야함
+    detailData =
+        (await getArticle(articleId: widget.articleId)) as ArticleData?;
     setState(() {});
   }
 
   void delFollowing(followingId) async {
     await deleteFollowing(followingId: followingId);
-    await widget.onUpdateIsChildActive(true);
-    // 백수정 후 테스트해봐야함
+    detailData =
+        (await getArticle(articleId: widget.articleId)) as ArticleData?;
     setState(() {});
   }
 
   void createArticleLike(articleId) async {
     await postArticleLike(articleId: articleId);
-    await widget.onUpdateIsChildActive(true);
+    detailData = (await getArticle(articleId: articleId)) as ArticleData?;
     setState(() {});
   }
 
   void delArticleLike(articleId) async {
     await deleteArticleLike(articleId: articleId);
-    await widget.onUpdateIsChildActive(true);
-    // 백수정 후 테스트해봐야함
+    detailData = (await getArticle(articleId: articleId)) as ArticleData?;
     setState(() {});
   }
 
@@ -75,6 +89,8 @@ class _ArticleComponentState extends State<ArticleComponent> {
     if (!isExpanded && widget.content.length > 10) {
       displayText = widget.content.substring(0, 10) + '...';
     }
+
+    bool isLikeCheck = true;
 
     return Column(
       children: [
@@ -126,16 +142,32 @@ class _ArticleComponentState extends State<ArticleComponent> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // widget.followYn ? delFollowing(widget.followingId) : createFollowing(widget.followingId);
+                      detailData != null
+                          ? detailData!.followYn
+                              ? delFollowing(widget.followingId)
+                              : createFollowing(widget.followingId)
+                          : widget.followYn
+                              ? delFollowing(widget.followingId)
+                              : createFollowing(widget.followingId);
                     },
                     style: ElevatedButton.styleFrom(
-                      // primary: widget.followYn ? Colors.transparent : Colors.blue,
-                      primary: Colors.blue,
+                      primary: detailData != null
+                          ? detailData!.followYn
+                              ? Colors.transparent
+                              : Colors.blue
+                          : widget.followYn
+                              ? Colors.transparent
+                              : Colors.blue,
                       side: BorderSide(color: Colors.white),
                     ),
                     child: Text(
-                      // widget.followYn ? '팔로잉' : '팔로우',
-                      '팔로우',
+                      detailData != null
+                          ? detailData!.followYn
+                              ? '팔로잉'
+                              : '팔로우'
+                          : widget.followYn
+                              ? '팔로잉'
+                              : '팔로우',
                       style: TextStyle(
                         color: Colors.white, // 텍스트 색상을 하얀색으로 설정
                       ),
@@ -168,20 +200,29 @@ class _ArticleComponentState extends State<ArticleComponent> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          widget.isLike
-                              ? delArticleLike(widget.articleId)
-                              : createArticleLike(widget.articleId);
+                          detailData != null
+                              ? detailData!.likeYn
+                                  ? delArticleLike(widget.articleId)
+                                  : createArticleLike(widget.articleId)
+                              : widget.likeYn
+                                  ? delArticleLike(widget.articleId)
+                                  : createArticleLike(widget.articleId);
                         },
                         child: Image.asset(
-                          widget.isLike
-                              ? 'asset/img/like.png'
-                              : 'asset/img/nolike.png',
+                          detailData != null
+                              ? detailData!.likeYn
+                                  ? 'asset/img/like.png'
+                                  : 'asset/img/nolike.png'
+                              : widget.likeYn
+                                  ? 'asset/img/like.png'
+                                  : 'asset/img/nolike.png',
                           height: 30,
                         ),
                       ),
                       GestureDetector(
                         onTap: () {
-                          Beamer.of(context).beamToNamed('/sns/comment');
+                          Beamer.of(context)
+                              .beamToNamed('/sns/comment/${widget.articleId}');
                         },
                         child: Image.asset(
                           'asset/img/comment.png',
@@ -205,10 +246,16 @@ class _ArticleComponentState extends State<ArticleComponent> {
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        Beamer.of(context).beamToNamed('/sns/like');
+                        Beamer.of(context).beamToNamed(
+                          '/sns/like/${widget.articleId}',
+                        );
                       },
                       child: Text(
-                        '좋아요 ' + widget.likeCount.toString() + '개',
+                        detailData != null
+                            ? '좋아요 ' +
+                                detailData!.totalLikeCount.toString() +
+                                '개'
+                            : '좋아요 ' + widget.totalLikeCount.toString() + '개',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,
@@ -297,7 +344,8 @@ class _ArticleComponentState extends State<ArticleComponent> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Beamer.of(context).beamToNamed('/sns/comment');
+                        Beamer.of(context)
+                            .beamToNamed('/sns/comment/${widget.articleId}');
                       },
                       child: Text(
                         '댓글 ${widget.commentCount}개 모두 보기',

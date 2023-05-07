@@ -26,7 +26,7 @@ Future<List<Followers>> getFollowers({
         .map((followersJson) => Followers.fromJson(followersJson))
         .toList();
 
-    print('성공');
+    print('팔로워 유저 요청 성공');
     return followers;
   } else {
     print('실패');

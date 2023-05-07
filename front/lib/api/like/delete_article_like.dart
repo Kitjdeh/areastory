@@ -17,7 +17,7 @@ Future<void> deleteArticleLike({required int articleId}) async {
   await dio.delete('/$articleId', queryParameters: {'userId': userId});
 
   if (response.statusCode == 200) {
-    print('성공');
+    print('게시글 좋아요 취소 성공');
   } else {
     print('실패');
     throw Exception('Failed to create article');

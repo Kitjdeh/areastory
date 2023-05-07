@@ -20,7 +20,7 @@ Future<void> postCommentLike({
       await dio.post('/$articleId/comments/like/$commentId', queryParameters: {'userId': userId});
 
   if (response.statusCode == 200) {
-    print('성공');
+    print('댓글 좋아요 성공');
   } else {
     print('실패');
     throw Exception('Failed to create article');

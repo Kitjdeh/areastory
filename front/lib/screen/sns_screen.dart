@@ -16,6 +16,7 @@ class SnsScreen extends StatefulWidget {
 
 class _SnsScreenState extends State<SnsScreen> {
   int _currentPage = 1;
+  int? _lastPage = 0;
   List _articles = [];
   String dropdownValue = list.first;
 
@@ -28,31 +29,23 @@ class _SnsScreenState extends State<SnsScreen> {
   void printArticles() async {
     final articleData = await getArticles(
       sort: 'likeCount',
-      doName: null,
-      si: null,
-      gun: null,
-      gu: null,
-      dong: null,
-      eup: null,
-      myeon: null,
+      dosi: null,
+      sigungu: null,
+      dongeupmyeon: null,
     );
     _articles.addAll(articleData.articles);
+    _lastPage = articleData.totalPageNumber;
+    setState(() {});
   }
-
-  final ScrollController _scrollController = ScrollController();
 
   void _loadMoreData() async {
     // 나중에 페이지 추가해서 넣어야할듯??
     // sort는 articleId or likeCount
     final newArticles = await getArticles(
       sort: 'likeCount',
-      doName: null,
-      si: null,
-      gun: null,
-      gu: null,
-      dong: null,
-      eup: null,
-      myeon: null,
+      dosi: null,
+      sigungu: null,
+      dongeupmyeon: null,
     );
     _articles.addAll(newArticles.articles);
     _currentPage++;
@@ -62,24 +55,14 @@ class _SnsScreenState extends State<SnsScreen> {
     });
   }
 
+  final ScrollController _scrollController = ScrollController();
+
   void scrollToIndex(int index) {
     _scrollController.jumpTo(index * 520); // jumpTo 메서드를 사용하여 스크롤합니다.
   }
 
   void _updateIsChildActive(bool isChildActive) async {
-    final newArticles = await getArticles(
-      sort: 'likeCount',
-      doName: null,
-      si: null,
-      gun: null,
-      gu: null,
-      dong: null,
-      eup: null,
-      myeon: null,
-    );
-    _articles.addAll(newArticles.articles);
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
@@ -184,13 +167,19 @@ class _SnsScreenState extends State<SnsScreen> {
                           image: _articles[index].image,
                           profile: _articles[index].profile,
                           content: _articles[index].content,
-                          likeCount: _articles[index].totalLikeCount,
+                          dailyLikeCount: _articles[index].dailyLikeCount,
+                          totalLikeCount: _articles[index].totalLikeCount,
                           commentCount: _articles[index].commentCount,
-                          isLike: _articles[index].likeYn,
+                          likeYn: _articles[index].likeYn,
+                          followYn: _articles[index].followYn,
+                          createdAt: _articles[index].createdAt,
+                          dosi: _articles[index].dosi,
+                          sigungu: _articles[index].sigungu,
+                          dongeupmyeon: _articles[index].dongeupmyeon,
                           height: 500,
                           onUpdateIsChildActive: _updateIsChildActive,
                         );
-                      } else {
+                      } else if (_currentPage < _lastPage!) {
                         _loadMoreData();
                         return Container(
                           height: 50,

@@ -1,26 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:front/api/comment/get_comment.dart';
+import 'package:front/api/like/create_comment_like.dart';
+import 'package:front/api/like/delete_comment_like.dart';
 
-class CommentComponent extends StatelessWidget {
-  final String writer;
-  final String writerProfile;
+class CommentComponent extends StatefulWidget {
+  final String commentId;
+  final String articleId;
+  final String userId;
+  final String nickname;
+  final String profile;
   final String content;
   final int likeCount;
-  final bool isLike;
+  final bool likeYn;
   final String createdAt;
   final double height;
   final Function(bool isChildActive) onUpdateIsChildActive;
 
   const CommentComponent({
     Key? key,
-    required this.writer,
-    required this.writerProfile,
+    required this.commentId,
+    required this.articleId,
+    required this.userId,
+    required this.nickname,
+    required this.profile,
     required this.content,
     required this.likeCount,
-    required this.isLike,
+    required this.likeYn,
     required this.createdAt,
     required this.height,
     required this.onUpdateIsChildActive,
   }) : super(key: key);
+
+  @override
+  State<CommentComponent> createState() => _CommentComponentState();
+}
+
+class _CommentComponentState extends State<CommentComponent> {
+  CommentData? detailData;
+
+  void createCommentLike(articleId, commentId) async {
+    await postCommentLike(articleId: articleId, commentId: commentId);
+    detailData = (await getComment(articleId: articleId, commentId: commentId))
+        as CommentData?;
+    setState(() {});
+  }
+
+  void delCommentLike(articleId, commentId) async {
+    await deleteCommentLike(articleId: articleId, commentId: commentId);
+    detailData = (await getComment(articleId: articleId, commentId: commentId))
+        as CommentData?;
+    setState(() {});
+  }
 
   String _formatDate(String createdAt) {
     final now = DateTime.now();
@@ -41,7 +71,7 @@ class CommentComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height,
+      height: widget.height,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -50,7 +80,7 @@ class CommentComponent extends StatelessWidget {
           ),
           CircleAvatar(
             radius: 20,
-            backgroundImage: NetworkImage(writerProfile),
+            backgroundImage: NetworkImage(widget.profile),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -63,7 +93,7 @@ class CommentComponent extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          writer,
+                          widget.nickname,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -73,7 +103,7 @@ class CommentComponent extends StatelessWidget {
                           width: 10,
                         ),
                         Text(
-                          _formatDate(createdAt),
+                          _formatDate(widget.createdAt),
                           style: TextStyle(
                             color: Colors.grey,
                             fontSize: 12,
@@ -83,25 +113,39 @@ class CommentComponent extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        InkWell(
+                        GestureDetector(
                           onTap: () {
-                            onUpdateIsChildActive(false);
+                            detailData != null
+                                ? detailData!.likeYn
+                                    ? delCommentLike(
+                                        widget.articleId, widget.commentId)
+                                    : createCommentLike(
+                                        widget.articleId, widget.commentId)
+                                : widget.likeYn
+                                    ? delCommentLike(
+                                        widget.articleId, widget.commentId)
+                                    : createCommentLike(
+                                        widget.articleId, widget.commentId);
                           },
                           child: Image.asset(
-                            isLike
-                                ? 'asset/img/like.png'
-                                : 'asset/img/nolike.png',
+                            detailData != null
+                                ? detailData!.likeYn
+                                    ? 'asset/img/like.png'
+                                    : 'asset/img/nolike.png'
+                                : widget.likeYn
+                                    ? 'asset/img/like.png'
+                                    : 'asset/img/nolike.png',
                             height: 30,
                           ),
                         ),
-                        Text('$likeCount'),
+                        Text('${widget.likeCount}'),
                       ],
                     ),
                   ],
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  content,
+                  widget.content,
                   style: const TextStyle(
                     fontSize: 14,
                   ),
