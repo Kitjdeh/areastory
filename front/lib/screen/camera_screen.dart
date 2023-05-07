@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:beamer/beamer.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,7 +51,6 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   void createArticle(image, content) async {
-
     await postArticle(
       publicYn: _isSwitched,
       content: content.text,
@@ -60,6 +60,7 @@ class _CameraScreenState extends State<CameraScreen> {
       sigungu: '성도시',
       dongeupmyeon: '성동',
     );
+    Beamer.of(context).beamToNamed('/create/sns');
   }
 
   @override

@@ -19,7 +19,7 @@ Future<UserData> getUser({
 
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());
-    final userData = UserData.fromJson(jsonData);
+    final userData = UserData.fromJson(jsonData["data"]);
     print('게시글 요청 성공');
     return userData;
   } else {
@@ -31,7 +31,7 @@ Future<UserData> getUser({
 class UserData {
   final int userId;
   final String nickname;
-  final String? profile;
+  final String profile;
   final bool followYn;
   final int followCount;
   final int followingCount;
@@ -39,7 +39,7 @@ class UserData {
   UserData({
     required this.userId,
     required this.nickname,
-    this.profile,
+    required this.profile,
     required this.followYn,
     required this.followCount,
     required this.followingCount,

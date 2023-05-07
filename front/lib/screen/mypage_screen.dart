@@ -28,8 +28,9 @@ class _MyPageScreenState extends State<MyPageScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     userId = int.parse(widget.userId);
-    _userInfo = getUserInfo(userId: userId);
+    // _userInfo = getUserInfo(userId: userId);
     // getUserInfo(userId: userId).then((userInfo) {
     //   setState(() {
     //     _userInfo = userInfo;
@@ -90,7 +91,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       // String? userId = await storage.read(key: "userId");
                                       print("감자ㅁㄴㅇㅁㅇㅁㄴㅇㅁ");
                                       print(userId);
-                                      print(_userInfo.nickname);
+                                      // print(_userInfo.nickname);
                                       Navigator.of(context).pop();
                                       print("개인정보 수정");
                                       String? token = await FirebaseMessaging.instance.getToken();
