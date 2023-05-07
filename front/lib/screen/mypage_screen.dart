@@ -21,20 +21,24 @@ class _MyPageScreenState extends State<MyPageScreen> {
   final storage = new FlutterSecureStorage();
   final viewModel = LoginViewModel(KakaoLogin());
   late int userId;
-  Future<UserInfo>? _userInfo;
+  // Future<UserInfo>? _userInfo;
   // late Future<UserInfo> _userInfo;
+
+  void getuserinfo(int userId) async {
+    print("감자가가가가");
+    final userdata = await getUserInfo(userId: userId);
+    print(userdata);
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     userId = int.parse(widget.userId);
-    _userInfo = getUserInfo(userId: userId);
-    // getUserInfo(userId: userId).then((userInfo) {
-    //   setState(() {
-    //     _userInfo = userInfo;
-    //   });
-    // });
+    print("고구마마가가가가각");
+    print(userId);
+    // _userInfo = getUserInfo(userId: userId);
+    getuserinfo(userId);
   }
 
   @override
@@ -90,7 +94,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       // String? userId = await storage.read(key: "userId");
                                       print("감자ㅁㄴㅇㅁㅇㅁㄴㅇㅁ");
                                       print(userId);
-                                      print(_userInfo.nickname);
+                                      // print(_userInfo);
                                       Navigator.of(context).pop();
                                       print("개인정보 수정");
                                       String? token = await FirebaseMessaging.instance.getToken();

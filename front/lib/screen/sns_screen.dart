@@ -192,11 +192,11 @@ class _SnsScreenState extends State<SnsScreen> {
                         );
                       } else {
                         _loadMoreData();
-                        return Container(
-                          height: 50,
-                          alignment: Alignment.center,
-                          child: const CircularProgressIndicator(),
-                        );
+                        // return Container(
+                        //   height: 50,
+                        //   alignment: Alignment.center,
+                        //   child: const CircularProgressIndicator(),
+                        // );
                       }
                     },
                     separatorBuilder: (context, index) {
