@@ -121,13 +121,13 @@ class _CustomMapState extends State<_CustomMap> {
     this.currentcenter = mapController.center;
     mapController.move(currentcenter, _zoom);
     print(_zoom);
-    setState(() {
-      _zoom > 12.0
-          ? nowallareadata = smallareaData
-          : _zoom > 9.0
-              ? nowallareadata = middleareaData
-              : nowallareadata = bigareaData;
-    });
+    // setState(() {
+    //   _zoom > 12.0
+    //       ? nowallareadata = smallareaData
+    //       : _zoom > 9.0
+    //           ? nowallareadata = middleareaData
+    //           : nowallareadata = bigareaData;
+    // });
   }
 
   void pluszoom() {
@@ -136,13 +136,13 @@ class _CustomMapState extends State<_CustomMap> {
     mapController.move(currentcenter, _zoom);
     print(_zoom);
 
-    setState(() {
-      _zoom > 12.0
-          ? nowallareadata = smallareaData
-          : _zoom > 9.0
-              ? nowallareadata = middleareaData
-              : nowallareadata = bigareaData;
-    });
+    // setState(() {
+    //   _zoom > 12.0
+    //       ? nowallareadata = smallareaData
+    //       : _zoom > 9.0
+    //           ? nowallareadata = middleareaData
+    //           : nowallareadata = bigareaData;
+    // });
   }
 
   @override
@@ -472,8 +472,18 @@ class _CustomMapState extends State<_CustomMap> {
                 print('B${B} ${A.length}');
                 // final result = postAreaData(requestlist);
                 // print('postresult${result}');
+                setState(() {
+                  nowareadata = visibleMapdata;
+                });
               },
               onPositionChanged: (pos, hasGesture) async {
+                setState(() {
+                  _zoom > 12.0
+                      ? nowallareadata = smallareaData
+                      : _zoom > 9.0
+                      ? nowallareadata = middleareaData
+                      : nowallareadata = bigareaData;
+                });
                 print('posistionchanged 작동함');
                 List<Map<String, String>> requestlist = [];
                 // print('nowallareadata${nowallareadata.length}');
@@ -498,10 +508,10 @@ class _CustomMapState extends State<_CustomMap> {
                 var A = visibleMapdata.map((e) => e.mapinfo).toList();
                 var B = A.sublist(0, 10);
                 // await nowareadata = visibleMapdata;
-                print('requestlist${requestlist}');
-                print(
-                    "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
-                print('B${B} ${A.length}');
+                // print('requestlist${requestlist}');
+                // print(
+                //     "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
+                // print('B${B} ${A.length}');
 
                 // print(requestlist);
                 // nowareadata.map((e) => print(e.areaname));
