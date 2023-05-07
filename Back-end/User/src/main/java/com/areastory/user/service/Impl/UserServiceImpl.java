@@ -7,6 +7,7 @@ import com.areastory.user.dto.request.UserReq;
 import com.areastory.user.dto.response.ArticleResp;
 import com.areastory.user.dto.response.UserDetailResp;
 import com.areastory.user.dto.response.UserResp;
+import com.areastory.user.dto.response.UserSignUpResp;
 import com.areastory.user.kafka.KafkaProperties;
 import com.areastory.user.kafka.UserProducer;
 import com.areastory.user.service.UserService;
@@ -67,9 +68,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void signUp(UserReq userReq, MultipartFile profile) throws IOException, NoSuchAlgorithmException {
+    public UserSignUpResp signUp(UserReq userReq, MultipartFile profile) throws IOException, NoSuchAlgorithmException {
         User user = userRepository.save(UserReq.toEntity(userReq, s3Util.saveUploadFile(profile), sha256Util.sha256(userReq.getProviderId()), userReq.getRegistrationToken()));
         userProducer.send(user, KafkaProperties.INSERT);
+        return UserSignUpResp.fromEntity(user);
     }
 
     @Override

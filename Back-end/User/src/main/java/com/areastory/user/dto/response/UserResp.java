@@ -26,6 +26,7 @@ public class UserResp {
                 .profile(user.getProfile())
                 .followCount(user.getFollowCount())
                 .followingCount(user.getFollowingCount())
+                .isExist(true)
                 .build();
     }
 

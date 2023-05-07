@@ -4,6 +4,7 @@ import com.areastory.user.dto.request.UserReq;
 import com.areastory.user.dto.response.ArticleResp;
 import com.areastory.user.dto.response.UserDetailResp;
 import com.areastory.user.dto.response.UserResp;
+import com.areastory.user.dto.response.UserSignUpResp;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +21,7 @@ public interface UserService {
 
     void logout(Long userId);
 
-    void signUp(UserReq userReq, MultipartFile profile) throws IOException, NoSuchAlgorithmException;
+    UserSignUpResp signUp(UserReq userReq, MultipartFile profile) throws IOException, NoSuchAlgorithmException;
 
     UserResp getMyDetail(Long userId);
 

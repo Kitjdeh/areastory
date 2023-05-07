@@ -5,6 +5,7 @@ import com.areastory.user.dto.request.UserReq;
 import com.areastory.user.dto.response.ArticleResp;
 import com.areastory.user.dto.response.ResponseDefault;
 import com.areastory.user.dto.response.UserResp;
+import com.areastory.user.dto.response.UserSignUpResp;
 import com.areastory.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,13 +47,12 @@ public class UserController {
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestPart UserReq userReq, @RequestPart(value = "profile") MultipartFile profile) {
         try {
-            userService.signUp(userReq, profile);
+            return responseDefault.success(true, "회원 가입 성공", userService.signUp(userReq, profile));
         } catch (Exception e) {
             System.out.println("파일 업로드 실패");
             throw new RuntimeException(e);
         }
-        return responseDefault.success(true, "회원 가입 성공", null);
-
+//        return responseDefault.success(true, "회원 가입 성공", null);
     }
 
     // 유저 정보 조회
