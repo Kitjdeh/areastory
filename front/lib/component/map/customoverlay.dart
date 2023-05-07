@@ -92,6 +92,7 @@ class CustomPolygonLayer extends StatelessWidget {
           // ];
           final customoverlayImages = <CustomOverlay.CustomOverlayImage>[
             CustomOverlay.OverlayImage(
+              area:area,
               url: urls[cnt],
               offset: polygon.offsets,
               polygon: polygon.points,

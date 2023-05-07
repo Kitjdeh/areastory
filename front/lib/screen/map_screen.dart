@@ -224,7 +224,7 @@ class _CustomMapState extends State<_CustomMap> {
           String dosi = fullname.first;
           mapinfo["dosi"] = dosi;
           // areaname = areadata[areanum]!;
-          areaname = dosi;
+          areaname = areadata[areanum]!;
           // print(areaname);
         }
         // areaname = feature.properties!['EMD_KOR_NM'];
@@ -338,7 +338,7 @@ class _CustomMapState extends State<_CustomMap> {
           String sigungu = fullname.last;
           mapinfo["sigungu"] = sigungu;
           mapinfo["dosi"] = dosi;
-          areaname = dosi;
+          areaname = areadata[areanum]!;
           // areaname = areadata[areanum]!;
           // areanum = feature.properties!['SIG_CD'].padRight(10, '0');
           // fullname = areadata[areanum]!.split(' ');
@@ -444,8 +444,6 @@ class _CustomMapState extends State<_CustomMap> {
                   InteractiveFlag.pinchZoom,
               onMapReady: () async {
                 List<Map<String, String>> requestlist = [];
-                var testlist = [];
-                // print("1nowareadata.length${nowallareadata.length}");
                 await loadexcel();
                 await _loadGeoJson('asset/map/ctp_korea.geojson');
                 await _loadGeoJson('asset/map/sigungookorea.json');
@@ -476,6 +474,7 @@ class _CustomMapState extends State<_CustomMap> {
                 // print('postresult${result}');
               },
               onPositionChanged: (pos, hasGesture) async {
+                print('posistionchanged 작동함');
                 List<Map<String, String>> requestlist = [];
                 // print('nowallareadata${nowallareadata.length}');
                 // 현재 보이는 화면의 경계를 계산
@@ -522,36 +521,44 @@ class _CustomMapState extends State<_CustomMap> {
               //       .toList(),
               //   // polygonCulling: ,
               // ),
-              PolylineLayer(
-                polylines: middleareaData
-                    .map((e) => Polyline(
-                          points: e.polygons!,
-                          color: Colors.red,
-                        ))
-                    .toList(),
-              ),
-              PolylineLayer(
-                polylines: bigareaData
-                    .map((e) => Polyline(
-                          points: e.polygons!,
-                          color: Colors.red,
-                        ))
-                    .toList(),
-              ),
+              // PolylineLayer(
+              //   polylines: middleareaData
+              //       .map((e) => Polyline(
+              //             points: e.polygons!,
+              //             color: Colors.red,
+              //           ))
+              //       .toList(),
+              // ),
+
               for (var mapdata in nowareadata)
-                CustomPolygonLayer(
-                  index: 1,
-                  urls: [mapdata.urls ?? ''],
-                  area: mapdata.areaname ?? '',
-                  polygons: [
-                    Polygon(
-                      isFilled: false,
-                      borderColor: Colors.white30,
-                      points: mapdata.polygons!,
-                      borderStrokeWidth: 2.0,
-                    ),
-                  ],
+                Opacity(
+                  opacity: 0.8,
+                  child: CustomPolygonLayer(
+                    index: 1,
+                    urls: [mapdata.urls ?? ''],
+                    area: mapdata.areaname ?? '',
+                    polygons: [
+                      Polygon(
+                        isFilled: false,
+                        color: Colors.green,
+                        borderColor: Colors.green,
+                        points: mapdata.polygons!,
+                        borderStrokeWidth: 3.0,
+                      ),
+                    ],
+                  ),
                 ),
+              IgnorePointer(
+                child: PolylineLayer(
+                  polylines: bigareaData
+                      .map((e) => Polyline(
+                            borderStrokeWidth: 4.0,
+                            points: e.polygons!,
+                            borderColor: Colors.red,
+                          ))
+                      .toList(),
+                ),
+              ),
             ],
           ),
           Column(
@@ -598,6 +605,8 @@ class Mapdata {
   final List<LatLng>? polygons;
   final String? urls;
   final Map<String, String>? mapinfo;
+  final int? articleId;
   // };
-  Mapdata({this.areaname, this.polygons, this.urls, this.mapinfo});
+  Mapdata(
+      {this.areaname, this.polygons, this.urls, this.mapinfo, this.articleId});
 }
