@@ -9,9 +9,9 @@ Future<void> postArticle({
   required bool publicYn,
   required String content,
   required File image,
-  String? si,
-  String? gu,
-  String? dong,
+  required String dosi,
+  required String sigungu,
+  required String dongeupmyeon,
 }) async {
   final dio = Dio(BaseOptions(
     baseUrl: '${dotenv.get('BASE_URL')}/api/articles',
@@ -26,9 +26,9 @@ Future<void> postArticle({
           'userId': userId,
           'publicYn': publicYn,
           'content': content,
-          'si': si,
-          'gu': gu,
-          'dong': dong
+          'dosi': dosi,
+          'sigungu': sigungu,
+          'dongeupmyeon': dongeupmyeon
         }),
         contentType: MediaType.parse('application/json')),
     'picture': await MultipartFile.fromFile(
@@ -37,13 +37,14 @@ Future<void> postArticle({
     )
   });
 
+
   final response = await dio.post(
     '',
     data: formData,
   );
 
   if (response.statusCode == 200) {
-    print('성공');
+    print('게시글 생성 성공');
   } else {
     print('실패');
     throw Exception('Failed to create article');

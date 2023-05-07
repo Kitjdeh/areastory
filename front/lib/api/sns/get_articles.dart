@@ -5,13 +5,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 Future<ArticleData> getArticles({
   String? sort,
-  String? doName,
-  String? si,
-  String? gun,
-  String? gu,
-  String? dong,
-  String? eup,
-  String? myeon,
+  String? dosi,
+  String? sigungu,
+  String? dongeupmyeon,
 }) async {
   final dio = Dio(BaseOptions(
     baseUrl: '${dotenv.get('BASE_URL')}/api/articles',
@@ -21,21 +17,17 @@ Future<ArticleData> getArticles({
   final userId = await storage.read(key: 'userId');
 
   final response = await dio.get('', queryParameters: {
-    'sort' : sort,
+    'sort': sort,
     'userId': userId,
-    'doName': doName,
-    'si': si,
-    'gun': gun,
-    'gu': gu,
-    'dong': dong,
-    'eup': eup,
-    'myeon': myeon
+    'dosi': dosi,
+    'sigungu': sigungu,
+    'dongeupmyeon': dongeupmyeon,
   });
 
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());
     final articleData = ArticleData.fromJson(jsonData);
-    print('성공');
+    print('all게시글 요청 성공');
     return articleData;
   } else {
     print('실패');
@@ -91,23 +83,28 @@ class Article {
   final int totalLikeCount;
   final int commentCount;
   final bool likeYn;
+  final bool followYn;
   final DateTime createdAt;
-  final String location;
+  String? dosi;
+  String? sigungu;
+  String? dongeupmyeon;
 
-  Article({
-    required this.articleId,
-    required this.userId,
-    required this.nickname,
-    required this.profile,
-    required this.content,
-    required this.image,
-    required this.dailyLikeCount,
-    required this.totalLikeCount,
-    required this.commentCount,
-    required this.likeYn,
-    required this.createdAt,
-    required this.location,
-  });
+  Article(
+      {required this.articleId,
+      required this.userId,
+      required this.nickname,
+      required this.profile,
+      required this.content,
+      required this.image,
+      required this.dailyLikeCount,
+      required this.totalLikeCount,
+      required this.commentCount,
+      required this.likeYn,
+      required this.followYn,
+      required this.createdAt,
+      this.dosi,
+      this.sigungu,
+      this.dongeupmyeon});
 
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(
@@ -121,8 +118,11 @@ class Article {
       totalLikeCount: json['totalLikeCount'],
       commentCount: json['commentCount'],
       likeYn: json['likeYn'],
+      followYn: json['followYn'],
       createdAt: DateTime.parse(json['createdAt']),
-      location: json['location'],
+      dosi: json['dosi'],
+      sigungu: json['sigungu'],
+      dongeupmyeon: json['dongeupmyeon'],
     );
   }
 }

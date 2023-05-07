@@ -16,7 +16,7 @@ Future<ArticleData> getMyLikeArticle() async {
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());
     final articleData = ArticleData.fromJson(jsonData);
-    print('성공');
+    print('내가 좋아하는 게시글 요청 성공');
     return articleData;
   } else {
     print('실패');

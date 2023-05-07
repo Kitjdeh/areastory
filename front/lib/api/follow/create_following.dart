@@ -21,7 +21,7 @@ Future<void> postFollowing({
   });
 
   if (response.statusCode == 200) {
-    print('성공');
+    print('팔로잉 성공');
   } else {
     print('실패');
     throw Exception('Failed to create article');

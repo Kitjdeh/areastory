@@ -21,7 +21,7 @@ Future<void> deleteFollower({
   });
 
   if (response.statusCode == 200) {
-    print('성공');
+    print('팔로워 취소 성공');
   } else {
     print('실패');
     throw Exception('Failed to create article');

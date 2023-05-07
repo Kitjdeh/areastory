@@ -1,50 +1,65 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:front/api/like/get_article_likes.dart';
 import 'package:front/component/sns/comment/comment.dart';
 import 'package:front/component/sns/like/like.dart';
 import 'package:front/const/comment_test.dart';
 import 'package:front/const/like_test.dart';
-
+import 'package:front/constant/follow_tabs.dart';
 
 class SnsLikeScreen extends StatefulWidget {
-  const SnsLikeScreen({Key? key}) : super(key: key);
+  const SnsLikeScreen({Key? key, required this.index}) : super(key: key);
+  final String index;
 
   @override
   State<SnsLikeScreen> createState() => _SnsLikeScreenState();
 }
 
-class _SnsLikeScreenState extends State<SnsLikeScreen> {
+class _SnsLikeScreenState extends State<SnsLikeScreen>
+    with TickerProviderStateMixin {
   int _currentPage = 1;
+  int? _lastPage = 0;
+
   List _likes = [];
 
-  final ScrollController _scrollController = ScrollController();
+  late final articleId = int.parse(widget.index);
 
+  @override
+  void initState() {
+    super.initState();
 
-// void _loadMoreData() async {
+    printLikes();
+  }
+
+  void printLikes() async {
+    final likeData = await getArticleLikes(
+      articleId: articleId,
+    );
+    _likes.addAll(likeData.users);
+    _lastPage = likeData.totalPageNumber;
+    setState(() {});
+  }
+
   void _loadMoreData() async {
-    // final newArticles = await api.fetchArticles(page: _currentPage + 1);
-    // _articles.addAll(newArticles["articles"]);
-    if (_currentPage == 1) {
-      _likes.addAll(likeTest["likeList"]);
-    } else if (_currentPage == 2) {
-      _likes.addAll(likeTest2["likeList"]);
-    } else if (_currentPage == 3) {
-      _likes.addAll(likeTest2["likeList"]);
-    }
-    await _currentPage++;
+    final newLikes = await getArticleLikes(
+      articleId: articleId,
+    );
+    _likes.addAll(newLikes.users);
+    _currentPage++;
+
     setState(() {
       // scrollToIndex(5);
     });
   }
+
+  final ScrollController _scrollController = ScrollController();
 
   void scrollToIndex(int index) {
     _scrollController.jumpTo(index * 100); // jumpTo 메서드를 사용하여 스크롤합니다.
   }
 
   void _updateIsChildActive(bool isChildActive) {
-    setState(() {
-      print('성공!!!');
-      print(_currentPage);
-    });
+    setState(() {});
   }
 
   @override
@@ -88,12 +103,14 @@ class _SnsLikeScreenState extends State<SnsLikeScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       if (index < _likes.length) {
                         return LikeComponent(
-                          writer: _likes[index]["writer"],
-                          writerProfile: _likes[index]["writerProfile"],
+                          followingId: _likes[index].userId,
+                          nickname: _likes[index].nickname,
+                          profile: _likes[index].profile,
+                          followYn: _likes[index].followYn,
                           height: 100,
                           onUpdateIsChildActive: _updateIsChildActive,
                         );
-                      } else {
+                      } else if (_currentPage < _lastPage!) {
                         _loadMoreData();
                         return Container(
                           height: 50,

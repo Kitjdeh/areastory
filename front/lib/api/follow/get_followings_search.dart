@@ -26,7 +26,7 @@ Future<List<Followings>> getFollowingsSearch({
         .map((followingsJson) => Followings.fromJson(followingsJson))
         .toList();
 
-    print('성공');
+    print('팔로잉 유저 요청(검색) 성공');
     return followings;
   } else {
     print('실패');

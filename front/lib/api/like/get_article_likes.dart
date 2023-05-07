@@ -20,7 +20,7 @@ Future<UserData> getArticleLikes({
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());
     final userData = UserData.fromJson(jsonData);
-    print('성공');
+    print('게시글 좋아요 유저 요청 성공');
     return userData;
   } else {
     print('실패');

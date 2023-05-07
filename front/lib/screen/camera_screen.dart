@@ -50,14 +50,15 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   void createArticle(image, content) async {
+
     await postArticle(
       publicYn: _isSwitched,
       content: content.text,
       image: image,
       // 시,구,군 다 null 이면 안됨!
-      si: 'Test',
-      gu: null,
-      dong: null,
+      dosi: '성도',
+      sigungu: '성도시',
+      dongeupmyeon: '성동',
     );
   }
 
@@ -180,7 +181,7 @@ class _CameraScreenState extends State<CameraScreen> {
           ),
           // 비공개 여부 체크박스
           SwitchListTile(
-            title: Text('비공개'),
+            title: Text('공개'),
             value: _isSwitched,
             onChanged: (value) {
               setState(() {
