@@ -60,11 +60,11 @@ public class User {
     }
 
     public void deleteFollowing() {
-        this.followCount--;
+        this.followingCount--;
     }
 
     public void addFollowing() {
-        this.followCount++;
+        this.followingCount++;
     }
 
     public void setValid() {
