@@ -34,7 +34,7 @@ public class CommentController {
     @GetMapping
     public ResponseEntity<?> selectAllComment(Long userId,
                                               @PathVariable Long articleId,
-                                              @PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+                                              @PageableDefault(size = 15, sort = "commentId", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(commentService.selectAllComment(new CommentReq(userId, articleId), pageable));
     }
 
