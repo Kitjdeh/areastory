@@ -16,4 +16,5 @@ public interface ArticleSupportRepository {
     Page<ArticleDto> findMyLikeList(Long userId, Pageable pageable);
 
 
+    Page<ArticleDto> findAllFollowArticleList(Long userId, Pageable pageable);
 }

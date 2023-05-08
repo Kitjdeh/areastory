@@ -181,4 +181,18 @@ public class ArticleServiceImpl implements ArticleService {
                 .previousPage(likes.hasPrevious())
                 .build();
     }
+
+    @Override
+    public ArticleResp selectAllFollowArticle(Long userId, Pageable pageable) {
+        Page<ArticleDto> followArticles = articleRepository.findAllFollowArticleList(userId, pageable);
+        return ArticleResp.builder()
+                .articles(followArticles.getContent())
+                .pageSize(followArticles.getPageable().getPageSize())
+                .totalPageNumber(followArticles.getTotalPages())
+                .totalCount(followArticles.getTotalElements())
+                .pageNumber(followArticles.getPageable().getPageNumber() + 1)
+                .nextPage(followArticles.hasNext())
+                .previousPage(followArticles.hasPrevious())
+                .build();
+    }
 }

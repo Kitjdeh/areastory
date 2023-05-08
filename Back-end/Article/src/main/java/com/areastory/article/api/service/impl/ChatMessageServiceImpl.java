@@ -67,6 +67,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         List<ChatMessageDto> messageList = chatMessageRepository.findByRoomId(messageReq.getRoomId());
         return ChatMessageResp.builder()
                 .type(messageReq.getType())
+                .roomId(messageReq.getRoomId())
                 .userId(messageReq.getUserId())
                 .profile(user.getProfile())
                 .nickname(user.getNickname())
@@ -86,6 +87,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         chatRoom.updateUserCount();
         return ChatMessageResp.builder()
                 .type(messageReq.getType())
+                .roomId(messageReq.getRoomId())
                 .userId(messageReq.getUserId())
                 .profile(user.getProfile())
                 .nickname(user.getNickname())
@@ -104,6 +106,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         chatRoom.deleteUserCount();
         return ChatMessageResp.builder()
                 .type(messageReq.getType())
+                .roomId(messageReq.getRoomId())
                 .userId(messageReq.getUserId())
                 .profile(user.getProfile())
                 .nickname(user.getNickname())

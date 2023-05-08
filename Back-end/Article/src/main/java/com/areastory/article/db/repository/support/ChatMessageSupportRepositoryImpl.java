@@ -18,7 +18,6 @@ public class ChatMessageSupportRepositoryImpl implements ChatMessageSupportRepos
     @Override
     public List<ChatMessageDto> findByRoomId(String roomId) {
         return query.select(Projections.constructor(ChatMessageDto.class,
-                        chatMessage.chatRoom.roomId,
                         chatMessage.user.userId,
                         chatMessage.user.nickname,
                         chatMessage.user.profile,

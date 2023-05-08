@@ -150,5 +150,10 @@ public class CommentServiceImpl implements CommentService {
                 .build();
     }
 
+    @Override
+    public CommentDto selectComment(Long commentId, Long userId) {
+        return commentRepository.findOne(commentId, userId);
+    }
+
 
 }

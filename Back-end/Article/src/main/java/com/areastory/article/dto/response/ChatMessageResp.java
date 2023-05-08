@@ -12,6 +12,7 @@ import java.util.List;
 public class ChatMessageResp {
     private MessageType type;
     private Long userId;
+    private String roomId;
     private String profile;
     private String nickname;
     private List<ChatMessageDto> messageList;

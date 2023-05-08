@@ -28,4 +28,6 @@ public interface ArticleService {
     LikeResp selectAllLikeList(Long userId, Long articleId, Pageable pageable);
 
     ArticleResp selectMyLikeList(Long userId, Pageable pageable);
+
+    ArticleResp selectAllFollowArticle(Long userId, Pageable pageable);
 }

@@ -1,6 +1,7 @@
 package com.areastory.article.api.service;
 
 import com.areastory.article.dto.common.CommentDeleteDto;
+import com.areastory.article.dto.common.CommentDto;
 import com.areastory.article.dto.common.CommentUpdateDto;
 import com.areastory.article.dto.request.CommentReq;
 import com.areastory.article.dto.request.CommentWriteReq;
@@ -25,4 +26,6 @@ public interface CommentService {
     LikeResp selectAllLikeList(Long userId, Long commentId, Pageable pageable);
 
     CommentResp selectMyLikeList(Long userId, Pageable pageable);
+
+    CommentDto selectComment(Long commentId, Long userId);
 }

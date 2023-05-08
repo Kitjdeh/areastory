@@ -47,6 +47,11 @@ public class CommentSupportRepositoryImpl implements CommentSupportRepository {
     }
 
     @Override
+    public CommentDto findOne(Long commentId, Long userId) {
+        return getCommentQuery(userId).where(comment.commentId.eq(commentId)).fetchOne();
+    }
+
+    @Override
     public Page<UserDto> findAllLike(Long userId, Long commentId, Pageable pageable) {
         List<UserDto> likeList = query.select(Projections.constructor(UserDto.class,
                         commentLike.user.userId,

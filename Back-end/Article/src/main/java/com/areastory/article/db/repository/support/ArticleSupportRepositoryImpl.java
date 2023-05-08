@@ -99,6 +99,22 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
         return PageableExecutionUtils.getPage(myLikeList, pageable, myLikeListSize::fetchOne);
     }
 
+    @Override
+    public Page<ArticleDto> findAllFollowArticleList(Long userId, Pageable pageable) {
+        List<ArticleDto> followArticleList = getArticlesQuery(userId)
+                .where(article.publicYn.eq(true), follow.followUser.userId.eq(userId))
+                .orderBy(getOrderSpecifier(pageable).toArray(OrderSpecifier[]::new))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> articleSize = query
+                .select(article.count())
+                .from(article);
+
+        return PageableExecutionUtils.getPage(followArticleList, pageable, articleSize::fetchOne);
+    }
+
     private JPAQuery<ArticleDto> getArticlesQuery(Long userId) {
         //위치 정보 불러오기
         return query.select(Projections.constructor(ArticleDto.class,
@@ -128,7 +144,7 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
                 .leftJoin(articleLike)
                 .on(articleLike.user.userId.eq(userId), articleLike.article.eq(article))
                 .leftJoin(follow)
-                .on(follow.followingUser.userId.eq(articleLike.user.userId));
+                .on(follow.followingUser.userId.eq(article.user.userId));
     }
 
 

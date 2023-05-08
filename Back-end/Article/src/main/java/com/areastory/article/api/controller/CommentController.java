@@ -29,13 +29,21 @@ public class CommentController {
     }
 
     /*
-    해당 게시글의 댓글 가져오기
+    해당 게시글의 댓글들 가져오기
      */
     @GetMapping
     public ResponseEntity<?> selectAllComment(Long userId,
                                               @PathVariable Long articleId,
                                               @PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(commentService.selectAllComment(new CommentReq(userId, articleId), pageable));
+    }
+
+    /*
+    댓글 상세 가져오기
+     */
+    @GetMapping("/{commentId}")
+    public ResponseEntity<?> selectComment(@PathVariable Long commentId, Long userId) {
+        return ResponseEntity.ok(commentService.selectComment(commentId, userId));
     }
 
     /*

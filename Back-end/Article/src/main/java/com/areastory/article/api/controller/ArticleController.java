@@ -39,6 +39,16 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.selectAllArticle(articleReq, pageable));
     }
 
+
+    /*
+    팔로우 한 사람들의 sns
+     */
+    @GetMapping("/follow")
+    public ResponseEntity<?> selectAllFollowArticle(Long userId,
+                                                    @PageableDefault(sort = {"articleId"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable) {
+        return ResponseEntity.ok(articleService.selectAllFollowArticle(userId, pageable));
+    }
+
     /*
     특정 게시물 불러오기
      */
