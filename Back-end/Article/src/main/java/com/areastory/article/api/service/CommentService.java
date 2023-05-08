@@ -25,7 +25,7 @@ public interface CommentService {
 
     LikeResp selectAllLikeList(Long userId, Long commentId, Pageable pageable);
 
-    CommentResp selectMyLikeList(Long userId, Pageable pageable);
+    CommentResp selectMyCommentList(Long userId, Pageable pageable);
 
     CommentDto selectComment(Long commentId, Long userId);
 }

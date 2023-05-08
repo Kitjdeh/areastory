@@ -13,5 +13,5 @@ public interface CommentSupportRepository {
 
     Page<UserDto> findAllLike(Long userId, Long commentId, Pageable pageable);
 
-    Page<CommentDto> findMyLikeList(Long userId, Pageable pageable);
+    Page<CommentDto> findMyCommentList(Long userId, Pageable pageable);
 }

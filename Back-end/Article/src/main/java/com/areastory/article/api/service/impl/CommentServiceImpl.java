@@ -136,8 +136,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentResp selectMyLikeList(Long userId, Pageable pageable) {
-        Page<CommentDto> comments = commentRepository.findMyLikeList(userId, pageable);
+    public CommentResp selectMyCommentList(Long userId, Pageable pageable) {
+        Page<CommentDto> comments = commentRepository.findMyCommentList(userId, pageable);
 
         return CommentResp.builder()
                 .comments(comments.getContent())

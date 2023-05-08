@@ -79,7 +79,7 @@ public class CommentSupportRepositoryImpl implements CommentSupportRepository {
     }
 
     @Override
-    public Page<CommentDto> findMyLikeList(Long userId, Pageable pageable) {
+    public Page<CommentDto> findMyCommentList(Long userId, Pageable pageable) {
         List<CommentDto> comments = getCommentQuery(userId)
                 .where(comment.user.userId.eq(userId))
                 .orderBy(getOrderSpecifier(pageable).toArray(OrderSpecifier[]::new))
