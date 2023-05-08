@@ -54,16 +54,16 @@ class _CommentComponentState extends State<CommentComponent> {
 
   void createCommentLike(articleId, commentId) async {
     await postCommentLike(articleId: articleId, commentId: commentId);
-    detailData = (await getComment(articleId: articleId, commentId: commentId))
-        as CommentData?;
-    setState(() {});
+    // detailData = (await getComment(articleId: articleId, commentId: commentId))
+    //     as CommentData?;
+    // setState(() {});
   }
 
   void delCommentLike(articleId, commentId) async {
     await deleteCommentLike(articleId: articleId, commentId: commentId);
-    detailData = (await getComment(articleId: articleId, commentId: commentId))
-        as CommentData?;
-    setState(() {});
+    // detailData = (await getComment(articleId: articleId, commentId: commentId))
+    //     as CommentData?;
+    // setState(() {});
   }
 
   void delComment(articleId, commentId) async {
@@ -218,31 +218,65 @@ class _CommentComponentState extends State<CommentComponent> {
                       ),
                       Row(
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              detailData != null
-                                  ? detailData!.likeYn
-                                      ? delCommentLike(
-                                          widget.articleId, widget.commentId)
-                                      : createCommentLike(
-                                          widget.articleId, widget.commentId)
-                                  : widget.likeYn
-                                      ? delCommentLike(
-                                          widget.articleId, widget.commentId)
-                                      : createCommentLike(
-                                          widget.articleId, widget.commentId);
-                            },
-                            child: Image.asset(
-                              detailData != null
-                                  ? detailData!.likeYn
-                                      ? 'asset/img/like.png'
-                                      : 'asset/img/nolike.png'
-                                  : widget.likeYn
-                                      ? 'asset/img/like.png'
-                                      : 'asset/img/nolike.png',
-                              height: 30,
-                            ),
-                          ),
+                          // GestureDetector(
+                          //   onTap: () {
+                          //     detailData != null
+                          //         ? detailData!.likeYn
+                          //             ? delCommentLike(
+                          //                 widget.articleId, widget.commentId)
+                          //             : createCommentLike(
+                          //                 widget.articleId, widget.commentId)
+                          //         : widget.likeYn
+                          //             ? delCommentLike(
+                          //                 widget.articleId, widget.commentId)
+                          //             : createCommentLike(
+                          //                 widget.articleId, widget.commentId);
+                          //   },
+                          //   child: Image.asset(
+                          //     detailData != null
+                          //         ? detailData!.likeYn
+                          //             ? 'asset/img/like.png'
+                          //             : 'asset/img/nolike.png'
+                          //         : widget.likeYn
+                          //             ? 'asset/img/like.png'
+                          //             : 'asset/img/nolike.png',
+                          //     height: 30,
+                          //   ),
+                          // ),
+
+                          FutureBuilder<CommentData>(
+                              future: getComment(
+                                  articleId: widget.articleId,
+                                  commentId: widget.commentId),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else if (snapshot.hasData) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      snapshot.data!.likeYn
+                                          ? delCommentLike(widget.articleId,
+                                              widget.commentId)
+                                          : createCommentLike(widget.articleId,
+                                              widget.commentId);
+                                    },
+                                    child: Image.asset(
+                                      snapshot.data!.likeYn
+                                          ? 'asset/img/like.png'
+                                          : 'asset/img/nolike.png',
+                                      height: 30,
+                                    ),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else {
+                                  return Text('No data');
+                                }
+                              }),
+
                           Text(detailData != null
                               ? '${detailData!.likeCount}'
                               : '${widget.likeCount}'),
