@@ -47,7 +47,8 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
           icon: Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black,
           onPressed: () {
-            Navigator.of(context).pop();
+            // Navigator.of(context).pop();
+            Beamer.of(context).beamBack();
           },
         ),
       ),

@@ -118,7 +118,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   if (res.statusCode == 200){
                     print("회원가입성공. SSE 시작합니다");
                     /// 회원가입 성공시 storage에 저장
-                    await storage.write(key: "userId", value: res.data['userId'].toString());
+                    // print(res.data['data']['userId']);
+                    await storage.write(key: "userId", value: res.data['data']['userId'].toString());
                     /// 회원가입 성공시 페이지 이동.
                     Navigator.pushReplacement(
                       context,
