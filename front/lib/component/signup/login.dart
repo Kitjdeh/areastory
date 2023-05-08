@@ -52,7 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                   } else {
                     print("로그인 SSE 시작합니다");
-
                     /// 로그인 성공시 storage에 저장
 
                     await storage.write(

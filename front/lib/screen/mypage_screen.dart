@@ -204,10 +204,15 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           child: ClipRRect(
                             // 가장 완벽한 원을 만드는 방법은 상위가 되었든 뭐든, 높이길이의 50%(높이=넓이)
                             borderRadius: BorderRadius.circular(50),
-                            child: Image.asset(
-                              'asset/img/test01.jpg',
-                              fit: BoxFit.cover,
-                            ),
+                            child:
+                              Image.network(
+                                  snapshot.data!.profile.toString(),
+                                fit: BoxFit.cover,
+                              ),
+                            // Image.asset(
+                            //   'asset/img/test01.jpg',
+                            //   fit: BoxFit.cover,
+                            // ),
                           ),
                         ),
 
@@ -244,7 +249,9 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [Text("팔로잉"), Text(snapshot.data!.followingCount.toString())],
+                            children: [Text("팔로잉"), Text(snapshot.data!.followingCount.toString()),
+
+                            ],
                           ),
                         ),
                       ],
@@ -253,24 +260,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
                 }
               },
             ),
-
-            // // 3. 프로필 편집, 체지방 28% 버튼
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //   children: [
-            //     ElevatedButton(
-            //         style: ElevatedButton.styleFrom(
-            //         ),
-            //         onPressed: () {
-            //         },
-            //         child: Text("프로필 편집")),
-            //     ElevatedButton(
-            //         onPressed: () {
-            //           Beamer.of(context).beamToNamed('/mypage/follow');
-            //         },
-            //         child: Text("팔로워/팔로잉")),
-            //   ],
-            // ),
             // 4. 사진첩 및 지도 탭바
             MypageTabbar(),
           ],

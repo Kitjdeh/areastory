@@ -35,14 +35,15 @@ class _FollowScreenState extends State<FollowScreen> {
                   Navigator.of(context).pop();
                   print("로그아웃");
                   SystemNavigator.pop();
-                  // Navigator.pushAndRemoveUntil(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => LoginScreen()),
-                  //       (route) => false,
-                  // );
                 },
                 icon: Icon(Icons.logout),
                 label: Text("로그아웃"),
+              ),
+              TextButton.icon(
+                onPressed: () async {
+                },
+                icon: Icon(Icons.logout),
+                label: Text("페이지이동테스트"),
               ),
             ],
           )

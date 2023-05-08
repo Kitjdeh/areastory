@@ -59,9 +59,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final storage = new FlutterSecureStorage(); /// flutter sercure storage에 연결.
     final user = ModalRoute.of(context)?.settings.arguments as User?;
     int? kakaoid = user?.id?.toInt();
-    String? nickname = user?.kakaoAccount?.profile?.nickname ?? "닉네임을 적어주세요.";
+    String nickname = user?.kakaoAccount?.profile?.nickname ?? "닉네임을 적어주세요.";
     String? imgUrl =
         user?.kakaoAccount?.profile?.profileImageUrl ?? "기본이미지 url";
+    String? _nickname;
 
     return Scaffold(
       body: Column(
@@ -80,24 +81,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
               )),
           TextFormField(
             initialValue: nickname,
+            maxLength: 10,
             decoration: const InputDecoration(
               hintText: '변경할 닉네임을 입력하세요',
             ),
             onChanged: (value) {
               setState(() {
-                nickname = value;
+                _nickname = value;
               });
             },
           ),
           ElevatedButton(
               onPressed: () async {
                 final userReq = {
-                  'nickname': nickname,
+                  'nickname': _nickname == null ? nickname : _nickname,
                   'provider': 'kakao',
                   'providerId': kakaoid,
                   'registrationToken': this.widget.fcmToken
                 };
-
+                print(userReq['nickname']);
                 final formData = FormData.fromMap({
                   'userReq': MultipartFile.fromString(
                       json.encode(userReq),
@@ -127,37 +129,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       context,
                       MaterialPageRoute(builder: (context) => MyApp()),
                     );
-                    /// 로그인 성공시 페이지 이동.
-                    // SSEClient.subscribeToSSE(
-                    //     url:
-                    //     '${dotenv.get('BASE_URL')}/api/sse',
-                    //     header: {
-                    //       // "Accept": "text/event-stream",
-                    //       "providerId": kakaoid.toString(),
-                    //       "Cache-Control": "no-cache",
-                    //     }).listen((event) {
-                    //   print('Id: ' + event.id!);
-                    //   print('Event: ' + event.event!);
-                    //   print('Data: ' + event.data!);
-                    // });
-                    // html.EventSource eventSource =html.EventSource(
-                    //     '${dotenv.get('BASE_URL')}/api/sse'
-                    // );
-                    // if(eventSource is html.EventSourceOutsideBrowser){
-                    //   eventSource.onHttpClientRequest = (eventSource, request) {
-                    //     request.headers.set('providerId', kakaoid!.toString());
-                    //     // request.cookies.add(Cookie('name', 'value'));
-                    //   };
-                    //   // eventSource.onHttpClientRequest = (eventSource, request, response) {
-                    //   // };
-                    // }
-                    // await for (var message in eventSource.onMessage) {
-                    //   print("메세지가 왔어요~!!!!!!!!!!!!!!!!!!!!!!!");
-                    //   print('Event:');
-                    //   print(message);
-                    //   print('  type: ${message.type}');
-                    //   print('  data: ${message.data}');
-                    // }
                   }
                 } catch (e) {
                   print(e);

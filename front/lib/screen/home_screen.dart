@@ -7,6 +7,7 @@ import 'package:front/beamlocation/map_location.dart';
 import 'package:front/beamlocation/mypage_location.dart';
 import 'package:front/beamlocation/sns_location.dart';
 import 'package:front/constant/home_tabs.dart';
+import 'package:front/screen/follow_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,6 +21,12 @@ class _HomeScreenState extends State<HomeScreen> {
   late int _currentIndex;
   late String? userId;
   List<BeamerDelegate>? _routerDelegates;
+
+  void setNewIndex(int val){
+    setState(() {
+      _currentIndex = val;
+    });
+  }
 
   Future<void> getUserIdFromStorage() async {
     userId = await storage.read(key: "userId");
@@ -154,7 +161,11 @@ class _HomeScreenState extends State<HomeScreen> {
           }
           else{
             print("인덱스가 서로 같다!");
-            setState(() => _currentIndex = index);
+            // setState(() => _currentIndex = index);
+            setState(() =>
+              _currentIndex = index,
+            );
+
             // _routerDelegates![4].notifyListeners();
 
             // Beamer.of(context).beamBack();
