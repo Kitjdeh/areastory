@@ -121,13 +121,13 @@ class _CustomMapState extends State<_CustomMap> {
     this.currentcenter = mapController.center;
     mapController.move(currentcenter, _zoom);
     print(_zoom);
-    setState(() {
-      _zoom > 12.0
-          ? nowallareadata = smallareaData
-          : _zoom > 9.0
-              ? nowallareadata = middleareaData
-              : nowallareadata = bigareaData;
-    });
+    // setState(() {
+    //   _zoom > 12.0
+    //       ? nowallareadata = smallareaData
+    //       : _zoom > 9.0
+    //           ? nowallareadata = middleareaData
+    //           : nowallareadata = bigareaData;
+    // });
   }
 
   void pluszoom() {
@@ -136,13 +136,13 @@ class _CustomMapState extends State<_CustomMap> {
     mapController.move(currentcenter, _zoom);
     print(_zoom);
 
-    setState(() {
-      _zoom > 12.0
-          ? nowallareadata = smallareaData
-          : _zoom > 9.0
-              ? nowallareadata = middleareaData
-              : nowallareadata = bigareaData;
-    });
+    // setState(() {
+    //   _zoom > 12.0
+    //       ? nowallareadata = smallareaData
+    //       : _zoom > 9.0
+    //           ? nowallareadata = middleareaData
+    //           : nowallareadata = bigareaData;
+    // });
   }
 
   @override
@@ -224,7 +224,7 @@ class _CustomMapState extends State<_CustomMap> {
           String dosi = fullname.first;
           mapinfo["dosi"] = dosi;
           // areaname = areadata[areanum]!;
-          areaname = dosi;
+          areaname = areadata[areanum]!;
           // print(areaname);
         }
         // areaname = feature.properties!['EMD_KOR_NM'];
@@ -338,7 +338,7 @@ class _CustomMapState extends State<_CustomMap> {
           String sigungu = fullname.last;
           mapinfo["sigungu"] = sigungu;
           mapinfo["dosi"] = dosi;
-          areaname = dosi;
+          areaname = areadata[areanum]!;
           // areaname = areadata[areanum]!;
           // areanum = feature.properties!['SIG_CD'].padRight(10, '0');
           // fullname = areadata[areanum]!.split(' ');
@@ -444,8 +444,6 @@ class _CustomMapState extends State<_CustomMap> {
                   InteractiveFlag.pinchZoom,
               onMapReady: () async {
                 List<Map<String, String>> requestlist = [];
-                var testlist = [];
-                // print("1nowareadata.length${nowallareadata.length}");
                 await loadexcel();
                 await _loadGeoJson('asset/map/ctp_korea.geojson');
                 await _loadGeoJson('asset/map/sigungookorea.json');
@@ -474,8 +472,19 @@ class _CustomMapState extends State<_CustomMap> {
                 print('B${B} ${A.length}');
                 // final result = postAreaData(requestlist);
                 // print('postresult${result}');
+                setState(() {
+                  nowareadata = visibleMapdata;
+                });
               },
               onPositionChanged: (pos, hasGesture) async {
+                setState(() {
+                  _zoom > 12.0
+                      ? nowallareadata = smallareaData
+                      : _zoom > 9.0
+                      ? nowallareadata = middleareaData
+                      : nowallareadata = bigareaData;
+                });
+                print('posistionchanged 작동함');
                 List<Map<String, String>> requestlist = [];
                 // print('nowallareadata${nowallareadata.length}');
                 // 현재 보이는 화면의 경계를 계산
@@ -499,10 +508,10 @@ class _CustomMapState extends State<_CustomMap> {
                 var A = visibleMapdata.map((e) => e.mapinfo).toList();
                 var B = A.sublist(0, 10);
                 // await nowareadata = visibleMapdata;
-                print('requestlist${requestlist}');
-                print(
-                    "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
-                print('B${B} ${A.length}');
+                // print('requestlist${requestlist}');
+                // print(
+                //     "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
+                // print('B${B} ${A.length}');
 
                 // print(requestlist);
                 // nowareadata.map((e) => print(e.areaname));
@@ -522,36 +531,44 @@ class _CustomMapState extends State<_CustomMap> {
               //       .toList(),
               //   // polygonCulling: ,
               // ),
-              PolylineLayer(
-                polylines: middleareaData
-                    .map((e) => Polyline(
-                          points: e.polygons!,
-                          color: Colors.red,
-                        ))
-                    .toList(),
-              ),
-              PolylineLayer(
-                polylines: bigareaData
-                    .map((e) => Polyline(
-                          points: e.polygons!,
-                          color: Colors.red,
-                        ))
-                    .toList(),
-              ),
+              // PolylineLayer(
+              //   polylines: middleareaData
+              //       .map((e) => Polyline(
+              //             points: e.polygons!,
+              //             color: Colors.red,
+              //           ))
+              //       .toList(),
+              // ),
+
               for (var mapdata in nowareadata)
-                CustomPolygonLayer(
-                  index: 1,
-                  urls: [mapdata.urls ?? ''],
-                  area: mapdata.areaname ?? '',
-                  polygons: [
-                    Polygon(
-                      isFilled: false,
-                      borderColor: Colors.white30,
-                      points: mapdata.polygons!,
-                      borderStrokeWidth: 2.0,
-                    ),
-                  ],
+                Opacity(
+                  opacity: 0.8,
+                  child: CustomPolygonLayer(
+                    index: 1,
+                    urls: [mapdata.urls ?? ''],
+                    area: mapdata.areaname ?? '',
+                    polygons: [
+                      Polygon(
+                        isFilled: false,
+                        color: Colors.green,
+                        borderColor: Colors.green,
+                        points: mapdata.polygons!,
+                        borderStrokeWidth: 3.0,
+                      ),
+                    ],
+                  ),
                 ),
+              IgnorePointer(
+                child: PolylineLayer(
+                  polylines: bigareaData
+                      .map((e) => Polyline(
+                            borderStrokeWidth: 4.0,
+                            points: e.polygons!,
+                            borderColor: Colors.red,
+                          ))
+                      .toList(),
+                ),
+              ),
             ],
           ),
           Column(
@@ -598,6 +615,8 @@ class Mapdata {
   final List<LatLng>? polygons;
   final String? urls;
   final Map<String, String>? mapinfo;
+  final int? articleId;
   // };
-  Mapdata({this.areaname, this.polygons, this.urls, this.mapinfo});
+  Mapdata(
+      {this.areaname, this.polygons, this.urls, this.mapinfo, this.articleId});
 }
