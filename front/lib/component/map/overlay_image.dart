@@ -36,21 +36,22 @@ class OverlayImage extends CustomOverlayImage {
   final List<LatLng> polygon;
   final List<Offset> offset;
   final String url;
+  final String? area;
   @override
   final ImageProvider imageProvider;
   @override
   final double opacity;
   @override
   final bool gaplessPlayback;
-
   OverlayImage(
       {required this.bounds,
-        required this.url,
-        required this.polygon,
-        required this.offset,
-        required this.imageProvider,
-        this.opacity = 1.0,
-        this.gaplessPlayback = false});
+      required this.url,
+      required this.polygon,
+      required this.offset,
+      required this.imageProvider,
+      this.area,
+      this.opacity = 0.2,
+      this.gaplessPlayback = false});
 
   @override
   Positioned buildPositionedForOverlay(FlutterMapState map) {
@@ -73,26 +74,11 @@ class OverlayImage extends CustomOverlayImage {
     // final polLat = bound.east - bound.west;
     // final width = bounds.size.x.toDouble();
     // final height = bounds.size.y.toDouble();
-    // print('polLat${polLat}');
-    // print('polLat${1/polLat}');
-    // print('polLng${polLng}');
-    // print('ttttt${bounds.topRight.x.toDouble() - bounds.topLeft.x.toDouble()}');
-    // print(
-    //     'ttttt${bounds.bottomLeft.y.toDouble() - bounds.topLeft.y.toDouble()}');
     // print('absX${width*polLat.abs()}');
     // print('absY${height*polLng.abs()}');
     // final xrepair = width*polLat.abs();
     // final yrepair = height*polLng.abs();
-    // print('maxLat${maxLat}minLat${minLat}');
-    // print('maxLng${maxLng}minLng${minLng}');
-    // print('width ${bound.south} bound.nort ${bound.north}');
-    // print('bound.east  ${bound.east } bound.west ${bound.west}');
-    // print(c);
-    // print(this.polygon);
     // // final listbounds = this.polygon.map((e)=>Bounds<num>(a, b)).toList();
-    // print(this.polygon.first);
-    // print('1');
-    // print(map.project(a!) - map.pixelOrigin);
     // // print()
     // final List<CustomPoint> listpoint =
     //     this.polygon.map((e) => (map.project(e!) - map.pixelOrigin)).toList();
@@ -128,33 +114,43 @@ class OverlayImage extends CustomOverlayImage {
     final List<Offset> listoffset = this
         .polygon
         .map((e) => Offset(
-      // (e.longitude -  bounds.size.x.toDouble()) / polLng,(e.latitude -bounds.size.y.toDouble()) / polLat))
-        (e.longitude - midLng) / (maxLng - midLng),
-        (e.latitude - midLat) / (midLat - maxLat)))
+            // (e.longitude -  bounds.size.x.toDouble()) / polLng,(e.latitude -bounds.size.y.toDouble()) / polLat))
+            (e.longitude - midLng) / (maxLng - midLng),
+            (e.latitude - midLat) / (midLat - maxLat)))
         .toList();
     final polygon = newpolygon.Polygon(listoffset);
-
+    List<String> areaname = ['몰?루'];
+    area != null ? areaname = area!.split(' ') : null;
+    String? localname = areaname.last;
     return Positioned(
-        left: bounds.topLeft.x.toDouble(),
-        top: bounds.topLeft.y.toDouble(),
-        width: bounds.size.x.toDouble(),
-        height: bounds.size.y.toDouble(),
-        child: DecoratedBox(
-          decoration: ShapeDecoration(
-            color: Colors.blue,
-            image: DecorationImage(
-                image:
-                // AssetImage(url)
-                NetworkImage(url)
-                // AssetImage('asset/img/doji.jpg')
-                ,
-                fit: BoxFit.cover),
-            shape: newpolygon.PolygonBorder(
-              polygon: polygon,
-              // polygon: polygon,
-            ),
+      left: bounds.topLeft.x.toDouble(),
+      top: bounds.topLeft.y.toDouble(),
+      width: bounds.size.x.toDouble(),
+      height: bounds.size.y.toDouble(),
+      child: DecoratedBox(
+        child: Center(
+          child: Text(
+            '${localname}',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 10,color: Colors.pink),
           ),
-        ));
+        ),
+        decoration: ShapeDecoration(
+          image: DecorationImage(
+              image:
+                  // AssetImage(url)
+                  NetworkImage(url)
+              // AssetImage('asset/img/doji.jpg')
+              ,
+              // opacity: 0.5,
+              fit: BoxFit.cover),
+          shape: newpolygon.PolygonBorder(
+            polygon: polygon,
+            // polygon: polygon,
+          ),
+        ),
+      ),
+    );
   }
 }
 

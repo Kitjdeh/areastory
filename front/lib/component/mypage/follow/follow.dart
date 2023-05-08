@@ -23,10 +23,12 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
     super.initState();
     followcontroller = TabController(length: FOLLOWTABS.length, vsync: this);
     followcontroller.index = int.parse(widget.index);
+    // final tmp  = context.currentBeamLocation.data;
     // followcontroller.index = (context.currentBeamLocation.state.queryParameters['index'] as int?) ?? 0;
     followcontroller.addListener(() {
       setState(() {});
     });
+
   }
 
   @override
@@ -47,7 +49,8 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
           icon: Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black,
           onPressed: () {
-            Navigator.of(context).pop();
+            // Navigator.of(context).pop();
+            Beamer.of(context).beamBack();
           },
         ),
       ),

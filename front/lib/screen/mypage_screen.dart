@@ -123,7 +123,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                       Beamer.of(context)
-                                          .beamToNamed('/mypage/follow');
+                                          .beamToNamed('/mypage/follow',
+                                      );
                                     },
                                     icon: Icon(Icons.settings),
                                     label: Text("팔로잉/팔로워"),
@@ -225,6 +226,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             print("팔로워 리스트로 이동");
                             Beamer.of(context).beamToNamed(
                               '/mypage/followList/0',
+                              data: {'index': 0}
                             );
                           },
                           child: Column(

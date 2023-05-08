@@ -7,7 +7,7 @@ class MypageLocation extends BeamLocation<BeamState> {
   MypageLocation(super.routeInformation);
 
   @override
-  List<String> get pathPatterns => ['/mypage/:userId/', '/mypage/followList/:index'];
+  List<String> get pathPatterns => ['/mypage/:userId', '/mypage/followList/:index'];
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
@@ -16,13 +16,11 @@ class MypageLocation extends BeamLocation<BeamState> {
 
     return [
       if (state.uri.pathSegments.length == 2)
-       BeamPage(
-        key: ValueKey('mypage/$userId'),
-        // title: 'Tab A',
-        type: BeamPageType.noTransition,
-        child: MyPageScreen(userId: userId),
-        // child: MapScreen(label: 'A', detailsPath: '/a/details'),
-      ),
+        BeamPage(
+          key: ValueKey('mypage/$userId'),
+          type: BeamPageType.noTransition,
+          child: MyPageScreen(userId: userId),
+        ),
       if (state.uri.pathSegments.length == 3)
         BeamPage(
           key: ValueKey('mypage/followList/$index'),

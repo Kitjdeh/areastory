@@ -17,7 +17,7 @@ class CreateLocation extends BeamLocation<BeamState> {
         key: ValueKey('create/:userID'),
         // title: 'Tab A',
         type: BeamPageType.noTransition,
-        child: CameraScreen(userId:userId),
+        child: CameraScreen(userId: userId),
         // child: MapScreen(label: 'A', detailsPath: '/a/details'),
       ),
       if (state.uri.pathSegments.length == 3 &&

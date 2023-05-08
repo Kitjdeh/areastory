@@ -12,7 +12,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({Key? key, required this.fcmToken}) : super(key: key);
+  final fcmToken;
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -93,7 +94,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 final userReq = {
                   'nickname': nickname,
                   'provider': 'kakao',
-                  'providerId': kakaoid
+                  'providerId': kakaoid,
+                  'registrationToken': this.widget.fcmToken
                 };
 
                 final formData = FormData.fromMap({
@@ -118,7 +120,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   if (res.statusCode == 200){
                     print("회원가입성공. SSE 시작합니다");
                     /// 회원가입 성공시 storage에 저장
-                    await storage.write(key: "userId", value: res.data['userId'].toString());
+                    // print(res.data['data']['userId']);
+                    await storage.write(key: "userId", value: res.data['data']['userId'].toString());
                     /// 회원가입 성공시 페이지 이동.
                     Navigator.pushReplacement(
                       context,
