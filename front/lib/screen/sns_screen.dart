@@ -8,7 +8,8 @@ import 'package:front/const/auto_search_test.dart';
 const List<String> list = <String>['인기순', '최신순'];
 
 class SnsScreen extends StatefulWidget {
-  const SnsScreen({Key? key}) : super(key: key);
+  const SnsScreen({Key? key, required this.userId}) : super(key: key);
+  final String userId;
 
   @override
   State<SnsScreen> createState() => _SnsScreenState();
@@ -19,6 +20,11 @@ class _SnsScreenState extends State<SnsScreen> {
   int? _lastPage = 0;
   List _articles = [];
   String dropdownValue = list.first;
+  String seletedLocationDosi = '';
+  String seletedLocationSigungu = '';
+  String seletedLocationDongeupmyeon = '';
+
+  late final userId = int.parse(widget.userId);
 
   @override
   void initState() {
@@ -28,10 +34,10 @@ class _SnsScreenState extends State<SnsScreen> {
 
   void printArticles() async {
     final articleData = await getArticles(
-      sort: 'likeCount',
-      dosi: null,
-      sigungu: null,
-      dongeupmyeon: null,
+      sort: dropdownValue == '인기순' ? 'likeCount' : 'articleId',
+      dosi: seletedLocationDosi,
+      sigungu: seletedLocationSigungu,
+      dongeupmyeon: seletedLocationDongeupmyeon,
     );
     _articles.addAll(articleData.articles);
     _lastPage = articleData.totalPageNumber;
@@ -42,10 +48,10 @@ class _SnsScreenState extends State<SnsScreen> {
     // 나중에 페이지 추가해서 넣어야할듯??
     // sort는 articleId or likeCount
     final newArticles = await getArticles(
-      sort: 'likeCount',
-      dosi: null,
-      sigungu: null,
-      dongeupmyeon: null,
+      sort: dropdownValue == '인기순' ? 'likeCount' : 'articleId',
+      dosi: seletedLocationDosi,
+      sigungu: seletedLocationSigungu,
+      dongeupmyeon: seletedLocationDongeupmyeon,
     );
     _articles.addAll(newArticles.articles);
     _currentPage++;
@@ -61,8 +67,43 @@ class _SnsScreenState extends State<SnsScreen> {
     _scrollController.jumpTo(index * 520); // jumpTo 메서드를 사용하여 스크롤합니다.
   }
 
+  void onDelete(int articleId) {
+    setState(() {
+      _articles.removeWhere((article) => article.articleId == articleId);
+    });
+  }
+
   void _updateIsChildActive(bool isChildActive) async {
     setState(() {});
+  }
+
+  void handleLocationSelected(String selectedLocation) {
+    List<String> locationParts = selectedLocation.split(' ');
+
+    if (locationParts.length >= 1) {
+      seletedLocationDosi = locationParts[0];
+    }
+    if (locationParts.length >= 2) {
+      seletedLocationSigungu = locationParts[1];
+    }
+    if (locationParts.length >= 3) {
+      seletedLocationDongeupmyeon = locationParts[2];
+    }
+    print(seletedLocationDosi);
+    print(seletedLocationSigungu);
+    print(seletedLocationDongeupmyeon);
+
+    _articles.clear();
+    setState(() {
+      printArticles();
+    });
+  }
+
+  void onChangeSort(String dropdownValue) {
+    _articles.clear();
+    setState(() {
+      printArticles();
+    });
   }
 
   @override
@@ -80,17 +121,8 @@ class _SnsScreenState extends State<SnsScreen> {
             width: 120,
           ),
           actions: [
-            Container(
-              margin: EdgeInsets.only(top: 5),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              width: 190,
-              child: LocationSearch(),
+            LocationSearch(
+              onLocationSelected: handleLocationSelected,
             ),
             DropdownButton<String>(
               value: dropdownValue,
@@ -100,10 +132,8 @@ class _SnsScreenState extends State<SnsScreen> {
               dropdownColor: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(15)),
               onChanged: (String? value) {
-                // This is called when the user selects an item.
-                setState(() {
-                  dropdownValue = value!;
-                });
+                dropdownValue = value!;
+                onChangeSort(value!);
               },
               items: list.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
@@ -118,34 +148,6 @@ class _SnsScreenState extends State<SnsScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // ElevatedButton(
-            //   child: Text('Show Article Detail'),
-            //   onPressed: () {
-            //     showModalBottomSheet(
-            //       context: context,
-            //       backgroundColor: Colors.transparent,
-            //       isScrollControlled: true,
-            //       builder: (BuildContext context) {
-            //         return SizedBox(
-            //           height: MediaQuery.of(context).size.height * 0.8,
-            //           child: Center(
-            //             child: ArticleDetailComponent(
-            //               nickname: '치킨먹고싶다',
-            //               image:
-            //                   'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg',
-            //               profile:
-            //                   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKFOtP8DmiYHZ-HkHpmLq9Oydg8JB4CuyOVg&usqp=CAU',
-            //               content: '왜이리 화나있너 ;;; ㅎㅎㅎㅎㅎㅎㅎㅎ',
-            //               likeCount: 33,
-            //               commentCount: 14,
-            //               isLike: true,
-            //             ),
-            //           ),
-            //         );
-            //       },
-            //     );
-            //   },
-            // ),
             SizedBox(
               height: 10,
             ),
@@ -161,6 +163,8 @@ class _SnsScreenState extends State<SnsScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       if (index < _articles.length) {
                         return ArticleComponent(
+                          userId: userId,
+                          onDelete: onDelete,
                           articleId: _articles[index].articleId,
                           followingId: _articles[index].userId,
                           nickname: _articles[index].nickname,

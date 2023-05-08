@@ -12,7 +12,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({Key? key, required this.fcmToken}) : super(key: key);
+  final fcmToken;
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -93,7 +94,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 final userReq = {
                   'nickname': nickname,
                   'provider': 'kakao',
-                  'providerId': kakaoid
+                  'providerId': kakaoid,
+                  'registrationToken': this.widget.fcmToken
                 };
 
                 final formData = FormData.fromMap({

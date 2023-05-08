@@ -27,6 +27,8 @@ class ArticleComponent extends StatefulWidget {
   final String? dongeupmyeon;
   final Function(bool) onUpdateIsChildActive;
   final double height;
+  final userId;
+  final Function(int commentId) onDelete;
 
   ArticleComponent(
       {required this.articleId,
@@ -46,6 +48,8 @@ class ArticleComponent extends StatefulWidget {
       this.sigungu,
       this.dongeupmyeon,
       required this.onUpdateIsChildActive,
+      required this.userId,
+      required this.onDelete,
       Key? key,
       Object? snapshotData})
       : super(key: key);
@@ -57,6 +61,11 @@ class ArticleComponent extends StatefulWidget {
 class _ArticleComponentState extends State<ArticleComponent> {
   bool isExpanded = false;
   ArticleData? detailData;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void createFollowing(followingId) async {
     await postFollowing(followingId: followingId);
@@ -84,11 +93,14 @@ class _ArticleComponentState extends State<ArticleComponent> {
     setState(() {});
   }
 
+  void delArticle(articleId) async {
+    await deleteArticle(articleId: articleId);
+    widget.onDelete(articleId);
+  }
+
   @override
   Widget build(BuildContext context) {
     String displayText = widget.content;
-    final storage = new FlutterSecureStorage();
-    final userId = storage.read(key: 'userId');
 
     if (!isExpanded && widget.content.length > 10) {
       displayText = widget.content.substring(0, 10) + '...';
@@ -134,7 +146,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
                             ),
                           ),
                           Text(
-                            '서울특별시 강남구 언주로',
+                            '${widget.dosi} ${widget.sigungu} ${widget.dongeupmyeon}',
                             style: TextStyle(
                               fontSize: 10,
                               color: Colors.black,
@@ -144,52 +156,61 @@ class _ArticleComponentState extends State<ArticleComponent> {
                       ),
                     ],
                   ),
-                  IconButton(
-                    icon: Icon(Icons.update),
-                    onPressed: () {
-                      // 삭제 버튼이 눌렸을 때 실행되는 코드 작성
-                    },
-                  ),
-                  if (userId == widget.followingId)
-                    IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
-                        deleteArticle(articleId: widget.articleId);
-                      },
-                    ),
-                  ElevatedButton(
-                    onPressed: () {
-                      detailData != null
-                          ? detailData!.followYn
-                              ? delFollowing(widget.followingId)
-                              : createFollowing(widget.followingId)
-                          : widget.followYn
-                              ? delFollowing(widget.followingId)
-                              : createFollowing(widget.followingId);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: detailData != null
-                          ? detailData!.followYn
-                              ? Colors.transparent
-                              : Colors.blue
-                          : widget.followYn
-                              ? Colors.transparent
-                              : Colors.blue,
-                      side: BorderSide(color: Colors.white),
-                    ),
-                    child: Text(
-                      detailData != null
-                          ? detailData!.followYn
-                              ? '팔로잉'
-                              : '팔로우'
-                          : widget.followYn
-                              ? '팔로잉'
-                              : '팔로우',
-                      style: TextStyle(
-                        color: Colors.white, // 텍스트 색상을 하얀색으로 설정
+                  Row(
+                    children: [
+                      if (widget.userId == widget.followingId)
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.update),
+                              onPressed: () {
+                                Beamer.of(context).beamToNamed(
+                                    '/sns/update/${widget.articleId}');
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () {
+                                delArticle(widget.articleId);
+                              },
+                            ),
+                          ],
+                        ),
+                      ElevatedButton(
+                        onPressed: () {
+                          detailData != null
+                              ? detailData!.followYn
+                                  ? delFollowing(widget.followingId)
+                                  : createFollowing(widget.followingId)
+                              : widget.followYn
+                                  ? delFollowing(widget.followingId)
+                                  : createFollowing(widget.followingId);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: detailData != null
+                              ? detailData!.followYn
+                                  ? Colors.transparent
+                                  : Colors.blue
+                              : widget.followYn
+                                  ? Colors.transparent
+                                  : Colors.blue,
+                          side: BorderSide(color: Colors.white),
+                        ),
+                        child: Text(
+                          detailData != null
+                              ? detailData!.followYn
+                                  ? '팔로잉'
+                                  : '팔로우'
+                              : widget.followYn
+                                  ? '팔로잉'
+                                  : '팔로우',
+                          style: TextStyle(
+                            color: Colors.white, // 텍스트 색상을 하얀색으로 설정
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -238,8 +259,8 @@ class _ArticleComponentState extends State<ArticleComponent> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Beamer.of(context)
-                              .beamToNamed('/sns/comment/${widget.articleId}');
+                          Beamer.of(context).beamToNamed(
+                              '/sns/comment/${widget.articleId}/${widget.userId}');
                         },
                         child: Image.asset(
                           'asset/img/comment.png',
@@ -361,8 +382,8 @@ class _ArticleComponentState extends State<ArticleComponent> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Beamer.of(context)
-                            .beamToNamed('/sns/comment/${widget.articleId}');
+                        Beamer.of(context).beamToNamed(
+                            '/sns/comment/${widget.articleId}/${widget.userId}');
                       },
                       child: Text(
                         '댓글 ${widget.commentCount}개 모두 보기',

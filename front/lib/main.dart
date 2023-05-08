@@ -167,10 +167,11 @@ void main() async {
   // });
   runApp(MaterialApp(
     routes: {
-      '/signup': (context) => SignUpScreen(),
-      '/login': (context) => LoginScreen(),
+      '/signup': (context) => SignUpScreen(fcmToken: fcmToken),
+      '/login': (context) => LoginScreen(fcmToken: fcmToken),
     },
-    home: userId != null ? MyApp() : LoginScreen(),
+    /// login -> myapp으로 값을 내린다. storage말고 그냥 내리는거 고려.
+    home: userId != null ? MyApp() : LoginScreen(fcmToken: fcmToken),
     // home: LoginScreen(),
   ));
 }
