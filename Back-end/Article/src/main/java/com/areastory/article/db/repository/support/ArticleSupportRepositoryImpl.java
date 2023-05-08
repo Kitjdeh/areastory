@@ -68,7 +68,7 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
                 ))
                 .from(articleLike)
                 .leftJoin(follow)
-                .on(follow.followingUser.userId.eq(articleLike.user.userId))
+                .on(follow.followingUser.eq(article.user), follow.followUser.userId.eq(userId))
                 .where(articleLike.article.articleId.eq(articleId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
