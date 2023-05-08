@@ -59,6 +59,7 @@ public class NotificationListener {
         //원준
 //                    String registrationToken = "eAv6-BfNRv6e9xl2y93M61:APA91bHSbiCUZBbd7AGHo8FWJP5Hzl57i_kxFou388kLwzwlz6883svCdCqaxdUFv3L1Nm_2TCLCkccSLgSZBbPW_fKz6T9fbE1tnqnUjrwWdMNoNWQtbMAdGwH4utMjlf0Y7YhpFpZP";
         Notification notification = Notification.builder().setTitle(title).setBody(body).build();
+        System.out.println("token : " + registrationToken);
         Message message = Message.builder()
                 .putData("type", notificationKafkaDto.getType())
                 .putData("articleId", String.valueOf(notificationKafkaDto.getArticleId()))
