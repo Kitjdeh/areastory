@@ -2,13 +2,15 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-Future<LoginDataClass> getLogin(providerId) async {
+Future<LoginDataClass> getLogin(providerId, fcmToken) async {
+  print("로그인 함수 실행~!!!!!");
+  print("fcmToken: $fcmToken");
   final dio = Dio(BaseOptions(
     baseUrl: '${dotenv.get('BASE_URL')}/api/users',
   ));
   final response = await dio.post(
     '/login',
-    queryParameters: {'providerId': providerId},
+    queryParameters: {'providerId': providerId, 'registrationToken':fcmToken},
   );
 
   if (response.statusCode == 200) {

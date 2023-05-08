@@ -18,10 +18,8 @@ class SnsLocation extends BeamLocation<BeamState> {
     return [
       const BeamPage(
         key: ValueKey('sns'),
-        // title: 'Tab A',
         type: BeamPageType.noTransition,
         child: SnsScreen(),
-        // child: MapScreen(label: 'A', detailsPath: '/a/details'),
       ),
       if (state.uri.pathSegments.length == 3 &&
           state.uri.pathSegments[1] == 'comment')

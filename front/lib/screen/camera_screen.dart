@@ -24,6 +24,7 @@ import 'package:front/api/sns/get_article.dart';
 import 'package:front/api/sns/get_mylike_article.dart';
 import 'package:front/api/sns/update_article.dart';
 import 'package:front/api/sns/delete_article.dart';
+import 'package:front/screen/home_screen.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -60,7 +61,7 @@ class _CameraScreenState extends State<CameraScreen> {
       sigungu: '성도시',
       dongeupmyeon: '성동',
     );
-    Beamer.of(context).beamToNamed('/create/sns');
+    // Beamer.of(context).beamToNamed('/sns');
   }
 
   @override

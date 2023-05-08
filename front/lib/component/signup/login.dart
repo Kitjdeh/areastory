@@ -8,7 +8,8 @@ import 'package:front/main.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({Key? key, required this.fcmToken}) : super(key: key);
+  final fcmToken;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -20,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   /// flutter sercure storage에 연결.
   // final dio = Dio();
   final viewModel = LoginViewModel(KakaoLogin());
+
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 print(viewModel.user?.kakaoAccount?.profile?.nickname);
                 print(viewModel.user?.kakaoAccount?.profile?.profileImageUrl);
                 try {
-                  final res = await getLogin(viewModel.user?.id);
-                  print(res);
+                  final res = await getLogin(viewModel.user?.id, this.widget.fcmToken);
+                  print(res.data);
                   if (res.msg == '신규 회원입니다.') {
                     Navigator.pushNamed(
                       context,

@@ -18,12 +18,12 @@ class CreateLocation extends BeamLocation<BeamState> {
         child: CameraScreen(),
         // child: MapScreen(label: 'A', detailsPath: '/a/details'),
       ),
-      if (state.uri.pathSegments.length == 2 &&
-          state.uri.pathSegments[1] == 'sns')
-        const BeamPage(
-          key: ValueKey('create/sns'),
-          child: SnsScreen(),
-        ),
+      // if (state.uri.pathSegments.length == 2 &&
+      //     state.uri.pathSegments[1] == 'sns')
+      //   const BeamPage(
+      //     key: ValueKey('create/sns'),
+      //     child: SnsScreen(),
+      //   ),
     ];
   }
 }

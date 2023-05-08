@@ -20,9 +20,6 @@ class _HomeScreenState extends State<HomeScreen> {
   late int _currentIndex;
   late String? userId;
   List<BeamerDelegate>? _routerDelegates;
-  // Future<void> getUserIdFromStorage() async {
-  //   userId = await storage.read(key: "userId");
-  // }
 
   Future<void> getUserIdFromStorage() async {
     userId = await storage.read(key: "userId");
@@ -158,14 +155,19 @@ class _HomeScreenState extends State<HomeScreen> {
           else{
             print("인덱스가 서로 같다!");
             setState(() => _currentIndex = index);
-            _routerDelegates![4].notifyListeners();
+            // _routerDelegates![4].notifyListeners();
+
             // Beamer.of(context).beamBack();
-              // Beamer.of(context).currentBeamLocation.update();
+
+            //   Beamer.of(context).currentBeamLocation.update();
+
             // Beamer.of(context).beamToNamed(
             //   '/mypage/$userId',
             // );
+
               // _routerDelegates![_currentIndex].update(
-              //     rebuild: true);
+              //     rebuild: true,
+              // updateParent: true);
           }
         },
 
