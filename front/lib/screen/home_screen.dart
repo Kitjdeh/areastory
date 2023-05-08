@@ -160,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
             setState(() => _currentIndex = index);
             _routerDelegates![4].notifyListeners();
             // Beamer.of(context).beamBack();
-              // Beamer.of(context).currentBeamLocation.update();
+              Beamer.of(context).currentBeamLocation.update();
             // Beamer.of(context).beamToNamed(
             //   '/mypage/$userId',
             // );
