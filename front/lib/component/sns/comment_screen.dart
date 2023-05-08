@@ -1,11 +1,15 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:front/api/comment/create_comment.dart';
 import 'package:front/api/comment/get_comments.dart';
 import 'package:front/component/sns/comment/comment.dart';
 import 'package:front/const/comment_test.dart';
 
 class SnsCommentScreen extends StatefulWidget {
-  const SnsCommentScreen({Key? key, required this.index}) : super(key: key);
+  const SnsCommentScreen({Key? key, required this.index, required this.userId})
+      : super(key: key);
   final String index;
+  final String userId;
 
   @override
   State<SnsCommentScreen> createState() => _SnsCommentScreenState();
@@ -16,12 +20,27 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
   int? _lastPage = 0;
   List _comments = [];
 
+  final TextEditingController _commentController = TextEditingController();
+
   late final articleId = int.parse(widget.index);
+  late final userId = int.parse(widget.userId);
 
   @override
   void initState() {
     super.initState();
     printComments();
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  void onDelete(int commentId) async {
+    setState(() {
+      _comments.removeWhere((comment) => comment.commentId == commentId);
+    });
   }
 
   void printComments() async {
@@ -30,6 +49,7 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
     );
     _comments.addAll(commentData.comments);
     _lastPage = commentData.totalPageNumber;
+    setState(() {});
   }
 
   void _loadMoreData() async {
@@ -42,6 +62,26 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
     setState(() {
       // scrollToIndex(5);
     });
+  }
+
+  void createComment(content) async {
+    await postComment(
+      articleId: articleId,
+      content: content,
+    );
+
+    final newComment = await getComments(
+      articleId: articleId,
+    );
+
+    if (_comments.length == 0) {
+      printComments();
+    } else {
+      _comments.insert(0, newComment.comments.first);
+    }
+    setState(() {});
+
+    _commentController.clear();
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -73,13 +113,37 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
           icon: Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black,
           onPressed: () {
-            Navigator.of(context).pop();
+            Beamer.of(context).beamBack();
           },
         ),
       ),
       body: SafeArea(
         child: Column(
           children: [
+            Container(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller:
+                          _commentController, // TextEditingController setup
+                      decoration: InputDecoration(
+                        labelText: '댓글 입력',
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.send),
+                    onPressed: () {
+                      final value = _commentController
+                          .text; // Get the value from the TextEditingController
+                      createComment(value);
+                    },
+                  ),
+                ],
+              ),
+            ),
             SizedBox(
               height: 10,
             ),
@@ -95,6 +159,8 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       if (index < _comments.length) {
                         return CommentComponent(
+                          myId: userId,
+                          onDelete: onDelete,
                           commentId: _comments[index].commentId,
                           articleId: _comments[index].articleId,
                           userId: _comments[index].userId,

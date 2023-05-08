@@ -3,13 +3,17 @@ import 'package:excel/excel.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 
 class LocationSearch extends StatefulWidget {
-  const LocationSearch({Key? key}) : super(key: key);
+  final onLocationSelected;
+
+  const LocationSearch({Key? key, required this.onLocationSelected})
+      : super(key: key);
 
   @override
   _LocationSearchState createState() => _LocationSearchState();
 }
 
 class _LocationSearchState extends State<LocationSearch> {
+  String? _selectedLocation;
   List<String>? _options;
 
   @override
@@ -41,19 +45,40 @@ class _LocationSearchState extends State<LocationSearch> {
     if (_options == null) {
       return const CircularProgressIndicator();
     }
-    return Autocomplete<String>(
-      optionsBuilder: (TextEditingValue textEditingValue) {
-        if (textEditingValue.text == '') {
-          return const Iterable<String>.empty();
-        }
-        return _options!.where((String option) {
-          return option.contains(textEditingValue.text.toLowerCase());
-        });
-      },
-
-      onSelected: (String selection) {
-        debugPrint('You just selected $selection');
-      },
+    return Container(
+      constraints: BoxConstraints(maxWidth: 200.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              child: Autocomplete<String>(
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text == '') {
+                    return const Iterable<String>.empty();
+                  }
+                  return _options!.where((String option) {
+                    return option.contains(textEditingValue.text.toLowerCase());
+                  });
+                },
+                onSelected: (String selection) {
+                  setState(() {
+                    _selectedLocation = selection;
+                  });
+                },
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (_selectedLocation != null) {
+                widget.onLocationSelected(_selectedLocation!);
+              }
+              _selectedLocation = null;
+            },
+            child: Text('확인'),
+          ),
+        ],
+      ),
     );
   }
 }

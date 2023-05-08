@@ -76,28 +76,24 @@ class _LikeComponentState extends State<LikeComponent> {
             },
             style: ElevatedButton.styleFrom(
               // primary: detailData != null
-                  // ? detailData!.followYn
-                  //     ? Colors.transparent
-                  //     : Colors.blue
-                  // : widget.followYn
-                  //     ? Colors.transparent
-                  //     : Colors.blue,
-             primary: widget.followYn
-                  ? Colors.transparent
-                  : Colors.blue,
+              // ? detailData!.followYn
+              //     ? Colors.transparent
+              //     : Colors.blue
+              // : widget.followYn
+              //     ? Colors.transparent
+              //     : Colors.blue,
+              primary: widget.followYn ? Colors.transparent : Colors.blue,
               side: BorderSide(color: Colors.white),
             ),
             child: Text(
               // detailData != null
-                  // ? detailData!.followYn
-                  //     ? '팔로잉'
-                  //     : '팔로우'
-                  // : widget.followYn
-                  //     ? '팔로잉'
-                  //     : '팔로우',
-              widget.followYn
-                  ? '팔로잉'
-                  : '팔로우',
+              // ? detailData!.followYn
+              //     ? '팔로잉'
+              //     : '팔로우'
+              // : widget.followYn
+              //     ? '팔로잉'
+              //     : '팔로우',
+              widget.followYn ? '팔로잉' : '팔로우',
               style: TextStyle(
                 color: Colors.white, // 텍스트 색상을 하얀색으로 설정
               ),

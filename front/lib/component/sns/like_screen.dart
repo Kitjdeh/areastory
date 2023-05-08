@@ -58,6 +58,7 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
     _scrollController.jumpTo(index * 100); // jumpTo 메서드를 사용하여 스크롤합니다.
   }
 
+
   void _updateIsChildActive(bool isChildActive) {
     setState(() {});
   }
@@ -81,7 +82,7 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
           icon: Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black,
           onPressed: () {
-            Navigator.of(context).pop();
+            Beamer.of(context).beamBack();
           },
         ),
       ),

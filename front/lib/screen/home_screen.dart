@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         BeamerDelegate(
-          initialPath: '/sns',
+          initialPath: '/sns/$userId',
           locationBuilder: (routeInformation, _) {
             if (routeInformation.location!.contains('/sns')) {
               return SnsLocation(routeInformation);
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         BeamerDelegate(
-          initialPath: '/create',
+          initialPath: '/create/$userId',
           locationBuilder: (routeInformation, _) {
             if (routeInformation.location!.contains('/create')) {
               return CreateLocation(routeInformation);
