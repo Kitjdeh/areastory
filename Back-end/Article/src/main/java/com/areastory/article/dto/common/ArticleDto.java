@@ -21,14 +21,14 @@ public class ArticleDto {
     private Long totalLikeCount;
     private Long commentCount;
     private Boolean likeYn;
-    private Boolean followYn;
+    //    private Boolean followYn;
     private LocalDateTime createdAt;
     private String dosi;
     private String sigungu;
     private String dongeupmyeon;
 
 
-    public ArticleDto(Long articleId, Long userId, String nickname, String profile, String content, String image, Long dailyLikeCount, Long totalLikeCount, Long commentCount, Boolean likeYn, Boolean followYn, LocalDateTime createdAt, String dosi, String sigungu, String dongeupmyeon) {
+    public ArticleDto(Long articleId, Long userId, String nickname, String profile, String content, String image, Long dailyLikeCount, Long totalLikeCount, Long commentCount, Boolean likeYn, LocalDateTime createdAt, String dosi, String sigungu, String dongeupmyeon) {
         this.articleId = articleId;
         this.userId = userId;
         this.nickname = nickname;
@@ -39,7 +39,7 @@ public class ArticleDto {
         this.totalLikeCount = totalLikeCount;
         this.commentCount = commentCount;
         this.likeYn = likeYn;
-        this.followYn = followYn;
+//        this.followYn = followYn;
         this.createdAt = createdAt;
         this.dosi = dosi;
         this.sigungu = sigungu;
