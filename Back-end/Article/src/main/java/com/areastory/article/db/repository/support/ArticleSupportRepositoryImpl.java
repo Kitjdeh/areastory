@@ -131,10 +131,10 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
                                 .when(articleLike.user.userId.eq(userId))
                                 .then(true)
                                 .otherwise(false),
-//                        new CaseBuilder()
-//                                .when(follow.followUser.userId.eq(userId))
-//                                .then(true)
-//                                .otherwise(false),
+                        new CaseBuilder()
+                                .when(follow.followUser.userId.eq(userId))
+                                .then(true)
+                                .otherwise(false),
                         article.createdAt,
                         article.dosi,
                         article.sigungu,
@@ -142,9 +142,9 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
                 ))
                 .from(article)
                 .leftJoin(articleLike)
-                .on(articleLike.user.userId.eq(userId), articleLike.article.eq(article));
-//                .leftJoin(follow)
-//                .on(follow.followingUser.userId.eq(article.user.userId));
+                .on(articleLike.user.userId.eq(userId), articleLike.article.eq(article))
+                .leftJoin(follow)
+                .on(follow.followingUser.eq(article.user), follow.followUser.userId.eq(userId));
     }
 
 
