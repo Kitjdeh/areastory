@@ -277,7 +277,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      initialBinding: InitBinding(),
+      initialBinding: InitBinding(userId: widget.userId),
       home: HomeScreen(userId: widget.userId),
     );
   }

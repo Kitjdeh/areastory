@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:front/api/sns/get_articles.dart';
 import 'package:front/component/sns/article/article.dart';
-import 'package:front/component/sns/article/article_detail.dart';
-import 'package:front/const/article_test.dart';
 import 'package:front/const/auto_search_test.dart';
 
 const List<String> list = <String>['인기순', '최신순'];
 
 class SnsScreen extends StatefulWidget {
-  const SnsScreen({Key? key}) : super(key: key);
+  const SnsScreen({Key? key, required this.userId}) : super(key: key);
+  final String userId;
 
   @override
   State<SnsScreen> createState() => _SnsScreenState();
@@ -19,6 +18,11 @@ class _SnsScreenState extends State<SnsScreen> {
   int? _lastPage = 0;
   List _articles = [];
   String dropdownValue = list.first;
+  String seletedLocationDosi = '';
+  String seletedLocationSigungu = '';
+  String seletedLocationDongeupmyeon = '';
+
+  late final userId = int.parse(widget.userId);
 
   @override
   void initState() {
@@ -27,11 +31,14 @@ class _SnsScreenState extends State<SnsScreen> {
   }
 
   void printArticles() async {
+    _currentPage = 1;
+    _articles.clear();
     final articleData = await getArticles(
-      sort: 'likeCount',
-      dosi: null,
-      sigungu: null,
-      dongeupmyeon: null,
+      sort: dropdownValue == '인기순' ? 'likeCount' : 'articleId',
+      page: _currentPage,
+      dosi: seletedLocationDosi,
+      sigungu: seletedLocationSigungu,
+      dongeupmyeon: seletedLocationDongeupmyeon,
     );
     _articles.addAll(articleData.articles);
     _lastPage = articleData.totalPageNumber;
@@ -39,16 +46,16 @@ class _SnsScreenState extends State<SnsScreen> {
   }
 
   void _loadMoreData() async {
-    // 나중에 페이지 추가해서 넣어야할듯??
-    // sort는 articleId or likeCount
+    _currentPage++;
     final newArticles = await getArticles(
-      sort: 'likeCount',
-      dosi: null,
-      sigungu: null,
-      dongeupmyeon: null,
+      sort: dropdownValue == '인기순' ? 'likeCount' : 'articleId',
+      page: _currentPage,
+      dosi: seletedLocationDosi,
+      sigungu: seletedLocationSigungu,
+      dongeupmyeon: seletedLocationDongeupmyeon,
     );
     _articles.addAll(newArticles.articles);
-    _currentPage++;
+    _lastPage = newArticles.totalPageNumber;
 
     setState(() {
       // scrollToIndex(5);
@@ -61,8 +68,41 @@ class _SnsScreenState extends State<SnsScreen> {
     _scrollController.jumpTo(index * 520); // jumpTo 메서드를 사용하여 스크롤합니다.
   }
 
-  void _updateIsChildActive(bool isChildActive) async {
-    setState(() {});
+  void onDelete(int articleId) {
+    setState(() {
+      _articles.removeWhere((article) => article.articleId == articleId);
+    });
+  }
+
+  void _updateIsChildActive(followingId) async {}
+
+  void handleLocationSelected(String selectedLocation) {
+    List<String> locationParts = selectedLocation.split(' ');
+    print(locationParts);
+
+    if (locationParts.length == 3) {
+      seletedLocationDosi = locationParts[0];
+      seletedLocationSigungu = locationParts[1];
+      seletedLocationDongeupmyeon = locationParts[2];
+    } else {
+      seletedLocationDosi = locationParts[0];
+      seletedLocationSigungu = locationParts[1] + ' ' + locationParts[2];
+      seletedLocationDongeupmyeon = locationParts[3];
+    }
+
+    print(seletedLocationDosi);
+    print(seletedLocationSigungu);
+    print(seletedLocationDongeupmyeon);
+
+    setState(() {
+      printArticles();
+    });
+  }
+
+  void onChangeSort(String dropdownValue) {
+    setState(() {
+      printArticles();
+    });
   }
 
   @override
@@ -80,17 +120,8 @@ class _SnsScreenState extends State<SnsScreen> {
             width: 120,
           ),
           actions: [
-            Container(
-              margin: EdgeInsets.only(top: 5),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              width: 190,
-              child: LocationSearch(),
+            LocationSearch(
+              onLocationSelected: handleLocationSelected,
             ),
             DropdownButton<String>(
               value: dropdownValue,
@@ -100,10 +131,8 @@ class _SnsScreenState extends State<SnsScreen> {
               dropdownColor: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(15)),
               onChanged: (String? value) {
-                // This is called when the user selects an item.
-                setState(() {
-                  dropdownValue = value!;
-                });
+                dropdownValue = value!;
+                onChangeSort(value!);
               },
               items: list.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
@@ -118,34 +147,6 @@ class _SnsScreenState extends State<SnsScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // ElevatedButton(
-            //   child: Text('Show Article Detail'),
-            //   onPressed: () {
-            //     showModalBottomSheet(
-            //       context: context,
-            //       backgroundColor: Colors.transparent,
-            //       isScrollControlled: true,
-            //       builder: (BuildContext context) {
-            //         return SizedBox(
-            //           height: MediaQuery.of(context).size.height * 0.8,
-            //           child: Center(
-            //             child: ArticleDetailComponent(
-            //               nickname: '치킨먹고싶다',
-            //               image:
-            //                   'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg',
-            //               profile:
-            //                   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKFOtP8DmiYHZ-HkHpmLq9Oydg8JB4CuyOVg&usqp=CAU',
-            //               content: '왜이리 화나있너 ;;; ㅎㅎㅎㅎㅎㅎㅎㅎ',
-            //               likeCount: 33,
-            //               commentCount: 14,
-            //               isLike: true,
-            //             ),
-            //           ),
-            //         );
-            //       },
-            //     );
-            //   },
-            // ),
             SizedBox(
               height: 10,
             ),
@@ -153,7 +154,7 @@ class _SnsScreenState extends State<SnsScreen> {
               child: Container(
                 child: RefreshIndicator(
                   onRefresh: () async {
-                    await Future.delayed(Duration(seconds: 3));
+                    printArticles();
                   },
                   child: ListView.separated(
                     controller: _scrollController,
@@ -161,6 +162,8 @@ class _SnsScreenState extends State<SnsScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       if (index < _articles.length) {
                         return ArticleComponent(
+                          userId: userId,
+                          onDelete: onDelete,
                           articleId: _articles[index].articleId,
                           followingId: _articles[index].userId,
                           nickname: _articles[index].nickname,
@@ -179,13 +182,13 @@ class _SnsScreenState extends State<SnsScreen> {
                           height: 500,
                           onUpdateIsChildActive: _updateIsChildActive,
                         );
-                      } else if (_currentPage < _lastPage!) {
+                      } else if (_currentPage <= _lastPage!) {
                         _loadMoreData();
-                        // return Container(
-                        //   height: 50,
-                        //   alignment: Alignment.center,
-                        //   child: const CircularProgressIndicator(),
-                        // );
+                        return Container(
+                          height: 50,
+                          alignment: Alignment.center,
+                          child: const CircularProgressIndicator(),
+                        );
                       }
                     },
                     separatorBuilder: (context, index) {

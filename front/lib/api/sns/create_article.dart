@@ -20,6 +20,8 @@ Future<void> postArticle({
   final storage = new FlutterSecureStorage();
   final userId = await storage.read(key: 'userId');
 
+  print(userId);
+
   final formData = FormData.fromMap({
     'articleWriteReq': MultipartFile.fromString(
         json.encode({

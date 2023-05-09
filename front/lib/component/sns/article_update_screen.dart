@@ -1,65 +1,62 @@
-import 'dart:io';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:front/api/sns/create_article.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:front/api/sns/get_article.dart';
+import 'package:front/api/sns/update_article.dart';
 
-class CameraScreen extends StatefulWidget {
-  const CameraScreen({Key? key, required this.userId}) : super(key: key);
-  final String userId;
+
+class SnsUpdateScreen extends StatefulWidget {
+  const SnsUpdateScreen({Key? key, required this.index}) : super(key: key);
+  final String index;
 
   @override
-  _CameraScreenState createState() => _CameraScreenState();
+  _SnsUpdateScreenState createState() => _SnsUpdateScreenState();
 }
 
-class _CameraScreenState extends State<CameraScreen> {
+class _SnsUpdateScreenState extends State<SnsUpdateScreen> {
   final FocusNode _focusNode1 = FocusNode();
   final FocusNode _focusNode2 = FocusNode();
-  final picker = ImagePicker();
   bool _isSwitched = true;
   ScrollController? _scrollController;
   TextEditingController contentController = TextEditingController();
-  late final userId = int.parse(widget.userId);
 
-  File? _image;
+  late final articleId = int.parse(widget.index);
+  late String image;
+  late String dosi;
+  late String sigungu;
+  late String dongeupmyeon;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    printArticle();
   }
 
-  void createArticle(image, content) async {
-    print(_isSwitched);
-    print(content.text);
-    print(image);
-    await postArticle(
-      publicYn: _isSwitched,
-      content: content.text,
-      image: image,
-      // 시,구,군 다 null 이면 안됨!
-      dosi: '서울특별시',
-      sigungu: '강남구',
-      dongeupmyeon: '역삼1동',
-    );
+  void printArticle() async {
+    final articleData = await getArticle(articleId: articleId);
+    setState(() {
+      image = articleData.image!;
+      dosi = articleData.dosi!;
+      sigungu = articleData.sigungu!;
+      dongeupmyeon = articleData.dongeupmyeon!;
+      contentController.text = articleData.content;
+    });
+  }
 
-    Beamer.of(context).beamToNamed('/create/sns/$userId');
+  void updateArticle(publicYn) async {
+    await patchArticle(
+      publicYn: _isSwitched,
+      content: contentController.text,
+      articleId: articleId,
+    );
+    Beamer.of(context).beamBack();
   }
 
   @override
   void dispose() {
     _scrollController!.dispose();
     super.dispose();
-  }
-
-  // 비동기 처리를 통해 카메라와 갤러리에서 이미지를 가져온다.
-  Future getImage(ImageSource imageSource) async {
-    final image = await picker.pickImage(source: imageSource);
-
-    setState(() {
-      _image = File(image!.path); // 가져온 이미지를 _image에 저장
-    });
   }
 
   // 이미지를 보여주는 위젯
@@ -69,19 +66,7 @@ class _CameraScreenState extends State<CameraScreen> {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.width / 1.3,
       child: Center(
-        child: _image == null
-            ? GestureDetector(
-                child: Icon(Icons.add_a_photo, color: Colors.blue, size: 100),
-                onTap: () {
-                  getImage(ImageSource.camera);
-                },
-              )
-            : GestureDetector(
-                child: Image.file(File(_image!.path)),
-                onTap: () {
-                  getImage(ImageSource.camera);
-                },
-              ),
+        child: Image.network(image),
       ),
     );
   }
@@ -146,12 +131,11 @@ class _CameraScreenState extends State<CameraScreen> {
           // 장소 입력 폼
           TextFormField(
             focusNode: _focusNode1,
-            decoration: InputDecoration(labelText: '장소'),
-            onTap: () {
-              //120만큼 500milSec 동안 뷰를 올려줌
-              _scrollController!.animateTo(120.0,
-                  duration: Duration(milliseconds: 500), curve: Curves.ease);
-            },
+            decoration: InputDecoration(
+              labelText: '장소',
+            ),
+            enabled: false,
+            initialValue: '$dosi $sigungu $dongeupmyeon',
           ),
           TextFormField(
             controller: contentController,
@@ -177,9 +161,7 @@ class _CameraScreenState extends State<CameraScreen> {
           // 등록 버튼
           ElevatedButton(
             onPressed: () {
-              createArticle(_image, contentController);
-              Beamer.of(context).currentBeamLocation.update();
-              print(Beamer.of(context).currentBeamLocation);
+              updateArticle(_isSwitched);
             },
             child: Text('등록'),
           ),

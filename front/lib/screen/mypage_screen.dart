@@ -30,8 +30,8 @@ class _MyPageScreenState extends State<MyPageScreen> with TickerProviderStateMix
   void initState() {
     // TODO: implement initState
     super.initState();
-    setMyId();
     tabController = TabController(length: 2, vsync: this);
+    setMyId();
   }
 
   @override

@@ -8,7 +8,7 @@ import 'package:front/controllers/bottom_nav_controller.dart';
 import 'package:get/get.dart';
 
 class FollowScreen extends StatefulWidget {
-  const FollowScreen({Key? key}) : super(key: key);
+  const FollowScreen({Key? key, required}) : super(key: key);
 
   @override
   State<FollowScreen> createState() => _FollowScreenState();

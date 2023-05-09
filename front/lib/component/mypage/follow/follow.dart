@@ -30,7 +30,6 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
     followcontroller.addListener(() {
       setState(() {});
     });
-
   }
 
   @override
@@ -50,10 +49,10 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
           /// 뒤로가기버튼설정
           icon: Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black,
-          onPressed: BottomNavController.to.willPopAction,
-          //   () {
-          //   // Get.find<BottomNavController>().willPopAction();
-          // },
+          onPressed: () {
+            Get.find<BottomNavController>().willPopAction();
+          },
+          // BottomNavController.to.willPopAction,
         ),
       ),
       body: Column(
@@ -76,8 +75,10 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
             onSubmitted: (val) {
               /// 전송할 값
               print(_inputValue);
+
               /// 현재 선택된 탭바 인덱스 -> 0: 팔로우, 1: 팔로잉
               print(followcontroller.index);
+
               /// 입력 완료 후 처리할 로직
               setState(() {
                 _inputValue = '';
@@ -97,9 +98,11 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
                               ))
                           .toList()),
                   Expanded(
-                      child: TabBarView(
-                          controller: followcontroller,
-                          children: [FollowerListScreen(), FollowingListScreen(),]))
+                      child:
+                          TabBarView(controller: followcontroller, children: [
+                    FollowerListScreen(),
+                    FollowingListScreen(),
+                  ]))
                 ],
               ),
             ),

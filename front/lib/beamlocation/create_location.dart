@@ -6,24 +6,26 @@ import 'package:front/screen/sns_screen.dart';
 class CreateLocation extends BeamLocation<BeamState> {
   CreateLocation(super.routeInformation);
   @override
-  List<String> get pathPatterns => ['/create', '/create/sns'];
+  List<String> get pathPatterns => ['/create/:userId', '/create/sns/:userId'];
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
+    final userId = state.pathParameters['userId'].toString();
+
     return [
-      const BeamPage(
-        key: ValueKey('create'),
+      BeamPage(
+        key: ValueKey('create/:userID'),
         // title: 'Tab A',
         type: BeamPageType.noTransition,
-        child: CameraScreen(),
+        child: CameraScreen(userId: userId),
         // child: MapScreen(label: 'A', detailsPath: '/a/details'),
       ),
-      // if (state.uri.pathSegments.length == 2 &&
-      //     state.uri.pathSegments[1] == 'sns')
-      //   const BeamPage(
-      //     key: ValueKey('create/sns'),
-      //     child: SnsScreen(),
-      //   ),
+      if (state.uri.pathSegments.length == 3 &&
+          state.uri.pathSegments[1] == 'sns')
+        BeamPage(
+          key: ValueKey('create/sns/$userId'),
+          child: SnsScreen(userId: userId),
+        ),
     ];
   }
 }

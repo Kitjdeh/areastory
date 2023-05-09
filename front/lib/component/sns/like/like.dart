@@ -11,100 +11,85 @@ class LikeComponent extends StatefulWidget {
   final bool followYn;
   final double height;
   final Function(bool isChildActive) onUpdateIsChildActive;
+  final int myId;
 
-  const LikeComponent({
-    Key? key,
-    required this.followingId,
-    required this.nickname,
-    required this.profile,
-    required this.followYn,
-    required this.height,
-    required this.onUpdateIsChildActive,
-  }) : super(key: key);
+  const LikeComponent(
+      {Key? key,
+      required this.followingId,
+      required this.nickname,
+      required this.profile,
+      required this.followYn,
+      required this.height,
+      required this.onUpdateIsChildActive,
+      required this.myId})
+      : super(key: key);
 
   @override
   State<LikeComponent> createState() => _LikeComponentState();
 }
 
 class _LikeComponentState extends State<LikeComponent> {
-  UserData? detailData;
-
   void createFollowing(followingId) async {
     await postFollowing(followingId: followingId);
-    detailData = (await getUser(userId: widget.followingId)) as UserData?;
     setState(() {});
   }
 
   void delFollowing(followingId) async {
     await deleteFollowing(followingId: followingId);
-    detailData = (await getUser(userId: widget.followingId)) as UserData?;
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(widget.profile),
-                radius: 20,
+    return FutureBuilder<UserData>(
+        future: getUser(userId: widget.followingId),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Container(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(snapshot.data!.profile),
+                        radius: 20,
+                      ),
+                      SizedBox(width: 16),
+                      Text(
+                        snapshot.data!.nickname,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                  if (widget.myId != widget.followingId)
+                    ElevatedButton(
+                      onPressed: () {
+                        snapshot.data!.followYn
+                            ? delFollowing(widget.followingId)
+                            : createFollowing(widget.followingId);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: snapshot.data!.followYn
+                            ? Colors.transparent
+                            : Colors.blue,
+                      ),
+                      child: Text(
+                        snapshot.data!.followYn ? '팔로잉' : '팔로우',
+                        style: TextStyle(
+                          color: Colors.white, // 텍스트 색상을 하얀색으로 설정
+                        ),
+                      ),
+                    ),
+                ],
               ),
-              SizedBox(width: 16),
-              Text(
-                widget.nickname,
-                style: TextStyle(fontSize: 16),
-              ),
-            ],
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // detailData != null
-              //     ? detailData!.followYn
-              //         ? delFollowing(widget.followingId)
-              //         : createFollowing(widget.followingId)
-              //     : widget.followYn
-              //         ? delFollowing(widget.followingId)
-              //         : createFollowing(widget.followingId);
-              widget.followYn
-                  ? delFollowing(widget.followingId)
-                  : createFollowing(widget.followingId);
-            },
-            style: ElevatedButton.styleFrom(
-              // primary: detailData != null
-                  // ? detailData!.followYn
-                  //     ? Colors.transparent
-                  //     : Colors.blue
-                  // : widget.followYn
-                  //     ? Colors.transparent
-                  //     : Colors.blue,
-             primary: widget.followYn
-                  ? Colors.transparent
-                  : Colors.blue,
-              side: BorderSide(color: Colors.white),
-            ),
-            child: Text(
-              // detailData != null
-                  // ? detailData!.followYn
-                  //     ? '팔로잉'
-                  //     : '팔로우'
-                  // : widget.followYn
-                  //     ? '팔로잉'
-                  //     : '팔로우',
-              widget.followYn
-                  ? '팔로잉'
-                  : '팔로우',
-              style: TextStyle(
-                color: Colors.white, // 텍스트 색상을 하얀색으로 설정
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+            );
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return Container();
+          }
+        });
   }
 }

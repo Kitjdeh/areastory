@@ -26,13 +26,13 @@ class HomeScreen extends GetView<BottomNavController> {
                   key: controller.snsPageNavigationKey,
                   onGenerateRoute: (routeSetting){
                     return MaterialPageRoute(
-                      builder: (context) => const SnsScreen(),
+                      builder: (context) => SnsScreen(userId: userId),
                     );
                   },
                 ),
-                CameraScreen(),
+                CameraScreen(userId: userId),
                 Navigator(
-                  key: controller.myPageNavigationKey,
+                  key: controller.followPageNavigationKey,
                   onGenerateRoute: (routeSetting){
                     return MaterialPageRoute(
                       builder: (context) => const FollowScreen(),
@@ -40,7 +40,7 @@ class HomeScreen extends GetView<BottomNavController> {
                   },
                 ),
                 Navigator(
-                  key: controller.followPageNavigationKey,
+                  key: controller.myPageNavigationKey,
                   onGenerateRoute: (routeSetting){
                     return MaterialPageRoute(
                       builder: (context) => MyPageScreen(userId: userId),

@@ -7,6 +7,9 @@ import 'package:get/get.dart';
 enum PageName { MAP, ARTICLES, UPLOAD, FOLLOW, MYPAGE }
 
 class BottomNavController extends GetxController {
+  BottomNavController({required this.userId});
+  String userId;
+
   static BottomNavController get to => Get.find();
   RxInt pageIndex = 0.obs;
   GlobalKey<NavigatorState> myPageNavigationKey = GlobalKey<NavigatorState>();
@@ -21,7 +24,7 @@ class BottomNavController extends GetxController {
     var page = PageName.values[value];
     switch (page) {
       case PageName.UPLOAD:
-        Get.to(() => CameraScreen());
+        Get.to(() => CameraScreen(userId: userId));
         break;
       case PageName.MAP:
       case PageName.ARTICLES:
@@ -68,16 +71,18 @@ class BottomNavController extends GetxController {
       return false;
     } else {
       /// stack에서 빼갈게 있다면, 그거 먼저 빼주세요.
-      var page =PageName.values[bottomHistory.last];
+      var page = PageName.values[bottomHistory.last];
       if(page == PageName.MYPAGE){
+        print("진짜 감자");
         var value = await myPageNavigationKey.currentState!.maybePop();
+        print(value);
         if(value) return false;
       }
-      if(page == PageName.ARTICLES){
+      else if(page == PageName.ARTICLES){
         var value = await snsPageNavigationKey.currentState!.maybePop();
         if(value) return false;
       }
-      if(page == PageName.FOLLOW){
+      else if(page == PageName.FOLLOW){
         var value = await followPageNavigationKey.currentState!.maybePop();
         if(value) return false;
       }
