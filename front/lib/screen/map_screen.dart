@@ -15,6 +15,7 @@ import 'dart:async' show Future;
 import 'dart:ui' as ui;
 import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svg_provider;
 import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:permission_handler/permission_handler.dart';
 
 String sangjunurl = 'https://source.unsplash.com/random/?party';
 String seoul2url = 'https://source.unsplash.com/random/?cat';
@@ -76,6 +77,8 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<String> checkPermission() async {
+    await Permission.notification.request();
+    PermissionStatus alarmstatus = await Permission.notification.status;
     final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
     if (!isLocationEnabled) {
       return '위치 서비스를 활성화 해주세요';
@@ -92,6 +95,9 @@ class _MapScreenState extends State<MapScreen> {
         return '앱의 위치 권한을 세팅에서 허가해주세요';
       }
     }
+    if (alarmstatus != PermissionStatus.granted) {
+    } else {}
+
     return '위치 권한이 허가되었습니다.';
   }
 }
@@ -237,7 +243,8 @@ class _CustomMapState extends State<_CustomMap> {
                 mapinfo: mapinfo,
                 areaname: areaname,
                 polygons: _polygonLatLong,
-                urls: randomurl[cnt % 5]);
+                // urls: '');
+            urls: randomurl[cnt % 5]);
             localareadata != null ? allareaData.add(localareadata!) : null;
             cnt = cnt + 1;
           }
@@ -273,7 +280,7 @@ class _CustomMapState extends State<_CustomMap> {
           fullname = areadata[areanum]!.split(' ');
           String dosi = fullname.first;
           mapinfo["dosi"] = dosi;
-          areaname = areadata[areanum]!;
+          areaname = feature.properties!['CTPRVN_CD']!;
         }
         // areaname = feature.properties!['EMD_KOR_NM'];
         else {
@@ -351,7 +358,7 @@ class _CustomMapState extends State<_CustomMap> {
           FlutterMap(
             mapController: mapController,
             options: MapOptions(
-              maxZoom: 20,
+              maxZoom: 18,
               minZoom: 6,
               center: LatLng(37.60732175555233, 127.0710794642477),
               zoom: _zoom,
