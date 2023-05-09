@@ -47,7 +47,7 @@ public class UserRepositorySupportImpl implements UserRepositorySupport {
                                 "followYn"
                         )))
                 .from(user)
-                .join(article)
+                .leftJoin(article)
                 .on(article.user.userId.eq(userId))
                 .where(user.userId.eq(userId))
                 .fetchOne();
