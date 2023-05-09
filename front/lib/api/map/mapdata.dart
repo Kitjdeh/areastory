@@ -4,35 +4,25 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class AreaData {
-  final String? doName;
-  final String? si;
-  final String? gun;
-  final String? gu;
-  final String? dong;
-  final String? eup;
-  final String? myeon;
+  final Map<String, String>? locationDto;
   final String? image;
   final int? articleId;
   AreaData(
-      {this.doName,
-      this.si,
-      this.gun,
-      this.gu,
-      this.dong,
-      this.eup,
-      this.myeon,
+      {this.locationDto,
       this.image,
       this.articleId});
-
+//   {
+//   locationDto : {
+//   "dosi" : "경기도",
+//   "sigungu" : "연천군",
+//   "dongeupmyeon" : "역삼동"
+//   },
+//   image : "http://localhost",
+//   articleId : 3
+// },
   factory AreaData.fromJson(Map<String, dynamic> json) {
     return AreaData(
-        doName: json["doName"],
-        si: json["si"],
-        gun: json["gun"],
-        gu: json["gu"],
-        dong: json["dong"],
-        eup: json["eup"],
-        myeon: json["myeon"],
+        locationDto: json["locationDto"],
         image: json["image"],
         articleId: json["articleId"]);
   }
@@ -44,7 +34,6 @@ Future<dynamic> postAreaData(List<Map<String, String>> data) async {
   List<AreaData> areadata = [];
   Map<String, String> headers = {
     'Content-Type': 'application/json',
-
   };
   // 'Accept': 'application/json',
   // 'Content-Type': 'application/json',
