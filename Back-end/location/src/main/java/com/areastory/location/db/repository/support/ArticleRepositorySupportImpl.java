@@ -54,10 +54,10 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
     private JPAQuery<ArticleSub> getSubQuery(List<LocationDto> locationList) {
         return query
                 .select(Projections.constructor(ArticleSub.class,
-                        article.dailyLikeCount.max(),
                         article.dosi,
                         article.sigungu,
-                        article.dongeupmyeon
+                        article.dongeupmyeon,
+                        article.dailyLikeCount.max()
                 ))
                 .from(article)
                 .where(getWhereOr(locationList))

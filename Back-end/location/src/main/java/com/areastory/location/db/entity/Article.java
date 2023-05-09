@@ -10,9 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "article", indexes = {@Index(name = "idx_location", columnList = "dosi,daily_like_count"),
-        @Index(name = "idx_location", columnList = "dosi,sigungu,daily_like_count"),
-        @Index(name = "idx_location", columnList = "dosi,sigungu,dongeupmyeon,daily_like_count")
+@Table(name = "article", indexes = {@Index(name = "idx_location2", columnList = "dosi,daily_like_count")
 })
 public class Article extends Location {
     @Id

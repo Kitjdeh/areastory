@@ -20,6 +20,7 @@ public class LocationController {
         try {
             return ResponseEntity.ok(locationService.getMapImages(locationList));
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("뭔가 잘못됨 ㅋㅋ");
             return ResponseEntity.noContent().build();
         }
