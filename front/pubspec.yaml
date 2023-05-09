@@ -86,6 +86,8 @@ flutter:
 
   assets:
     - asset/img/
+    - asset/img/bottom_nav/
+    - asset/img/options/
     - asset/location/location.xlsx
     - asset/map/
 

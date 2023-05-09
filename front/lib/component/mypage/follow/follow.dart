@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:front/component/mypage/follow/follower.dart';
 import 'package:front/component/mypage/follow/following.dart';
 import 'package:front/constant/follow_tabs.dart';
+import 'package:front/controllers/bottom_nav_controller.dart';
+import 'package:get/get.dart';
 
 class MypageFollowScreen extends StatefulWidget {
   const MypageFollowScreen({Key? key, required this.index}) : super(key: key);
@@ -48,10 +50,10 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
           /// 뒤로가기버튼설정
           icon: Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black,
-          onPressed: () {
-            // Navigator.of(context).pop();
-            Beamer.of(context).beamBack();
-          },
+          onPressed: BottomNavController.to.willPopAction,
+          //   () {
+          //   // Get.find<BottomNavController>().willPopAction();
+          // },
         ),
       ),
       body: Column(

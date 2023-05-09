@@ -99,7 +99,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   'providerId': kakaoid,
                   'registrationToken': this.widget.fcmToken
                 };
-                print(userReq['nickname']);
                 final formData = FormData.fromMap({
                   'userReq': MultipartFile.fromString(
                       json.encode(userReq),
@@ -120,14 +119,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       data: formData
                   );
                   if (res.statusCode == 200){
-                    print("회원가입성공. SSE 시작합니다");
+                    print("회원가입 성공했습니다.");
                     /// 회원가입 성공시 storage에 저장
                     // print(res.data['data']['userId']);
                     await storage.write(key: "userId", value: res.data['data']['userId'].toString());
                     /// 회원가입 성공시 페이지 이동.
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => MyApp()),
+                      MaterialPageRoute(builder: (context) => MyApp(userId: res.data['data']['userId'].toString())),
                     );
                   }
                 } catch (e) {
