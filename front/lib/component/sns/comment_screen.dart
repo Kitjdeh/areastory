@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:front/api/comment/create_comment.dart';
 import 'package:front/api/comment/get_comments.dart';
 import 'package:front/component/sns/comment/comment.dart';
-import 'package:front/const/comment_test.dart';
+
+const List<String> list = <String>['인기순', '최신순'];
 
 class SnsCommentScreen extends StatefulWidget {
   const SnsCommentScreen({Key? key, required this.index, required this.userId})
@@ -19,6 +20,7 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
   int _currentPage = 1;
   int? _lastPage = 0;
   List _comments = [];
+  String dropdownValue = list.first;
 
   final TextEditingController _commentController = TextEditingController();
 
@@ -38,26 +40,32 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
   }
 
   void onDelete(int commentId) async {
-    setState(() {
-      _comments.removeWhere((comment) => comment.commentId == commentId);
-    });
+    setState(() {});
   }
 
   void printComments() async {
+    _currentPage = 1;
+    _comments.clear();
     final commentData = await getComments(
+      sort: dropdownValue == '인기순' ? 'likeCount' : 'commentId',
       articleId: articleId,
+      page: _currentPage,
     );
     _comments.addAll(commentData.comments);
     _lastPage = commentData.totalPageNumber;
+
     setState(() {});
   }
 
   void _loadMoreData() async {
+    _currentPage++;
     final newComments = await getComments(
+      sort: dropdownValue == '인기순' ? 'likeCount' : 'commentId',
       articleId: articleId,
+      page: _currentPage,
     );
     _comments.addAll(newComments.comments);
-    _currentPage++;
+    _lastPage = newComments.totalPageNumber;
 
     setState(() {
       // scrollToIndex(5);
@@ -74,11 +82,8 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
       articleId: articleId,
     );
 
-    if (_comments.length == 0) {
-      printComments();
-    } else {
-      _comments.insert(0, newComment.comments.first);
-    }
+    _comments.insert(0, newComment.comments.first);
+
     setState(() {});
 
     _commentController.clear();
@@ -92,6 +97,12 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
 
   void _updateIsChildActive(bool isChildActive) {
     setState(() {});
+  }
+
+  void onChangeSort(String dropdownValue) {
+    setState(() {
+      printComments();
+    });
   }
 
   @override
@@ -116,6 +127,26 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
             Beamer.of(context).beamBack();
           },
         ),
+        actions: [
+          DropdownButton<String>(
+            value: dropdownValue,
+            style: const TextStyle(color: Colors.black),
+            underline: null,
+            autofocus: true,
+            dropdownColor: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(15)),
+            onChanged: (String? value) {
+              dropdownValue = value!;
+              onChangeSort(value!);
+            },
+            items: list.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          )
+        ],
       ),
       body: SafeArea(
         child: Column(
@@ -151,7 +182,7 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
               child: Container(
                 child: RefreshIndicator(
                   onRefresh: () async {
-                    await Future.delayed(Duration(seconds: 3));
+                    printComments();
                   },
                   child: ListView.separated(
                     controller: _scrollController,

@@ -3,13 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-Future<ArticleData> getArticles({
-  String? sort,
-  int? page,
-  String? dosi,
-  String? sigungu,
-  String? dongeupmyeon,
-}) async {
+Future<ArticleData> getFollowArticles() async {
   final dio = Dio(BaseOptions(
     baseUrl: '${dotenv.get('BASE_URL')}/api/articles',
   ));
@@ -18,18 +12,13 @@ Future<ArticleData> getArticles({
   final userId = await storage.read(key: 'userId');
 
   final response = await dio.get('', queryParameters: {
-    'sort': sort,
-    'page': page,
     'userId': userId,
-    'dosi': dosi,
-    'sigungu': sigungu,
-    'dongeupmyeon': dongeupmyeon,
   });
 
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());
     final articleData = ArticleData.fromJson(jsonData);
-    print('all게시글 요청 성공');
+    print('all팔로우게시글 요청 성공');
     return articleData;
   } else {
     print('실패');
@@ -93,20 +82,20 @@ class Article {
 
   Article(
       {required this.articleId,
-      required this.userId,
-      required this.nickname,
-      required this.profile,
-      required this.content,
-      required this.image,
-      required this.dailyLikeCount,
-      required this.totalLikeCount,
-      required this.commentCount,
-      required this.likeYn,
-      required this.followYn,
-      required this.createdAt,
-      this.dosi,
-      this.sigungu,
-      this.dongeupmyeon});
+        required this.userId,
+        required this.nickname,
+        required this.profile,
+        required this.content,
+        required this.image,
+        required this.dailyLikeCount,
+        required this.totalLikeCount,
+        required this.commentCount,
+        required this.likeYn,
+        required this.followYn,
+        required this.createdAt,
+        this.dosi,
+        this.sigungu,
+        this.dongeupmyeon});
 
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(

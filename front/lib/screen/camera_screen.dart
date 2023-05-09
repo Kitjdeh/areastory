@@ -1,31 +1,8 @@
 import 'dart:io';
 import 'package:beamer/beamer.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:front/api/comment/create_comment.dart';
-import 'package:front/api/comment/delete_comment.dart';
-import 'package:front/api/comment/get_comments.dart';
-import 'package:front/api/comment/update_comment.dart';
-import 'package:front/api/follow/create_following.dart';
-import 'package:front/api/follow/delete_follower.dart';
-import 'package:front/api/follow/delete_following.dart';
-import 'package:front/api/follow/get_followers.dart';
-import 'package:front/api/follow/get_followings_search.dart';
-import 'package:front/api/follow/get_followings_sort.dart';
-import 'package:front/api/like/create_article_like.dart';
-import 'package:front/api/like/create_comment_like.dart';
-import 'package:front/api/like/delete_article_like.dart';
-import 'package:front/api/like/delete_comment_like.dart';
-import 'package:front/api/like/get_article_likes.dart';
-import 'package:front/api/like/get_comment_likes.dart';
 import 'package:front/api/sns/create_article.dart';
-import 'package:front/api/sns/get_article.dart';
-import 'package:front/api/sns/get_mylike_article.dart';
-import 'package:front/api/sns/update_article.dart';
-import 'package:front/api/sns/delete_article.dart';
-import 'package:front/screen/home_screen.dart';
-import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -54,14 +31,17 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   void createArticle(image, content) async {
+    print(_isSwitched);
+    print(content.text);
+    print(image);
     await postArticle(
       publicYn: _isSwitched,
       content: content.text,
       image: image,
       // 시,구,군 다 null 이면 안됨!
-      dosi: '성도',
-      sigungu: '성도시',
-      dongeupmyeon: '성동',
+      dosi: '서울특별시',
+      sigungu: '강남구',
+      dongeupmyeon: '역삼1동',
     );
 
     Beamer.of(context).beamToNamed('/create/sns/$userId');

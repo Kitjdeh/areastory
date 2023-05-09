@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front/api/sns/get_articles.dart';
 import 'package:front/component/sns/article/article.dart';
-import 'package:front/component/sns/article/article_detail.dart';
-import 'package:front/const/article_test.dart';
 import 'package:front/const/auto_search_test.dart';
 
 const List<String> list = <String>['인기순', '최신순'];
@@ -33,8 +31,11 @@ class _SnsScreenState extends State<SnsScreen> {
   }
 
   void printArticles() async {
+    _currentPage = 1;
+    _articles.clear();
     final articleData = await getArticles(
       sort: dropdownValue == '인기순' ? 'likeCount' : 'articleId',
+      page: _currentPage,
       dosi: seletedLocationDosi,
       sigungu: seletedLocationSigungu,
       dongeupmyeon: seletedLocationDongeupmyeon,
@@ -45,16 +46,16 @@ class _SnsScreenState extends State<SnsScreen> {
   }
 
   void _loadMoreData() async {
-    // 나중에 페이지 추가해서 넣어야할듯??
-    // sort는 articleId or likeCount
+    _currentPage++;
     final newArticles = await getArticles(
       sort: dropdownValue == '인기순' ? 'likeCount' : 'articleId',
+      page: _currentPage,
       dosi: seletedLocationDosi,
       sigungu: seletedLocationSigungu,
       dongeupmyeon: seletedLocationDongeupmyeon,
     );
     _articles.addAll(newArticles.articles);
-    _currentPage++;
+    _lastPage = newArticles.totalPageNumber;
 
     setState(() {
       // scrollToIndex(5);
@@ -73,34 +74,32 @@ class _SnsScreenState extends State<SnsScreen> {
     });
   }
 
-  void _updateIsChildActive(bool isChildActive) async {
-    setState(() {});
-  }
+  void _updateIsChildActive(followingId) async {}
 
   void handleLocationSelected(String selectedLocation) {
     List<String> locationParts = selectedLocation.split(' ');
+    print(locationParts);
 
-    if (locationParts.length >= 1) {
+    if (locationParts.length == 3) {
       seletedLocationDosi = locationParts[0];
-    }
-    if (locationParts.length >= 2) {
       seletedLocationSigungu = locationParts[1];
-    }
-    if (locationParts.length >= 3) {
       seletedLocationDongeupmyeon = locationParts[2];
+    } else {
+      seletedLocationDosi = locationParts[0];
+      seletedLocationSigungu = locationParts[1] + ' ' + locationParts[2];
+      seletedLocationDongeupmyeon = locationParts[3];
     }
+
     print(seletedLocationDosi);
     print(seletedLocationSigungu);
     print(seletedLocationDongeupmyeon);
 
-    _articles.clear();
     setState(() {
       printArticles();
     });
   }
 
   void onChangeSort(String dropdownValue) {
-    _articles.clear();
     setState(() {
       printArticles();
     });
@@ -155,7 +154,7 @@ class _SnsScreenState extends State<SnsScreen> {
               child: Container(
                 child: RefreshIndicator(
                   onRefresh: () async {
-                    await Future.delayed(Duration(seconds: 3));
+                    printArticles();
                   },
                   child: ListView.separated(
                     controller: _scrollController,
@@ -183,13 +182,13 @@ class _SnsScreenState extends State<SnsScreen> {
                           height: 500,
                           onUpdateIsChildActive: _updateIsChildActive,
                         );
-                      } else if (_currentPage < _lastPage!) {
+                      } else if (_currentPage <= _lastPage!) {
                         _loadMoreData();
-                        // return Container(
-                        //   height: 50,
-                        //   alignment: Alignment.center,
-                        //   child: const CircularProgressIndicator(),
-                        // );
+                        return Container(
+                          height: 50,
+                          alignment: Alignment.center,
+                          child: const CircularProgressIndicator(),
+                        );
                       }
                     },
                     separatorBuilder: (context, index) {

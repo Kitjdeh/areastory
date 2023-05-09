@@ -5,7 +5,7 @@ import 'package:front/api/login/kakao/kakao_login.dart';
 import 'package:front/api/login/kakao/login_view_model.dart';
 
 class FollowScreen extends StatefulWidget {
-  const FollowScreen({Key? key}) : super(key: key);
+  const FollowScreen({Key? key, required}) : super(key: key);
 
   @override
   State<FollowScreen> createState() => _FollowScreenState();

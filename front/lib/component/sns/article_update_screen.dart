@@ -1,11 +1,9 @@
-import 'dart:io';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:front/api/sns/create_article.dart';
 import 'package:front/api/sns/get_article.dart';
 import 'package:front/api/sns/update_article.dart';
-import 'package:image_picker/image_picker.dart';
+
 
 class SnsUpdateScreen extends StatefulWidget {
   const SnsUpdateScreen({Key? key, required this.index}) : super(key: key);

@@ -42,7 +42,6 @@ class CommentComponent extends StatefulWidget {
 }
 
 class _CommentComponentState extends State<CommentComponent> {
-  CommentData? detailData;
   bool isEditing = false;
   late TextEditingController _editCommentController;
 
@@ -54,22 +53,20 @@ class _CommentComponentState extends State<CommentComponent> {
 
   void createCommentLike(articleId, commentId) async {
     await postCommentLike(articleId: articleId, commentId: commentId);
-    // detailData = (await getComment(articleId: articleId, commentId: commentId))
-    //     as CommentData?;
-    // setState(() {});
+
+    setState(() {});
   }
 
   void delCommentLike(articleId, commentId) async {
     await deleteCommentLike(articleId: articleId, commentId: commentId);
-    // detailData = (await getComment(articleId: articleId, commentId: commentId))
-    //     as CommentData?;
-    // setState(() {});
+
+    setState(() {});
   }
 
   void delComment(articleId, commentId) async {
     await deleteComment(articleId: articleId, commentId: commentId);
-    detailData = null;
-    widget.onDelete(commentId);
+    setState(() {});
+    // widget.onDelete(commentId);
   }
 
   String _formatDate(dynamic createdAt) {
@@ -107,7 +104,6 @@ class _CommentComponentState extends State<CommentComponent> {
   void cancelEditing() {
     setState(() {
       isEditing = false;
-      _editCommentController.text = widget.content;
     });
   }
 
@@ -119,143 +115,90 @@ class _CommentComponentState extends State<CommentComponent> {
       content: editedValue,
     );
 
-    detailData = (await getComment(
-        articleId: widget.articleId,
-        commentId: widget.commentId)) as CommentData?;
     setState(() {
       isEditing = false;
     });
-    detailData = null;
-  }
-
-  Widget buildContent() {
-    if (isEditing) {
-      return Expanded(
-        child: TextFormField(
-          controller: _editCommentController,
-        ),
-      );
-    } else {
-      return Expanded(
-        child: Text(
-          detailData != null ? detailData!.content : widget.content,
-          style: const TextStyle(
-            fontSize: 14,
-          ),
-        ),
-      );
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        if (isEditing) {
-          cancelEditing();
-        }
-      },
-      child: SizedBox(
-        height: widget.height,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 10,
-            ),
-            CircleAvatar(
-              radius: 20,
-              backgroundImage: NetworkImage(widget.profile),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
+    return FutureBuilder<CommentData>(
+        future: getComment(
+            articleId: widget.articleId, commentId: widget.commentId),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return GestureDetector(
+              onTap: () {
+                if (isEditing) {
+                  cancelEditing();
+                }
+              },
+              child: SizedBox(
+                height: widget.height,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 10,
+                    ),
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(snapshot.data!.profile),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            widget.nickname,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            _formatDate(widget.createdAt),
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
-                            ),
-                          ),
-                          if (widget.myId == widget.userId)
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: isEditing
-                                      ? Icon(Icons.abc)
-                                      : Icon(Icons.update),
-                                  onPressed: () {
-                                    isEditing ? saveEditing() : startEditing();
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.delete),
-                                  onPressed: () {
-                                    delComment(
-                                        widget.articleId, widget.commentId);
-                                  },
-                                ),
-                              ],
-                            ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          // GestureDetector(
-                          //   onTap: () {
-                          //     detailData != null
-                          //         ? detailData!.likeYn
-                          //             ? delCommentLike(
-                          //                 widget.articleId, widget.commentId)
-                          //             : createCommentLike(
-                          //                 widget.articleId, widget.commentId)
-                          //         : widget.likeYn
-                          //             ? delCommentLike(
-                          //                 widget.articleId, widget.commentId)
-                          //             : createCommentLike(
-                          //                 widget.articleId, widget.commentId);
-                          //   },
-                          //   child: Image.asset(
-                          //     detailData != null
-                          //         ? detailData!.likeYn
-                          //             ? 'asset/img/like.png'
-                          //             : 'asset/img/nolike.png'
-                          //         : widget.likeYn
-                          //             ? 'asset/img/like.png'
-                          //             : 'asset/img/nolike.png',
-                          //     height: 30,
-                          //   ),
-                          // ),
-
-                          FutureBuilder<CommentData>(
-                              future: getComment(
-                                  articleId: widget.articleId,
-                                  commentId: widget.commentId),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                } else if (snapshot.hasData) {
-                                  return GestureDetector(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    snapshot.data!.nickname,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    _formatDate(widget.createdAt),
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  if (widget.myId == widget.userId)
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: isEditing
+                                              ? Icon(Icons.abc)
+                                              : Icon(Icons.update),
+                                          onPressed: () {
+                                            isEditing
+                                                ? saveEditing()
+                                                : startEditing();
+                                          },
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.delete),
+                                          onPressed: () {
+                                            delComment(widget.articleId,
+                                                widget.commentId);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  GestureDetector(
                                     onTap: () {
                                       snapshot.data!.likeYn
                                           ? delCommentLike(widget.articleId,
@@ -269,30 +212,46 @@ class _CommentComponentState extends State<CommentComponent> {
                                           : 'asset/img/nolike.png',
                                       height: 30,
                                     ),
-                                  );
-                                } else if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                } else {
-                                  return Text('No data');
-                                }
-                              }),
-
-                          Text(detailData != null
-                              ? '${detailData!.likeCount}'
-                              : '${widget.likeCount}'),
+                                  ),
+                                  Text('${snapshot.data!.likeCount}'),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 5),
+                          if (isEditing)
+                            Expanded(
+                              child: TextFormField(
+                                // initialValue: snapshot.data!.content,
+                                controller: _editCommentController,
+                              ),
+                            )
+                          else
+                            Expanded(
+                              child: Text(
+                                snapshot.data!.content,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          const SizedBox(height: 5),
                         ],
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  buildContent(),
-                  const SizedBox(height: 5),
-                ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
+            );
+          } else if (snapshot.hasError) {
+            return Container(
+              height: 0,
+            );
+          } else {
+            return Container(
+              height: 0,
+            );
+          }
+        });
   }
 }

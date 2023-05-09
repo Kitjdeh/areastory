@@ -1,15 +1,14 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:front/api/like/get_article_likes.dart';
-import 'package:front/component/sns/comment/comment.dart';
 import 'package:front/component/sns/like/like.dart';
-import 'package:front/const/comment_test.dart';
-import 'package:front/const/like_test.dart';
-import 'package:front/constant/follow_tabs.dart';
+
 
 class SnsLikeScreen extends StatefulWidget {
-  const SnsLikeScreen({Key? key, required this.index}) : super(key: key);
+  const SnsLikeScreen({Key? key, required this.index, required this.userId})
+      : super(key: key);
   final String index;
+  final String userId;
 
   @override
   State<SnsLikeScreen> createState() => _SnsLikeScreenState();
@@ -23,15 +22,17 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
   List _likes = [];
 
   late final articleId = int.parse(widget.index);
+  late final userId = int.parse(widget.userId);
 
   @override
   void initState() {
     super.initState();
-
     printLikes();
   }
 
   void printLikes() async {
+    _currentPage = 1;
+    _likes.clear();
     final likeData = await getArticleLikes(
       articleId: articleId,
     );
@@ -41,11 +42,12 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
   }
 
   void _loadMoreData() async {
+    _currentPage++;
     final newLikes = await getArticleLikes(
       articleId: articleId,
     );
     _likes.addAll(newLikes.users);
-    _currentPage++;
+    _lastPage = newLikes.totalPageNumber;
 
     setState(() {
       // scrollToIndex(5);
@@ -57,7 +59,6 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
   void scrollToIndex(int index) {
     _scrollController.jumpTo(index * 100); // jumpTo 메서드를 사용하여 스크롤합니다.
   }
-
 
   void _updateIsChildActive(bool isChildActive) {
     setState(() {});
@@ -96,7 +97,7 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
               child: Container(
                 child: RefreshIndicator(
                   onRefresh: () async {
-                    await Future.delayed(Duration(seconds: 3));
+                    printLikes();
                   },
                   child: ListView.separated(
                     controller: _scrollController,
@@ -104,6 +105,7 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
                     itemBuilder: (BuildContext context, int index) {
                       if (index < _likes.length) {
                         return LikeComponent(
+                          myId: userId,
                           followingId: _likes[index].userId,
                           nickname: _likes[index].nickname,
                           profile: _likes[index].profile,

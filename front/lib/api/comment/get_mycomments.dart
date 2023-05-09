@@ -3,9 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-Future<CommentData> getComments({
-  String? sort,
+Future<CommentData> getMyComments({
+  // articleId 아무거나 넣어도 됨!!
   required int articleId,
+  String? sort,
   int? page,
 }) async {
   final dio = Dio(BaseOptions(
@@ -15,10 +16,10 @@ Future<CommentData> getComments({
   final storage = new FlutterSecureStorage();
   final userId = await storage.read(key: 'userId');
 
-  final response = await dio.get('/$articleId/comments', queryParameters: {
-    'sort': sort,
-    'userId': userId,
-    'page': page,
+  final response =
+      await dio.get('/$articleId/comments/$userId', queryParameters: {
+    // 'sort':'commentId',
+    // 'page':'1',
   });
 
   if (response.statusCode == 200) {

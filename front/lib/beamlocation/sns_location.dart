@@ -11,7 +11,7 @@ class SnsLocation extends BeamLocation<BeamState> {
   @override
   List<String> get pathPatterns => [
         '/sns/:userId',
-        '/sns/like/:index',
+        '/sns/like/:index/:userId',
         '/sns/comment/:index/:userId',
         '/sns/update/:index',
         '/sns/chat'
@@ -37,11 +37,11 @@ class SnsLocation extends BeamLocation<BeamState> {
           key: ValueKey('sns/comment/$index/$userId'),
           child: SnsCommentScreen(index: index, userId: userId),
         ),
-      if (state.uri.pathSegments.length == 3 &&
+      if (state.uri.pathSegments.length == 4 &&
           state.uri.pathSegments[1] == 'like')
         BeamPage(
-          key: ValueKey('sns/like/$index'),
-          child: SnsLikeScreen(index: index),
+          key: ValueKey('sns/like/$index/$userId'),
+          child: SnsLikeScreen(index: index, userId: userId),
         ),
       if (state.uri.pathSegments.length == 3 &&
           state.uri.pathSegments[1] == 'update')

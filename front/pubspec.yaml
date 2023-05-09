@@ -87,6 +87,7 @@ flutter:
   assets:
     - asset/img/
     - asset/location/location.xlsx
+    - asset/location/final_location.xlsx
     - asset/map/
 
     - local.env

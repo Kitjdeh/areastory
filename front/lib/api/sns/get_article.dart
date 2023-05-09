@@ -32,9 +32,9 @@ class ArticleData {
   final int articleId;
   final int userId;
   final String nickname;
-  final String? profile;
+  final String profile;
   final String content;
-  final String? image;
+  final String image;
   final int dailyLikeCount;
   final int totalLikeCount;
   final int commentCount;
@@ -56,8 +56,8 @@ class ArticleData {
       required this.likeYn,
       required this.followYn,
       required this.createdAt,
-      this.profile,
-      this.image,
+      required this.profile,
+      required this.image,
       this.dosi,
       this.sigungu,
       this.dongeupmyeon});
