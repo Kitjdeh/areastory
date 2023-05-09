@@ -92,10 +92,8 @@ class _MapScreenState extends State<MapScreen> {
         return '앱의 위치 권한을 세팅에서 허가해주세요';
       }
     }
-    if(alarmstatus !=PermissionStatus.granted){
-
-    }
-    else{}
+    if (alarmstatus != PermissionStatus.granted) {
+    } else {}
 
     return '위치 권한이 허가되었습니다.';
   }
@@ -242,7 +240,8 @@ class _CustomMapState extends State<_CustomMap> {
                 mapinfo: mapinfo,
                 areaname: areaname,
                 polygons: _polygonLatLong,
-                urls: randomurl[cnt % 5]);
+                // urls: '');
+            urls: randomurl[cnt % 5]);
             localareadata != null ? allareaData.add(localareadata!) : null;
             cnt = cnt + 1;
           }
@@ -278,7 +277,7 @@ class _CustomMapState extends State<_CustomMap> {
           fullname = areadata[areanum]!.split(' ');
           String dosi = fullname.first;
           mapinfo["dosi"] = dosi;
-          areaname = areadata[areanum]!;
+          areaname = feature.properties!['CTPRVN_CD']!;
         }
         // areaname = feature.properties!['EMD_KOR_NM'];
         else {
