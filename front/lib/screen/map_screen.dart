@@ -57,7 +57,7 @@ class _MapScreenState extends State<MapScreen> {
               if (snapshot.data == '위치 권한이 허가되었습니다.') {
                 return Column(
                   children: [
-                    // _CustomMap(),
+                    _CustomMap(),
                     _ChoolCheckButton(),
                   ],
                 );
