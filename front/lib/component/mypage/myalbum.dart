@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:front/const/colors.dart';
 
-class MyAlbum extends StatelessWidget {
-  // 한번에 최대 몇개를 불러올 것인가? -> 끝에 도달시 계속 늘리는 방식?
-  List<int> numbers = List.generate(10, (index) => index);
+class MyAlbum extends StatefulWidget {
 
   MyAlbum({Key? key}) : super(key: key);
+
+  @override
+  State<MyAlbum> createState() => _MyAlbumState();
+}
+
+class _MyAlbumState extends State<MyAlbum> {
+  // 한번에 최대 몇개를 불러올 것인가? -> 끝에 도달시 계속 늘리는 방식?
+  List<int> numbers = List.generate(10, (index) => index);
 
   @override
   Widget build(BuildContext context) {
@@ -15,12 +21,15 @@ class MyAlbum extends StatelessWidget {
   }
 
   // 3
-  // 최대 사이즈
   Widget renderMaxExtent() {
     return GridView.builder(
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        // gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         // 가로 크기 150으로 설정시 3개가 나온다.
-        maxCrossAxisExtent: 150,
+        // maxCrossAxisExtent: 150,
+        crossAxisCount: 3,
+        childAspectRatio: 1,
+        mainAxisSpacing: 1,
       ),
       // 아이템 빌더시 현재는 컬러랑 인덱스를 출력하는데 나중에는 이미지 리스트를 받아와야한다.
       itemBuilder: (context, index) {

@@ -35,7 +35,7 @@ class HomeScreen extends GetView<BottomNavController> {
                   key: controller.followPageNavigationKey,
                   onGenerateRoute: (routeSetting){
                     return MaterialPageRoute(
-                      builder: (context) => const FollowScreen(),
+                      builder: (context) => FollowScreen(),
                     );
                   },
                 ),

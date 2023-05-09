@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:front/api/sns/create_article.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:get/get.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({Key? key, required this.userId}) : super(key: key);
@@ -100,6 +101,7 @@ class _CameraScreenState extends State<CameraScreen> {
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     return SafeArea(
+
       child: GestureDetector(
         onTap: () {
           // 화면 클릭 이벤트 처리
@@ -114,7 +116,25 @@ class _CameraScreenState extends State<CameraScreen> {
         },
         child: Scaffold(
           backgroundColor: const Color(0xFFECF9FF),
-          body: SingleChildScrollView(
+          appBar: AppBar(
+            title: Text(
+              "게시글 등록",
+              style: TextStyle(color: Colors.black),
+            ),
+            centerTitle: true,
+            backgroundColor: Colors.white,
+            elevation: 0,
+
+            /// 앱바 그림자효과 제거
+            leading: IconButton(
+              /// 뒤로가기버튼설정
+              icon: Icon(Icons.arrow_back_ios_new_outlined),
+              color: Colors.black,
+              onPressed: () {
+                Get.back();
+              },
+            ),
+          ),          body: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
