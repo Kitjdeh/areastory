@@ -33,11 +33,11 @@ class _LoginScreenState extends State<LoginScreen> {
             ElevatedButton(
               onPressed: () async {
                 final HASH = await KakaoSdk.origin;
-                // print('123123${HASH}');
                 await viewModel.login();
                 setState(() {});
 
                 /// 로그인시 카카오가 던져주는 키값
+                print("카카오 통신성공! 카카오 유저 정보 가져옵니다.");
                 print(viewModel.user?.id);
                 print(viewModel.user?.kakaoAccount?.profile?.nickname);
                 print(viewModel.user?.kakaoAccount?.profile?.profileImageUrl);
@@ -45,32 +45,27 @@ class _LoginScreenState extends State<LoginScreen> {
                   final res = await getLogin(viewModel.user?.id, this.widget.fcmToken);
                   print(res.data);
                   if (res.msg == '신규 회원입니다.') {
+                    print("회원가입 페이지로 이동합니다.");
                     Navigator.pushNamed(
                       context,
                       '/signup',
                       arguments: viewModel.user,
                     );
                   } else {
-                    print("로그인 SSE 시작합니다");
-
+                    print("로그인 성공했습니다.");
                     /// 로그인 성공시 storage에 저장
-
                     await storage.write(
                         key: "userId", value: res.data['userId'].toString());
 
                     /// 로그인 성공시 페이지 이동.
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => MyApp()),
+                      MaterialPageRoute(builder: (context) => MyApp(userId: res.data['userId'].toString())),
                     );
                   }
                 } catch (e) {
+                  print("로그인 에러발생: 아래는 에러코드입니다.");
                   print(e);
-                  print("에러다다다다다다");
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyApp()),
-                  );
                 }
               },
               child: Text("로그인"),

@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:front/binding/init_bindings.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:beamer/beamer.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -171,13 +173,14 @@ void main() async {
       '/login': (context) => LoginScreen(fcmToken: fcmToken),
     },
     /// login -> myapp으로 값을 내린다. storage말고 그냥 내리는거 고려.
-    home: userId != null ? MyApp() : LoginScreen(fcmToken: fcmToken),
+    home: userId != null ? MyApp(userId: userId) : LoginScreen(fcmToken: fcmToken),
     // home: LoginScreen(),
   ));
 }
 
 class MyApp extends StatefulWidget {
-  MyApp({super.key});
+  MyApp({super.key, required this.userId});
+  String userId;
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -187,15 +190,7 @@ class _MyAppState extends State<MyApp> {
   String? _token;
   String? initialMessage;
   bool _resolved = false;
-  final routerDelegate = BeamerDelegate(
-    initialPath: '/map',
-    locationBuilder: RoutesLocationBuilder(
-      routes: {
-        '*': (context, state, data) => const HomeScreen(),
-        // '/login': (context, state, data) => const LoginScreen(),
-      },
-    ),
-  );
+
   @override
   void initState() {
     super.initState();
@@ -281,26 +276,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.indigo),
-      routerDelegate: routerDelegate,
-      routeInformationParser: BeamerParser(),
-      backButtonDispatcher: BeamerBackButtonDispatcher(
-        delegate: routerDelegate,
-      ),
+    return GetMaterialApp(
+      initialBinding: InitBinding(userId: widget.userId),
+      home: HomeScreen(userId: widget.userId),
     );
   }
 }
 
-// class NoCheckCertificateHttpOverrides extends HttpOverrides {
-//   @override
-//   HttpClient createHttpClient(SecurityContext? context) {
-//     return super.createHttpClient(context)
-//       ..badCertificateCallback =
-//           (X509Certificate cert, String host, int port) => true;
-//   }
-// }
 class MessageArguments {
   /// The RemoteMessage
   final RemoteMessage message;

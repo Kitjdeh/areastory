@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:front/component/mypage/follow/follower.dart';
 import 'package:front/component/mypage/follow/following.dart';
 import 'package:front/constant/follow_tabs.dart';
+import 'package:front/controllers/bottom_nav_controller.dart';
+import 'package:get/get.dart';
 
 class MypageFollowScreen extends StatefulWidget {
   const MypageFollowScreen({Key? key, required this.index}) : super(key: key);
@@ -28,7 +30,6 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
     followcontroller.addListener(() {
       setState(() {});
     });
-
   }
 
   @override
@@ -49,9 +50,9 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
           icon: Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black,
           onPressed: () {
-            // Navigator.of(context).pop();
-            Beamer.of(context).beamBack();
+            Get.find<BottomNavController>().willPopAction();
           },
+          // BottomNavController.to.willPopAction,
         ),
       ),
       body: Column(
@@ -74,8 +75,10 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
             onSubmitted: (val) {
               /// 전송할 값
               print(_inputValue);
+
               /// 현재 선택된 탭바 인덱스 -> 0: 팔로우, 1: 팔로잉
               print(followcontroller.index);
+
               /// 입력 완료 후 처리할 로직
               setState(() {
                 _inputValue = '';
@@ -95,9 +98,11 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
                               ))
                           .toList()),
                   Expanded(
-                      child: TabBarView(
-                          controller: followcontroller,
-                          children: [FollowerListScreen(), FollowingListScreen(),]))
+                      child:
+                          TabBarView(controller: followcontroller, children: [
+                    FollowerListScreen(),
+                    FollowingListScreen(),
+                  ]))
                 ],
               ),
             ),

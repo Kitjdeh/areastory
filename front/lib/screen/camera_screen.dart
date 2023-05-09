@@ -179,6 +179,8 @@ class _CameraScreenState extends State<CameraScreen> {
           ElevatedButton(
             onPressed: () {
               createArticle(_image, contentController);
+              Beamer.of(context).currentBeamLocation.update();
+              print(Beamer.of(context).currentBeamLocation);
             },
             child: Text('등록'),
           ),
