@@ -1,6 +1,7 @@
 package com.areastory.user.db.repository.support;
 
 
+import com.areastory.user.db.entity.QArticle;
 import com.areastory.user.db.entity.QFollow;
 import com.areastory.user.db.entity.QUser;
 import com.areastory.user.dto.response.UserDetailResp;
@@ -13,6 +14,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import static com.areastory.user.db.entity.QArticle.*;
 import static com.areastory.user.db.entity.QFollow.*;
 import static com.areastory.user.db.entity.QUser.*;
 
@@ -34,6 +36,7 @@ public class UserRepositorySupportImpl implements UserRepositorySupport {
                         user.userId,
                         user.nickname,
                         user.profile,
+                        ExpressionUtils.count(article.articleId),
                         user.followCount,
                         user.followingCount,
                         ExpressionUtils.as(
@@ -44,6 +47,8 @@ public class UserRepositorySupportImpl implements UserRepositorySupport {
                                 "followYn"
                         )))
                 .from(user)
+                .join(article)
+                .on(article.user.userId.eq(userId))
                 .where(user.userId.eq(userId))
                 .fetchOne();
     }

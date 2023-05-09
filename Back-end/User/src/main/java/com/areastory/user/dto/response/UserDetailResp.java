@@ -14,6 +14,7 @@ public class UserDetailResp {
     private Long userId;
     private String nickname;
     private String profile;
+    private Long articleCount;
     private Long followCount;
     private Long followingCount;
     private Boolean followYn;

@@ -68,6 +68,10 @@ public class FollowController {
             return responseDefault.notFound(false, "존재하지 않는 회원", null);
         }
 
+        if (userId.equals(followingId)) {
+            return responseDefault.fail(false, "본인 팔로우 실패", null);
+        }
+
         if (followService.addFollower(userId, followingId)) {
             return responseDefault.success(true, "팔로우 성공", null);
         } else {
