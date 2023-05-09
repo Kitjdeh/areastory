@@ -195,12 +195,6 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
                           commentId: _comments[index].commentId,
                           articleId: _comments[index].articleId,
                           userId: _comments[index].userId,
-                          nickname: _comments[index].nickname,
-                          profile: _comments[index].profile,
-                          content: _comments[index].content,
-                          likeCount: _comments[index].likeCount,
-                          likeYn: _comments[index].likeYn,
-                          createdAt: _comments[index].createdAt,
                           height: 100,
                           onUpdateIsChildActive: _updateIsChildActive,
                         );

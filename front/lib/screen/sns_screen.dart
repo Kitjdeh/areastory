@@ -166,23 +166,10 @@ class _SnsScreenState extends State<SnsScreen> {
                           onDelete: onDelete,
                           articleId: _articles[index].articleId,
                           followingId: _articles[index].userId,
-                          nickname: _articles[index].nickname,
-                          image: _articles[index].image,
-                          profile: _articles[index].profile,
-                          content: _articles[index].content,
-                          dailyLikeCount: _articles[index].dailyLikeCount,
-                          totalLikeCount: _articles[index].totalLikeCount,
-                          commentCount: _articles[index].commentCount,
-                          likeYn: _articles[index].likeYn,
-                          followYn: _articles[index].followYn,
-                          createdAt: _articles[index].createdAt,
-                          dosi: _articles[index].dosi,
-                          sigungu: _articles[index].sigungu,
-                          dongeupmyeon: _articles[index].dongeupmyeon,
-                          height: 500,
+                          height: 400,
                           onUpdateIsChildActive: _updateIsChildActive,
                         );
-                      } else if (_currentPage <= _lastPage!) {
+                      } else if (_currentPage < _lastPage!) {
                         _loadMoreData();
                         return Container(
                           height: 50,

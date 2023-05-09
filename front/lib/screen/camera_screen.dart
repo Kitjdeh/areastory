@@ -40,8 +40,8 @@ class _CameraScreenState extends State<CameraScreen> {
       image: image,
       // 시,구,군 다 null 이면 안됨!
       dosi: '서울특별시',
-      sigungu: '강남구',
-      dongeupmyeon: '역삼1동',
+      sigungu: '서초구',
+      dongeupmyeon: '역삼동',
     );
 
     Beamer.of(context).beamToNamed('/create/sns/$userId');
@@ -136,6 +136,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   // 게시글 작성 폼
   Widget createPostForm() {
+
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: 16,
@@ -162,7 +163,7 @@ class _CameraScreenState extends State<CameraScreen> {
               _scrollController!.animateTo(120.0,
                   duration: Duration(milliseconds: 500), curve: Curves.ease);
             },
-            maxLines: 3,
+            maxLines: 2,
           ),
           // 비공개 여부 체크박스
           SwitchListTile(

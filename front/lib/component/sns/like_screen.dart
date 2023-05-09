@@ -107,9 +107,6 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
                         return LikeComponent(
                           myId: userId,
                           followingId: _likes[index].userId,
-                          nickname: _likes[index].nickname,
-                          profile: _likes[index].profile,
-                          followYn: _likes[index].followYn,
                           height: 100,
                           onUpdateIsChildActive: _updateIsChildActive,
                         );

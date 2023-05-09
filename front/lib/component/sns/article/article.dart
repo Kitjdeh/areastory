@@ -10,19 +10,6 @@ import 'package:front/api/sns/get_article.dart';
 class ArticleComponent extends StatefulWidget {
   final int articleId;
   final int followingId;
-  final String nickname;
-  final String image;
-  final String profile;
-  final String content;
-  final int dailyLikeCount;
-  final int totalLikeCount;
-  final int commentCount;
-  final bool likeYn;
-  final bool followYn;
-  final DateTime createdAt;
-  final String? dosi;
-  final String? sigungu;
-  final String? dongeupmyeon;
   final Function(int followingId) onUpdateIsChildActive;
   final double height;
   final userId;
@@ -31,20 +18,7 @@ class ArticleComponent extends StatefulWidget {
   ArticleComponent(
       {required this.articleId,
       required this.followingId,
-      required this.nickname,
       required this.height,
-      required this.image,
-      required this.profile,
-      required this.content,
-      required this.dailyLikeCount,
-      required this.totalLikeCount,
-      required this.commentCount,
-      required this.likeYn,
-      required this.followYn,
-      required this.createdAt,
-      this.dosi,
-      this.sigungu,
-      this.dongeupmyeon,
       required this.onUpdateIsChildActive,
       required this.userId,
       required this.onDelete,

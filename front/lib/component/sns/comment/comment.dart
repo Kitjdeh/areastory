@@ -9,12 +9,6 @@ class CommentComponent extends StatefulWidget {
   final int commentId;
   final int articleId;
   final int userId;
-  final String nickname;
-  final String profile;
-  final String content;
-  final int likeCount;
-  final bool likeYn;
-  final DateTime createdAt;
   final double height;
   final Function(bool isChildActive) onUpdateIsChildActive;
   final int myId;
@@ -25,12 +19,6 @@ class CommentComponent extends StatefulWidget {
     required this.commentId,
     required this.articleId,
     required this.userId,
-    required this.nickname,
-    required this.profile,
-    required this.content,
-    required this.likeCount,
-    required this.likeYn,
-    required this.createdAt,
     required this.height,
     required this.onUpdateIsChildActive,
     required this.myId,
@@ -48,7 +36,6 @@ class _CommentComponentState extends State<CommentComponent> {
   @override
   void initState() {
     super.initState();
-    _editCommentController = TextEditingController(text: widget.content);
   }
 
   void createCommentLike(articleId, commentId) async {
@@ -77,7 +64,6 @@ class _CommentComponentState extends State<CommentComponent> {
     } else if (createdAt is DateTime) {
       dateTime = createdAt;
     } else {
-      // Handle invalid createdAt format
       return '';
     }
 
@@ -127,6 +113,8 @@ class _CommentComponentState extends State<CommentComponent> {
             articleId: widget.articleId, commentId: widget.commentId),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            _editCommentController =
+                TextEditingController(text: snapshot.data!.content);
             return GestureDetector(
               onTap: () {
                 if (isEditing) {
@@ -166,7 +154,7 @@ class _CommentComponentState extends State<CommentComponent> {
                                     width: 10,
                                   ),
                                   Text(
-                                    _formatDate(widget.createdAt),
+                                    _formatDate(snapshot.data!.createdAt),
                                     style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 12,
