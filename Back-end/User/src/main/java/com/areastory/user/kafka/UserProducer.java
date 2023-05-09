@@ -21,6 +21,7 @@ public class UserProducer {
                 .provider(user.getProvider())
                 .providerId(user.getProviderId())
                 .build();
+        System.out.println(userKafkaDto);
         userTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_USER, userKafkaDto.getUserId(), userKafkaDto));
     }
 }
