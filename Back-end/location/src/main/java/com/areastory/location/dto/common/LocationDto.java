@@ -17,8 +17,19 @@ public class LocationDto {
         this.sigungu = sigungu;
         this.dongeupmyeon = dongeupmyeon;
     }
+@Builder
+    public LocationDto(String dosi, String sigungu) {
+        this.dosi = dosi;
+        this.sigungu = sigungu;
+    }
 
+    @Builder
+    public LocationDto(String dosi) {
+        this.dosi = dosi;
+    }
 
+    public LocationDto() {
+    }
 
     @Override
     public int hashCode() {

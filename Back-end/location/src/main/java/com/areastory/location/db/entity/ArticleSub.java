@@ -11,4 +11,12 @@ public class ArticleSub extends LocationDto {
         super(dosi, sigungu, dongeupmyeon);
         this.dailyLikeCount = dailyLikeCount;
     }
+    public ArticleSub(String dosi, String sigungu, Long dailyLikeCount) {
+        super(dosi, sigungu);
+        this.dailyLikeCount = dailyLikeCount;
+    }
+    public ArticleSub(String dosi, Long dailyLikeCount) {
+        super(dosi);
+        this.dailyLikeCount = dailyLikeCount;
+    }
 }

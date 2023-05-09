@@ -20,4 +20,16 @@ public class LocationResp {
         this.image = image;
         this.articleId = articleId;
     }
+    @Builder
+    public LocationResp(String dosi, String sigungu, String image, Long articleId) {
+        this.locationDto = new LocationDto(dosi, sigungu);
+        this.image = image;
+        this.articleId = articleId;
+    }
+    @Builder
+    public LocationResp(String dosi, String image, Long articleId) {
+        this.locationDto = new LocationDto(dosi);
+        this.image = image;
+        this.articleId = articleId;
+    }
 }
