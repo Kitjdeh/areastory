@@ -1,14 +1,14 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:front/api/like/get_article_likes.dart';
 import 'package:front/component/sns/like/like.dart';
-
+import 'package:front/controllers/bottom_nav_controller.dart';
+import 'package:get/get.dart';
 
 class SnsLikeScreen extends StatefulWidget {
-  const SnsLikeScreen({Key? key, required this.index, required this.userId})
+  const SnsLikeScreen({Key? key, required this.articleId, required this.userId})
       : super(key: key);
-  final String index;
-  final String userId;
+  final int articleId;
+  final int userId;
 
   @override
   State<SnsLikeScreen> createState() => _SnsLikeScreenState();
@@ -21,9 +21,6 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
 
   List _likes = [];
 
-  late final articleId = int.parse(widget.index);
-  late final userId = int.parse(widget.userId);
-
   @override
   void initState() {
     super.initState();
@@ -34,7 +31,7 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
     _currentPage = 1;
     _likes.clear();
     final likeData = await getArticleLikes(
-      articleId: articleId,
+      articleId: widget.articleId,
     );
     _likes.addAll(likeData.users);
     _lastPage = likeData.totalPageNumber;
@@ -44,7 +41,7 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
   void _loadMoreData() async {
     _currentPage++;
     final newLikes = await getArticleLikes(
-      articleId: articleId,
+      articleId: widget.articleId,
     );
     _likes.addAll(newLikes.users);
     _lastPage = newLikes.totalPageNumber;
@@ -66,29 +63,29 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          "좋아요",
-          style: TextStyle(color: Colors.black),
-        ),
-        centerTitle: true,
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: Colors.white,
-        elevation: 0,
+        appBar: AppBar(
+          title: Text(
+            "좋아요",
+            style: TextStyle(color: Colors.black),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          elevation: 0,
 
-        /// 앱바 그림자효과 제거
-        leading: IconButton(
-          /// 뒤로가기버튼설정
-          icon: Icon(Icons.arrow_back_ios_new_outlined),
-          color: Colors.black,
-          onPressed: () {
-            Beamer.of(context).beamBack();
-          },
+          /// 앱바 그림자효과 제거
+          leading: IconButton(
+            /// 뒤로가기버튼설정
+            icon: Icon(Icons.arrow_back_ios_new_outlined),
+            color: Colors.black,
+            onPressed: () {
+              Get.find<BottomNavController>().willPopAction();
+            },
+          ),
         ),
-      ),
-      body: SafeArea(
-        child: Column(
+        body: Column(
           children: [
             SizedBox(
               height: 10,
@@ -105,7 +102,7 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
                     itemBuilder: (BuildContext context, int index) {
                       if (index < _likes.length) {
                         return LikeComponent(
-                          myId: userId,
+                          myId: widget.userId,
                           followingId: _likes[index].userId,
                           height: 100,
                           onUpdateIsChildActive: _updateIsChildActive,

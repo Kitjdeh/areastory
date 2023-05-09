@@ -225,11 +225,9 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                                 builder:
                                                     (BuildContext context) {
                                                   return SnsCommentScreen(
-                                                    index: widget.articleId
-                                                        .toString(),
-                                                    userId: widget.userId
-                                                        .toString(),
-                                                  );
+                                                      articleId:
+                                                          widget.articleId,
+                                                      userId: widget.userId);
                                                 },
                                               );
                                             },

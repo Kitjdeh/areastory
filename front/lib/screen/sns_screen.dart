@@ -69,9 +69,7 @@ class _SnsScreenState extends State<SnsScreen> {
   }
 
   void onDelete(int articleId) {
-    setState(() {
-      _articles.removeWhere((article) => article.articleId == articleId);
-    });
+    setState(() {});
   }
 
   void _updateIsChildActive(followingId) async {}
@@ -166,7 +164,7 @@ class _SnsScreenState extends State<SnsScreen> {
                           onDelete: onDelete,
                           articleId: _articles[index].articleId,
                           followingId: _articles[index].userId,
-                          height: 400,
+                          height: 350,
                           onUpdateIsChildActive: _updateIsChildActive,
                         );
                       } else if (_currentPage < _lastPage!) {
