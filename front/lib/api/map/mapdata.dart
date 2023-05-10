@@ -4,13 +4,13 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class AreaData {
-  final Map<String, String>? locationDto;
+  final Map<String, String?>? locationDto;
   final String? image;
   final int? articleId;
   AreaData({this.locationDto, this.image, this.articleId});
   factory AreaData.fromJson(Map<String, dynamic> json) {
     return AreaData(
-        locationDto: Map<String, String>.from(json["locationDto"]),
+        locationDto: Map<String, String?>.from(json["locationDto"]),
         image: json["image"],
         articleId: json["articleId"]);
   }
@@ -38,17 +38,19 @@ Future<Map<String, AreaData>> postAreaData(
       // areadata = jsonDecode(utf8.decode(response.bodyBytes))
       : print("에러가 발생 에러코드${response.statusCode}");
   await Future.forEach(responseJson, (e) {
+    print('e${e} type${e.runtimeType}');
     areadata.add(AreaData.fromJson(e));
   });
-  print(areadata.first.locationDto.runtimeType);
+  print("areadata${areadata}");
+  // print(areadata.first.locationDto.runtimeType);
   // print(areadata.first.)
   await areadata != null
-      ? areadata.map((e) => e.locationDto!.containsKey('dongeupmyeon')
+      ? areadata.map((e) => e.locationDto!['dongeupmyeon'] !=null
           ? AreaInfo.addAll({e.locationDto!['dongupyeon'].toString() ?? "": e})
-          : e.locationDto!.containsKey('sigungu')
+          : e.locationDto!['sigungu'] !=null
               ?
-              // AreaInfo.addAll({e.locationDto!['sigungu'].toString() ?? "": e})
-              print(areadata.first.locationDto)
+              AreaInfo.addAll({e.locationDto!['sigungu'].toString() ?? "": e})
+              // print("e.locationDto${e.locationDto}")
               : AreaInfo.addAll({e.locationDto!['dosi'].toString() ?? "": e}))
       : null;
   print("Areainfo${AreaInfo}");

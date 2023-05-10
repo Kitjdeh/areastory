@@ -9,13 +9,15 @@ import 'package:front/component/map/customoverlay.dart';
 import 'package:front/component/sns/article/article_detail.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geojson/geojson.dart';
+
 import 'package:image_editor/image_editor.dart';
 import 'package:latlong2/latlong.dart';
-import 'dart:async' show Future;
+import 'dart:async' show Future, Timer;
 import 'dart:ui' as ui;
 import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svg_provider;
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:debounce_throttle/debounce_throttle.dart';
 
 String sangjunurl = 'https://source.unsplash.com/random/?party';
 String seoul2url = 'https://source.unsplash.com/random/?cat';
@@ -56,7 +58,9 @@ class _MapScreenState extends State<MapScreen> {
               }
               if (snapshot.data == '위치 권한이 허가되었습니다.') {
                 return Column(
-                  children: [_CustomMap(), _ChoolCheckButton()],
+                  children: [_CustomMap(),
+                    // _ChoolCheckButton()
+                  ],
                   // children: [_ChoolCheckButton()],
                 );
               }
@@ -114,7 +118,6 @@ class _CustomMapState extends State<_CustomMap> {
   Map<String, String> areadata = {};
   List<List<LatLng>> _polygon = [];
   List<String> urls = [];
-
   List<Mapdata> allareaData = [];
   List<Mapdata> bigareaData = [];
   List<Mapdata> middleareaData = [];
@@ -123,9 +126,17 @@ class _CustomMapState extends State<_CustomMap> {
   List<Mapdata> nowallareadata = [];
   Map<String, Mapdata> BigAreaData = {};
   Map<String, String> areamap = {};
-
   Mapdata? localareadata;
+
   double _zoom = 12.0;
+  // Positionchange 후 작동하게 하여야함
+  final updatepostionchange = Debouncer(Duration(seconds: 1),
+      // onChanged: optimizepostion(),
+      initialValue: null);
+
+  final Duration debounceDuration = const Duration(seconds: 1);
+  Timer? _debounce;
+
   var currentcenter = LatLng(37.60732175555233, 127.0710794642477);
   void minuszoom() {
     _zoom = mapController.zoom - 1;
@@ -160,6 +171,49 @@ class _CustomMapState extends State<_CustomMap> {
         areadata[num] = area;
       }
     }
+  }
+
+  void optimizepostion() async {
+    print("mapController.zoom${mapController.zoom}");
+    await _zoom > 13.0
+        ? nowallareadata = smallareaData
+        : _zoom > 9.0
+            ? nowallareadata = middleareaData
+            : nowallareadata = bigareaData;
+    setState(() {
+      _zoom > 13.0
+          ? nowallareadata = smallareaData
+          : _zoom > 9.0
+              ? nowallareadata = middleareaData
+              : nowallareadata = bigareaData;
+    });
+    print('posistionchanged 작동함');
+    List<Map<String, String>> requestlist = [];
+    // print('nowallareadata${nowallareadata.length}');
+    // 현재 보이는 화면의 경계를 계산
+    final bounds = mapController.bounds!;
+    final sw = bounds.southWest;
+    final ne = bounds.northEast;
+    // 화면 내에 있는 폴리곤만 필터링
+    final visibleMapdata = nowallareadata.where((p) {
+      return p.polygons!.any((point) {
+        return point.latitude >= sw!.latitude &&
+            point.latitude <= ne!.latitude &&
+            point.longitude >= sw.longitude &&
+            point.longitude <= ne!.longitude;
+      });
+    }).toList();
+
+    nowareadata = visibleMapdata;
+    setState(() {
+      nowareadata = visibleMapdata;
+    });
+    await Future.forEach(visibleMapdata, (e) {
+      requestlist.add(e.mapinfo!);
+    });
+    var A = visibleMapdata.map((e) => e.mapinfo).toList();
+    print(
+        "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
   }
 
   Future<void> _loadGeoJson(String link) async {
@@ -352,67 +406,110 @@ class _CustomMapState extends State<_CustomMap> {
                 await Future.forEach(visibleMapdata, (e) {
                   requestlist.add(e.mapinfo!);
                 });
-                print(requestlist);
+                // print(requestlist);
                 print(
                     "3nowareadata ${nowareadata.length} visibleMapdata${visibleMapdata.length}");
                 print("requestlist${requestlist.length}");
                 // Future<Map<String, AreaData>>result =
                 //     await postAreaData(requestlist);
-                Map<String, AreaData> result = await postAreaData(requestlist);
-                await Future.forEach(visibleMapdata, (e) {
-                  final areakey = e.keyname;
-                  final url = result[areakey]!.image;
-                  final userid = result[areakey]!.articleId;
-                  e.urls = url;
-                  e.articleId = userid ?? 0;
-                });
+                // Map<String, AreaData> result = await postAreaData(requestlist);
+                // await Future.forEach(visibleMapdata, (e) {
+                //   final areakey = e.keyname;
+                //   final url = result[areakey]!.image;
+                //   final userid = result[areakey]!.articleId;
+                //   e.urls = url;
+                //   e.articleId = userid ?? 0;
+                // });
                 setState(() {
                   nowareadata = visibleMapdata;
                 });
-                visibleMapdata.map((e) => print("mapdata ${e.keyname}"));
+                // visibleMapdata.map((e) => print("mapdata ${e.keyname}"));
               },
-              onPositionChanged: (pos, hasGesture) async {
-                print("mapController.zoom${mapController.zoom}");
-                await _zoom > 13.0
-                    ? nowallareadata = smallareaData
-                    : _zoom > 9.0
-                        ? nowallareadata = middleareaData
-                        : nowallareadata = bigareaData;
-                setState(() {
-                  _zoom > 13.0
+              onPositionChanged: (pos, hasGesture) {
+                if (_debounce?.isActive ?? false) _debounce!.cancel();
+                _debounce = Timer(debounceDuration, () async {
+                  print("mapController.zoom${mapController.zoom}");
+                  await _zoom > 13.0
                       ? nowallareadata = smallareaData
                       : _zoom > 9.0
                           ? nowallareadata = middleareaData
                           : nowallareadata = bigareaData;
-                });
-                print('posistionchanged 작동함');
-                List<Map<String, String>> requestlist = [];
-                // print('nowallareadata${nowallareadata.length}');
-                // 현재 보이는 화면의 경계를 계산
-                final bounds = mapController.bounds!;
-                final sw = bounds.southWest;
-                final ne = bounds.northEast;
-                // 화면 내에 있는 폴리곤만 필터링
-                final visibleMapdata = nowallareadata.where((p) {
-                  return p.polygons!.any((point) {
-                    return point.latitude >= sw!.latitude &&
-                        point.latitude <= ne!.latitude &&
-                        point.longitude >= sw.longitude &&
-                        point.longitude <= ne!.longitude;
+                  setState(() {
+                    _zoom > 13.0
+                        ? nowallareadata = smallareaData
+                        : _zoom > 9.0
+                            ? nowallareadata = middleareaData
+                            : nowallareadata = bigareaData;
                   });
-                }).toList();
-                // await visibleMapdata.map((e) => requestlist.add(e.mapinfo!));
+                  print('posistionchanged 작동함');
+                  List<Map<String, String>> requestlist = [];
+                  // print('nowallareadata${nowallareadata.length}');
+                  // 현재 보이는 화면의 경계를 계산
+                  final bounds = mapController.bounds!;
+                  final sw = bounds.southWest;
+                  final ne = bounds.northEast;
+                  // 화면 내에 있는 폴리곤만 필터링
+                  final visibleMapdata = nowallareadata.where((p) {
+                    return p.polygons!.any((point) {
+                      return point.latitude >= sw!.latitude &&
+                          point.latitude <= ne!.latitude &&
+                          point.longitude >= sw.longitude &&
+                          point.longitude <= ne!.longitude;
+                    });
+                  }).toList();
 
-                nowareadata = visibleMapdata;
-                setState(() {
                   nowareadata = visibleMapdata;
+                  setState(() {
+                    nowareadata = visibleMapdata;
+                  });
+                  await Future.forEach(visibleMapdata, (e) {
+                    requestlist.add(e.mapinfo!);
+                  });
+                  var A = visibleMapdata.map((e) => e.mapinfo).toList();
+                  print(
+                      "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
                 });
-                await Future.forEach(visibleMapdata, (e) {
-                  requestlist.add(e.mapinfo!);
-                });
-                var A = visibleMapdata.map((e) => e.mapinfo).toList();
-                print(
-                    "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
+                // updatepostionchange.values.listen((event) async {});
+                // print("mapController.zoom${mapController.zoom}");
+                // await _zoom > 13.0
+                //     ? nowallareadata = smallareaData
+                //     : _zoom > 9.0
+                //         ? nowallareadata = middleareaData
+                //         : nowallareadata = bigareaData;
+                // setState(() {
+                //   _zoom > 13.0
+                //       ? nowallareadata = smallareaData
+                //       : _zoom > 9.0
+                //           ? nowallareadata = middleareaData
+                //           : nowallareadata = bigareaData;
+                // });
+                // print('posistionchanged 작동함');
+                // List<Map<String, String>> requestlist = [];
+                // // print('nowallareadata${nowallareadata.length}');
+                // // 현재 보이는 화면의 경계를 계산
+                // final bounds = mapController.bounds!;
+                // final sw = bounds.southWest;
+                // final ne = bounds.northEast;
+                // // 화면 내에 있는 폴리곤만 필터링
+                // final visibleMapdata = nowallareadata.where((p) {
+                //   return p.polygons!.any((point) {
+                //     return point.latitude >= sw!.latitude &&
+                //         point.latitude <= ne!.latitude &&
+                //         point.longitude >= sw.longitude &&
+                //         point.longitude <= ne!.longitude;
+                //   });
+                // }).toList();
+                //
+                // nowareadata = visibleMapdata;
+                // setState(() {
+                //   nowareadata = visibleMapdata;
+                // });
+                // await Future.forEach(visibleMapdata, (e) {
+                //   requestlist.add(e.mapinfo!);
+                // });
+                // var A = visibleMapdata.map((e) => e.mapinfo).toList();
+                // print(
+                //     "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
               },
             ),
             children: [

@@ -62,6 +62,7 @@ dependencies:
   permission_handler: ^10.2.0 # 사용자 권한 물어보기
   get: ^4.6.5
   flutter_launcher_icons: ^0.13.1 # 앱 실행 아이콘 변경
+  debounce_throttle: ^2.0.0
 
 dev_dependencies:
   flutter_test:
