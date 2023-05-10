@@ -30,14 +30,14 @@ public class ChatController {
     //입장, 대화, 나가기의 값에 따라 서비스 처리
     @MessageMapping("/chat/message")
     public void message(ChatMessageReq message) {
-        session.getUserPrincipal().getName();
+//        session.getUserPrincipal().getName();
 //        ChatMessageResp chatMessageResp = null;
         /*
         채팅방의 인원수를 하나 증가
          */
         if (MessageType.ENTER.equals(message.getType())) {
             ChatMessageEnterResp chatMessageResp = chatService.enterRoom(message);
-            messagingTemplate.convertAndSendToUser(session.getUserPrincipal().getName(), "/sub/chat/room/" + message.getRoomId(), chatMessageResp);
+//            messagingTemplate.convertAndSendToUser(session.getUserPrincipal().getName(), "/sub/chat/room/" + message.getRoomId(), chatMessageResp);
             messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatMessageResp.getNickname() + "님이 입장하셨습니다.");
 
         }
