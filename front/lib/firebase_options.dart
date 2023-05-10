@@ -64,6 +64,6 @@ class DefaultFirebaseOptions {
     projectId: 'areastory-c6f82',
     storageBucket: 'areastory-c6f82.appspot.com',
     iosClientId: '495600762325-6rcdr083fvnldgn77iobejn51e2vd681.apps.googleusercontent.com',
-    iosBundleId: 'com.example.front',
+    iosBundleId: 'com.a302.areastory',
   );
 }
