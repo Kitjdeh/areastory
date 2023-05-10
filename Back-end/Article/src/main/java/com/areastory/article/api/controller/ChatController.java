@@ -48,6 +48,11 @@ public class ChatController {
         3. 채팅방 lastChatDate 갱신
          */
         else if (MessageType.TALK.equals(message.getType())) {
+            System.out.println("type: " + message.getType());
+            System.out.println("roomId: " + message.getRoomId());
+            System.out.println("userId: " + message.getUserId());
+            System.out.println("content: " + message.getContent());
+
             chatMessageResp = chatService.saveMessage(message);
         }
         messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatMessageResp);
