@@ -15,5 +15,5 @@ public interface ChatMessageService {
 
     ChatMessageEnterResp enterRoom(ChatMessageReq messageDto);
 
-    String outRoom(ChatMessageReq messageDto);
+    ChatMessageResp outRoom(ChatMessageReq messageDto);
 }

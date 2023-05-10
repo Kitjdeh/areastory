@@ -7,7 +7,6 @@ import com.areastory.article.db.entity.User;
 import com.areastory.article.db.repository.ChatMessageRepository;
 import com.areastory.article.db.repository.ChatRoomRepository;
 import com.areastory.article.db.repository.UserRepository;
-import com.areastory.article.dto.common.ChatMessageDto;
 import com.areastory.article.dto.common.ChatRoomDto;
 import com.areastory.article.dto.request.ChatMessageReq;
 import com.areastory.article.dto.response.ChatMessageEnterResp;
@@ -21,8 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -64,8 +61,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         //채팅방 시간 업데이트
         chatRoomRepository.findByRoomId(messageReq.getRoomId()).updateLastChatDate();
 
-        //최신 200개 대화 내용 불러오기
-        List<ChatMessageDto> messageList = chatMessageRepository.findByRoomId(messageReq.getRoomId());
+//        //최신 200개 대화 내용 불러오기
+//        List<ChatMessageDto> messageList = chatMessageRepository.findByRoomId(messageReq.getRoomId());
         return ChatMessageResp.builder()
                 .type(messageReq.getType())
                 .roomId(messageReq.getRoomId())
@@ -100,13 +97,21 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Transactional
     @Override
-    public String outRoom(ChatMessageReq messageReq) {
+    public ChatMessageResp outRoom(ChatMessageReq messageReq) {
         User user = userRepository.findById(messageReq.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         //방인원수 감소
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(messageReq.getRoomId());
         chatRoom.deleteUserCount();
-        return user.getNickname();
+        return ChatMessageResp.builder()
+                .type(messageReq.getType())
+                .roomId(messageReq.getRoomId())
+                .userId(messageReq.getUserId())
+                .profile(user.getProfile())
+                .nickname(user.getNickname())
+                .content(user.getNickname() + "님이 퇴장하셨습니다.")
+                .userCount(chatRoom.getUserCount())
+                .build();
     }
 
 
