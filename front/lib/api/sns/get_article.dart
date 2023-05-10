@@ -10,7 +10,7 @@ Future<ArticleData> getArticle({
     baseUrl: '${dotenv.get('BASE_URL')}/api/articles',
   ));
 
-  final storage = new FlutterSecureStorage();
+  final storage = FlutterSecureStorage();
   final userId = await storage.read(key: 'userId');
 
   final response = await dio.get('/$articleId', queryParameters: {

@@ -1,4 +1,3 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:front/api/follow/create_following.dart';
 import 'package:front/api/follow/delete_following.dart';
@@ -6,45 +5,23 @@ import 'package:front/api/like/create_article_like.dart';
 import 'package:front/api/like/delete_article_like.dart';
 import 'package:front/api/sns/delete_article.dart';
 import 'package:front/api/sns/get_article.dart';
+import 'package:front/component/sns/article_update_screen.dart';
+import 'package:front/component/sns/comment_screen.dart';
+import 'package:front/component/sns/like_screen.dart';
+import 'package:front/socket/socket_test.dart';
 
 class ArticleComponent extends StatefulWidget {
   final int articleId;
   final int followingId;
-  final String nickname;
-  final String image;
-  final String profile;
-  final String content;
-  final int dailyLikeCount;
-  final int totalLikeCount;
-  final int commentCount;
-  final bool likeYn;
-  final bool followYn;
-  final DateTime createdAt;
-  final String? dosi;
-  final String? sigungu;
-  final String? dongeupmyeon;
   final Function(int followingId) onUpdateIsChildActive;
   final double height;
-  final userId;
+  final int userId;
   final Function(int commentId) onDelete;
 
   ArticleComponent(
       {required this.articleId,
       required this.followingId,
-      required this.nickname,
       required this.height,
-      required this.image,
-      required this.profile,
-      required this.content,
-      required this.dailyLikeCount,
-      required this.totalLikeCount,
-      required this.commentCount,
-      required this.likeYn,
-      required this.followYn,
-      required this.createdAt,
-      this.dosi,
-      this.sigungu,
-      this.dongeupmyeon,
       required this.onUpdateIsChildActive,
       required this.userId,
       required this.onDelete,
@@ -86,7 +63,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
 
   void delArticle(articleId) async {
     await deleteArticle(articleId: articleId);
-
+    // setState(() {});
     widget.onDelete(articleId);
   }
 
@@ -162,8 +139,14 @@ class _ArticleComponentState extends State<ArticleComponent> {
                                     IconButton(
                                       icon: Icon(Icons.update),
                                       onPressed: () {
-                                        Beamer.of(context).beamToNamed(
-                                            '/sns/update/${widget.articleId}');
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SnsUpdateScreen(
+                                                      articleId:
+                                                          widget.articleId,
+                                                    )));
                                       },
                                     ),
                                     IconButton(
@@ -236,8 +219,14 @@ class _ArticleComponentState extends State<ArticleComponent> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  Beamer.of(context).beamToNamed(
-                                      '/sns/comment/${widget.articleId}/${widget.userId}');
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              SnsCommentScreen(
+                                                articleId: widget.articleId,
+                                                userId: widget.userId,
+                                              )));
                                 },
                                 child: Image.asset(
                                   'asset/img/comment.png',
@@ -246,7 +235,11 @@ class _ArticleComponentState extends State<ArticleComponent> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  Beamer.of(context).beamToNamed('/sns/chat');
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              LiveChatTest()));
                                 },
                                 child: Image.asset(
                                   'asset/img/comment.png',
@@ -261,8 +254,12 @@ class _ArticleComponentState extends State<ArticleComponent> {
                             ),
                             child: GestureDetector(
                               onTap: () {
-                                Beamer.of(context).beamToNamed(
-                                    '/sns/like/${widget.articleId}/${widget.userId}');
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SnsLikeScreen(
+                                            articleId: widget.articleId,
+                                            userId: widget.userId)));
                               },
                               child: Text(
                                 '좋아요 ' +
@@ -357,8 +354,13 @@ class _ArticleComponentState extends State<ArticleComponent> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Beamer.of(context).beamToNamed(
-                                    '/sns/comment/${widget.articleId}/${widget.userId}');
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SnsCommentScreen(
+                                              articleId: widget.articleId,
+                                              userId: widget.userId,
+                                            )));
                               },
                               child: Text(
                                 '댓글 ${snapshot.data!.commentCount}개 모두 보기',

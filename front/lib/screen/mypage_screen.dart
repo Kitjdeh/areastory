@@ -6,6 +6,7 @@ import 'package:front/api/login/kakao/login_view_model.dart';
 import 'package:front/api/user/get_user.dart';
 import 'package:front/component/mypage/follow/follow.dart';
 import 'package:front/component/mypage/mypage_tabbar.dart';
+import 'package:front/component/mypage/updateprofile/updateprofile.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:get/get.dart';
 
@@ -64,16 +65,27 @@ class _MyPageScreenState extends State<MyPageScreen>
                 // 프로필 사진
                 // 컨테이너는 넓이, 높이 설정안하면 -> 자동으로 최대크기
                 // sizedbox는 하나라도 설정안하면 -> 자동으로 child의 최대크기
-                Container(
-                  width: 100,
-                  height: 100,
-                  // ClipRRect: R이 2개다. 그리고 강제로 차일드의 모양을 강제로 잡아주는 용도.
-                  child: ClipRRect(
-                    // 가장 완벽한 원을 만드는 방법은 상위가 되었든 뭐든, 높이길이의 50%(높이=넓이)
-                    borderRadius: BorderRadius.circular(50),
-                    child: Image.network(
-                      snapshot.data!.profile.toString(),
-                      fit: BoxFit.cover,
+                GestureDetector(
+                  onTap: (){
+                    widget.userId == myId ? Get.to(UpdateProfileScreen(userId: widget.userId, img: snapshot.data!.profile.toString()))  : null;
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) =>
+                    //             UpdateProfileScreen(userId: widget.userId, img: snapshot.data!.profile.toString())))
+                    // : null;
+                  },
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    // ClipRRect: R이 2개다. 그리고 강제로 차일드의 모양을 강제로 잡아주는 용도.
+                    child: ClipRRect(
+                      // 가장 완벽한 원을 만드는 방법은 상위가 되었든 뭐든, 높이길이의 50%(높이=넓이)
+                      borderRadius: BorderRadius.circular(50),
+                      child: Image.network(
+                        snapshot.data!.profile.toString(),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
@@ -106,7 +118,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                MypageFollowScreen(index: '0')));
+                                MypageFollowScreen(index: '0', userId: widget.userId)));
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -133,7 +145,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                MypageFollowScreen(index: '1')));
+                                MypageFollowScreen(index: '1', userId: widget.userId)));
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -196,6 +208,62 @@ class _MyPageScreenState extends State<MyPageScreen>
   //   );
   // }
 
+  Widget _optionList(){
+    return Container(
+        height: 150,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        child: Column(
+          mainAxisAlignment:
+          MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // TextButton.icon(
+            //   onPressed: () {
+            //     Navigator.of(context).pop();
+            //     print("설정");
+            //   },
+            //   icon: Icon(Icons.settings, color: Colors.black,),
+            //   label: Text("설정", style: TextStyle(color: Colors.black),),
+            // ),
+            // TextButton.icon(
+            //   onPressed: () async {
+            //     print(widget.userId);
+            //     Navigator.of(context).pop();
+            //   },
+            //   icon: Icon(Icons.settings, color: Colors.black,),
+            //   label: Text("개인정보 수정", style: TextStyle(color: Colors.black),),
+            // ),
+            TextButton.icon(
+              onPressed: () async {
+                await viewModel.logout();
+                setState(() {});
+                /// 로그아웃시
+                await storage.delete(key: "userId");
+                Navigator.of(context).pop();
+                print("로그아웃");
+                /// 시스템 강제종료
+                SystemNavigator.pop();
+              },
+              icon: Icon(Icons.logout, color: Colors.black,),
+              label: Text("로그아웃", style: TextStyle(color: Colors.black),),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                Navigator.of(context).pop();
+                print("서비스 탈퇴");
+                SystemNavigator.pop();
+              },
+              icon: Icon(Icons.group_off, color: Colors.black,),
+              label: Text("서비스 탈퇴", style: TextStyle(color: Colors.black),),
+            ),
+          ],
+        ),
+      );
+    }
+
   Widget _buildMyPageScreen() {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -235,7 +303,15 @@ class _MyPageScreenState extends State<MyPageScreen>
         actions: widget.userId == myId
             ? [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      // 모달 이외 클릭시 모달창 닫힘.
+                      builder: (BuildContext context) {
+                        return _optionList();
+                      },
+                    );
+                  },
                   child: Padding(
                     padding: const EdgeInsets.only(right: 15),
                     child: ImageData(

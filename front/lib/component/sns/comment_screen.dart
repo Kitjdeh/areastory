@@ -1,16 +1,18 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:front/api/comment/create_comment.dart';
 import 'package:front/api/comment/get_comments.dart';
 import 'package:front/component/sns/comment/comment.dart';
+import 'package:front/controllers/bottom_nav_controller.dart';
+import 'package:get/get.dart';
 
 const List<String> list = <String>['인기순', '최신순'];
 
 class SnsCommentScreen extends StatefulWidget {
-  const SnsCommentScreen({Key? key, required this.index, required this.userId})
+  const SnsCommentScreen(
+      {Key? key, required this.articleId, required this.userId})
       : super(key: key);
-  final String index;
-  final String userId;
+  final int articleId;
+  final int userId;
 
   @override
   State<SnsCommentScreen> createState() => _SnsCommentScreenState();
@@ -23,9 +25,6 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
   String dropdownValue = list.first;
 
   final TextEditingController _commentController = TextEditingController();
-
-  late final articleId = int.parse(widget.index);
-  late final userId = int.parse(widget.userId);
 
   @override
   void initState() {
@@ -48,7 +47,7 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
     _comments.clear();
     final commentData = await getComments(
       sort: dropdownValue == '인기순' ? 'likeCount' : 'commentId',
-      articleId: articleId,
+      articleId: widget.articleId,
       page: _currentPage,
     );
     _comments.addAll(commentData.comments);
@@ -61,7 +60,7 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
     _currentPage++;
     final newComments = await getComments(
       sort: dropdownValue == '인기순' ? 'likeCount' : 'commentId',
-      articleId: articleId,
+      articleId: widget.articleId,
       page: _currentPage,
     );
     _comments.addAll(newComments.comments);
@@ -74,12 +73,12 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
 
   void createComment(content) async {
     await postComment(
-      articleId: articleId,
+      articleId: widget.articleId,
       content: content,
     );
 
     final newComment = await getComments(
-      articleId: articleId,
+      articleId: widget.articleId,
     );
 
     _comments.insert(0, newComment.comments.first);
@@ -124,7 +123,8 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
           icon: Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black,
           onPressed: () {
-            Beamer.of(context).beamBack();
+            // Get.find<BottomNavController>().willPopAction();
+            Navigator.of(context).pop();
           },
         ),
         actions: [
@@ -190,17 +190,11 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       if (index < _comments.length) {
                         return CommentComponent(
-                          myId: userId,
+                          myId: widget.userId,
                           onDelete: onDelete,
                           commentId: _comments[index].commentId,
                           articleId: _comments[index].articleId,
                           userId: _comments[index].userId,
-                          nickname: _comments[index].nickname,
-                          profile: _comments[index].profile,
-                          content: _comments[index].content,
-                          likeCount: _comments[index].likeCount,
-                          likeYn: _comments[index].likeYn,
-                          createdAt: _comments[index].createdAt,
                           height: 100,
                           onUpdateIsChildActive: _updateIsChildActive,
                         );

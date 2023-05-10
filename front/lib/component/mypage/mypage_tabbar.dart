@@ -58,7 +58,7 @@ class _MypageTabbarState extends State<MypageTabbar>
             Expanded(
               child: TabBarView(
                 controller: mypagecontroller,
-                  children: [MyAlbum(), Text("고구마")]),
+                  children: [MyAlbum(userId: widget.userId), Text("고구마")]),
             )
           ],
         ),

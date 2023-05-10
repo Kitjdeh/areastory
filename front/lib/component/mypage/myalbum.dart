@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:front/const/colors.dart';
+import 'package:front/api/mypage/get_userArticles.dart';
 
 class MyAlbum extends StatefulWidget {
-
-  MyAlbum({Key? key}) : super(key: key);
+  MyAlbum({Key? key, required this.userId}) : super(key: key);
+  final String userId;
 
   @override
   State<MyAlbum> createState() => _MyAlbumState();
 }
 
 class _MyAlbumState extends State<MyAlbum> {
-  // 한번에 최대 몇개를 불러올 것인가? -> 끝에 도달시 계속 늘리는 방식?
-  List<int> numbers = List.generate(10, (index) => index);
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getuserarticle(int.parse(widget.userId), _currentPage);
+  }
+
+  void getuserarticle(userId, page) async {
+      final articleData = await getUserArticles(userId: userId, page: page);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +30,6 @@ class _MyAlbumState extends State<MyAlbum> {
     );
   }
 
-  // 3
   Widget renderMaxExtent() {
     return GridView.builder(
         // gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
@@ -34,29 +43,26 @@ class _MyAlbumState extends State<MyAlbum> {
       // 아이템 빌더시 현재는 컬러랑 인덱스를 출력하는데 나중에는 이미지 리스트를 받아와야한다.
       itemBuilder: (context, index) {
         return renderContainer(
-          color: rainbowColors[index % rainbowColors.length],
-          index: index,
+          image: "이미지경로입니다.",
+          articleId: 1,
         );
       },
       // 내꺼 아이템의 총 개수.
-      itemCount: 100,
+      itemCount: 10,
     );
   }
 
   // 가로세로를 강제로 설정하는 방법을 모르겠습니다..?
   Widget renderContainer({
-    required Color color,
-    required int index,
+    required String image,
+    required int articleId,
     // double? height,
   }) {
     return Container(
-      // height: height ?? 300,
-      // width: 300,
-      // height: 100,
-      color: color,
+      color: Colors.grey,
       child: Center(
         child: Text(
-          index.toString(),
+          image,
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w700,

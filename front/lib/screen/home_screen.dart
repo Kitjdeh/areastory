@@ -9,7 +9,7 @@ import 'package:front/screen/sns_screen.dart';
 import 'package:get/get.dart';
 
 class HomeScreen extends GetView<BottomNavController> {
-  const HomeScreen({Key? key,required this.userId}) : super(key: key);
+  const HomeScreen({Key? key, required this.userId}) : super(key: key);
   final String userId;
 
   @override
@@ -24,7 +24,7 @@ class HomeScreen extends GetView<BottomNavController> {
                 MapScreen(),
                 Navigator(
                   key: controller.snsPageNavigationKey,
-                  onGenerateRoute: (routeSetting){
+                  onGenerateRoute: (routeSetting) {
                     return MaterialPageRoute(
                       builder: (context) => SnsScreen(userId: userId),
                     );
@@ -33,15 +33,15 @@ class HomeScreen extends GetView<BottomNavController> {
                 CameraScreen(userId: userId),
                 Navigator(
                   key: controller.followPageNavigationKey,
-                  onGenerateRoute: (routeSetting){
+                  onGenerateRoute: (routeSetting) {
                     return MaterialPageRoute(
-                      builder: (context) => FollowScreen(),
+                      builder: (context) => FollowScreen(userId: userId),
                     );
                   },
                 ),
                 Navigator(
                   key: controller.myPageNavigationKey,
-                  onGenerateRoute: (routeSetting){
+                  onGenerateRoute: (routeSetting) {
                     return MaterialPageRoute(
                       builder: (context) => MyPageScreen(userId: userId),
                     );
@@ -49,13 +49,13 @@ class HomeScreen extends GetView<BottomNavController> {
                 ),
               ],
             ),
-
             bottomNavigationBar: BottomNavigationBar(
               /// 바텀 내브바 css효과들 건드릴때 쓰십쇼
               type: BottomNavigationBarType.fixed,
               showUnselectedLabels: false,
               showSelectedLabels: false,
               elevation: 0,
+
               /// 앞으로 어디선가 컨트롤러값을 변경시킬때는 쓰세요.
               currentIndex: controller.pageIndex.value,
               onTap: controller.changeBottomNav,

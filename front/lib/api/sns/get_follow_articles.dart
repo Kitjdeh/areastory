@@ -3,7 +3,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-Future<ArticleData> getFollowArticles() async {
+Future<ArticleData> getFollowArticles({
+  int? page,
+}) async {
   final dio = Dio(BaseOptions(
     baseUrl: '${dotenv.get('BASE_URL')}/api/articles',
   ));
@@ -13,6 +15,7 @@ Future<ArticleData> getFollowArticles() async {
 
   final response = await dio.get('', queryParameters: {
     'userId': userId,
+    'page': page,
   });
 
   if (response.statusCode == 200) {
@@ -82,20 +85,20 @@ class Article {
 
   Article(
       {required this.articleId,
-        required this.userId,
-        required this.nickname,
-        required this.profile,
-        required this.content,
-        required this.image,
-        required this.dailyLikeCount,
-        required this.totalLikeCount,
-        required this.commentCount,
-        required this.likeYn,
-        required this.followYn,
-        required this.createdAt,
-        this.dosi,
-        this.sigungu,
-        this.dongeupmyeon});
+      required this.userId,
+      required this.nickname,
+      required this.profile,
+      required this.content,
+      required this.image,
+      required this.dailyLikeCount,
+      required this.totalLikeCount,
+      required this.commentCount,
+      required this.likeYn,
+      required this.followYn,
+      required this.createdAt,
+      this.dosi,
+      this.sigungu,
+      this.dongeupmyeon});
 
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(

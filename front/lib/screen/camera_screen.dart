@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:front/api/sns/create_article.dart';
+import 'package:front/controllers/bottom_nav_controller.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 
@@ -41,11 +41,13 @@ class _CameraScreenState extends State<CameraScreen> {
       image: image,
       // 시,구,군 다 null 이면 안됨!
       dosi: '서울특별시',
-      sigungu: '강남구',
-      dongeupmyeon: '역삼1동',
+      sigungu: '서초구',
+      dongeupmyeon: '역삼동',
     );
-
-    Beamer.of(context).beamToNamed('/create/sns/$userId');
+    /// 라우터 이동. 현재는 이전 라우터로 이동한다.
+    // Get.until((route) => Get.currentRoute == '/');
+    // BottomNavController.to.changeBottomNav(3);
+    Get.back();
   }
 
   @override
@@ -72,17 +74,17 @@ class _CameraScreenState extends State<CameraScreen> {
       child: Center(
         child: _image == null
             ? GestureDetector(
-                child: Icon(Icons.add_a_photo, color: Colors.blue, size: 100),
-                onTap: () {
-                  getImage(ImageSource.camera);
-                },
-              )
+          child: Icon(Icons.add_a_photo, color: Colors.blue, size: 100),
+          onTap: () {
+            getImage(ImageSource.camera);
+          },
+        )
             : GestureDetector(
-                child: Image.file(File(_image!.path)),
-                onTap: () {
-                  getImage(ImageSource.camera);
-                },
-              ),
+          child: Image.file(File(_image!.path)),
+          onTap: () {
+            getImage(ImageSource.camera);
+          },
+        ),
       ),
     );
   }
@@ -101,7 +103,6 @@ class _CameraScreenState extends State<CameraScreen> {
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     return SafeArea(
-
       child: GestureDetector(
         onTap: () {
           // 화면 클릭 이벤트 처리
@@ -134,7 +135,8 @@ class _CameraScreenState extends State<CameraScreen> {
                 Get.back();
               },
             ),
-          ),          body: SingleChildScrollView(
+          ),
+          body: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -182,7 +184,7 @@ class _CameraScreenState extends State<CameraScreen> {
               _scrollController!.animateTo(120.0,
                   duration: Duration(milliseconds: 500), curve: Curves.ease);
             },
-            maxLines: 3,
+            maxLines: 2,
           ),
           // 비공개 여부 체크박스
           SwitchListTile(
@@ -198,8 +200,6 @@ class _CameraScreenState extends State<CameraScreen> {
           ElevatedButton(
             onPressed: () {
               createArticle(_image, contentController);
-              Beamer.of(context).currentBeamLocation.update();
-              print(Beamer.of(context).currentBeamLocation);
             },
             child: Text('등록'),
           ),

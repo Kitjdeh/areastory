@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:front/controllers/bottom_nav_controller.dart';
+import 'package:get/get.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
@@ -84,7 +86,25 @@ class _LiveChatTestState extends State<LiveChatTest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Stomp Chat')),
+      appBar: AppBar(
+        title: Text(
+          "행복한 소켓테스트 시간",
+          style: TextStyle(color: Colors.black),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+
+        /// 앱바 그림자효과 제거
+        leading: IconButton(
+          /// 뒤로가기버튼설정
+          icon: Icon(Icons.arrow_back_ios_new_outlined),
+          color: Colors.black,
+          onPressed: () {
+            Get.find<BottomNavController>().willPopAction();
+          },
+        ),
+      ),
       body: Column(
         children: [
           Expanded(

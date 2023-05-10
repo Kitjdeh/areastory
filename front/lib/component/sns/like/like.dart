@@ -6,9 +6,6 @@ import '../../../api/user/get_user.dart';
 
 class LikeComponent extends StatefulWidget {
   final int followingId;
-  final String nickname;
-  final String profile;
-  final bool followYn;
   final double height;
   final Function(bool isChildActive) onUpdateIsChildActive;
   final int myId;
@@ -16,9 +13,6 @@ class LikeComponent extends StatefulWidget {
   const LikeComponent(
       {Key? key,
       required this.followingId,
-      required this.nickname,
-      required this.profile,
-      required this.followYn,
       required this.height,
       required this.onUpdateIsChildActive,
       required this.myId})

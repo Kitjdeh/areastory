@@ -21,11 +21,11 @@ class MypageLocation extends BeamLocation<BeamState> {
           type: BeamPageType.noTransition,
           child: MyPageScreen(userId: userId),
         ),
-      if (state.uri.pathSegments.length == 3)
-        BeamPage(
-          key: ValueKey('mypage/followList/$index'),
-          child: MypageFollowScreen(index: index),
-        ),
+      // if (state.uri.pathSegments.length == 3)
+      //   BeamPage(
+      //     key: ValueKey('mypage/followList/$index'),
+      //     child: MypageFollowScreen(index: index),
+      //   ),
     ];
   }
 }

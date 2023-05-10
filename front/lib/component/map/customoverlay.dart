@@ -92,7 +92,7 @@ class CustomPolygonLayer extends StatelessWidget {
           // ];
           final customoverlayImages = <CustomOverlay.CustomOverlayImage>[
             CustomOverlay.OverlayImage(
-              area:area,
+              area: area,
               url: urls[cnt],
               offset: polygon.offsets,
               polygon: polygon.points,
@@ -116,24 +116,10 @@ class CustomPolygonLayer extends StatelessWidget {
                         height: MediaQuery.of(context).size.height * 0.8,
                         child: Center(
                           child: ArticleDetailComponent(
-                            articleId: 1,
-                            followingId: 1, // userId값을 받아서 넣으면 됨
-                            nickname: '${area}',
-                            image:
-                                'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg',
-                            profile:
-                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKFOtP8DmiYHZ-HkHpmLq9Oydg8JB4CuyOVg&usqp=CAU',
-                            content: '왜이리 화나있너 ;;; ㅎㅎㅎㅎㅎㅎㅎㅎ',
-                            dailyLikeCount: index,
-                            totalLikeCount: index,
-                            commentCount: index,
-                            likeYn: true,
-                            followYn: true,
-                            createdAt: DateTime.now(),
+                            articleId: 9,
+                            userId: 2, // 지금 로그인한 유저Id
                             height: 500,
-                            dosi: '성도',
-                            sigungu: '성도군',
-                            dongeupmyeon: '성동',
+                            location: '서울특별시', // 길이가 1단어~4단어 아무렇게나
                           ),
                         ),
                       );

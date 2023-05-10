@@ -24,8 +24,17 @@ class BottomNavController extends GetxController {
     var page = PageName.values[value];
     switch (page) {
       case PageName.UPLOAD:
-        Get.to(() => CameraScreen(userId: userId));
+        Get.to(() => CameraScreen(userId: userId))?.then((_) {
+          // CameraScreen이 닫힐 때 실행될 콜백 함수
+            BottomNavController.to.changeBottomNav(3);
+          if (pageIndex.value == 3) {
+            // 현재 페이지가 FOLLOW 페이지일 때
+            BottomNavController.to.changeBottomNav(3);
+          }
+        });
         break;
+        // Get.to(() => CameraScreen(userId: userId));
+        // break;
       case PageName.MAP:
       case PageName.ARTICLES:
       case PageName.FOLLOW:
@@ -41,11 +50,33 @@ class BottomNavController extends GetxController {
 
   /// UPLOAD페이지는 바텀 내브를 없앨꺼다.
   void _changePage(int value, {bool hasGesture = true}) {
+    print("_changePage발생 $bottomHistory");
     pageIndex(value);
     if (!hasGesture) return;
     if (bottomHistory.last != value) {
       bottomHistory.add(value);
       print(bottomHistory);
+    }
+    else if (bottomHistory.last == value) {
+      print("현재 같은 인덱스를 탭하였어요.");
+      var page = PageName.values[bottomHistory.last];
+      if(page == PageName.MYPAGE){
+        var value = myPageNavigationKey.currentState!.popUntil((route) => route.isFirst);
+        print(bottomHistory);
+      }
+      else if(page == PageName.ARTICLES){
+        var value = snsPageNavigationKey.currentState!.popUntil((route) => route.isFirst);
+      }
+      else if(page == PageName.FOLLOW){
+        var value = followPageNavigationKey.currentState!.popUntil((route) => route.isFirst);
+      }
+      else if(page == PageName.MAP){
+        return;
+      }
+      // var index = bottomHistory.last;
+      // bottomHistory.removeLast();
+      // changeBottomNav(index, hasGesture: false);
+      // print(bottomHistory);
     }
     // if(bottomHistory.contains(value)) {
     //   bottomHistory.remove(value);
@@ -66,16 +97,16 @@ class BottomNavController extends GetxController {
                 okCallback: () {
                   exit(0);
                 },
-                cancelCallback: Get.back,
+                cancelCallback: () {
+                  Navigator.of(context).pop();
+                },
               ));
       return false;
     } else {
       /// stack에서 빼갈게 있다면, 그거 먼저 빼주세요.
       var page = PageName.values[bottomHistory.last];
       if(page == PageName.MYPAGE){
-        print("진짜 감자");
         var value = await myPageNavigationKey.currentState!.maybePop();
-        print(value);
         if(value) return false;
       }
       else if(page == PageName.ARTICLES){
