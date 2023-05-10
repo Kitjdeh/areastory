@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 public class ChatMessageEnterResp {
     private MessageType type;
+    private String message;
     private Long userId;
     private String roomId;
     private String profile;

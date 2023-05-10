@@ -14,8 +14,6 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.websocket.Session;
-
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
@@ -25,7 +23,7 @@ public class ChatController {
      */
     private final SimpMessageSendingOperations messagingTemplate;
     private final ChatMessageService chatService;
-    private Session session;
+//    private Session session;
 
     //입장, 대화, 나가기의 값에 따라 서비스 처리
     @MessageMapping("/chat/message")
@@ -38,7 +36,8 @@ public class ChatController {
         if (MessageType.ENTER.equals(message.getType())) {
             ChatMessageEnterResp chatMessageResp = chatService.enterRoom(message);
 //            messagingTemplate.convertAndSendToUser(session.getUserPrincipal().getName(), "/sub/chat/room/" + message.getRoomId(), chatMessageResp);
-            messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatMessageResp.getNickname() + "님이 입장하셨습니다.");
+//            messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatMessageResp.getNickname() + "님이 입장하셨습니다.");
+            messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatService.enterRoom(message));
 
         }
         /*

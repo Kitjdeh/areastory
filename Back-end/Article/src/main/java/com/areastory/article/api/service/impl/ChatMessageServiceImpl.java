@@ -88,6 +88,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         chatRoom.updateUserCount();
         return ChatMessageEnterResp.builder()
                 .type(messageReq.getType())
+                .message(user.getNickname() + "님이 입장하셨습니다.")
                 .roomId(messageReq.getRoomId())
                 .userId(messageReq.getUserId())
                 .profile(user.getProfile())
