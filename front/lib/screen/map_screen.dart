@@ -56,8 +56,8 @@ class _MapScreenState extends State<MapScreen> {
               }
               if (snapshot.data == '위치 권한이 허가되었습니다.') {
                 return Column(
-                  children: [_CustomMap(), _ChoolCheckButton()],
-                  // children: [_ChoolCheckButton()],
+                  // children: [_CustomMap(), _ChoolCheckButton()],
+                  children: [_ChoolCheckButton()],
                 );
               }
               return Center(child: Text(snapshot.data));
@@ -242,7 +242,7 @@ class _CustomMapState extends State<_CustomMap> {
                 areaname: areaname,
                 polygons: _polygonLatLong,
                 // urls: '');
-            urls: randomurl[cnt % 5]);
+                urls: randomurl[cnt % 5]);
             localareadata != null ? allareaData.add(localareadata!) : null;
             cnt = cnt + 1;
           }

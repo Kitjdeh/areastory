@@ -13,7 +13,7 @@ Future<ArticleData> getFollowArticles({
   final storage = new FlutterSecureStorage();
   final userId = await storage.read(key: 'userId');
 
-  final response = await dio.get('', queryParameters: {
+  final response = await dio.get('/follow', queryParameters: {
     'userId': userId,
     'page': page,
   });

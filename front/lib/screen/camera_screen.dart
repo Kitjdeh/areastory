@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:front/api/sns/create_article.dart';
@@ -45,8 +44,7 @@ class _CameraScreenState extends State<CameraScreen> {
       sigungu: '서초구',
       dongeupmyeon: '역삼동',
     );
-
-    Beamer.of(context).beamToNamed('/create/sns/$userId');
+    Get.until((route) => Get.currentRoute == '/');
   }
 
   @override
@@ -199,8 +197,6 @@ class _CameraScreenState extends State<CameraScreen> {
           ElevatedButton(
             onPressed: () {
               createArticle(_image, contentController);
-              Beamer.of(context).currentBeamLocation.update();
-              print(Beamer.of(context).currentBeamLocation);
             },
             child: Text('등록'),
           ),
