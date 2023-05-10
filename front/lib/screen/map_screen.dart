@@ -113,12 +113,16 @@ class _CustomMapState extends State<_CustomMap> {
   Map<String, String> areadata = {};
   List<List<LatLng>> _polygon = [];
   List<String> urls = [];
+
   List<Mapdata> allareaData = [];
   List<Mapdata> bigareaData = [];
   List<Mapdata> middleareaData = [];
   List<Mapdata> smallareaData = [];
   List<Mapdata> nowareadata = [];
   List<Mapdata> nowallareadata = [];
+  Map<String, Mapdata> BigAreaData = {};
+  Map<String, String> areamap = {};
+
   Mapdata? localareadata;
   double _zoom = 12.0;
   var currentcenter = LatLng(37.60732175555233, 127.0710794642477);
@@ -172,53 +176,50 @@ class _CustomMapState extends State<_CustomMap> {
     int cnt = 0;
     //features에 있는 list 값을 for문 순회
     for (final feature in geojson.features) {
+      String areaname = '';
+      String areanum;
+      String dosi = "";
+      String sigungu = "";
+      String dongeupmyeon = "";
+      String NM;
+      List<String> fullname = [];
+      Map<String, String> mapinfo = {};
+      String keyname = '';
+      if (link == 'asset/map/ctp_korea.geojson') {
+        dosi = feature.properties!['CTP_KOR_NM'];
+        NM = feature.properties!['CTPRVN_CD'];
+        areamap[NM] = dosi;
+        mapinfo["dosi"] = dosi;
+        areaname = dosi;
+        keyname = dosi;
+      } else if (link == 'asset/map/sigungookorea.json') {
+        NM = feature.properties!['SIG_CD'];
+        String dosinm = NM.substring(0, 2);
+        dosi = areamap[dosinm] ?? "";
+        // print("dosinm${dosinm} dosi${dosi}");
+        mapinfo["dosi"] = dosi;
+        sigungu = feature.properties!['SIG_KOR_NM'];
+        mapinfo["sigungu"] = sigungu;
+        areamap[NM] = sigungu;
+        areaname = dosi + sigungu;
+        keyname = sigungu;
+      } else {
+        NM = feature.properties!['EMD_CD'];
+        String dosinm = NM.substring(0, 2);
+        String sigungunm = NM.substring(0, 5);
+        dosi = areamap[dosinm] ?? "";
+        sigungu = areamap[sigungunm] ?? "";
+        mapinfo["dosi"] = dosi;
+        mapinfo["sigungu"] = sigungu;
+        dongeupmyeon = feature.properties!['EMD_KOR_NM'];
+        mapinfo["dongeupmyeon"] = dongeupmyeon;
+        areamap[NM] = dongeupmyeon;
+        areaname = dosi + sigungu + dongeupmyeon;
+        keyname = dongeupmyeon;
+      }
       // null 값을 대비하여 runtimetype 확인
       if (feature.geometry.runtimeType == GeoJsonMultiPolygon &&
           feature.properties != null) {
-        String areaname = '';
-        String areanum;
-        List<String> fullname = [];
-        Map<String, String> mapinfo = {
-          // "dosi": "",
-          // "sigungu": "",
-          // "dongeupmyeon": ""
-        };
-        if (link == 'asset/map/minimal.json') {
-          String sigungunum = feature.properties!['EMD_CD'];
-          String sigungubumer = sigungunum.substring(0, 5).padRight(10, '0');
-          List<String> sigungudata = areadata[sigungubumer]!.split(' ');
-          String sigungu = sigungudata.last;
-          mapinfo["sigungu"] = sigungu;
-
-          areanum = feature.properties!['EMD_CD'].padRight(10, '0');
-          fullname = areadata[areanum]!.split(' ');
-
-          String dosi = fullname.first;
-          String dongeupmyeon = fullname.last;
-          // 3611000000
-          mapinfo["dongeupmyeon"] = dongeupmyeon;
-          mapinfo["dosi"] = dosi;
-          areaname = areadata[areanum]!;
-        } else if (link == 'asset/map/ctp_korea.geojson') {
-          areanum = feature.properties!['CTPRVN_CD'].padRight(10, '0');
-          fullname = areadata[areanum]!.split(' ');
-          String dosi = fullname.first;
-          mapinfo["dosi"] = dosi;
-          // areaname = areadata[areanum]!;
-          areaname = areadata[areanum]!;
-          // print(areaname);
-        }
-        // areaname = feature.properties!['EMD_KOR_NM'];
-        else {
-          areanum = feature.properties!['SIG_CD'].padRight(10, '0');
-          fullname = areadata[areanum]!.split(' ');
-          String dosi = fullname.first;
-          String sigungu = fullname.last;
-          mapinfo["sigungu"] = sigungu;
-          mapinfo["dosi"] = dosi;
-          areaname = areadata[areanum]!;
-        }
-
         final polygones = feature.geometry as GeoJsonMultiPolygon;
         // geometry(종로구)를 구성하는 polygon 호출 (=geojsonpolygon)
         for (final polygone in polygones.polygons) {
@@ -235,13 +236,14 @@ class _CustomMapState extends State<_CustomMap> {
               _polygonLatLong,
             );
             urls.add(sangjunurl);
-            String areakey = areanum.toString().padRight(10, '0');
+            // String areakey = areanum.toString().padRight(10, '0');
             localareadata = Mapdata(
                 mapinfo: mapinfo,
-                areaname: areaname,
+                keyname: keyname,
+                fullname: areaname,
                 polygons: _polygonLatLong,
                 // urls: '');
-            urls: randomurl[cnt % 5]);
+                urls: randomurl[cnt % 5]);
             localareadata != null ? allareaData.add(localareadata!) : null;
             cnt = cnt + 1;
           }
@@ -250,45 +252,6 @@ class _CustomMapState extends State<_CustomMap> {
       ;
       if (feature.geometry.runtimeType == GeoJsonPolygon &&
           feature.properties != null) {
-        String areaname = '';
-        String areanum;
-        List<String> fullname = [];
-        Map<String, String> mapinfo = {
-          // "dosi": "",
-          // "sigungu": "",
-          // "dongeupmyeon": ""
-        };
-        if (link == 'asset/map/minimal.json') {
-          String sigungunum = feature.properties!['EMD_CD'];
-          String sigungubumer = sigungunum.substring(0, 5).padRight(10, '0');
-          List<String> sigungudata = areadata[sigungubumer]!.split(' ');
-          String sigungu = sigungudata.last;
-          mapinfo["sigungu"] = sigungu;
-          areanum = feature.properties!['EMD_CD'].padRight(10, '0');
-          fullname = areadata[areanum]!.split(' ');
-          String dosi = fullname.first;
-          String dongeupmyeon = fullname.last;
-          // 3611000000
-          mapinfo["dongeupmyeon"] = dongeupmyeon;
-          mapinfo["dosi"] = dosi;
-          areaname = areadata[areanum]!;
-        } else if (link == 'asset/map/ctp_korea.geojson') {
-          areanum = feature.properties!['CTPRVN_CD'].padRight(10, '0');
-          fullname = areadata[areanum]!.split(' ');
-          String dosi = fullname.first;
-          mapinfo["dosi"] = dosi;
-          areaname = feature.properties!['CTPRVN_CD']!;
-        }
-        // areaname = feature.properties!['EMD_KOR_NM'];
-        else {
-          areanum = feature.properties!['SIG_CD'].padRight(10, '0');
-          fullname = areadata[areanum]!.split(' ');
-          String dosi = fullname.first;
-          String sigungu = fullname.last;
-          mapinfo["sigungu"] = sigungu;
-          mapinfo["dosi"] = dosi;
-          areaname = areadata[areanum]!;
-        }
         final polygones = feature.geometry as GeoJsonPolygon;
         // geometry(종로구)를 구성하는 polygon 호출 (=geojsonpolygon)
         // geojsonpolygon 의 geoSerie 추출 ( = GeoSeire)
@@ -298,13 +261,13 @@ class _CustomMapState extends State<_CustomMap> {
           for (final geoPoint in point.geoPoints) {
             _polygonLatLong.add(LatLng(geoPoint.latitude, geoPoint.longitude));
           }
-          cnt == 16 ? points = _polygonLatLong : null;
+          // cnt == 16 ? points = _polygonLatLong : null;
           _polygon.add(
             _polygonLatLong,
           );
           localareadata = Mapdata(
               mapinfo: mapinfo,
-              areaname: areaname,
+              keyname: keyname,
               polygons: _polygonLatLong,
               urls: randomurl[cnt % 5]);
           localareadata != null ? allareaData.add(localareadata!) : null;
@@ -316,6 +279,7 @@ class _CustomMapState extends State<_CustomMap> {
     if (link == 'asset/map/ctp_korea.geojson') {
       bigareaData = allareaData;
       print(bigareaData.first.mapinfo);
+      // print("areamap${areamap}");
       print('빅데이터 들어감');
     } else if (link == 'asset/map/sigungookorea.json') {
       middleareaData = allareaData;
@@ -336,7 +300,7 @@ class _CustomMapState extends State<_CustomMap> {
         CustomPolygonLayer(
           index: 1,
           urls: [mapdata.urls ?? ''],
-          area: mapdata.areaname ?? '',
+          area: mapdata.keyname ?? '',
           polygons: [
             Polygon(
               isFilled: false,
@@ -363,8 +327,9 @@ class _CustomMapState extends State<_CustomMap> {
                   InteractiveFlag.doubleTapZoom |
                   InteractiveFlag.pinchZoom,
               onMapReady: () async {
+                // Map<String, AreaData> result;
                 List<Map<String, String>> requestlist = [];
-                await loadexcel();
+                // await loadexcel();
                 await _loadGeoJson('asset/map/ctp_korea.geojson');
                 await _loadGeoJson('asset/map/sigungookorea.json');
                 await _loadGeoJson('asset/map/minimal.json');
@@ -382,18 +347,28 @@ class _CustomMapState extends State<_CustomMap> {
                         point.longitude <= ne!.longitude;
                   });
                 }).toList();
-                visibleMapdata.map((e) => requestlist.add(e.mapinfo!));
-                var A = visibleMapdata.map((e) => e.mapinfo).toList();
-                var B = A.sublist(0, 10);
-                // await nowareadata = visibleMapdata;
+                // visibleMapdata.map((e) => requestlist.add(e.mapinfo!));
+                await Future.forEach(visibleMapdata, (e) {
+                  requestlist.add(e.mapinfo!);
+                });
                 print(requestlist);
                 print(
-                    "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
-                // final result = postAreaData(requestlist);
-                // print('postresult${result}');
+                    "3nowareadata ${nowareadata.length} visibleMapdata${visibleMapdata.length}");
+                print("requestlist${requestlist.length}");
+                // Future<Map<String, AreaData>>result =
+                //     await postAreaData(requestlist);
+                Map<String, AreaData> result = await postAreaData(requestlist);
+                await Future.forEach(visibleMapdata, (e) {
+                  final areakey = e.keyname;
+                  final url = result[areakey]!.image;
+                  final userid = result[areakey]!.articleId;
+                  e.urls = url;
+                  e.articleId = userid ?? 0;
+                });
                 setState(() {
                   nowareadata = visibleMapdata;
                 });
+                visibleMapdata.map((e) => print("mapdata ${e.keyname}"));
               },
               onPositionChanged: (pos, hasGesture) async {
                 print("mapController.zoom${mapController.zoom}");
@@ -425,13 +400,16 @@ class _CustomMapState extends State<_CustomMap> {
                         point.longitude <= ne!.longitude;
                   });
                 }).toList();
-                await visibleMapdata.map((e) => requestlist.add(e.mapinfo!));
+                // await visibleMapdata.map((e) => requestlist.add(e.mapinfo!));
+
                 nowareadata = visibleMapdata;
                 setState(() {
                   nowareadata = visibleMapdata;
                 });
+                await Future.forEach(visibleMapdata, (e) {
+                  requestlist.add(e.mapinfo!);
+                });
                 var A = visibleMapdata.map((e) => e.mapinfo).toList();
-                var B = A.sublist(0, 10);
                 print(
                     "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
               },
@@ -443,7 +421,7 @@ class _CustomMapState extends State<_CustomMap> {
                   child: CustomPolygonLayer(
                     index: 1,
                     urls: [mapdata.urls ?? ''],
-                    area: mapdata.areaname ?? '',
+                    area: mapdata.keyname ?? '',
                     polygons: [
                       Polygon(
                         isFilled: false,
@@ -518,12 +496,30 @@ class _ChoolCheckButton extends StatelessWidget {
 }
 
 class Mapdata {
-  final String? areaname;
+  final String? keyname;
   final List<LatLng>? polygons;
   final String? urls;
+  set urls(String? value) {
+    _urls = value;
+  }
+
   final Map<String, String>? mapinfo;
   final int? articleId;
+  set articleId(int? value) {
+    _articleId = value;
+  }
+
+  final String? fullname;
   // };
   Mapdata(
-      {this.areaname, this.polygons, this.urls, this.mapinfo, this.articleId});
+      {this.keyname,
+      this.polygons,
+      this.urls,
+      this.mapinfo,
+      this.articleId,
+      this.fullname});
 }
+
+String? _urls;
+
+int? _articleId;

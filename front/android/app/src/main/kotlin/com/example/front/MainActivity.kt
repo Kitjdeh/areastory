@@ -1,4 +1,4 @@
-package com.example.front
+package com.a302.areastory
 
 import io.flutter.embedding.android.FlutterActivity
 
