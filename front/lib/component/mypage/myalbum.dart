@@ -51,7 +51,16 @@ class _MyAlbumState extends State<MyAlbum> {
       ),
       // 아이템 빌더시 현재는 컬러랑 인덱스를 출력하는데 나중에는 이미지 리스트를 받아와야한다.
       itemBuilder: (context, index) {
-        if (index < _articles.length) {
+          if(_articles.length == 0){
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("아직 등록된 게시글이 없습니다.")
+              ],
+            );
+          }
+        else if (index < _articles.length) {
           return renderContainer(
             image: _articles[index].image.toString(),
             articleId: _articles[index].articleId,
