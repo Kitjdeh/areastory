@@ -4,6 +4,7 @@ import com.areastory.user.db.entity.User;
 import com.areastory.user.db.repository.ArticleRepository;
 import com.areastory.user.db.repository.UserRepository;
 import com.areastory.user.dto.common.ArticleDto;
+import com.areastory.user.dto.request.UserInfoReq;
 import com.areastory.user.dto.request.UserReq;
 import com.areastory.user.dto.response.ArticleResp;
 import com.areastory.user.dto.response.UserDetailResp;
@@ -73,6 +74,16 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.save(UserReq.toEntity(userReq, s3Util.saveUploadFile(profile), sha256Util.sha256(userReq.getProviderId()), userReq.getRegistrationToken()));
         userProducer.send(user, KafkaProperties.INSERT);
         return UserSignUpResp.fromEntity(user);
+    }
+
+    @Override
+    public void updateUserInfo(Long userId, UserInfoReq userInfoReq, MultipartFile profile) throws IOException {
+        User user = userRepository.findById(userId).orElseThrow();
+        s3Util.deleteFile(user.getProfile());
+        user.setNickname(userInfoReq.getNickname());
+        String changedProfile = s3Util.saveUploadFile(profile);
+        user.setProfile(changedProfile);
+        userProducer.send(user, KafkaProperties.UPDATE);
     }
 
     @Override

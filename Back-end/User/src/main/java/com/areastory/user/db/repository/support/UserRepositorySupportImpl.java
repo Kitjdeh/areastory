@@ -4,6 +4,7 @@ package com.areastory.user.db.repository.support;
 import com.areastory.user.db.entity.QArticle;
 import com.areastory.user.db.entity.QFollow;
 import com.areastory.user.db.entity.QUser;
+import com.areastory.user.dto.request.UserInfoReq;
 import com.areastory.user.dto.response.UserDetailResp;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
@@ -51,5 +52,15 @@ public class UserRepositorySupportImpl implements UserRepositorySupport {
                 .on(article.user.userId.eq(userId))
                 .where(user.userId.eq(userId))
                 .fetchOne();
+    }
+
+    @Override
+    public void updateUserInfo(Long userId, UserInfoReq userInfoReq, String saveUploadFile) {
+        queryFactory
+                .update(user)
+                .set(user.nickname, userInfoReq.getNickname())
+                .set(user.profile, saveUploadFile)
+                .where(user.userId.eq(userId))
+                .execute();
     }
 }

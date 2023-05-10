@@ -1,5 +1,6 @@
 package com.areastory.user.service;
 
+import com.areastory.user.dto.request.UserInfoReq;
 import com.areastory.user.dto.request.UserReq;
 import com.areastory.user.dto.response.ArticleResp;
 import com.areastory.user.dto.response.UserDetailResp;
@@ -22,6 +23,7 @@ public interface UserService {
 
     UserSignUpResp signUp(UserReq userReq, MultipartFile profile) throws IOException, NoSuchAlgorithmException;
 
+    void updateUserInfo(Long userId, UserInfoReq userInfoReq, MultipartFile profile) throws IOException;
     UserResp getMyDetail(Long userId);
 
     void updateUserNickName(Long userId, String nickname);
@@ -35,4 +37,5 @@ public interface UserService {
     UserDetailResp getUserDetail(Long userId, Long myId);
 
     ArticleResp getOtherUserArticleList(Long userId, int page);
+
 }

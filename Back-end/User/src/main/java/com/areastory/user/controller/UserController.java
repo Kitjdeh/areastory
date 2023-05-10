@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -65,27 +67,39 @@ public class UserController {
     }
 
 
-    // 닉네임 변경
     @PatchMapping("/{userId}")
-    public ResponseEntity<?> updateUserNickName(@PathVariable("userId") Long userId, UserInfoReq userInfoReq) {
-        userService.updateUserNickName(userId, userInfoReq.getNickname());
-        UserResp userResp = userService.getMyDetail(userId);
-        return responseDefault.success(true, "이름 변경", userResp);
-    }
-
-    //프로필 이미지 변경
-    @PatchMapping("/profile/{userId}")
-    public ResponseEntity<?> updateProfile(@PathVariable("userId") Long userId, @RequestPart("profile") MultipartFile profile) {
+    public ResponseEntity<?> updateUserInfo(@PathVariable("userId") Long userId, @RequestPart UserInfoReq userInfoReq, @RequestPart("profile") MultipartFile profile) {
         if (!userService.findUser(userId)) {
             return responseDefault.notFound(false, "존재하지 않는 회원", null);
         }
         try {
-            userService.updateProfile(userId, profile);
-            return responseDefault.success(true, "프로필 변경 성공", null);
-        } catch (Exception e) {
-            return responseDefault.fail(false, "프로필 변경 실패", null);
+            userService.updateUserInfo(userId, userInfoReq, profile);
+            return responseDefault.success(true, "회원 정보 변경 성공", null);
+        } catch (IOException e) {
+            return responseDefault.fail(false, "실패", null);
         }
     }
+    // 닉네임 변경
+//    @PatchMapping("/{userId}")
+//    public ResponseEntity<?> updateUserNickName(@PathVariable("userId") Long userId, @RequestBody UserInfoReq userInfoReq) {
+//        userService.updateUserNickName(userId, userInfoReq.getNickname());
+//        UserResp userResp = userService.getMyDetail(userId);
+//        return responseDefault.success(true, "이름 변경", userResp);
+//    }
+//
+//    //프로필 이미지 변경
+//    @PatchMapping("/profile/{userId}")
+//    public ResponseEntity<?> updateProfile(@PathVariable("userId") Long userId, @RequestPart("profile") MultipartFile profile) {
+//        if (!userService.findUser(userId)) {
+//            return responseDefault.notFound(false, "존재하지 않는 회원", null);
+//        }
+//        try {
+//            userService.updateProfile(userId, profile);
+//            return responseDefault.success(true, "프로필 변경 성공", null);
+//        } catch (Exception e) {
+//            return responseDefault.fail(false, "프로필 변경 실패", null);
+//        }
+//    }
 
     // 회원 탈퇴
     @DeleteMapping("/{userId}")
