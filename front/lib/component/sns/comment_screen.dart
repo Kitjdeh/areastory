@@ -151,33 +151,6 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            Container(
-              padding: EdgeInsets.all(10),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller:
-                          _commentController, // TextEditingController setup
-                      decoration: InputDecoration(
-                        labelText: '댓글 입력',
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.send),
-                    onPressed: () {
-                      final value = _commentController
-                          .text; // Get the value from the TextEditingController
-                      createComment(value);
-                    },
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
             Expanded(
               child: Container(
                 child: RefreshIndicator(
@@ -213,6 +186,30 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
                   ),
                 ),
               ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller:
+                          _commentController, // TextEditingController setup
+                      decoration: InputDecoration(
+                        labelText: '댓글 입력',
+                      ),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () {
+                    final value = _commentController
+                        .text; // Get the value from the TextEditingController
+                    createComment(value);
+                  },
+                ),
+              ],
             ),
           ],
         ),

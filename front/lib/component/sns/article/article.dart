@@ -8,7 +8,7 @@ import 'package:front/api/sns/get_article.dart';
 import 'package:front/component/sns/article_update_screen.dart';
 import 'package:front/component/sns/comment_screen.dart';
 import 'package:front/component/sns/like_screen.dart';
-import 'package:front/socket/socket_test.dart';
+import 'package:front/livechat//chat_screen.dart';
 
 class ArticleComponent extends StatefulWidget {
   final int articleId;
@@ -238,8 +238,10 @@ class _ArticleComponentState extends State<ArticleComponent> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              LiveChatTest()));
+                                          builder: (context) => LiveChatScreen(
+                                                userId: widget.userId,
+                                                roomId: 'test',
+                                              )));
                                 },
                                 child: Image.asset(
                                   'asset/img/comment.png',
