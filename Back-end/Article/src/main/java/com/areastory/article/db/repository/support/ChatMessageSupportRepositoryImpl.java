@@ -25,7 +25,7 @@ public class ChatMessageSupportRepositoryImpl implements ChatMessageSupportRepos
                 ))
                 .from(chatMessage)
                 .where(chatMessage.chatRoom.roomId.eq(roomId))
-                .orderBy(chatMessage.createdAt.desc())
+                .orderBy(chatMessage.createdAt.asc())
                 .limit(200L)
                 .fetch();
     }
