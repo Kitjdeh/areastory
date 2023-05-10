@@ -3,6 +3,7 @@ package com.areastory.user.service.Impl;
 import com.areastory.user.db.entity.User;
 import com.areastory.user.db.repository.ArticleRepository;
 import com.areastory.user.db.repository.UserRepository;
+import com.areastory.user.dto.common.ArticleDto;
 import com.areastory.user.dto.request.UserReq;
 import com.areastory.user.dto.response.ArticleResp;
 import com.areastory.user.dto.response.UserDetailResp;
@@ -113,11 +114,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<ArticleResp> getArticleList(Long userId, int page) {
+    public ArticleResp getArticleList(Long userId, int page) {
         Pageable pageable = PageRequest.of(page, 20, Sort.Direction.DESC, "createdAt");
         User user = userRepository.findById(userId).orElseThrow();
-        return articleRepository.findByUser(user, pageable)
-                .map(ArticleResp::fromEntity);
+        Page<ArticleDto> articleDtos = articleRepository.findByUser(user, pageable)
+                .map(ArticleDto::fromEntity);
+        return ArticleResp.builder()
+                .articles(articleDtos.getContent())
+                .pageSize(articleDtos.getPageable().getPageSize())
+                .totalPageNumber(articleDtos.getTotalPages())
+                .totalCount(articleDtos.getTotalElements())
+                .pageNumber(articleDtos.getPageable().getPageNumber())
+                .nextPage(articleDtos.hasNext())
+                .previousPage(articleDtos.hasPrevious())
+                .build();
     }
 
 

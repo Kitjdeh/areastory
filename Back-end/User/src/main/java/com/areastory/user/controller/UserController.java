@@ -106,8 +106,8 @@ public class UserController {
         if (!userService.findUser(userId)) {
             return responseDefault.notFound(false, "존재하지 않는 회원", null);
         }
-        Page<ArticleResp> articleResps = userService.getArticleList(userId, page);
-        return responseDefault.success(true, "유저의 게시물 목록 조회", articleResps);
+        ArticleResp articleResp = userService.getArticleList(userId, page);
+        return responseDefault.success(true, "유저의 게시물 목록 조회", articleResp);
     }
 
 }

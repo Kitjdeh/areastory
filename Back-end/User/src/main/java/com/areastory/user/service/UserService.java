@@ -5,7 +5,6 @@ import com.areastory.user.dto.response.ArticleResp;
 import com.areastory.user.dto.response.UserDetailResp;
 import com.areastory.user.dto.response.UserResp;
 import com.areastory.user.dto.response.UserSignUpResp;
-import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -29,7 +28,7 @@ public interface UserService {
 
     void deleteUser(Long userId);
 
-    Page<ArticleResp> getArticleList(Long userId, int page);
+    ArticleResp getArticleList(Long userId, int page);
 
     void updateProfile(Long userId, MultipartFile profile) throws IOException;
 
