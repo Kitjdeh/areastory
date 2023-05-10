@@ -25,6 +25,7 @@ public class ArticleProducer {
                 .dosi(article.getDosi())
                 .sigungu(article.getSigungu())
                 .dongeupmyeon(article.getDongeupmyeon())
+                .publicYn(article.getPublicYn())
                 .build();
         articleTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_ARTICLE, article.getUser().getUserId(), articleKafkaDto));
     }

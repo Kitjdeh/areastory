@@ -1,6 +1,7 @@
 package com.areastory.article.api.service;
 
 import com.areastory.article.dto.request.ChatMessageReq;
+import com.areastory.article.dto.response.ChatMessageEnterResp;
 import com.areastory.article.dto.response.ChatMessageResp;
 import com.areastory.article.dto.response.ChatRoomResp;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +13,7 @@ public interface ChatMessageService {
 
     ChatMessageResp saveMessage(ChatMessageReq messageDto);
 
-    ChatMessageResp enterRoom(ChatMessageReq messageDto);
+    ChatMessageEnterResp enterRoom(ChatMessageReq messageDto);
 
-    ChatMessageResp outRoom(ChatMessageReq messageDto);
+    String outRoom(ChatMessageReq messageDto);
 }

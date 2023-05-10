@@ -3,7 +3,7 @@ package com.areastory.article.api.controller;
 import com.areastory.article.api.service.ChatMessageService;
 import com.areastory.article.dto.common.MessageType;
 import com.areastory.article.dto.request.ChatMessageReq;
-import com.areastory.article.dto.response.ChatMessageResp;
+import com.areastory.article.dto.response.ChatMessageEnterResp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,6 +14,8 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.websocket.Session;
+
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
@@ -23,23 +25,28 @@ public class ChatController {
      */
     private final SimpMessageSendingOperations messagingTemplate;
     private final ChatMessageService chatService;
+    private Session session;
 
     //입장, 대화, 나가기의 값에 따라 서비스 처리
     @MessageMapping("/chat/message")
     public void message(ChatMessageReq message) {
-        ChatMessageResp chatMessageResp = null;
+        session.getUserPrincipal().getName();
+//        ChatMessageResp chatMessageResp = null;
         /*
         채팅방의 인원수를 하나 증가
          */
         if (MessageType.ENTER.equals(message.getType())) {
-            chatMessageResp = chatService.enterRoom(message);
+            ChatMessageEnterResp chatMessageResp = chatService.enterRoom(message);
+            messagingTemplate.convertAndSendToUser(session.getUserPrincipal().getName(), "/sub/chat/room/" + message.getRoomId(), chatMessageResp);
+            messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatMessageResp.getNickname() + "님이 입장하셨습니다.");
+
         }
         /*
         퇴장
         1. 방 참가 인원 감소
          */
         else if (MessageType.QUIT.equals(message.getType())) {
-            chatMessageResp = chatService.outRoom(message);
+            messagingTemplate.convertAndSend("/sub/chat/room/" + chatService.outRoom(message) + "님이 퇴장하셨습니다.");
         }
         /*
         대화
@@ -53,9 +60,9 @@ public class ChatController {
             System.out.println("userId: " + message.getUserId());
             System.out.println("content: " + message.getContent());
 
-            chatMessageResp = chatService.saveMessage(message);
+//            ChatMessageResp chatMessageResp = chatService.saveMessage(message);
+            messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatService.saveMessage(message));
         }
-        messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatMessageResp);
     }
 
     /*

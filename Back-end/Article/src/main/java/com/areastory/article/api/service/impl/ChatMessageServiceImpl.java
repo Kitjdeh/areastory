@@ -10,6 +10,7 @@ import com.areastory.article.db.repository.UserRepository;
 import com.areastory.article.dto.common.ChatMessageDto;
 import com.areastory.article.dto.common.ChatRoomDto;
 import com.areastory.article.dto.request.ChatMessageReq;
+import com.areastory.article.dto.response.ChatMessageEnterResp;
 import com.areastory.article.dto.response.ChatMessageResp;
 import com.areastory.article.dto.response.ChatRoomResp;
 import com.areastory.article.exception.CustomException;
@@ -71,21 +72,21 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 .userId(messageReq.getUserId())
                 .profile(user.getProfile())
                 .nickname(user.getNickname())
-                .messageList(messageList)
+                .content(messageReq.getContent())
                 .userCount(chatRoomRepository.findByRoomId(messageReq.getRoomId()).getUserCount())
                 .build();
     }
 
     @Transactional
     @Override
-    public ChatMessageResp enterRoom(ChatMessageReq messageReq) {
+    public ChatMessageEnterResp enterRoom(ChatMessageReq messageReq) {
         User user = userRepository.findById(messageReq.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         //방인원수 증가
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(messageReq.getRoomId());
         chatRoom.updateUserCount();
-        return ChatMessageResp.builder()
+        return ChatMessageEnterResp.builder()
                 .type(messageReq.getType())
                 .roomId(messageReq.getRoomId())
                 .userId(messageReq.getUserId())
@@ -98,20 +99,13 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Transactional
     @Override
-    public ChatMessageResp outRoom(ChatMessageReq messageReq) {
+    public String outRoom(ChatMessageReq messageReq) {
         User user = userRepository.findById(messageReq.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         //방인원수 감소
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(messageReq.getRoomId());
         chatRoom.deleteUserCount();
-        return ChatMessageResp.builder()
-                .type(messageReq.getType())
-                .roomId(messageReq.getRoomId())
-                .userId(messageReq.getUserId())
-                .profile(user.getProfile())
-                .nickname(user.getNickname())
-                .userCount(chatRoom.getUserCount())
-                .build();
+        return user.getNickname();
     }
 
 
