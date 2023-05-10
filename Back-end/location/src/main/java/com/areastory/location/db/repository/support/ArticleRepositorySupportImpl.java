@@ -92,7 +92,7 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
         }
         return select
                 .from(article)
-                .where(getWhereOr(subList));
+                .where(article.publicYn.eq(true), getWhereOr(subList));
     }
 
     private JPAQuery<ArticleSub> getSubQuery(List<LocationDto> locationList) {
@@ -121,7 +121,7 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
         }
         return select
                 .from(article)
-                .where(getWhereOr(locationList));
+                .where(article.publicYn.eq(true), getWhereOr(locationList));
     }
 
     private BooleanExpression getWhereOr(List<? extends LocationDto> locationList) {

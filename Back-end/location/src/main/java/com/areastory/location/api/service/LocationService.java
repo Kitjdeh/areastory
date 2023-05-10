@@ -1,4 +1,4 @@
-package com.areastory.location.service;
+package com.areastory.location.api.service;
 
 
 import com.areastory.location.dto.common.LocationDto;

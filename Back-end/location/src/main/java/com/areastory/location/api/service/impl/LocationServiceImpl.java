@@ -1,9 +1,9 @@
-package com.areastory.location.service.impl;
+package com.areastory.location.api.service.impl;
 
 import com.areastory.location.db.repository.ArticleRepository;
 import com.areastory.location.dto.common.LocationDto;
 import com.areastory.location.dto.response.LocationResp;
-import com.areastory.location.service.LocationService;
+import com.areastory.location.api.service.LocationService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

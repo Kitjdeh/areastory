@@ -1,7 +1,7 @@
 package com.areastory.location.kafka;
 
 import com.areastory.location.dto.common.ArticleKafkaDto;
-import com.areastory.location.service.ArticleService;
+import com.areastory.location.api.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;

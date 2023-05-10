@@ -23,4 +23,5 @@ public class ArticleKafkaDto implements Serializable {
     private String sigungu;
     private String dongeupmyeon;
     private LocalDateTime createdAt;
+    private Boolean publicYn;
 }

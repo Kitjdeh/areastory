@@ -25,13 +25,17 @@ public class Article extends Location {
     private Long dailyLikeCount;
     private LocalDateTime createdAt;
 
-    public Article(Long articleId, Location location, Long userId, String image, Long dailyLikeCount, LocalDateTime createdAt) {
+    @Setter
+    private Boolean publicYn;
+
+    public Article(Long articleId, Location location, Long userId, String image, Long dailyLikeCount, LocalDateTime createdAt, Boolean publicYn) {
         super(location);
         this.articleId = articleId;
         this.userId = userId;
         this.image = image;
         this.dailyLikeCount = dailyLikeCount;
         this.createdAt = createdAt;
+        this.publicYn = publicYn;
     }
 
     public static Builder articleBuilder() {
@@ -45,6 +49,7 @@ public class Article extends Location {
         private Long dailyLikeCount;
         private Location location;
         private LocalDateTime createdAt;
+        private Boolean publicYn;
 
         public Builder userId(Long userId) {
             this.userId = userId;
@@ -76,8 +81,13 @@ public class Article extends Location {
             return this;
         }
 
+        public Builder publicYn(Boolean publicYn) {
+            this.publicYn = publicYn;
+            return this;
+        }
+
         public Article build() {
-            return new Article(articleId, location, userId, image, dailyLikeCount, createdAt);
+            return new Article(articleId, location, userId, image, dailyLikeCount, createdAt, publicYn);
         }
     }
 }

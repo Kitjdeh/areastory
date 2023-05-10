@@ -2,7 +2,7 @@ package com.areastory.location.api.controller;
 
 import com.areastory.location.dto.common.LocationDto;
 import com.areastory.location.dto.response.LocationResp;
-import com.areastory.location.service.LocationService;
+import com.areastory.location.api.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
