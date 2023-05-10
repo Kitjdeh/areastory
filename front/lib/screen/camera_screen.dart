@@ -44,7 +44,11 @@ class _CameraScreenState extends State<CameraScreen> {
       sigungu: '서초구',
       dongeupmyeon: '역삼동',
     );
-    Get.until((route) => Get.currentRoute == '/');
+
+    /// 라우터 이동. 현재는 이전 라우터로 이동한다.
+    // Get.until((route) => Get.currentRoute == '/');
+    // BottomNavController.to.changeBottomNav(3);
+    Get.back();
   }
 
   @override

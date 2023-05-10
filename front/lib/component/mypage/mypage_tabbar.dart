@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:front/component/mypage/myalbum.dart';
+import 'package:front/constant/home_tabs.dart';
 import 'package:front/constant/mypage_tabs.dart';
 
 class MypageTabbar extends StatefulWidget {
-  const MypageTabbar({Key? key}) : super(key: key);
+  const MypageTabbar({Key? key, required this.userId}) : super(key: key);
+  final String userId;
 
   @override
   State<MypageTabbar> createState() => _MypageTabbarState();
@@ -11,19 +13,29 @@ class MypageTabbar extends StatefulWidget {
 
 class _MypageTabbarState extends State<MypageTabbar>
     with TickerProviderStateMixin {
-  late final TabController mypagecontroller;
+  late TabController mypagecontroller;
+  int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
 
-    mypagecontroller = TabController(length: MYPAGETABS.length, vsync: this);
+    mypagecontroller = TabController(length: 2, vsync: this);
 
     // 이건 나중에 데이터 작업할때
     mypagecontroller.addListener(() {
-      setState(() {});
+      setState(() {
+        _currentIndex = mypagecontroller.index;
+      });
     });
   }
+
+  @override
+  void dispose() {
+    mypagecontroller.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +45,20 @@ class _MypageTabbarState extends State<MypageTabbar>
           children: [
             TabBar(
               controller: mypagecontroller,
-              tabs: MYPAGETABS
-            .map((e) => Tab(icon: Icon(e.icon, color: Colors.black),)).toList()),
+              indicatorColor: Colors.black,
+              indicatorWeight: 1,
+              tabs: [
+                Tab(
+                  icon: _currentIndex == 0 ? ImageData(IconsPath.albumOn) : ImageData(IconsPath.albumOff),
+                ),
+                Tab(
+                  icon: _currentIndex == 1 ? ImageData(IconsPath.mapOn) : ImageData(IconsPath.mapOff),
+                ),
+              ]),
             Expanded(
               child: TabBarView(
                 controller: mypagecontroller,
-                  children: [MyAlbum(), Text("고구마")]),
+                  children: [MyAlbum(userId: widget.userId), Text("고구마")]),
             )
           ],
         ),

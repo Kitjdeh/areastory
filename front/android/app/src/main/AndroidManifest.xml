@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.front"
+    package="com.a302.areastory"
     >
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -17,7 +17,7 @@
 <!--    <uses-permission android:name="android.permission.WAKE_LOCK" />-->
 <!--    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />-->
     <application
-        android:label="front"
+        android:label="areastory"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 <!--        애널리틱스 수집과 FCM 자동 초기화를 중지합니다.-->

@@ -42,6 +42,7 @@ class UserData {
   final bool followYn;
   final int followCount;
   final int followingCount;
+  final int articleCount;
 
   UserData({
     required this.userId,
@@ -50,6 +51,7 @@ class UserData {
     required this.followYn,
     required this.followCount,
     required this.followingCount,
+    required this.articleCount,
   });
 
   factory UserData.fromJson(Map<String, dynamic> json) {
@@ -60,6 +62,7 @@ class UserData {
       followYn: json['followYn'],
       followCount: json['followCount'],
       followingCount: json['followingCount'],
+      articleCount: json['articleCount'],
     );
   }
 }

@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     // Add the Google services Gradle plugin
-    id 'com.google.gms.google-services'
+//    id 'com.google.gms.google-services'
 }
 
 def localProperties = new Properties()
@@ -26,13 +26,20 @@ def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
+// grdle 빌드 시 key.properties파일 참조를 위해 추가
+def keystoreProperties = new Properties()
+    def keystorePropertiesFile = rootProject.file('app/key.properties')
+    if (keystorePropertiesFile.exists()){
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    }
+
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    namespace "com.example.front"
+    namespace "com.a302.areastory"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -51,7 +58,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.front"
+        applicationId "com.a302.areastory"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
 //        minSdkVersion flutter.minSdkVersion
@@ -60,12 +67,28 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
-
+    //
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+    //앱을 릴리즈(배포용)으로 빌드 하기 위해 buildtype release를 signingConfid signingConfigs.release로 변경
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
+
+            //Gradle 빌드 시 프로가드 파일 참조가 가능하도록
+            //build.gradle 파일에서 buildTypes 블록 내에
+            //다음 내용을 추가하여 프로가드를 사용한다고 선언한다.
+//            minifyEnabled true
+//            useProguard true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 

@@ -41,5 +41,7 @@ class IconsPath {
   static String get likeOffIcon => 'assets/img/options/like_off_icon.jpg';
   static String get likeOnIcon => 'assets/img/options/like_on_icon.jpg';
   static String get replyIcon => 'assets/images/reply_icon.jpg';
+  static String get backIcon => 'asset/img/options/back_icon.jpg';
+
 
 }
