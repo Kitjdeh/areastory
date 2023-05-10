@@ -3,7 +3,6 @@ package com.areastory.article.api.controller;
 import com.areastory.article.api.service.ChatMessageService;
 import com.areastory.article.dto.common.MessageType;
 import com.areastory.article.dto.request.ChatMessageReq;
-import com.areastory.article.dto.response.ChatMessageEnterResp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,7 +33,7 @@ public class ChatController {
         채팅방의 인원수를 하나 증가
          */
         if (MessageType.ENTER.equals(message.getType())) {
-            ChatMessageEnterResp chatMessageResp = chatService.enterRoom(message);
+//            ChatMessageEnterResp chatMessageResp = chatService.enterRoom(message);
 //            messagingTemplate.convertAndSendToUser(session.getUserPrincipal().getName(), "/sub/chat/room/" + message.getRoomId(), chatMessageResp);
 //            messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatMessageResp.getNickname() + "님이 입장하셨습니다.");
             messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatService.enterRoom(message));
