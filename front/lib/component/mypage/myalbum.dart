@@ -11,6 +11,8 @@ class MyAlbum extends StatefulWidget {
 
 class _MyAlbumState extends State<MyAlbum> {
   int _currentPage = 0;
+  List _articles = [];
+  bool _nextPage = false;
 
   @override
   void initState() {
@@ -21,7 +23,14 @@ class _MyAlbumState extends State<MyAlbum> {
 
   void getuserarticle(userId, page) async {
       final articleData = await getUserArticles(userId: userId, page: page);
+      setState(() {
+        _articles.addAll(articleData.articles);
+        _nextPage = articleData.nextPage;
+        _currentPage += 1;
+      });
+      print(_articles);
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +51,17 @@ class _MyAlbumState extends State<MyAlbum> {
       ),
       // 아이템 빌더시 현재는 컬러랑 인덱스를 출력하는데 나중에는 이미지 리스트를 받아와야한다.
       itemBuilder: (context, index) {
-        return renderContainer(
-          image: "이미지경로입니다.",
-          articleId: 1,
-        );
+        if (index < _articles.length) {
+          return renderContainer(
+            image: _articles[index].image.toString(),
+            articleId: _articles[index].articleId,
+          );
+        } else if( _nextPage && index + 20 > _articles.length){
+          getuserarticle(int.parse(widget.userId), _currentPage);
+        }
       },
       // 내꺼 아이템의 총 개수.
-      itemCount: 10,
+      itemCount: _articles.length + 1,
     );
   }
 
@@ -58,18 +71,16 @@ class _MyAlbumState extends State<MyAlbum> {
     required int articleId,
     // double? height,
   }) {
-    return Container(
-      color: Colors.grey,
-      child: Center(
-        child: Text(
-          image,
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w700,
-            fontSize: 30.0,
+    return GestureDetector(
+      onTap: (){
+        print(articleId);
+      },
+      child: Container(
+        child: Image.network(
+            image,
+            fit: BoxFit.cover,
           ),
         ),
-      ),
     );
   }
 }

@@ -67,7 +67,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                 // sizedbox는 하나라도 설정안하면 -> 자동으로 child의 최대크기
                 GestureDetector(
                   onTap: (){
-                    widget.userId == myId ? Get.to(UpdateProfileScreen(userId: widget.userId, img: snapshot.data!.profile.toString()))  : null;
+                    widget.userId == myId ? Get.to(UpdateProfileScreen(userId: widget.userId, img: snapshot.data!.profile.toString(), nickname: snapshot.data!.nickname))  : null;
                     // Navigator.push(
                     //     context,
                     //     MaterialPageRoute(
@@ -220,22 +220,6 @@ class _MyPageScreenState extends State<MyPageScreen>
           MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // TextButton.icon(
-            //   onPressed: () {
-            //     Navigator.of(context).pop();
-            //     print("설정");
-            //   },
-            //   icon: Icon(Icons.settings, color: Colors.black,),
-            //   label: Text("설정", style: TextStyle(color: Colors.black),),
-            // ),
-            // TextButton.icon(
-            //   onPressed: () async {
-            //     print(widget.userId);
-            //     Navigator.of(context).pop();
-            //   },
-            //   icon: Icon(Icons.settings, color: Colors.black,),
-            //   label: Text("개인정보 수정", style: TextStyle(color: Colors.black),),
-            // ),
             TextButton.icon(
               onPressed: () async {
                 await viewModel.logout();
@@ -336,22 +320,6 @@ class _MyPageScreenState extends State<MyPageScreen>
             ],
           )
       )
-      // SingleChildScrollView(
-      //   child: Column(
-      //     children: [
-      //       const SizedBox(
-      //         height: 10,
-      //       ),
-      //       _information(),
-      //       const SizedBox(
-      //         height: 15,
-      //       ),
-      //       _tabMenu(),
-      //       _tabView(),
-      //     ],
-      //   ),
-      // ),
-
     );
   }
 }

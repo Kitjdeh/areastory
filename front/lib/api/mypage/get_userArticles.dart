@@ -17,10 +17,10 @@ Future<UserAriclesInfo> getUserArticles({
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());
     final userArticlesData = UserAriclesInfo.fromJson(jsonData["data"]);
-    print('게시글 정보 불러오기 성공');
+    print('내 게시글 정보 불러오기 성공');
     return userArticlesData;
   } else {
-    print('게시글 정보 불러오기 실패');
+    print('내 게시글 정보 불러오기 실패');
     throw Exception('Failed to load userArticles');
   }
 }
