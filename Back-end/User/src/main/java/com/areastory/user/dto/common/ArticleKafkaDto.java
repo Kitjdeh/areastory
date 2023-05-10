@@ -26,4 +26,5 @@ public class ArticleKafkaDto implements Serializable {
     private String eup;
     private String myeon;
     private LocalDateTime createdAt;
+    private Boolean publicYn;
 }

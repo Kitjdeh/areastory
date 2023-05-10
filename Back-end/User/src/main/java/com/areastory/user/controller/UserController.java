@@ -107,7 +107,20 @@ public class UserController {
             return responseDefault.notFound(false, "존재하지 않는 회원", null);
         }
         ArticleResp articleResp = userService.getArticleList(userId, page);
-        return responseDefault.success(true, "유저의 게시물 목록 조회", articleResp);
+        return responseDefault.success(true, "본인의 게시물 목록 조회", articleResp);
+    }
+
+    /*
+        다른 유저가 작성한 게시물 목록 조회
+        한 페이지당 20개, 작성 시간 역순으로 정렬
+     */
+    @GetMapping("/other/{userId}/articles")
+    public ResponseEntity<?> getOtherUserArticleList(@PathVariable("userId") Long userId, @RequestParam int page) {
+        if (!userService.findUser(userId)) {
+            return responseDefault.notFound(false, "존재하지 않는 회원", null);
+        }
+        ArticleResp articleResp = userService.getOtherUserArticleList(userId, page);
+        return responseDefault.success(true, "다른 유저의 게시물 목록 조회", articleResp);
     }
 
 }

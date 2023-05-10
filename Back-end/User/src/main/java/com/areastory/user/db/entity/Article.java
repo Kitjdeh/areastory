@@ -29,6 +29,8 @@ public class Article {
     @JoinColumn(name = "user_id")
     private User user;
     private LocalDateTime createdAt;
+    @Setter
+    private Boolean publicYn;
 
     public Article(String content, String image, User user) {
         this.content = content;

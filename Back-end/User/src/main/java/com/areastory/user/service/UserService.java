@@ -33,4 +33,6 @@ public interface UserService {
     void updateProfile(Long userId, MultipartFile profile) throws IOException;
 
     UserDetailResp getUserDetail(Long userId, Long myId);
+
+    ArticleResp getOtherUserArticleList(Long userId, int page);
 }

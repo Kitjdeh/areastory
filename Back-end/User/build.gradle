@@ -49,6 +49,12 @@ dependencies {
     //kafka
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'com.google.firebase:firebase-admin:9.1.1'
+
+    //redis 추가
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    //interceptor servlet 추가
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
 }
 
 tasks.named('test') {

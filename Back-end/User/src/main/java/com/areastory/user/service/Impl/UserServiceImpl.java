@@ -119,16 +119,14 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow();
         Page<ArticleDto> articleDtos = articleRepository.findByUser(user, pageable)
                 .map(ArticleDto::fromEntity);
-        return ArticleResp.builder()
-                .articles(articleDtos.getContent())
-                .pageSize(articleDtos.getPageable().getPageSize())
-                .totalPageNumber(articleDtos.getTotalPages())
-                .totalCount(articleDtos.getTotalElements())
-                .pageNumber(articleDtos.getPageable().getPageNumber())
-                .nextPage(articleDtos.hasNext())
-                .previousPage(articleDtos.hasPrevious())
-                .build();
+        return ArticleResp.fromArticleDto(articleDtos);
     }
 
+    @Override
+    public ArticleResp getOtherUserArticleList(Long userId, int page) {
+        Pageable pageable = PageRequest.of(page, 20, Sort.Direction.DESC, "createAt");
+        Page<ArticleDto> articleDtos = articleRepository.getOtherUserArticleList(userId, pageable);
+        return ArticleResp.fromArticleDto(articleDtos);
+    }
 
 }

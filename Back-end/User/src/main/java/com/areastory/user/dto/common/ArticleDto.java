@@ -13,17 +13,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ArticleDto {
 
-    private String content;
+    private Long articleId;
     private String image;
-    private Long like_count;
-    private Long comment_count;
 
     public static ArticleDto fromEntity(Article article) {
         return ArticleDto.builder()
-                .content(article.getContent())
+                .articleId(article.getArticleId())
                 .image(article.getImage())
-                .like_count(article.getTotalLikeCount())
-                .comment_count(article.getCommentCount())
                 .build();
     }
 

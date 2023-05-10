@@ -13,7 +13,8 @@ import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class ArticleServiceImpl implements ArticleService {
+public class
+ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
 
@@ -28,6 +29,8 @@ public class ArticleServiceImpl implements ArticleService {
                 .totalLikeCount(articleKafkaDto.getLikeCount())
                 .commentCount(articleKafkaDto.getCommentCount())
                 .user(user)
+                .createdAt(articleKafkaDto.getCreatedAt())
+                .publicYn(articleKafkaDto.getPublicYn())
                 .build();
         articleRepository.save(article);
     }
@@ -40,6 +43,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setContent(articleKafkaDto.getContent());
         article.setTotalLikeCount(articleKafkaDto.getLikeCount());
         article.setCommentCount(articleKafkaDto.getCommentCount());
+        article.setPublicYn(articleKafkaDto.getPublicYn());
     }
 
     @Override
