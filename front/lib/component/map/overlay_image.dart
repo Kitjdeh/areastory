@@ -132,7 +132,7 @@ class OverlayImage extends CustomOverlayImage {
           child: Text(
             '${localname}',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 10,color: Colors.pink),
+            style: TextStyle(fontSize: 10, color: Colors.pink),
           ),
         ),
         decoration: ShapeDecoration(
