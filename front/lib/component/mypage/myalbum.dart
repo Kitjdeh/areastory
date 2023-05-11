@@ -31,6 +31,19 @@ class _MyAlbumState extends State<MyAlbum> {
       print(_articles);
   }
 
+  void resetGetuserarticle(userId) async {
+    final articleData = await getUserArticles(userId: userId, page: 0);
+    setState(() {
+      _currentPage = 0;
+      _articles = [];
+      _nextPage = false;
+      _articles.addAll(articleData.articles);
+      _nextPage = articleData.nextPage;
+      _currentPage += 1;
+    });
+    print(_articles);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +53,21 @@ class _MyAlbumState extends State<MyAlbum> {
   }
 
   Widget renderMaxExtent() {
+    if(_articles.length == 0){
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+                children: [Text("등록된 게시글이")]),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [Text("업습니다")]),
+          ],
+        ),
+      );
+    }
     return GridView.builder(
         // gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -51,16 +79,7 @@ class _MyAlbumState extends State<MyAlbum> {
       ),
       // 아이템 빌더시 현재는 컬러랑 인덱스를 출력하는데 나중에는 이미지 리스트를 받아와야한다.
       itemBuilder: (context, index) {
-          if(_articles.length == 0){
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text("아직 등록된 게시글이 없습니다.")
-              ],
-            );
-          }
-        else if (index < _articles.length) {
+        if (index < _articles.length) {
           return renderContainer(
             image: _articles[index].image.toString(),
             articleId: _articles[index].articleId,

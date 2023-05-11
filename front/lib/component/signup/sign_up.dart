@@ -20,6 +20,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  String? _nickname;
   File? _image;
 
   /// 앨범에서 이미지 가져온다.
@@ -34,6 +35,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       setState(() {
         _image = savedImage;
       });
+      print("이미지입니다 ${_image}");
     }
   }
 
@@ -45,6 +47,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final dir = await getApplicationDocumentsDirectory();
       final file = File('${dir.path}/$fileName');
       await file.writeAsBytes(bytes);
+      print(fileName);
       return MultipartFile.fromFile(
           file.path,
           filename: fileName
@@ -62,7 +65,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     String nickname = user?.kakaoAccount?.profile?.nickname ?? "닉네임을 적어주세요.";
     String? imgUrl =
         user?.kakaoAccount?.profile?.profileImageUrl ?? "기본이미지 url";
-    String? _nickname;
 
     return Scaffold(
       body: Column(
@@ -82,7 +84,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           TextFormField(
             initialValue: nickname,
             maxLength: 10,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: '변경할 닉네임을 입력하세요',
             ),
             onChanged: (value) {
@@ -111,7 +113,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   )
                       :await getFileFromUrl(imgUrl),
                 });
-
                 try {
                   print(formData);
                   final res = await Dio().post(
