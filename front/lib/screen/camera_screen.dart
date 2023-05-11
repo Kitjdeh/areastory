@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:front/api/sns/create_article.dart';
@@ -45,8 +44,10 @@ class _CameraScreenState extends State<CameraScreen> {
       sigungu: '서초구',
       dongeupmyeon: '역삼동',
     );
-
-    Beamer.of(context).beamToNamed('/create/sns/$userId');
+    /// 라우터 이동. 현재는 이전 라우터로 이동한다.
+    // Get.until((route) => Get.currentRoute == '/');
+    // BottomNavController.to.changeBottomNav(3);
+    Get.back();
   }
 
   @override
@@ -73,17 +74,17 @@ class _CameraScreenState extends State<CameraScreen> {
       child: Center(
         child: _image == null
             ? GestureDetector(
-                child: Icon(Icons.add_a_photo, color: Colors.blue, size: 100),
-                onTap: () {
-                  getImage(ImageSource.camera);
-                },
-              )
+          child: Icon(Icons.add_a_photo, color: Colors.blue, size: 100),
+          onTap: () {
+            getImage(ImageSource.camera);
+          },
+        )
             : GestureDetector(
-                child: Image.file(File(_image!.path)),
-                onTap: () {
-                  getImage(ImageSource.camera);
-                },
-              ),
+          child: Image.file(File(_image!.path)),
+          onTap: () {
+            getImage(ImageSource.camera);
+          },
+        ),
       ),
     );
   }
@@ -199,8 +200,6 @@ class _CameraScreenState extends State<CameraScreen> {
           ElevatedButton(
             onPressed: () {
               createArticle(_image, contentController);
-              Beamer.of(context).currentBeamLocation.update();
-              print(Beamer.of(context).currentBeamLocation);
             },
             child: Text('등록'),
           ),

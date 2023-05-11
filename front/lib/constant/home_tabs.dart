@@ -29,6 +29,7 @@ class IconsPath{
   static String get menunIcon => 'asset/img/options/menu_icon.jpg';
   static String get albumOn => 'asset/img/options/grid_view_on_icon.jpg';
   static String get albumOff => 'asset/img/options/grid_view_off_icon.jpg';
+  static String get backIcon => 'asset/img/options/back_icon.jpg';
 
 
 }

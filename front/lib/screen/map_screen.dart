@@ -59,7 +59,6 @@ class _MapScreenState extends State<MapScreen> {
               if (snapshot.data == '위치 권한이 허가되었습니다.') {
                 return Column(
                   children: [_CustomMap(),
-                    // _ChoolCheckButton()
                   ],
                   // children: [_ChoolCheckButton()],
                 );
@@ -411,15 +410,15 @@ class _CustomMapState extends State<_CustomMap> {
                     "3nowareadata ${nowareadata.length} visibleMapdata${visibleMapdata.length}");
                 print("requestlist${requestlist.length}");
                 // Future<Map<String, AreaData>>result =
-                //     await postAreaData(requestlist);
-                // Map<String, AreaData> result = await postAreaData(requestlist);
-                // await Future.forEach(visibleMapdata, (e) {
-                //   final areakey = e.keyname;
-                //   final url = result[areakey]!.image;
-                //   final userid = result[areakey]!.articleId;
-                //   e.urls = url;
-                //   e.articleId = userid ?? 0;
-                // });
+                // await postAreaData(requestlist);
+                Map<String, AreaData> result = await postAreaData(requestlist);
+                await Future.forEach(visibleMapdata, (e) {
+                  final areakey = e.keyname;
+                  final url = result[areakey]!.image;
+                  final userid = result[areakey]!.articleId;
+                  e.urls = url;
+                  e.articleId = userid ?? 0;
+                });
                 setState(() {
                   nowareadata = visibleMapdata;
                 });
@@ -468,6 +467,15 @@ class _CustomMapState extends State<_CustomMap> {
                   var A = visibleMapdata.map((e) => e.mapinfo).toList();
                   print(
                       "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
+                  Map<String, AreaData> result = await postAreaData(requestlist);
+                  await Future.forEach(visibleMapdata, (e) {
+                    print('result${result}');
+                    final areakey = e.keyname;
+                    final url = result[areakey]!.image;
+                    final userid = result[areakey]!.articleId;
+                    e.urls = url;
+                    e.articleId = userid ?? 0;
+                  });
                 });
                 // updatepostionchange.values.listen((event) async {});
                 // print("mapController.zoom${mapController.zoom}");
