@@ -84,6 +84,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         //방인원수 증가
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(messageReq.getRoomId());
         chatRoom.updateUserCount();
+        System.out.println("채팅방 인원: " + chatRoom.getUserCount());
         return ChatMessageEnterResp.builder()
                 .type(messageReq.getType())
                 .message(user.getNickname() + "님이 입장하셨습니다.")
@@ -104,6 +105,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         //방인원수 감소
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(messageReq.getRoomId());
         chatRoom.deleteUserCount();
+        System.out.println("채팅방 인원: " + chatRoom.getUserCount());
         return ChatMessageQuitResp.builder()
                 .type(messageReq.getType())
                 .roomId(messageReq.getRoomId())
