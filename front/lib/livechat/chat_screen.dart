@@ -55,7 +55,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
     print('연결됐으예');
     _stompClient.subscribe(
       destination: '/sub/chat/room/${widget.roomId}',
-      callback: (frame) {
+      callback: (frame) async {
         final dynamic message = json.decode(frame.body!);
         print(message);
         setState(() {
@@ -70,11 +70,13 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
             _messages.add(message);
           }
         });
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
+        Future.delayed(Duration(milliseconds: 100), () {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        });
       },
     );
 
@@ -187,7 +189,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
                         content: _messages[index]["content"],
                         // createdAt: _messages[index]["createdAt"],
                         userId: _messages[index]["userId"],
-                        height: 100,
+                        height: 80,
                       );
               },
             ),

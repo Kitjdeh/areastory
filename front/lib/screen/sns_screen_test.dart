@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
-import "package:front/component/sns/image_data.dart";
+import "package:front/component/sns/avatar_widget.dart";
+import "package:front/constant/home_tabs.dart";
 import "package:front/livechat/chat_screen.dart";
 
 class SnsScreening extends StatefulWidget {
@@ -15,11 +16,7 @@ Widget _storyBoardList() {
     scrollDirection: Axis.horizontal,
     child: Row(
       children: List.generate(
-          100,
-              (index) => Container(
-            decoration:
-            BoxDecoration(shape: BoxShape.circle, color: Colors.grey),
-          )),
+          100, (index) => AvatarWidget(type: AvatarType.TYPE1, thumbPath: '')),
     ),
   );
 }
@@ -42,9 +39,9 @@ class _SnsScreeningState extends State<SnsScreening> {
                       roomId: 'test',
                     )));
           },
-          child: Image.asset(
-            'asset/img/comment.png',
-            height: 30,
+          child: ImageData(
+            IconsPath.logo,
+            width: 270,
           ),
         ),
         actions: [],
@@ -52,6 +49,7 @@ class _SnsScreeningState extends State<SnsScreening> {
       body: ListView(
         children: [
           _storyBoardList(),
+          // _postList(),
         ],
       ),
     );

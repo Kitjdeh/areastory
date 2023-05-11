@@ -44,63 +44,68 @@ class ChatComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: height,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 10,
-          ),
-          CircleAvatar(
-            radius: 20,
-            backgroundImage: NetworkImage(profile),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          nickname,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+    return Padding(
+      padding: EdgeInsets.only(
+        right: 20,
+      ),
+      child: SizedBox(
+        height: height,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 10,
+            ),
+            CircleAvatar(
+              radius: 20,
+              backgroundImage: NetworkImage(profile),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            nickname,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        // Text(
-                        //   _formatDate(createdAt),
-                        //   style: TextStyle(
-                        //     color: Colors.grey,
-                        //     fontSize: 12,
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                Expanded(
-                  child: Text(
-                    content,
-                    style: const TextStyle(
-                      fontSize: 14,
+                          SizedBox(
+                            width: 10,
+                          ),
+                          // Text(
+                          //   _formatDate(createdAt),
+                          //   style: TextStyle(
+                          //     color: Colors.grey,
+                          //     fontSize: 12,
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Expanded(
+                    child: Text(
+                      content,
+                      style: const TextStyle(
+                        fontSize: 14,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 5),
-              ],
+                  const SizedBox(height: 5),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
