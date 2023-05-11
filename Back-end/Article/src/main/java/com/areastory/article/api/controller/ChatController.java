@@ -22,20 +22,14 @@ public class ChatController {
      */
     private final SimpMessageSendingOperations messagingTemplate;
     private final ChatMessageService chatService;
-//    private Session session;
 
     //입장, 대화, 나가기의 값에 따라 서비스 처리
     @MessageMapping("/chat/message")
     public void message(ChatMessageReq message) {
-//        session.getUserPrincipal().getName();
-//        ChatMessageResp chatMessageResp = null;
         /*
         채팅방의 인원수를 하나 증가
          */
         if (MessageType.ENTER.equals(message.getType())) {
-//            ChatMessageEnterResp chatMessageResp = chatService.enterRoom(message);
-//            messagingTemplate.convertAndSendToUser(session.getUserPrincipal().getName(), "/sub/chat/room/" + message.getRoomId(), chatMessageResp);
-//            messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatMessageResp.getNickname() + "님이 입장하셨습니다.");
             messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatService.enterRoom(message));
 
         }
@@ -53,12 +47,6 @@ public class ChatController {
         3. 채팅방 lastChatDate 갱신
          */
         else if (MessageType.TALK.equals(message.getType())) {
-            System.out.println("type: " + message.getType());
-            System.out.println("roomId: " + message.getRoomId());
-            System.out.println("userId: " + message.getUserId());
-            System.out.println("content: " + message.getContent());
-
-//            ChatMessageResp chatMessageResp = chatService.saveMessage(message);
             messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatService.saveMessage(message));
         }
     }

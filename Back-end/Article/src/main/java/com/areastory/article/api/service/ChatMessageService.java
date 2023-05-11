@@ -2,6 +2,7 @@ package com.areastory.article.api.service;
 
 import com.areastory.article.dto.request.ChatMessageReq;
 import com.areastory.article.dto.response.ChatMessageEnterResp;
+import com.areastory.article.dto.response.ChatMessageQuitResp;
 import com.areastory.article.dto.response.ChatMessageResp;
 import com.areastory.article.dto.response.ChatRoomResp;
 import org.springframework.data.domain.Pageable;
@@ -15,5 +16,5 @@ public interface ChatMessageService {
 
     ChatMessageEnterResp enterRoom(ChatMessageReq messageDto);
 
-    ChatMessageResp outRoom(ChatMessageReq messageDto);
+    ChatMessageQuitResp outRoom(ChatMessageReq messageDto);
 }

@@ -10,6 +10,7 @@ import com.areastory.article.db.repository.UserRepository;
 import com.areastory.article.dto.common.ChatRoomDto;
 import com.areastory.article.dto.request.ChatMessageReq;
 import com.areastory.article.dto.response.ChatMessageEnterResp;
+import com.areastory.article.dto.response.ChatMessageQuitResp;
 import com.areastory.article.dto.response.ChatMessageResp;
 import com.areastory.article.dto.response.ChatRoomResp;
 import com.areastory.article.exception.CustomException;
@@ -97,19 +98,19 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Transactional
     @Override
-    public ChatMessageResp outRoom(ChatMessageReq messageReq) {
+    public ChatMessageQuitResp outRoom(ChatMessageReq messageReq) {
         User user = userRepository.findById(messageReq.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         //방인원수 감소
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(messageReq.getRoomId());
         chatRoom.deleteUserCount();
-        return ChatMessageResp.builder()
+        return ChatMessageQuitResp.builder()
                 .type(messageReq.getType())
                 .roomId(messageReq.getRoomId())
                 .userId(messageReq.getUserId())
                 .profile(user.getProfile())
                 .nickname(user.getNickname())
-                .content(user.getNickname() + "님이 퇴장하셨습니다.")
+                .message(user.getNickname() + "님이 퇴장하셨습니다.")
                 .userCount(chatRoom.getUserCount())
                 .build();
     }
