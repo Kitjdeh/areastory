@@ -9,6 +9,7 @@ class AvatarWidget extends StatelessWidget {
   String? nickname;
   AvatarType type;
   double? size;
+  String? location;
 
   AvatarWidget({
     Key? key,
@@ -16,7 +17,8 @@ class AvatarWidget extends StatelessWidget {
     required this.thumbPath,
     this.hasStory,
     this.nickname,
-    this.size = 65,
+    this.size = 70,
+    this.location,
   }) : super(key: key);
 
   Widget type1Widget() {
@@ -63,12 +65,24 @@ class AvatarWidget extends StatelessWidget {
     return Row(
       children: [
         type1Widget(),
-        Text(
-          nickname ?? '',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              nickname ?? '',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            SizedBox(height: 5,),
+            Text(
+              location ?? '',
+              style: const TextStyle(
+                fontSize: 10,
+              ),
+            )
+          ],
         ),
       ],
     );

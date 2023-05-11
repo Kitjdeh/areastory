@@ -51,6 +51,11 @@ class _LocationSearchState extends State<LocationSearch> {
         children: [
           Expanded(
             child: Container(
+              height: 35,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                color: const Color(0xffefefef),
+              ),
               child: Autocomplete<String>(
                 optionsBuilder: (TextEditingValue textEditingValue) {
                   if (textEditingValue.text == '') {
@@ -68,14 +73,20 @@ class _LocationSearchState extends State<LocationSearch> {
               ),
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
+          const SizedBox(
+            width: 5,
+          ),
+          GestureDetector(
+            onTap: () {
               if (_selectedLocation != null) {
                 widget.onLocationSelected(_selectedLocation!);
               }
               _selectedLocation = null;
             },
-            child: Text('확인'),
+            child: Icon(
+              Icons.search,
+              color: Colors.black,
+            ),
           ),
         ],
       ),

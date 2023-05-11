@@ -1,0 +1,360 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:expandable_text/expandable_text.dart';
+import 'package:flutter/material.dart';
+import 'package:front/api/follow/create_following.dart';
+import 'package:front/api/follow/delete_following.dart';
+import 'package:front/api/like/create_article_like.dart';
+import 'package:front/api/like/delete_article_like.dart';
+import 'package:front/api/sns/delete_article.dart';
+import 'package:front/api/sns/get_article.dart';
+import 'package:front/component/sns/article_update_screen.dart';
+import 'package:front/component/sns/avatar_widget.dart';
+import 'package:front/component/sns/comment_screen.dart';
+import 'package:front/component/sns/like_screen.dart';
+import 'package:front/constant/home_tabs.dart';
+import 'package:front/livechat/chat_screen.dart';
+
+class ArticleComponent extends StatefulWidget {
+  final int articleId;
+  final int followingId;
+  final double height;
+  final int userId;
+  final Function(int commentId) onDelete;
+  const ArticleComponent({
+    Key? key,
+    required this.articleId,
+    required this.followingId,
+    required this.height,
+    required this.userId,
+    required this.onDelete,
+  }) : super(key: key);
+
+  @override
+  State<ArticleComponent> createState() => _ArticleComponentState();
+}
+
+class _ArticleComponentState extends State<ArticleComponent> {
+  void createFollowing(followingId) async {
+    await postFollowing(followingId: followingId);
+    setState(() {});
+  }
+
+  void delFollowing(followingId) async {
+    await deleteFollowing(followingId: followingId);
+    setState(() {});
+  }
+
+  void createArticleLike(articleId) async {
+    await postArticleLike(articleId: articleId);
+    setState(() {});
+  }
+
+  void delArticleLike(articleId) async {
+    await deleteArticleLike(articleId: articleId);
+    setState(() {});
+  }
+
+  void delArticle(articleId) async {
+    await deleteArticle(articleId: articleId);
+    // setState(() {});
+    widget.onDelete(articleId);
+  }
+
+  String _formatDate(dynamic createdAt) {
+    DateTime dateTime;
+
+    if (createdAt is String) {
+      dateTime = DateTime.parse(createdAt);
+    } else if (createdAt is DateTime) {
+      dateTime = createdAt;
+    } else {
+      return '';
+    }
+
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inSeconds < 60) {
+      return '${difference.inSeconds}초 전';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes}분 전';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours}시간 전';
+    } else {
+      return '${difference.inDays}일 전';
+    }
+  }
+
+  Widget _header({
+    required String profile,
+    required String nickname,
+    required bool followYn,
+    String? dosi,
+    String? sigungu,
+    String? dongeupmyeon,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          AvatarWidget(
+            type: AvatarType.TYPE3,
+            nickname: nickname,
+            location: '${dosi} ${sigungu} ${dongeupmyeon}',
+            size: 40,
+            thumbPath:
+                "https://areastory-user.s3.ap-northeast-2.amazonaws.com/profile/8373fb5d-78e7-4613-afc9-5269c247f36a.1683607649926",
+          ),
+          Row(
+            children: [
+              if (widget.userId == widget.followingId)
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.update),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SnsUpdateScreen(
+                                      articleId: widget.articleId,
+                                    )));
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        delArticle(widget.articleId);
+                      },
+                    ),
+                  ],
+                ),
+              if (widget.userId != widget.followingId)
+                ElevatedButton(
+                  onPressed: () {
+                    followYn
+                        ? delFollowing(widget.followingId)
+                        : createFollowing(widget.followingId);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: followYn ? Colors.transparent : Colors.blue,
+                    side: BorderSide(color: Colors.white),
+                  ),
+                  child: Text(
+                    followYn ? '팔로잉' : '팔로우',
+                    style: TextStyle(
+                      color: Colors.white, // 텍스트 색상을 하얀색으로 설정
+                    ),
+                  ),
+                ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _image({
+    required String image,
+  }) {
+    return CachedNetworkImage(
+      imageUrl: image,
+    );
+  }
+
+  Widget _infoCount({
+    required bool likeYn,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  likeYn
+                      ? delArticleLike(widget.articleId)
+                      : createArticleLike(widget.articleId);
+                },
+                child: ImageData(
+                  likeYn ? IconsPath.likeOnIcon : IconsPath.likeOffIcon,
+                  width: 65,
+                ),
+              ),
+              const SizedBox(width: 15),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SnsCommentScreen(
+                                articleId: widget.articleId,
+                                userId: widget.userId,
+                              )));
+                },
+                child: ImageData(
+                  IconsPath.replyIcon,
+                  width: 60,
+                ),
+              ),
+            ],
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LiveChatScreen(
+                            userId: widget.userId,
+                            roomId: 'test',
+                          )));
+            },
+            child: ImageData(
+              IconsPath.bookMarkOffIcon,
+              width: 50,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _infoDescription({
+    required int totalLikeCount,
+    required String nickname,
+    required String content,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SnsLikeScreen(
+                          articleId: widget.articleId, userId: widget.userId)));
+            },
+            child: Text(
+              '좋아요 ${totalLikeCount}개',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          ExpandableText(
+            content,
+            prefixText: nickname,
+            onPrefixTap: () {
+              print('개발하는남자 페이지 이동');
+            },
+            prefixStyle: const TextStyle(fontWeight: FontWeight.bold),
+            expandText: '더보기',
+            collapseText: '접기',
+            maxLines: 2,
+            expandOnTextTap: true,
+            collapseOnTextTap: true,
+            linkColor: Colors.grey,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _replyTextBtn({
+    required int commentCount,
+  }) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15.0),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SnsCommentScreen(
+                        articleId: widget.articleId,
+                        userId: widget.userId,
+                      )));
+        },
+        child: Text(
+          '댓글 ${commentCount}개 모두 보기',
+          style: TextStyle(color: Colors.grey, fontSize: 13),
+        ),
+      ),
+    );
+  }
+
+  Widget _dateAgo({
+    required String createAt,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Text(
+        _formatDate(createAt),
+        style: const TextStyle(color: Colors.grey, fontSize: 11),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<ArticleData>(
+      future: getArticle(
+        articleId: widget.articleId,
+      ),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Container(
+            margin: const EdgeInsets.only(top: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _header(
+                  profile: snapshot.data!.profile,
+                  nickname: snapshot.data!.nickname,
+                  followYn: snapshot.data!.followYn,
+                  dosi: snapshot.data!.dosi,
+                  sigungu: snapshot.data!.sigungu,
+                  dongeupmyeon: snapshot.data!.dongeupmyeon,
+                ),
+                const SizedBox(height: 15),
+                _image(
+                  image: snapshot.data!.image,
+                ),
+                const SizedBox(height: 15),
+                _infoCount(
+                  likeYn: snapshot.data!.likeYn,
+                ),
+                const SizedBox(height: 5),
+                _infoDescription(
+                  totalLikeCount: snapshot.data!.totalLikeCount,
+                  nickname: snapshot.data!.nickname,
+                  content: snapshot.data!.content,
+                ),
+                const SizedBox(height: 5),
+                _replyTextBtn(
+                  commentCount: snapshot.data!.commentCount,
+                ),
+                const SizedBox(height: 5),
+                _dateAgo(
+                  createAt: snapshot.data!.createdAt,
+                ),
+              ],
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Container(
+            height: 0,
+          );
+        } else {
+          return Container(
+            height: 0,
+          );
+        }
+      },
+    );
+  }
+}

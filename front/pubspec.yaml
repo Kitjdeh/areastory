@@ -65,7 +65,9 @@ dependencies:
   debounce_throttle: ^2.0.0
   flutter_keyboard_visibility: ^5.4.1
   cached_network_image: ^3.2.3
+  expandable_text: ^2.3.0
   fluttertoast: ^8.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
