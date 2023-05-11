@@ -23,8 +23,9 @@ enum PolygonLabelPlacement {
 class CustomPolygonLayer extends StatelessWidget {
   final List<Polygon> polygons;
   final List<String> urls;
-  final int index;
+  final int userId;
   final String area;
+  final int articleId;
 
   /// screen space culling of polygons based on bounding box
   final bool polygonCulling;
@@ -35,7 +36,8 @@ class CustomPolygonLayer extends StatelessWidget {
       this.area = '',
       this.polygonCulling = false,
       this.urls = const [],
-      this.index = 0}) {
+      this.userId = 0,
+      this.articleId = 0}) {
     if (polygonCulling) {
       for (final polygon in polygons) {
         polygon.boundingBox = LatLngBounds.fromPoints(polygon.points);
@@ -116,10 +118,12 @@ class CustomPolygonLayer extends StatelessWidget {
                         height: MediaQuery.of(context).size.height * 0.8,
                         child: Center(
                           child: ArticleDetailComponent(
-                            articleId: 9,
-                            userId: 2, // 지금 로그인한 유저Id
+                            articleId: 39,
+                            // articleId,
+                            userId: userId,
+                            // 지금 로그인한 유저Id
                             height: 500,
-                            location: '서울특별시', // 길이가 1단어~4단어 아무렇게나
+                            location: area, // 길이가 1단어~4단어 아무렇게나
                           ),
                         ),
                       );

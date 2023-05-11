@@ -10,7 +10,6 @@ class SnsScreening extends StatefulWidget {
   @override
   State<SnsScreening> createState() => _SnsScreeningState();
 }
-
 Widget _storyBoardList() {
   return SingleChildScrollView(
     scrollDirection: Axis.horizontal,
