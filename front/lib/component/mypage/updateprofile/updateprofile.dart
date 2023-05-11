@@ -9,7 +9,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
-  const UpdateProfileScreen({Key? key, required this.userId, required this.img, required this.nickname}) : super(key: key);
+  const UpdateProfileScreen(
+      {Key? key,
+      required this.userId,
+      required this.img,
+      required this.nickname})
+      : super(key: key);
   final String userId;
   final String img;
   final String nickname;
@@ -34,6 +39,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       setState(() {
         _image = savedImage;
       });
+      print("이미지바뀜 ${_image}");
     }
   }
 
@@ -45,15 +51,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       final dir = await getApplicationDocumentsDirectory();
       final file = File('${dir.path}/$fileName');
       await file.writeAsBytes(bytes);
-      return MultipartFile.fromFile(
-          file.path,
-          filename: fileName
-      );
+      print("이미지가 안바뀌었습니다. 파일이름입니다");
+      print(fileName);
+      return MultipartFile.fromFile(file.path, filename: fileName);
     } else {
       throw Exception('Failed to get file from URL');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +75,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           },
         ),
         titleSpacing: 0,
-        title: Text("프로필 변경", style: TextStyle(color: Colors.black),),
+        title: Text(
+          "프로필 변경",
+          style: TextStyle(color: Colors.black),
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -101,26 +108,24 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           ),
           ElevatedButton(
               onPressed: () async {
-                final userReq = {
+                final userInfoReq = {
                   'nickname': _nickname == null ? widget.nickname : _nickname,
-                  'userId': widget.userId,
                 };
                 final formData = FormData.fromMap({
-                  'userReq': MultipartFile.fromString(
-                      json.encode(userReq),
-                      contentType: MediaType.parse('application/json')
-                  ),
+                  'userInfoReq': MultipartFile.fromString(
+                      json.encode(userInfoReq),
+                      contentType: MediaType.parse('application/json')),
                   'profile': _image != null
                       ? await MultipartFile.fromFile(
-                    _image!.path,
-                    filename: _image!.path.split('/').last,
-                  )
-                      :await getFileFromUrl(widget.img),
+                          _image!.path,
+                          filename: _image!.path.split('/').last,
+                        )
+                      : await getFileFromUrl(widget.img),
                 });
-
+                print("_image: ${_image}");
                 try {
                   print(formData);
-                  final res = await Dio().post(
+                  final res = await Dio().patch(
                       '${dotenv.get('BASE_URL')}/api/users/${widget.userId}',
                       data: formData
                   );

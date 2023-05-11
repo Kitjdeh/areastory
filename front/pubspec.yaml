@@ -91,6 +91,7 @@ flutter:
     - asset/img/
     - asset/img/bottom_nav/
     - asset/img/options/
+    - asset/img/login/
     - asset/location/location.xlsx
     - asset/location/final_location.xlsx
     - asset/map/
