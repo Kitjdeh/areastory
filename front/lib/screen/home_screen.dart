@@ -18,36 +18,57 @@ class HomeScreen extends GetView<BottomNavController> {
     return WillPopScope(
         child: Obx(
           () => Scaffold(
-            body: IndexedStack(
-              index: controller.pageIndex.value,
-              children: [
-                MapScreen(),
-                Navigator(
-                  key: controller.snsPageNavigationKey,
-                  onGenerateRoute: (routeSetting) {
-                    return MaterialPageRoute(
-                      builder: (context) => SnsScreen(userId: userId),
-                    );
-                  },
-                ),
-                CameraScreen(userId: userId),
-                Navigator(
-                  key: controller.followPageNavigationKey,
-                  onGenerateRoute: (routeSetting) {
-                    return MaterialPageRoute(
-                      builder: (context) => FollowScreen(userId: userId),
-                    );
-                  },
-                ),
-                Navigator(
-                  key: controller.myPageNavigationKey,
-                  onGenerateRoute: (routeSetting) {
-                    return MaterialPageRoute(
-                      builder: (context) => MyPageScreen(userId: userId),
-                    );
-                  },
-                ),
-              ],
+            // appBar: AppBar(
+            //   title: Text(
+            //     'AreaStory',
+            //     style: TextStyle(
+            //       color: Colors.blue,
+            //       fontWeight: FontWeight.w700,
+            //     ),
+            //   ),
+            //   backgroundColor: Colors.white,
+            //   actions: [
+            //     IconButton(
+            //       onPressed: () async {},
+            //       color: Colors.blue,
+            //       icon: Icon(
+            //         Icons.my_location,
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            body: SafeArea(
+              child: IndexedStack(
+                index: controller.pageIndex.value,
+                children: [
+                  MapScreen(),
+                  Navigator(
+                    key: controller.snsPageNavigationKey,
+                    onGenerateRoute: (routeSetting) {
+                      return MaterialPageRoute(
+                        builder: (context) => SnsScreen(userId: userId),
+                      );
+                    },
+                  ),
+                  CameraScreen(userId: userId),
+                  Navigator(
+                    key: controller.followPageNavigationKey,
+                    onGenerateRoute: (routeSetting) {
+                      return MaterialPageRoute(
+                        builder: (context) => FollowScreen(userId: userId),
+                      );
+                    },
+                  ),
+                  Navigator(
+                    key: controller.myPageNavigationKey,
+                    onGenerateRoute: (routeSetting) {
+                      return MaterialPageRoute(
+                        builder: (context) => MyPageScreen(userId: userId),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
             bottomNavigationBar: BottomNavigationBar(
               /// 바텀 내브바 css효과들 건드릴때 쓰십쇼
