@@ -136,7 +136,6 @@ class _CustomMapState extends State<_CustomMap> {
   double _zoom = 12.0;
   int? userId;
   final storage = new FlutterSecureStorage();
-
   final LatLng companyLatLng = LatLng(37.5013, 127.0397);
   // Positionchange 후 작동하게 하여야함
   final updatepostionchange = Debouncer(Duration(seconds: 1),
@@ -659,32 +658,33 @@ class _CustomMapState extends State<_CustomMap> {
                             height: MediaQuery.of(context).size.height * 0.8,
                             child: Center(
                               child: StreamBuilder<Object>(
-                                stream: null,
-                                builder: (context, snapshot) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white30,
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                    child: ListView.separated(
-                                      // controller: _scrollController,
-                                      itemCount: 4,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Container(
-                                          height: 50,
-                                          alignment: Alignment.center,
-                                          child: const CircularProgressIndicator(),
-                                        );
-                                      },
+                                  stream: null,
+                                  builder: (context, snapshot) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white30,
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                      ),
+                                      child: ListView.separated(
+                                        // controller: _scrollController,
+                                        itemCount: 4,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return Container(
+                                            height: 50,
+                                            alignment: Alignment.center,
+                                            child:
+                                                const CircularProgressIndicator(),
+                                          );
+                                        },
 
-                                      separatorBuilder: (context, index) {
-                                        return SizedBox(height: 20);
-                                      },
-                                    ),
-                                  );
-                                }
-                              ),
+                                        separatorBuilder: (context, index) {
+                                          return SizedBox(height: 20);
+                                        },
+                                      ),
+                                    );
+                                  }),
                             ),
                           );
                         },

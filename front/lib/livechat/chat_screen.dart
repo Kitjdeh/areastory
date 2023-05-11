@@ -29,6 +29,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
   final _messages = [];
   late final StompClient _stompClient;
   bool _connected = false;
+  int userCount = 0;
 
   @override
   void initState() {
@@ -57,18 +58,22 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
       destination: '/sub/chat/room/${widget.roomId}',
       callback: (frame) async {
         final dynamic message = json.decode(frame.body!);
-        print(message);
+        print(message["userCount"]);
         setState(() {
           if (message.containsKey('messageList')) {
             if (message["userId"] == widget.userId) {
               _messages.addAll(message["messageList"]);
+              userCount = message["userCount"];
             }
             _messages.add({"message": message["message"]});
           } else if (message.containsKey('message')) {
             _messages.add({"message": message["message"]});
+            userCount = message["userCount"];
           } else {
             _messages.add(message);
           }
+
+          print(userCount);
         });
         Future.delayed(Duration(milliseconds: 100), () {
           _scrollController.animateTo(
@@ -154,7 +159,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "${widget.roomId}의 STORY",
+          "${widget.roomId}의 STORY (현재원:${userCount})",
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
