@@ -5,6 +5,7 @@ import 'package:front/api/like/create_article_like.dart';
 import 'package:front/api/like/delete_article_like.dart';
 import 'package:front/api/sns/get_article.dart';
 import 'package:front/component/sns/comment_screen.dart';
+import 'package:front/screen/sns_screen.dart';
 
 class ArticleDetailComponent extends StatefulWidget {
   final int articleId;
@@ -258,15 +259,37 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                     decoration: BoxDecoration(
                                       color: Color(0x65FFFFFF),
                                     ),
-                                    child: Text(
-                                      snapshot.data!.content,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.black,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          snapshot.data!.content,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.normal,
+                                            color: Colors.black,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => SnsScreen(
+                                                    location: widget.location,
+                                                    userId: widget.userId
+                                                        .toString()),
+                                              ),
+                                            );
+                                          },
+                                          child: Text(
+                                            '해당지역 sns',
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),

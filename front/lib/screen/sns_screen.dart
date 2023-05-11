@@ -2,16 +2,23 @@ import "package:flutter/material.dart";
 import "package:front/component/sns/avatar_widget.dart";
 import "package:front/component/sns/post_widget.dart";
 import "package:front/constant/home_tabs.dart";
+import "package:front/controllers/bottom_nav_controller.dart";
 import "package:front/livechat/chat_screen.dart";
 import 'package:front/api/sns/get_articles.dart';
 import 'package:front/component/sns/article/article.dart';
 import 'package:front/const/auto_search_test.dart';
+import "package:get/get.dart";
 
 const List<String> list = <String>['인기순', '최신순'];
 
 class SnsScreen extends StatefulWidget {
-  const SnsScreen({Key? key, required this.userId}) : super(key: key);
+  const SnsScreen({
+    Key? key,
+    this.location,
+    required this.userId,
+  }) : super(key: key);
   final String userId;
+  final String? location;
 
   @override
   State<SnsScreen> createState() => _SnsScreenState();
@@ -52,8 +59,7 @@ Widget _postList({
             followingId: articles[index].userId,
             height: 350,
           );
-        }
-        else if (currentPage < lastPage!) {
+        } else if (currentPage < lastPage!) {
           loadMoreData();
           return Container(
             height: 50,
@@ -111,6 +117,28 @@ class _SnsScreenState extends State<SnsScreen> {
   }
 
   void printArticles() async {
+    if (widget.location != null) {
+      List<String> locationParts = widget.location!.split(' ');
+      if (locationParts.length == 1) {
+        seletedLocationDosi = locationParts[0];
+      } else if (locationParts.length == 2) {
+        seletedLocationDosi = locationParts[0];
+        seletedLocationSigungu = locationParts[1];
+      } else if (locationParts.length == 3) {
+        if (locationParts[2][locationParts[2].length - 1] == "구") {
+          seletedLocationDosi = locationParts[0];
+          seletedLocationSigungu = locationParts[1] + locationParts[2];
+        } else {
+          seletedLocationDosi = locationParts[0];
+          seletedLocationSigungu = locationParts[1];
+          seletedLocationDongeupmyeon = locationParts[2];
+        }
+      } else {
+        seletedLocationDosi = locationParts[0];
+        seletedLocationSigungu = locationParts[1] + locationParts[2];
+        seletedLocationDongeupmyeon = locationParts[3];
+      }
+    }
     _currentPage = 1;
     _articles.clear();
     final articleData = await getArticles(
@@ -182,14 +210,33 @@ class _SnsScreenState extends State<SnsScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: ImageData(
-          IconsPath.logo,
-          width: 270,
-        ),
+        title: widget.location != null
+            ? Text(
+                widget.location!,
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              )
+            : ImageData(
+                IconsPath.logo,
+                width: 270,
+              ),
+        centerTitle: widget.location != null ? true : false,
+        leading: widget.location != null
+            ? IconButton(
+                icon: Icon(Icons.arrow_back_ios_new_outlined),
+                color: Colors.black,
+                onPressed: () {
+                  Get.find<BottomNavController>().willPopAction();
+                },
+              )
+            : null,
         actions: [
-          LocationSearch(
-            onLocationSelected: handleLocationSelected,
-          ),
+          widget.location != null
+              ? SizedBox(
+                  width: 0,
+                )
+              : LocationSearch(
+                  onLocationSelected: handleLocationSelected,
+                ),
           const SizedBox(
             width: 20,
           ),
@@ -215,7 +262,11 @@ class _SnsScreenState extends State<SnsScreen> {
       ),
       body: ListView(
         children: [
-          _storyBoardList(),
+          widget.location != null
+              ? SizedBox(
+                  height: 0,
+                )
+              : _storyBoardList(),
           _postList(
             userId: userId,
             onDelete: onDelete,
