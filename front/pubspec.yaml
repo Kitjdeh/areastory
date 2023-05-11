@@ -64,6 +64,7 @@ dependencies:
   flutter_launcher_icons: ^0.13.1 # 앱 실행 아이콘 변경
   flutter_keyboard_visibility: ^5.4.1
   cached_network_image: ^3.2.3
+  expandable_text: ^2.3.0
 
 dev_dependencies:
   flutter_test:

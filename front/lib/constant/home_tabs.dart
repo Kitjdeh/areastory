@@ -38,11 +38,12 @@ class IconsPath {
   static String get albumOn => 'asset/img/options/grid_view_on_icon.jpg';
   static String get albumOff => 'asset/img/options/grid_view_off_icon.jpg';
   static String get logo => 'asset/img/logo.png';
-  static String get likeOffIcon => 'assets/img/options/like_off_icon.jpg';
-  static String get likeOnIcon => 'assets/img/options/like_on_icon.jpg';
-  static String get replyIcon => 'assets/images/reply_icon.jpg';
+  static String get likeOffIcon => 'asset/img/options/like_off_icon.jpg';
+  static String get likeOnIcon => 'asset/img/options/like_on_icon.jpg';
+  static String get replyIcon => 'asset/img/options/reply_icon.jpg';
   static String get backIcon => 'asset/img/options/back_icon.jpg';
   static String get loginLogo => 'asset/img/login_logo.png';
-
-
+  static String get postMoreIcon => 'asset/img/options/more_icon.jpg';
+  static String get directMessage => 'asset/img/options/direct_msg_icon.jpg';
+  static String get bookMarkOffIcon => 'asset/img/options/direct_msg_icon.jpg';
 }

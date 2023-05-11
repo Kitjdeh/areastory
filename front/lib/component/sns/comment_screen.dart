@@ -158,7 +158,7 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
                     printComments();
                   },
                   child: ListView.separated(
-                    controller: _scrollController,
+                    // controller: _scrollController,
                     itemCount: _comments.length + 1,
                     itemBuilder: (BuildContext context, int index) {
                       if (index < _comments.length) {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:front/api/sns/get_follow_articles.dart';
-import 'package:front/component/sns/article/article.dart';
-
-
+import 'package:front/component/sns/avatar_widget.dart';
+import 'package:front/component/sns/post_widget.dart';
+import 'package:front/constant/home_tabs.dart';
 
 class FollowScreen extends StatefulWidget {
   const FollowScreen({Key? key, required this.userId}) : super(key: key);
@@ -12,9 +12,83 @@ class FollowScreen extends StatefulWidget {
   State<FollowScreen> createState() => _FollowScreenState();
 }
 
+Widget _myStory() {
+  return Stack(
+    children: [
+      AvatarWidget(
+        type: AvatarType.TYPE2,
+        thumbPath:
+            'https://areastory-user.s3.ap-northeast-2.amazonaws.com/profile/8373fb5d-78e7-4613-afc9-5269c247f36a.1683607649926',
+        size: 70,
+      ),
+    ],
+  );
+}
+
+Widget _postList({
+  required int userId,
+  required void Function(int articleId) onDelete,
+  required int height,
+  required List articles,
+  required int currentPage,
+  required int lastPage,
+  required void Function() loadMoreData,
+}) {
+  return Column(
+    children: List.generate(
+      articles.length + 1,
+      (index) {
+        if (index < articles.length) {
+          return ArticleComponent(
+            userId: userId,
+            onDelete: onDelete,
+            articleId: articles[index].articleId,
+            followingId: articles[index].userId,
+            height: 350,
+          );
+        } else if (currentPage < lastPage!) {
+          loadMoreData();
+          return Container(
+            height: 50,
+            alignment: Alignment.center,
+            child: const CircularProgressIndicator(),
+          );
+        }
+        return SizedBox
+            .shrink(); // Return an empty widget if the condition is not met
+      },
+    ),
+  );
+}
+
+Widget _storyBoardList() {
+  return SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: Row(
+      children: [
+        const SizedBox(
+          width: 10,
+        ),
+        _myStory(),
+        const SizedBox(
+          width: 5,
+        ),
+        ...List.generate(
+          100,
+          (index) => AvatarWidget(
+            type: AvatarType.TYPE1,
+            thumbPath: 'https://img.ridicdn.net/cover/1250058267/large',
+            size: 70,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 class _FollowScreenState extends State<FollowScreen> {
   int _currentPage = 1;
-  int? _lastPage = 0;
+  int _lastPage = 0;
   List _articles = [];
 
   late final userId = int.parse(widget.userId);
@@ -61,75 +135,32 @@ class _FollowScreenState extends State<FollowScreen> {
 
   void _updateIsChildActive(followingId) async {}
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(30.0),
-        child: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: Image.asset(
-            'asset/img/logo.png',
-            height: 120,
-            width: 120,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: ImageData(
+          IconsPath.logo,
+          width: 270,
+        ),
+      ),
+      body: ListView(
+        children: [
+          _storyBoardList(),
+          _postList(
+            userId: userId,
+            onDelete: onDelete,
+            height: 350,
+            articles: _articles,
+            loadMoreData: _loadMoreData,
+            currentPage: _currentPage,
+            lastPage: _lastPage,
           ),
-        ),
+        ],
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 10,
-            ),
-            Expanded(
-              child: Container(
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    printArticles();
-                  },
-                  child: ListView.separated(
-                    controller: _scrollController,
-                    itemCount: _articles.length + 1,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index < _articles.length) {
-                        return ArticleComponent(
-                          userId: userId,
-                          onDelete: onDelete,
-                          articleId: _articles[index].articleId,
-                          followingId: _articles[index].userId,
-                          height: 350,
-                          onUpdateIsChildActive: _updateIsChildActive,
-                        );
-                      } else if (_currentPage < _lastPage!) {
-                        _loadMoreData();
-                        return Container(
-                          height: 50,
-                          alignment: Alignment.center,
-                          child: const CircularProgressIndicator(),
-                        );
-                      }
-                    },
-                    separatorBuilder: (context, index) {
-                      return renderContainer(height: 20);
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget renderContainer({
-    double? height,
-  }) {
-    return Container(
-      height: height,
     );
   }
 }
