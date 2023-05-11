@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -13,14 +16,25 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ArticleDto {
 
-    private Long articleId;
-    private String image;
+    private Integer pageSize;
+    private Integer totalPageNumber;
+    private Long totalCount;
+    private Integer pageNumber;
+    private Boolean nextPage;
+    private Boolean previousPage;
 
-    public static ArticleDto fromEntity(Article article) {
-        return ArticleDto.builder()
-                .articleId(article.getArticleId())
-                .image(article.getImage())
-                .build();
-    }
+//    private List<ArticleDto> articles;
+//
+//    public static ArticleDto fromArticleDto(Page<ArticleDto> articleDtos) {
+//        return ArticleResp.builder()
+//                .articles(articleDtos.getContent())
+//                .pageSize(articleDtos.getPageable().getPageSize())
+//                .totalPageNumber(articleDtos.getTotalPages())
+//                .totalCount(articleDtos.getTotalElements())
+//                .pageNumber(articleDtos.getPageable().getPageNumber())
+//                .nextPage(articleDtos.hasNext())
+//                .previousPage(articleDtos.hasPrevious())
+//                .build();
+//    }
 
 }

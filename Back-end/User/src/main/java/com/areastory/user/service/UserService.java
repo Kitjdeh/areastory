@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public interface UserService {
 
@@ -30,12 +31,13 @@ public interface UserService {
 
     void deleteUser(Long userId);
 
-    ArticleResp getArticleList(Long userId, int page);
-
     void updateProfile(Long userId, MultipartFile profile) throws IOException;
 
     UserDetailResp getUserDetail(Long userId, Long myId);
 
-    ArticleResp getOtherUserArticleList(Long userId, int page);
+    List<ArticleResp> getArticleList(Long userId);
+    //    ArticleResp getArticleList(Long userId, int page);
+    List<ArticleResp> getOtherUserArticleList(Long userId);
+//    ArticleResp getOtherUserArticleList(Long userId, int page);
 
 }

@@ -1,5 +1,6 @@
 package com.areastory.user.controller;
 
+import com.areastory.user.dto.common.ArticleDto;
 import com.areastory.user.dto.request.UserInfoReq;
 import com.areastory.user.dto.request.UserReq;
 import com.areastory.user.dto.response.ArticleResp;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -116,25 +118,44 @@ public class UserController {
         한 페이지당 20개, 작성 시간 역순으로 정렬
      */
     @GetMapping("/{userId}/articles")
-    public ResponseEntity<?> getArticleList(@PathVariable("userId") Long userId, @RequestParam int page) {
+    public ResponseEntity<?> getArticleList(@PathVariable("userId") Long userId) {
         if (!userService.findUser(userId)) {
             return responseDefault.notFound(false, "존재하지 않는 회원", null);
         }
-        ArticleResp articleResp = userService.getArticleList(userId, page);
-        return responseDefault.success(true, "본인의 게시물 목록 조회", articleResp);
+        List<ArticleResp> articleList = userService.getArticleList(userId);
+        return responseDefault.success(true, "본인의 게시물 목록 조회", articleList);
     }
+
+    @GetMapping("/other/{userId}/articles")
+    public ResponseEntity<?> getOtherUserArticleList(@PathVariable("userId") Long userId) {
+        if (!userService.findUser(userId)) {
+            return responseDefault.notFound(false, "존재하지 않는 회원", null);
+        }
+        List<ArticleResp> articleList = userService.getOtherUserArticleList(userId);
+        return responseDefault.success(true, "다른 유저의 게시물 목록 조회", articleList);
+    }
+
+
+//    @GetMapping("/{userId}/articles")
+//    public ResponseEntity<?> getArticleList(@PathVariable("userId") Long userId, @RequestParam int page) {
+//        if (!userService.findUser(userId)) {
+//            return responseDefault.notFound(false, "존재하지 않는 회원", null);
+//        }
+//        ArticleResp articleResp = userService.getArticleList(userId, page);
+//        return responseDefault.success(true, "본인의 게시물 목록 조회", articleResp);
+//    }
 
     /*
         다른 유저가 작성한 게시물 목록 조회
         한 페이지당 20개, 작성 시간 역순으로 정렬
      */
-    @GetMapping("/other/{userId}/articles")
-    public ResponseEntity<?> getOtherUserArticleList(@PathVariable("userId") Long userId, @RequestParam int page) {
-        if (!userService.findUser(userId)) {
-            return responseDefault.notFound(false, "존재하지 않는 회원", null);
-        }
-        ArticleResp articleResp = userService.getOtherUserArticleList(userId, page);
-        return responseDefault.success(true, "다른 유저의 게시물 목록 조회", articleResp);
-    }
+//    @GetMapping("/other/{userId}/articles")
+//    public ResponseEntity<?> getOtherUserArticleList(@PathVariable("userId") Long userId, @RequestParam int page) {
+//        if (!userService.findUser(userId)) {
+//            return responseDefault.notFound(false, "존재하지 않는 회원", null);
+//        }
+//        ArticleResp articleResp = userService.getOtherUserArticleList(userId, page);
+//        return responseDefault.success(true, "다른 유저의 게시물 목록 조회", articleResp);
+//    }
 
 }

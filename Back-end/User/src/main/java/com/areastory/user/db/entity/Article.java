@@ -32,9 +32,11 @@ public class Article {
     @Setter
     private Boolean publicYn;
 
-    public Article(String content, String image, User user) {
+    public Article(String content, LocalDateTime createdAt, String image, User user, boolean publicYn) {
         this.content = content;
+        this.createdAt = createdAt;
         this.image = image;
         this.user = user;
+        this.publicYn = publicYn;
     }
 }
