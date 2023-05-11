@@ -46,8 +46,6 @@ class _CameraScreenState extends State<CameraScreen> {
     );
 
     /// 라우터 이동. 현재는 이전 라우터로 이동한다.
-    // Get.until((route) => Get.currentRoute == '/');
-    // BottomNavController.to.changeBottomNav(3);
     Get.back();
   }
 

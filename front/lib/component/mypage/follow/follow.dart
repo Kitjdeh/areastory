@@ -10,10 +10,11 @@ import 'package:get/get.dart';
 
 class MypageFollowScreen extends StatefulWidget {
   const MypageFollowScreen(
-      {Key? key, required this.index, required this.userId})
+      {Key? key, required this.index, required this.userId, required this.nickname})
       : super(key: key);
   final String index;
   final String userId;
+  final String nickname;
 
   @override
   State<MypageFollowScreen> createState() => _MypageFollowScreenState();
@@ -81,7 +82,7 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          "유저 닉네임",
+          widget.nickname.toString(),
           style: TextStyle(color: Colors.black),
         ),
         // leading: GestureDetector(
@@ -103,34 +104,6 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
       body: Column(
         children: [
           _appbar(),
-          // TextField(
-          //   decoration: InputDecoration(
-          //     hintText: "Search",
-          //
-          //     /// 배경색을 채운다 -> 배경색 변경 가능.
-          //     filled: true,
-          //     fillColor: Colors.blue,
-          //     border: OutlineInputBorder(),
-          //     prefixIcon: Icon(Icons.search),
-          //   ),
-          //   onChanged: (val) {
-          //     setState(() {
-          //       _inputValue = val;
-          //     });
-          //   },
-          //   onSubmitted: (val) {
-          //     /// 전송할 값
-          //     print(_inputValue);
-          //
-          //     /// 현재 선택된 탭바 인덱스 -> 0: 팔로우, 1: 팔로잉
-          //     print(followcontroller.index);
-          //
-          //     /// 입력 완료 후 처리할 로직
-          //     setState(() {
-          //       _inputValue = '';
-          //     });
-          //   },
-          // ),
           Expanded(
             child: Container(
               child: Column(
@@ -146,8 +119,8 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
                   Expanded(
                       child:
                           TabBarView(controller: followcontroller, children: [
-                    FollowerListScreen(),
-                    FollowingListScreen(),
+                    FollowerListScreen(userId: widget.userId),
+                    FollowingListScreen(userId: widget.userId),
                   ]))
                 ],
               ),

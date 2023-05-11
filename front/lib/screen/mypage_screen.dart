@@ -24,6 +24,7 @@ class _MyPageScreenState extends State<MyPageScreen>
   final viewModel = LoginViewModel(KakaoLogin());
   String? myId;
   late TabController tabController;
+  int? cntArticles;
 
   void setMyId() async {
     myId = await storage.read(key: "userId");
@@ -122,7 +123,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                         context,
                         MaterialPageRoute(
                             builder: (context) => MypageFollowScreen(
-                                index: '0', userId: widget.userId)));
+                                index: '0', userId: widget.userId, nickname: snapshot.data!.nickname)));
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -149,7 +150,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                         context,
                         MaterialPageRoute(
                             builder: (context) => MypageFollowScreen(
-                                index: '1', userId: widget.userId)));
+                                index: '1', userId: widget.userId, nickname: snapshot.data!.nickname)));
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
