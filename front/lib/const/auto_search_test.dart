@@ -4,9 +4,13 @@ import 'package:flutter/services.dart' show ByteData, rootBundle;
 
 class LocationSearch extends StatefulWidget {
   final onLocationSelected;
+  final String? location;
 
-  const LocationSearch({Key? key, required this.onLocationSelected})
-      : super(key: key);
+  const LocationSearch({
+    Key? key,
+    required this.onLocationSelected,
+    this.location,
+  }) : super(key: key);
 
   @override
   _LocationSearchState createState() => _LocationSearchState();
