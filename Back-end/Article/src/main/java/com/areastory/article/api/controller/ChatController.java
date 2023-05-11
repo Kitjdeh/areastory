@@ -44,7 +44,7 @@ public class ChatController {
         1. 방 참가 인원 감소
          */
         else if (MessageType.QUIT.equals(message.getType())) {
-            messagingTemplate.convertAndSend("/sub/chat/room/" + chatService.outRoom(message));
+            messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatService.outRoom(message));
         }
         /*
         대화
