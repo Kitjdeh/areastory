@@ -66,8 +66,13 @@ class _MyPageScreenState extends State<MyPageScreen>
                 // 컨테이너는 넓이, 높이 설정안하면 -> 자동으로 최대크기
                 // sizedbox는 하나라도 설정안하면 -> 자동으로 child의 최대크기
                 GestureDetector(
-                  onTap: (){
-                    widget.userId == myId ? Get.to(UpdateProfileScreen(userId: widget.userId, img: snapshot.data!.profile.toString(), nickname: snapshot.data!.nickname))  : null;
+                  onTap: () {
+                    widget.userId == myId
+                        ? Get.to(UpdateProfileScreen(
+                            userId: widget.userId,
+                            img: snapshot.data!.profile.toString(),
+                            nickname: snapshot.data!.nickname))
+                        : null;
                     // Navigator.push(
                     //     context,
                     //     MaterialPageRoute(
@@ -94,14 +99,13 @@ class _MyPageScreenState extends State<MyPageScreen>
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(snapshot.data!.articleCount.toString(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),),
-                    // Text(
-                    //   "52",
-                    //   style: TextStyle(
-                    //       fontSize: 20,
-                    //       fontWeight: FontWeight.bold,
-                    //       color: Colors.black),
-                    // ),
+                    Text(
+                      snapshot.data!.articleCount.toString(),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
                     Text("게시물",
                         style: TextStyle(
                             fontSize: 15,
@@ -117,8 +121,8 @@ class _MyPageScreenState extends State<MyPageScreen>
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                MypageFollowScreen(index: '0', userId: widget.userId)));
+                            builder: (context) => MypageFollowScreen(
+                                index: '0', userId: widget.userId)));
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -144,8 +148,8 @@ class _MyPageScreenState extends State<MyPageScreen>
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                MypageFollowScreen(index: '1', userId: widget.userId)));
+                            builder: (context) => MypageFollowScreen(
+                                index: '1', userId: widget.userId)));
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -208,118 +212,129 @@ class _MyPageScreenState extends State<MyPageScreen>
   //   );
   // }
 
-  Widget _optionList(){
+  Widget _optionList() {
     return Container(
-        height: 150,
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
-        child: Column(
-          mainAxisAlignment:
-          MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextButton.icon(
-              onPressed: () async {
-                await viewModel.logout();
-                setState(() {});
-                /// 로그아웃시
-                await storage.delete(key: "userId");
-                Navigator.of(context).pop();
-                print("로그아웃");
-                /// 시스템 강제종료
-                SystemNavigator.pop();
-              },
-              icon: Icon(Icons.logout, color: Colors.black,),
-              label: Text("로그아웃", style: TextStyle(color: Colors.black),),
+      height: 150,
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextButton.icon(
+            onPressed: () async {
+              await viewModel.logout();
+              setState(() {});
+
+              /// 로그아웃시
+              await storage.delete(key: "userId");
+              Navigator.of(context).pop();
+              print("로그아웃");
+
+              /// 시스템 강제종료
+              SystemNavigator.pop();
+            },
+            icon: Icon(
+              Icons.logout,
+              color: Colors.black,
             ),
-            TextButton.icon(
-              onPressed: () {
-                Navigator.of(context).pop();
-                print("서비스 탈퇴");
-                SystemNavigator.pop();
-              },
-              icon: Icon(Icons.group_off, color: Colors.black,),
-              label: Text("서비스 탈퇴", style: TextStyle(color: Colors.black),),
+            label: Text(
+              "로그아웃",
+              style: TextStyle(color: Colors.black),
             ),
-          ],
-        ),
-      );
-    }
+          ),
+          TextButton.icon(
+            onPressed: () {
+              Navigator.of(context).pop();
+              print("서비스 탈퇴");
+              SystemNavigator.pop();
+            },
+            icon: Icon(
+              Icons.group_off,
+              color: Colors.black,
+            ),
+            label: Text(
+              "서비스 탈퇴",
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildMyPageScreen() {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
         backgroundColor: Colors.white,
-        leading: myId == null || widget.userId == myId
-            ? null
-            : IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-        title: FutureBuilder<UserData>(
-            future: getUser(userId: int.parse(widget.userId)),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (snapshot.hasData) {
-                return Text(
-                  snapshot.data!.nickname.toString(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Colors.black,
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                return Text('No data');
-              }
-            }),
-        actions: widget.userId == myId
-            ? [
-                GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      // 모달 이외 클릭시 모달창 닫힘.
-                      builder: (BuildContext context) {
-                        return _optionList();
-                      },
-                    );
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          leading: myId == null || widget.userId == myId
+              ? null
+              : IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.of(context).pop();
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 15),
-                    child: ImageData(
-                      IconsPath.menunIcon,
-                      width: 100,
+                ),
+          title: FutureBuilder<UserData>(
+              future: getUser(userId: int.parse(widget.userId)),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasData) {
+                  return Text(
+                    snapshot.data!.nickname.toString(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.black,
                     ),
-                  ),
-                )
-              ]
-            : null,
-      ),
-      body:
-      SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: 10,),
-              _information(),
-              const SizedBox(height: 15,),
-              MypageTabbar(userId: widget.userId),
-              // _tabMenu(),
-              // _tabView(),
-            ],
-          )
-      )
-    );
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return Text('No data');
+                }
+              }),
+          actions: widget.userId == myId
+              ? [
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        // 모달 이외 클릭시 모달창 닫힘.
+                        builder: (BuildContext context) {
+                          return _optionList();
+                        },
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 15),
+                      child: ImageData(
+                        IconsPath.menunIcon,
+                        width: 100,
+                      ),
+                    ),
+                  )
+                ]
+              : null,
+        ),
+        body: SafeArea(
+            child: Column(
+          children: [
+            const SizedBox(
+              height: 10,
+            ),
+            _information(),
+            const SizedBox(
+              height: 15,
+            ),
+            MypageTabbar(userId: widget.userId),
+            // _tabMenu(),
+            // _tabView(),
+          ],
+        )));
   }
 }

@@ -44,6 +44,7 @@ class _CameraScreenState extends State<CameraScreen> {
       sigungu: '서초구',
       dongeupmyeon: '역삼동',
     );
+
     /// 라우터 이동. 현재는 이전 라우터로 이동한다.
     // Get.until((route) => Get.currentRoute == '/');
     // BottomNavController.to.changeBottomNav(3);
@@ -74,17 +75,17 @@ class _CameraScreenState extends State<CameraScreen> {
       child: Center(
         child: _image == null
             ? GestureDetector(
-          child: Icon(Icons.add_a_photo, color: Colors.blue, size: 100),
-          onTap: () {
-            getImage(ImageSource.camera);
-          },
-        )
+                child: Icon(Icons.add_a_photo, color: Colors.blue, size: 100),
+                onTap: () {
+                  getImage(ImageSource.camera);
+                },
+              )
             : GestureDetector(
-          child: Image.file(File(_image!.path)),
-          onTap: () {
-            getImage(ImageSource.camera);
-          },
-        ),
+                child: Image.file(File(_image!.path)),
+                onTap: () {
+                  getImage(ImageSource.camera);
+                },
+              ),
       ),
     );
   }

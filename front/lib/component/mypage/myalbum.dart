@@ -31,6 +31,19 @@ class _MyAlbumState extends State<MyAlbum> {
       print(_articles);
   }
 
+  void resetGetuserarticle(userId) async {
+    final articleData = await getUserArticles(userId: userId, page: 0);
+    setState(() {
+      _currentPage = 0;
+      _articles = [];
+      _nextPage = false;
+      _articles.addAll(articleData.articles);
+      _nextPage = articleData.nextPage;
+      _currentPage += 1;
+    });
+    print(_articles);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +53,21 @@ class _MyAlbumState extends State<MyAlbum> {
   }
 
   Widget renderMaxExtent() {
+    if(_articles.length == 0){
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+                children: [Text("등록된 게시글이")]),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [Text("업습니다")]),
+          ],
+        ),
+      );
+    }
     return GridView.builder(
         // gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

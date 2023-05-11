@@ -16,6 +16,9 @@ class LoginViewModel {
     if(isLogined){
       // 유저 정보 받아와라
       user = await UserApi.instance.me();
+      return true;
+    }else{
+      return false;
     }
   }
 

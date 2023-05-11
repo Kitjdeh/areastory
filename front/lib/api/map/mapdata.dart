@@ -19,7 +19,7 @@ class AreaData {
 Future<Map<String, AreaData>> postAreaData(
     List<Map<String, String>> data) async {
   print('post요청함수 시작');
-  print(data);
+  // print(data);
   List<Map<String, dynamic>> responseJson = [];
   // print('data값${data.first}');
   List<AreaData> areadata = [];

@@ -3,13 +3,14 @@ import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:front/api/map/mapdata.dart';
+import 'package:front/component/alarm/toast.dart';
 import 'package:front/component/map/customoverlay.dart';
 import 'package:front/component/sns/article/article_detail.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geojson/geojson.dart';
-
 import 'package:image_editor/image_editor.dart';
 import 'package:latlong2/latlong.dart';
 import 'dart:async' show Future, Timer;
@@ -18,6 +19,8 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svg_provider;
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:debounce_throttle/debounce_throttle.dart';
+
+import '../api/alarm/get_alarm.dart';
 
 String sangjunurl = 'https://source.unsplash.com/random/?party';
 String seoul2url = 'https://source.unsplash.com/random/?cat';
@@ -58,7 +61,8 @@ class _MapScreenState extends State<MapScreen> {
               }
               if (snapshot.data == '위치 권한이 허가되었습니다.') {
                 return Column(
-                  children: [_CustomMap(),
+                  children: [
+                    _CustomMap(),
                   ],
                   // children: [_ChoolCheckButton()],
                 );
@@ -126,8 +130,14 @@ class _CustomMapState extends State<_CustomMap> {
   Map<String, Mapdata> BigAreaData = {};
   Map<String, String> areamap = {};
   Mapdata? localareadata;
-
+  Position? mypoisition;
+  LatLng? mylatlng;
+  String? Strlocation;
   double _zoom = 12.0;
+  int? userId;
+  final storage = new FlutterSecureStorage();
+
+  final LatLng companyLatLng = LatLng(37.5013, 127.0397);
   // Positionchange 후 작동하게 하여야함
   final updatepostionchange = Debouncer(Duration(seconds: 1),
       // onChanged: optimizepostion(),
@@ -151,6 +161,21 @@ class _CustomMapState extends State<_CustomMap> {
     print(_zoom);
   }
 
+  void mycenter() async {
+    mypoisition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    mylatlng = await LatLng(mypoisition!.latitude, mypoisition!.longitude);
+    await mapController.move(mylatlng ?? companyLatLng, _zoom);
+    print(_zoom);
+    await Future.forEach(smallareaData, (mapdata) {
+      if (ifpolygoninsdie(mylatlng!, mapdata.polygons!)) {
+        String result = mapdata.mapinfo!.values.join(' ');
+        toast(context, "내위치: ${result}");
+        Strlocation = result;
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -170,6 +195,36 @@ class _CustomMapState extends State<_CustomMap> {
         areadata[num] = area;
       }
     }
+  }
+
+  bool ifpolygoninsdie(LatLng points, List<LatLng> polygons) {
+    int intersectCount = 0;
+    for (int j = 0; j < polygons.length - 1; j++) {
+      if (rayCastIntersect(points, polygons[j], polygons[j + 1])) {
+        intersectCount++;
+      }
+    }
+    return ((intersectCount % 2) == 1); // odd = inside, even = outside;
+  }
+
+  bool rayCastIntersect(LatLng tap, LatLng vertA, LatLng vertB) {
+    double aY = vertA.latitude;
+    double bY = vertB.latitude;
+    double aX = vertA.longitude;
+    double bX = vertB.longitude;
+    double pY = tap.latitude;
+    double pX = tap.longitude;
+
+    if ((aY > pY && bY > pY) || (aY < pY && bY < pY) || (aX < pX && bX < pX)) {
+      return false; // a and b can't both be above or below pt.y, and a or
+      // b must be east of pt.x
+    }
+
+    double m = (aY - bY) / (aX - bX); // Rise over run
+    double bee = (-aX) * m + aY; // y = mx + b
+    double x = (pY - bee) / m; // algebra is neat!
+
+    return x > pX;
   }
 
   void optimizepostion() async {
@@ -202,7 +257,6 @@ class _CustomMapState extends State<_CustomMap> {
             point.longitude <= ne!.longitude;
       });
     }).toList();
-
     nowareadata = visibleMapdata;
     setState(() {
       nowareadata = visibleMapdata;
@@ -236,7 +290,6 @@ class _CustomMapState extends State<_CustomMap> {
       String sigungu = "";
       String dongeupmyeon = "";
       String NM;
-      List<String> fullname = [];
       Map<String, String> mapinfo = {};
       String keyname = '';
       if (link == 'asset/map/ctp_korea.geojson') {
@@ -255,8 +308,9 @@ class _CustomMapState extends State<_CustomMap> {
         sigungu = feature.properties!['SIG_KOR_NM'];
         mapinfo["sigungu"] = sigungu;
         areamap[NM] = sigungu;
-        areaname = dosi + sigungu;
+        areaname = '${dosi} ${sigungu}';
         keyname = sigungu;
+        // print(areaname);
       } else {
         NM = feature.properties!['EMD_CD'];
         String dosinm = NM.substring(0, 2);
@@ -268,8 +322,9 @@ class _CustomMapState extends State<_CustomMap> {
         dongeupmyeon = feature.properties!['EMD_KOR_NM'];
         mapinfo["dongeupmyeon"] = dongeupmyeon;
         areamap[NM] = dongeupmyeon;
-        areaname = dosi + sigungu + dongeupmyeon;
+        areaname = '${dosi} ${sigungu} ${dongeupmyeon}';
         keyname = dongeupmyeon;
+        // print(areaname);
       }
       // null 값을 대비하여 runtimetype 확인
       if (feature.geometry.runtimeType == GeoJsonMultiPolygon &&
@@ -296,7 +351,6 @@ class _CustomMapState extends State<_CustomMap> {
                 keyname: keyname,
                 fullname: areaname,
                 polygons: _polygonLatLong,
-                // urls: '');
                 urls: randomurl[cnt % 5]);
             localareadata != null ? allareaData.add(localareadata!) : null;
             cnt = cnt + 1;
@@ -322,6 +376,7 @@ class _CustomMapState extends State<_CustomMap> {
           localareadata = Mapdata(
               mapinfo: mapinfo,
               keyname: keyname,
+              fullname: areaname,
               polygons: _polygonLatLong,
               urls: randomurl[cnt % 5]);
           localareadata != null ? allareaData.add(localareadata!) : null;
@@ -350,11 +405,12 @@ class _CustomMapState extends State<_CustomMap> {
   Widget build(BuildContext context) {
     List<Widget> customPolygonLayers = [];
     for (var mapdata in nowareadata) {
+      print(mapdata.fullname);
       customPolygonLayers.add(
         CustomPolygonLayer(
-          index: 1,
+          userId: mapdata.articleId ?? 0,
           urls: [mapdata.urls ?? ''],
-          area: mapdata.keyname ?? '',
+          area: mapdata.fullname ?? '',
           polygons: [
             Polygon(
               isFilled: false,
@@ -381,6 +437,15 @@ class _CustomMapState extends State<_CustomMap> {
                   InteractiveFlag.doubleTapZoom |
                   InteractiveFlag.pinchZoom,
               onMapReady: () async {
+                final strUser = await storage.read(key: "userId");
+                userId = int.parse(strUser!);
+                print('유저아이디!!!${userId}');
+                mypoisition = await Geolocator.getCurrentPosition(
+                    desiredAccuracy: LocationAccuracy.high);
+                mylatlng =
+                    await LatLng(mypoisition!.latitude, mypoisition!.longitude);
+                // print('mypoisition${mypoisition}');
+                // print(mypoisition.runtimeType);
                 // Map<String, AreaData> result;
                 List<Map<String, String>> requestlist = [];
                 // await loadexcel();
@@ -388,6 +453,15 @@ class _CustomMapState extends State<_CustomMap> {
                 await _loadGeoJson('asset/map/sigungookorea.json');
                 await _loadGeoJson('asset/map/minimal.json');
                 nowallareadata = middleareaData;
+                Strlocation;
+                await Future.forEach(smallareaData, (mapdata) {
+                  if (ifpolygoninsdie(mylatlng!, mapdata.polygons!)) {
+                    String result = mapdata.mapinfo!.values.join(' ');
+                    toast(context, "내위치: ${result}");
+                    Strlocation = result;
+                  }
+                });
+                await storage.write(key: "userlocation", value: Strlocation);
                 print("2nowareadata.length${nowallareadata.length}");
                 final bounds = mapController.bounds;
                 final sw = bounds!.southWest;
@@ -411,14 +485,14 @@ class _CustomMapState extends State<_CustomMap> {
                 print("requestlist${requestlist.length}");
                 // Future<Map<String, AreaData>>result =
                 // await postAreaData(requestlist);
-                Map<String, AreaData> result = await postAreaData(requestlist);
-                await Future.forEach(visibleMapdata, (e) {
-                  final areakey = e.keyname;
-                  final url = result[areakey]!.image;
-                  final userid = result[areakey]!.articleId;
-                  e.urls = url;
-                  e.articleId = userid ?? 0;
-                });
+                // Map<String, AreaData> result = await postAreaData(requestlist);
+                // await Future.forEach(visibleMapdata, (e) {
+                //   final areakey = e.keyname;
+                //   final url = result[areakey]!.image;
+                //   final userid = result[areakey]!.articleId;
+                //   e.urls = url;
+                //   e.articleId = userid ?? 0;
+                // });
                 setState(() {
                   nowareadata = visibleMapdata;
                 });
@@ -433,13 +507,6 @@ class _CustomMapState extends State<_CustomMap> {
                       : _zoom > 9.0
                           ? nowallareadata = middleareaData
                           : nowallareadata = bigareaData;
-                  setState(() {
-                    _zoom > 13.0
-                        ? nowallareadata = smallareaData
-                        : _zoom > 9.0
-                            ? nowallareadata = middleareaData
-                            : nowallareadata = bigareaData;
-                  });
                   print('posistionchanged 작동함');
                   List<Map<String, String>> requestlist = [];
                   // print('nowallareadata${nowallareadata.length}');
@@ -456,7 +523,6 @@ class _CustomMapState extends State<_CustomMap> {
                           point.longitude <= ne!.longitude;
                     });
                   }).toList();
-
                   nowareadata = visibleMapdata;
                   setState(() {
                     nowareadata = visibleMapdata;
@@ -467,15 +533,16 @@ class _CustomMapState extends State<_CustomMap> {
                   var A = visibleMapdata.map((e) => e.mapinfo).toList();
                   print(
                       "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
-                  Map<String, AreaData> result = await postAreaData(requestlist);
-                  await Future.forEach(visibleMapdata, (e) {
-                    print('result${result}');
-                    final areakey = e.keyname;
-                    final url = result[areakey]!.image;
-                    final userid = result[areakey]!.articleId;
-                    e.urls = url;
-                    e.articleId = userid ?? 0;
-                  });
+                  // Map<String, AreaData> result =
+                  //     await postAreaData(requestlist);
+                  // await Future.forEach(visibleMapdata, (e) {
+                  //   print('result${result}');
+                  //   final areakey = e.keyname;
+                  //   final url = result[areakey]!.image;
+                  //   final userid = result[areakey]!.articleId;
+                  //   e.urls = url;
+                  //   e.articleId = userid ?? 0;
+                  // });
                 });
                 // updatepostionchange.values.listen((event) async {});
                 // print("mapController.zoom${mapController.zoom}");
@@ -525,9 +592,11 @@ class _CustomMapState extends State<_CustomMap> {
                 Opacity(
                   opacity: 0.8,
                   child: CustomPolygonLayer(
-                    index: 1,
+                    userId: userId ?? 0,
+                    articleId: mapdata.articleId ?? 1,
+                    // articleId: [mapdata.articleId ?? 0 ],
                     urls: [mapdata.urls ?? ''],
-                    area: mapdata.keyname ?? '',
+                    area: mapdata.fullname ?? '',
                     polygons: [
                       Polygon(
                         isFilled: false,
@@ -560,14 +629,102 @@ class _CustomMapState extends State<_CustomMap> {
                                   ))
                               .toList()),
                     ),
+              IgnorePointer(
+                child: CircleLayer(
+                  circles: [
+                    CircleMarker(
+                        point: mylatlng ?? companyLatLng,
+                        radius: 5.0,
+                        color: Colors.red)
+                  ],
+                ),
+              )
             ],
           ),
           Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  FloatingActionButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: Colors.transparent,
+                        isScrollControlled: true,
+                        builder: (BuildContext context) {
+                          // getAlarm(userId ??2);
+                          return SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: Center(
+                              child: StreamBuilder<Object>(
+                                stream: null,
+                                builder: (context, snapshot) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white30,
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    child: ListView.separated(
+                                      // controller: _scrollController,
+                                      itemCount: 4,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return Container(
+                                          height: 50,
+                                          alignment: Alignment.center,
+                                          child: const CircularProgressIndicator(),
+                                        );
+                                      },
+
+                                      separatorBuilder: (context, index) {
+                                        return SizedBox(height: 20);
+                                      },
+                                    ),
+                                  );
+                                }
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Container(
+                      // decoration: BoxDecoration(
+                      //   borderRadius: BorderRadius.circular(100),
+                      // ),
+                      child: Icon(Icons.alarm),
+                      // Image.asset(
+                      //   'asset/img/options/mypage_bottom_sheet_setting_02.jpg',
+                      //   fit: BoxFit.fill,
+                      // ),
+                    ),
+                    backgroundColor: Colors.transparent,
+
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(100),
+                    //       image: new DecorationImage(
+                    //           image: new AssetImage(
+                    //              ))),
+                    // )
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      FloatingActionButton(
+                        onPressed: () {
+                          mycenter();
+                        },
+                        child: Text('*'),
+                      )
+                    ],
+                  ),
                   Column(
                     children: [
                       FloatingActionButton(
