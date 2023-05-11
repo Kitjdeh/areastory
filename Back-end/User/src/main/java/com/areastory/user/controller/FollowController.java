@@ -28,10 +28,16 @@ public class FollowController {
         이름으로 검색
      */
     @GetMapping("/follow/{userId}")
-    public ResponseEntity<?> findFollowers(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam String search) {
-        List<FollowerResp> followers = followService.findFollowers(userId, page, search);
+    public ResponseEntity<?> findFollowers(@PathVariable("userId") Long userId, @RequestParam String search) {
+        List<FollowerResp> followers = followService.findFollowers(userId, search);
         return responseDefault.success(true, "팔로워 목록 조회", followers);
     }
+//    @GetMapping("/follow/{userId}")
+//    public ResponseEntity<?> findFollowers(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam String search) {
+//        List<FollowerResp> followers = followService.findFollowers(userId, page, search);
+//        return responseDefault.success(true, "팔로워 목록 조회", followers);
+//    }
+
 
     /*
         팔로잉 목록 조회
@@ -39,10 +45,15 @@ public class FollowController {
         팔로잉한 유저 이름 순, 팔로잉 시간 순, 역순으로 정렬
      */
     @GetMapping("/following/{userId}")
-    public ResponseEntity<?> findFollowing(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam int type) {
-        List<FollowingResp> following = followService.findFollowing(userId, page, type);
+    public ResponseEntity<?> findFollowing(@PathVariable("userId") Long userId, @RequestParam int type) {
+        List<FollowingResp> following = followService.findFollowing(userId, type);
         return responseDefault.success(true, "팔로잉 목록 조회", following);
     }
+//    @GetMapping("/following/{userId}")
+//    public ResponseEntity<?> findFollowing(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam int type) {
+//        List<FollowingResp> following = followService.findFollowing(userId, page, type);
+//        return responseDefault.success(true, "팔로잉 목록 조회", following);
+//    }
 
     /*
         팔로잉 목록 조회
@@ -51,10 +62,15 @@ public class FollowController {
         => 무조건 이름 순인데, type을 받지않기 위해 새롭게 기능 추가
      */
     @GetMapping("/following/search/{userId}")
-    public ResponseEntity<?> findFollowingBySearch(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam String search) {
-        List<FollowingResp> following = followService.findFollowingBySearch(userId, page, search);
+    public ResponseEntity<?> findFollowingBySearch(@PathVariable("userId") Long userId, @RequestParam String search) {
+        List<FollowingResp> following = followService.findFollowingBySearch(userId, search);
         return responseDefault.success(true, "팔로잉 검색 목록 조회", following);
     }
+//    @GetMapping("/following/search/{userId}")
+//    public ResponseEntity<?> findFollowingBySearch(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam String search) {
+//        List<FollowingResp> following = followService.findFollowingBySearch(userId, page, search);
+//        return responseDefault.success(true, "팔로잉 검색 목록 조회", following);
+//    }
 
     /*
         팔로우 기능 (사용자 -> 상대방)
