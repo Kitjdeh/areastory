@@ -11,14 +11,19 @@ class EnterOrQuit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 20,
-      child: Center(
-        child: Text(
-          message,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: 30,
+      ),
+      child: SizedBox(
+        height: 30,
+        child: Center(
+          child: Text(
+            message,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
           ),
         ),
       ),
