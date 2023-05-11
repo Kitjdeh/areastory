@@ -5,24 +5,24 @@ import 'package:intl/intl.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-Future<AllAlarmData> getAlarm(
-  int userId,
-) async {
-  AllAlarmData responseJson;
-  final dio = Dio(BaseOptions(
-    baseUrl: '${dotenv.get('BASE_URL')}/api/notifications',
-  ));
-  final response = await dio.get('/$userId', queryParameters: {
-    'userId': userId,
-  });
-  if (response.statusCode == 200) {
-    final responseJson = AllAlarmData.fromJson(response.data);
-  }
-  else{
-
-  }
-  return responseJson;
-}
+// Future<AllAlarmData> getAlarm(
+//   int userId,
+// ) async {
+//   AllAlarmData responseJson;
+//   final dio = Dio(BaseOptions(
+//     baseUrl: '${dotenv.get('BASE_URL')}/api/notifications',
+//   ));
+//   final response = await dio.get('/$userId', queryParameters: {
+//     'userId': userId,
+//   });
+//   if (response.statusCode == 200) {
+//     final responseJson = AllAlarmData.fromJson(response.data);
+//   }
+//   else{
+//
+//   }
+//   return responseJson;
+// }
 
 class AllAlarmData {
   final int? pageSize;
