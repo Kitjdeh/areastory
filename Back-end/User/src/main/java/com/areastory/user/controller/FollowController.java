@@ -44,7 +44,7 @@ public class FollowController {
         한 페이지당 20개
         팔로잉한 유저 이름 순, 팔로잉 시간 순, 역순으로 정렬
      */
-    @GetMapping("/following/{userId}")
+    @GetMapping("/following/type/{userId}")
     public ResponseEntity<?> findFollowing(@PathVariable("userId") Long userId, @RequestParam int type) {
         List<FollowingResp> following = followService.findFollowing(userId, type);
         return responseDefault.success(true, "팔로잉 목록 조회", following);
@@ -61,7 +61,7 @@ public class FollowController {
         유저 이름 순
         => 무조건 이름 순인데, type을 받지않기 위해 새롭게 기능 추가
      */
-    @GetMapping("/following/search/{userId}")
+    @GetMapping("/following/{userId}")
     public ResponseEntity<?> findFollowingBySearch(@PathVariable("userId") Long userId, @RequestParam String search) {
         List<FollowingResp> following = followService.findFollowingBySearch(userId, search);
         return responseDefault.success(true, "팔로잉 검색 목록 조회", following);

@@ -35,9 +35,9 @@ public interface UserService {
 
     UserDetailResp getUserDetail(Long userId, Long myId);
 
-    List<ArticleResp> getArticleList(Long userId);
-    //    ArticleResp getArticleList(Long userId, int page);
-    List<ArticleResp> getOtherUserArticleList(Long userId);
+//    List<ArticleResp> getArticleList(Long userId);
+        ArticleResp getArticleList(Long userId, int page);
+//    List<ArticleResp> getOtherUserArticleList(Long userId);
 //    ArticleResp getOtherUserArticleList(Long userId, int page);
 
 }

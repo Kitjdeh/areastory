@@ -17,13 +17,26 @@ import java.util.List;
 @Builder
 public class ArticleResp {
 
-    private Long articleId;
-    private String image;
 
-    public static ArticleResp fromEntity(Article article) {
+    private Integer pageSize;
+    private Integer totalPageNumber;
+    private Long totalCount;
+    private Integer pageNumber;
+    private Boolean nextPage;
+    private Boolean previousPage;
+
+    private List<ArticleDto> articles;
+
+    public static ArticleResp fromArticleDto(Page<ArticleDto> articleDtos) {
         return ArticleResp.builder()
-                .articleId(article.getArticleId())
-                .image(article.getImage())
+                .articles(articleDtos.getContent())
+                .pageSize(articleDtos.getPageable().getPageSize())
+                .totalPageNumber(articleDtos.getTotalPages())
+                .totalCount(articleDtos.getTotalElements())
+                .pageNumber(articleDtos.getPageable().getPageNumber())
+                .nextPage(articleDtos.hasNext())
+                .previousPage(articleDtos.hasPrevious())
                 .build();
     }
+
 }
