@@ -179,6 +179,7 @@ class _CustomMapState extends State<_CustomMap> {
   @override
   void initState() {
     super.initState();
+    print("지도에서 이닛스테이트가 돌아가요");
   }
 
   Future<void> loadexcel() async {

@@ -75,7 +75,7 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
                       Expanded(
                         child: Container(
                           child: Text(
-                            "유저 닉네임asdasdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa2",
+                            "유저 닉네임",
                             overflow: TextOverflow.ellipsis, // 글자가 너무 길 경우 생략되도록 설정
                             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                           ),
@@ -96,15 +96,7 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
 
                     },
                     child: Text("팔로잉")),
-                // child: IconButton(
-                //     onPressed: () {
-                //
-                //     },
-                //     icon: Icon(Icons.restore_from_trash)
-                // ),
               ),
-            /// 팔로잉 신청
-            // IconButton(onPressed: (){}, icon: Icon(Icons.restore_from_trash))
           ],
         ),
       ),

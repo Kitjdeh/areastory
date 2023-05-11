@@ -37,6 +37,7 @@ class _MyPageScreenState extends State<MyPageScreen>
     super.initState();
     tabController = TabController(length: 2, vsync: this);
     setMyId();
+    print("마이페이지 이닛스테이트가 돌아가요");
   }
 
   @override
