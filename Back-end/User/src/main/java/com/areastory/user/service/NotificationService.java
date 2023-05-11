@@ -25,6 +25,7 @@ public interface NotificationService {
                 .articleId(notificationDto.getArticleId())
                 .commentId(notificationDto.getCommentId())
                 .userId(notificationDto.getUserId())
+                .type(notificationDto.getType())
                 .build();
     }
 
@@ -38,6 +39,7 @@ public interface NotificationService {
                 .articleId(notification.getArticleId())
                 .commentId(notification.getCommentId())
                 .userId(notification.getUserId())
+                .type(notification.getType())
                 .build();
     }
 }

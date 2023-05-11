@@ -49,6 +49,7 @@ public class NotificationListener {
                 .articleId(notificationKafkaDto.getArticleId())
                 .commentId(notificationKafkaDto.getCommentId())
                 .userId(notificationKafkaDto.getUserId())
+                .type(notificationKafkaDto.getType())
                 .build();
         notificationService.addNotification(notificationDto);
         //원래 여기 쓰면 안되는데 일단 리팩토링 전에 씀
@@ -75,7 +76,7 @@ public class NotificationListener {
         String response = null;
         try {
             response = FirebaseMessaging.getInstance().send(message);
-        } catch (FirebaseMessagingException e) {
+        } catch (FirebaseMessagingException e) {// 이러면 타입 넣은거지 ㅇㅇ 수정끝
             throw new RuntimeException(e);
         }
         // Response is a message ID string.

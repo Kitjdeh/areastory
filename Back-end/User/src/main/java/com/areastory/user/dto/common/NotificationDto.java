@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class NotificationDto {
+public class NotificationDto{
     private Long notificationId;
     private Boolean checked;
     private String title;
