@@ -37,6 +37,7 @@ class _MyPageScreenState extends State<MyPageScreen>
     super.initState();
     tabController = TabController(length: 2, vsync: this);
     setMyId();
+    print("마이페이지 이닛스테이트가 돌아가요");
   }
 
   @override
@@ -69,10 +70,21 @@ class _MyPageScreenState extends State<MyPageScreen>
                 GestureDetector(
                   onTap: () {
                     widget.userId == myId
-                        ? Get.to(UpdateProfileScreen(
-                            userId: widget.userId,
-                            img: snapshot.data!.profile.toString(),
-                            nickname: snapshot.data!.nickname))
+                        ?
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UpdateProfileScreen(
+                          userId: widget.userId,
+                          img: snapshot.data!.profile.toString(),
+                          nickname: snapshot.data!.nickname,
+                        ),
+                      ),
+                    )
+                    // Get.to(UpdateProfileScreen(
+                    //         userId: widget.userId,
+                    //         img: snapshot.data!.profile.toString(),
+                    //         nickname: snapshot.data!.nickname))
                         : null;
                     // Navigator.push(
                     //     context,
@@ -272,7 +284,7 @@ class _MyPageScreenState extends State<MyPageScreen>
           leading: myId == null || widget.userId == myId
               ? null
               : IconButton(
-                  icon: Icon(Icons.arrow_back),
+                  icon: Icon(Icons.arrow_back, color: Colors.black,),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -286,7 +298,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                   );
                 } else if (snapshot.hasData) {
                   return Text(
-                    snapshot.data!.nickname.toString(),
+                    snapshot.data!.nickname.toString()+myId!+widget.userId,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
