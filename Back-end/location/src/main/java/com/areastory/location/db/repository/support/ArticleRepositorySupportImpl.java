@@ -91,13 +91,13 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
         LocationDto locationDto = locationIdList.get(0);
         if (locationDto.getDongeupmyeon() != null) {
             tuples = dongeupmyeonTuple(locationIdList, userId);
-            return tupleToDongeupmyeonResp(tuples);
+            return tuples.stream().map(this::tupleToDongeupmyeonResp).collect(Collectors.toList());
         } else if (locationDto.getSigungu() != null) {
             tuples = sigunguTuple(locationIdList, userId);
-            return tupleToSigunguResp(tuples);
+            return tuples.stream().map(this::tupleToSigunguResp).collect(Collectors.toList());
         } else {
             tuples = dosiTuple(locationIdList, userId);
-            return tupleToDosiResp(tuples);
+            return tuples.stream().map(this::tupleToDosiResp).collect(Collectors.toList());
         }
     }
 
@@ -117,7 +117,7 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
                 )
                 .groupBy(article.dosi, article.sigungu, article.dongeupmyeon)
                 .fetch();
-        return tupleToDongeupmyeonResp(tuples);
+        return tuples.stream().map(this::tupleToDongeupmyeonResp).collect(Collectors.toList());
     }
 
 
@@ -137,7 +137,7 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
                 .groupBy(article.dosi, article.sigungu)
                 .fetch();
 
-        return tupleToSigunguResp(tuples);
+        return tuples.stream().map(this::tupleToSigunguResp).collect(Collectors.toList());
     }
 
     @Override
@@ -155,7 +155,7 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
                 )
                 .groupBy(article.dosi)
                 .fetch();
-        return tupleToDosiResp(tuples);
+        return tuples.stream().map(this::tupleToDosiResp).collect(Collectors.toList());
     }
 
     @Override
@@ -182,6 +182,8 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
                     )
                     .groupBy(article.dosi, article.sigungu, article.dongeupmyeon)
                     .fetchOne();
+
+            return tupleToDongeupmyeonResp(tuple);
         } else if (type.equals("sigungu")) {
             subQuery = JPAExpressions
                     .select(article.dosi, article.sigungu, article.dailyLikeCount.max())
@@ -202,7 +204,8 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
                     )
                     .groupBy(article.dosi, article.sigungu)
                     .fetchOne();
-        } else if (type.equals("dosi")) {
+            return tupleToSigunguResp(tuple);
+        } else {
             subQuery = JPAExpressions
                     .select(article.dosi, article.dailyLikeCount.max())
                     .from(article)
@@ -222,15 +225,9 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
                     )
                     .groupBy(article.dosi)
                     .fetchOne();
+            return tupleToDosiResp(tuple);
+
         }
-        return LocationResp.builder()
-                .dosi(tuple.get(0, String.class))
-                .sigungu(tuple.get(1, String.class))
-                .dongeupmyeon(tuple.get(2, String.class))
-                .likeCount(tuple.get(3, Long.class))
-                .image(tuple.get(4, String.class))
-                .articleId(tuple.get(5, Long.class))
-                .build();
     }
 
 
@@ -302,36 +299,63 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
         return be.and(eq);
     }
 
-    private List<LocationResp> tupleToDosiResp(List<Tuple> tuples) {
-        return tuples.stream().map(tuple -> LocationResp.builder()
-                        .articleId(tuple.get(article.articleId))
-                        .dosi(tuple.get(article.dosi))
-                        .likeCount(tuple.get(article.dailyLikeCount))
-                        .image(tuple.get(article.image))
-                        .build())
-                .collect(Collectors.toList());
+    //    private List<LocationResp> tupleToDosiResp(List<Tuple> tuples) {
+//        return tuples.stream().map(tuple -> LocationResp.builder()
+//                        .articleId(tuple.get(article.articleId))
+//                        .dosi(tuple.get(article.dosi))
+//                        .likeCount(tuple.get(article.dailyLikeCount))
+//                        .image(tuple.get(article.image))
+//                        .build())
+//                .collect(Collectors.toList());
+//    }
+    private LocationResp tupleToDosiResp(Tuple tuples) {
+        return LocationResp.builder()
+                .dosi(tuples.get(article.dosi))
+                .likeCount(tuples.get(article.dailyLikeCount))
+                .image(tuples.get(article.image))
+                .articleId(tuples.get(article.articleId))
+                .build();
     }
 
-    private List<LocationResp> tupleToSigunguResp(List<Tuple> tuples) {
-        return tuples.stream().map(tuple -> LocationResp.builder()
-                        .articleId(tuple.get(article.articleId))
-                        .dosi(tuple.get(article.dosi))
-                        .sigungu(tuple.get(article.sigungu))
-                        .likeCount(tuple.get(article.dailyLikeCount))
-                        .image(tuple.get(article.image))
-                        .build())
-                .collect(Collectors.toList());
+    //    private List<LocationResp> tupleToSigunguResp(List<Tuple> tuples) {
+//        return tuples.stream().map(tuple -> LocationResp.builder()
+//                        .articleId(tuple.get(article.articleId))
+//                        .dosi(tuple.get(article.dosi))
+//                        .sigungu(tuple.get(article.sigungu))
+//                        .likeCount(tuple.get(article.dailyLikeCount))
+//                        .image(tuple.get(article.image))
+//                        .build())
+//                .collect(Collectors.toList());
+//    }
+    private LocationResp tupleToSigunguResp(Tuple tuples) {
+        return LocationResp.builder()
+                .dosi(tuples.get(article.dosi))
+                .sigungu(tuples.get(article.sigungu))
+                .likeCount(tuples.get(article.dailyLikeCount))
+                .image(tuples.get(article.image))
+                .articleId(tuples.get(article.articleId))
+                .build();
     }
 
-    private List<LocationResp> tupleToDongeupmyeonResp(List<Tuple> tuples) {
-        return tuples.stream().map(tuple -> LocationResp.builder()
-                        .articleId(tuple.get(article.articleId))
-                        .dosi(tuple.get(article.dosi))
-                        .sigungu(tuple.get(article.sigungu))
-                        .dongeupmyeon(tuple.get(article.dongeupmyeon))
-                        .likeCount(tuple.get(article.dailyLikeCount))
-                        .image(tuple.get(article.image))
-                        .build())
-                .collect(Collectors.toList());
+    //    private List<LocationResp> tupleToDongeupmyeonResp(List<Tuple> tuples) {
+//        return tuples.stream().map(tuple -> LocationResp.builder()
+//                        .articleId(tuple.get(article.articleId))
+//                        .dosi(tuple.get(article.dosi))
+//                        .sigungu(tuple.get(article.sigungu))
+//                        .dongeupmyeon(tuple.get(article.dongeupmyeon))
+//                        .likeCount(tuple.get(article.dailyLikeCount))
+//                        .image(tuple.get(article.image))
+//                        .build())
+//                .collect(Collectors.toList());
+//    }
+    private LocationResp tupleToDongeupmyeonResp(Tuple tuples) {
+        return LocationResp.builder()
+                .dosi(tuples.get(article.dosi))
+                .sigungu(tuples.get(article.sigungu))
+                .dongeupmyeon(tuples.get(article.dongeupmyeon))
+                .likeCount(tuples.get(article.dailyLikeCount))
+                .image(tuples.get(article.image))
+                .articleId(tuples.get(article.articleId))
+                .build();
     }
 }
