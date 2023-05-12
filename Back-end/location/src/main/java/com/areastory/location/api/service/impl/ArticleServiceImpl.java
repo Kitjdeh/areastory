@@ -97,8 +97,8 @@ public class ArticleServiceImpl implements ArticleService {
                             locationDto));
                 } else {
                     locationMap.getMap().put(locationDto, new LocationResp(
-                            locationData.getArticleId(),
-                            locationData.getImage(),
+                            locationResp.getArticleId(),
+                            locationResp.getImage(),
                             dailyLikeCount,
                             locationDto));
                 }
