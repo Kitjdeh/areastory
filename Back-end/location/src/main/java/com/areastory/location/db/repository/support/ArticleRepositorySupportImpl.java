@@ -309,6 +309,9 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
 //                .collect(Collectors.toList());
 //    }
     private LocationResp tupleToDosiResp(Tuple tuples) {
+        if (tuples == null) {
+            return null;
+        }
         return LocationResp.builder()
                 .dosi(tuples.get(article.dosi))
                 .likeCount(tuples.get(article.dailyLikeCount))
@@ -328,6 +331,9 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
 //                .collect(Collectors.toList());
 //    }
     private LocationResp tupleToSigunguResp(Tuple tuples) {
+        if (tuples == null) {
+            return null;
+        }
         return LocationResp.builder()
                 .dosi(tuples.get(article.dosi))
                 .sigungu(tuples.get(article.sigungu))
@@ -356,7 +362,9 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
         System.out.println(tuples.get(article.dailyLikeCount));
         System.out.println(tuples.get(article.image));
         System.out.println(tuples.get(article.articleId));
-
+        if (tuples == null) {
+            return null;
+        }
         return LocationResp.builder()
                 .dosi(tuples.get(article.dosi))
                 .sigungu(tuples.get(article.sigungu))
