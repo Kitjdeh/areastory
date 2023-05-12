@@ -42,31 +42,56 @@ public class FollowServiceImpl implements FollowService {
         }
     }
 
-    public List<FollowerResp> findFollowers(Long userId, int page, String search) {
-        PageRequest pageRequest = PageRequest.of(page, 20);
-        return followRepository.findFollowerResp(userId, pageRequest, searchCondition(search));
+//    public List<FollowerResp> findFollowers(Long userId, int page, String search) {
+//        PageRequest pageRequest = PageRequest.of(page, 20);
+//        return followRepository.findFollowerResp(userId, pageRequest, searchCondition(search));
+//    }
+
+    @Override
+    public List<FollowerResp> findFollowers(Long userId, String search) {
+        return followRepository.findFollowerResp(userId, searchCondition(search));
+    }
+
+//    @Override
+//    public List<FollowingResp> findFollowing(Long userId, int page, int type) {
+//        PageRequest pageRequest;
+//        if (type == 1) {
+//            pageRequest = PageRequest.of(page, 20, Sort.Direction.ASC, "followingUser.nickname");
+//        } else if (type == 2) {
+//            pageRequest = PageRequest.of(page, 20, Sort.Direction.ASC, "createdAt");
+//        } else {
+//            pageRequest = PageRequest.of(page, 20, Sort.Direction.DESC, "createdAt");
+//        }
+//        return followRepository.findByFollowerUser_UserId(userId, pageRequest)
+//                .stream().map(FollowingResp::fromEntity).collect(
+//                        Collectors.toList());
+//    }
+    @Override
+    public List<FollowingResp> findFollowing(Long userId, int type) {
+        return followRepository.findFollowing(userId, type);
+//        PageRequest pageRequest;
+//        if (type == 1) {
+//            pageRequest = PageRequest.of(page, 20, Sort.Direction.ASC, "followingUser.nickname");
+//        } else if (type == 2) {
+//            pageRequest = PageRequest.of(page, 20, Sort.Direction.ASC, "createdAt");
+//        } else {
+//            pageRequest = PageRequest.of(page, 20, Sort.Direction.DESC, "createdAt");
+//        }
+//        return followRepository.findByFollowerUser_UserId(userId, pageRequest)
+//                .stream().map(FollowingResp::fromEntity).collect(
+//                        Collectors.toList());
     }
 
     @Override
-    public List<FollowingResp> findFollowing(Long userId, int page, int type) {
-        PageRequest pageRequest;
-        if (type == 1) {
-            pageRequest = PageRequest.of(page, 20, Sort.Direction.ASC, "followingUser.nickname");
-        } else if (type == 2) {
-            pageRequest = PageRequest.of(page, 20, Sort.Direction.ASC, "createdAt");
-        } else {
-            pageRequest = PageRequest.of(page, 20, Sort.Direction.DESC, "createdAt");
-        }
-        return followRepository.findByFollowerUser_UserId(userId, pageRequest)
-                .stream().map(FollowingResp::fromEntity).collect(
-                        Collectors.toList());
+    public List<FollowingResp> findFollowingBySearch(Long userId, String search) {
+        return followRepository.findFollowingResp(userId, searchCondition(search));
     }
 
-    @Override
-    public List<FollowingResp> findFollowingBySearch(Long userId, int page, String search) {
-        PageRequest pageRequest = PageRequest.of(page, 20);
-        return followRepository.findFollowingResp(userId, pageRequest, searchCondition(search));
-    }
+//    @Override
+//    public List<FollowingResp> findFollowingBySearch(Long userId, int page, String search) {
+//        PageRequest pageRequest = PageRequest.of(page, 20);
+//        return followRepository.findFollowingResp(userId, pageRequest, searchCondition(search));
+//    }
 
     @Override
     @Transactional

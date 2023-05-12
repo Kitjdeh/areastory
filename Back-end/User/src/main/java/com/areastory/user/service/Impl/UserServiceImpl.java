@@ -3,6 +3,7 @@ package com.areastory.user.service.Impl;
 import com.areastory.user.db.entity.User;
 import com.areastory.user.db.repository.ArticleRepository;
 import com.areastory.user.db.repository.UserRepository;
+import com.areastory.user.dto.common.ArticleDto;
 import com.areastory.user.dto.request.UserInfoReq;
 import com.areastory.user.dto.request.UserReq;
 import com.areastory.user.dto.response.ArticleResp;
@@ -16,9 +17,14 @@ import com.areastory.user.util.S3Util;
 import com.areastory.user.util.Sha256Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -121,25 +127,25 @@ public class UserServiceImpl implements UserService {
         userProducer.send(user, KafkaProperties.DELETE);
     }
 
-    @Override
-    public List<ArticleResp> getArticleList(Long userId) {
-        return articleRepository.getArticleList(userId);
-    }
-
-    @Override
-    public List<ArticleResp> getOtherUserArticleList(Long userId) {
-        return articleRepository.getOtherUserArticleList(userId);
-    }
-
-
 //    @Override
-//    public ArticleResp getArticleList(Long userId, int page) {
-//        Pageable pageable = PageRequest.of(page, 20, Sort.Direction.DESC, "createdAt");
-//        User user = userRepository.findById(userId).orElseThrow();
-//        Page<ArticleDto> articleDtos = articleRepository.findByUser(user, pageable)
-//                .map(ArticleDto::fromEntity);
-//        return ArticleResp.fromArticleDto(articleDtos);
+//    public List<ArticleResp> getArticleList(Long userId) {
+//        return articleRepository.getArticleList(userId);
 //    }
+//
+//    @Override
+//    public List<ArticleResp> getOtherUserArticleList(Long userId) {
+//        return articleRepository.getOtherUserArticleList(userId);
+//    }
+
+
+    @Override
+    public ArticleResp getArticleList(Long userId, int page) {
+        Pageable pageable = PageRequest.of(page, 20, Sort.Direction.DESC, "createdAt");
+        User user = userRepository.findById(userId).orElseThrow();
+        Page<ArticleDto> articleDtos = articleRepository.findByUser(user, pageable)
+                .map(ArticleDto::fromEntity);
+        return ArticleResp.fromArticleDto(articleDtos);
+    }
 
 //    @Override
 //    public ArticleResp getOtherUserArticleList(Long userId, int page) {

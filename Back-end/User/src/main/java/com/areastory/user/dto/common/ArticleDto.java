@@ -16,25 +16,14 @@ import java.util.List;
 @Builder
 public class ArticleDto {
 
-    private Integer pageSize;
-    private Integer totalPageNumber;
-    private Long totalCount;
-    private Integer pageNumber;
-    private Boolean nextPage;
-    private Boolean previousPage;
+    private Long articleId;
+    private String image;
 
-//    private List<ArticleDto> articles;
-//
-//    public static ArticleDto fromArticleDto(Page<ArticleDto> articleDtos) {
-//        return ArticleResp.builder()
-//                .articles(articleDtos.getContent())
-//                .pageSize(articleDtos.getPageable().getPageSize())
-//                .totalPageNumber(articleDtos.getTotalPages())
-//                .totalCount(articleDtos.getTotalElements())
-//                .pageNumber(articleDtos.getPageable().getPageNumber())
-//                .nextPage(articleDtos.hasNext())
-//                .previousPage(articleDtos.hasPrevious())
-//                .build();
-//    }
+    public static ArticleDto fromEntity(Article article) {
+        return ArticleDto.builder()
+                .articleId(article.getArticleId())
+                .image(article.getImage())
+                .build();
+    }
 
 }
