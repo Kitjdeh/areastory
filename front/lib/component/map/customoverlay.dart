@@ -118,8 +118,7 @@ class CustomPolygonLayer extends StatelessWidget {
                         height: MediaQuery.of(context).size.height * 0.8,
                         child: Center(
                           child: ArticleDetailComponent(
-                            articleId: 39,
-                            // articleId,
+                            articleId: articleId,
                             userId: userId,
                             // 지금 로그인한 유저Id
                             height: 500,

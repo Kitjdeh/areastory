@@ -7,6 +7,7 @@ import 'package:front/api/login/login.dart';
 import 'package:front/component/alarm/toast.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/main.dart';
+import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -43,13 +44,14 @@ class _LoginScreenState extends State<LoginScreen> {
               GestureDetector(
                 onTap: () async {
                   final HASH = await KakaoSdk.origin;
+                  print('HASH${HASH}');
                   final flag = await viewModel.login();
+                  viewModel.printError();
                   setState(() {});
                   print("카카오로그인 진행상황 테스트: ${flag}");
-
                   /// 로그인시 카카오가 던져주는 키값
-
-                  if (flag) {
+                  if (await viewModel.isLogined) {
+                    toast(context, '로그인은 뜸');
                     print("카카오 통신성공! 카카오 유저 정보 가져옵니다.");
                     print(viewModel.user?.id);
                     print(viewModel.user?.kakaoAccount?.profile?.nickname);
@@ -73,6 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         await storage.write(
                             key: "userId",
                             value: res.data['userId'].toString());
+
                         /// 로그인 성공시 페이지 이동.
                         Navigator.pushReplacement(
                           context,
