@@ -12,6 +12,15 @@ public class LocationResp {
     private LocationDto locationDto;
     private String image;
     private Long articleId;
+    private Long likeCount;
+
+    @Builder
+    public LocationResp(String dosi, String sigungu, String dongeupmyeon, String image, Long articleId, Long likeCount) {
+        this.locationDto = new LocationDto(dosi, sigungu, dongeupmyeon);
+        this.image = image;
+        this.articleId = articleId;
+        this.likeCount = likeCount;
+    }
 
     @Builder
     public LocationResp(String dosi, String sigungu, String dongeupmyeon, String image, Long articleId) {
@@ -32,5 +41,19 @@ public class LocationResp {
         this.locationDto = new LocationDto(dosi);
         this.image = image;
         this.articleId = articleId;
+    }
+
+    @Builder
+    public LocationResp(ArticleDto articleDto, LocationDto locationDto) {
+        this.locationDto = locationDto;
+        this.image = articleDto.getImage();
+        this.articleId = articleDto.getArticleId();
+    }
+
+    public LocationResp(Long articleId, String image, Long likeCount, LocationDto locationDto) {
+        this.locationDto = locationDto;
+        this.image = image;
+        this.articleId = articleId;
+        this.likeCount = likeCount;
     }
 }

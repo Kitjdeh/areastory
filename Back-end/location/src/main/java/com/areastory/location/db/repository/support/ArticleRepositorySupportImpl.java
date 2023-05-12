@@ -3,9 +3,11 @@ package com.areastory.location.db.repository.support;
 import com.areastory.location.db.entity.ArticleSub;
 import com.areastory.location.dto.common.LocationDto;
 import com.areastory.location.dto.response.LocationResp;
-import com.querydsl.core.types.Projections;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -13,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.areastory.location.db.entity.QArticle.article;
 
@@ -127,8 +130,7 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
 
     @Override
     public List<LocationResp> getUserArticleList(Long userId, List<LocationDto> locationIdList) {
-        List<ArticleSub> subList = getSubQuery(locationIdList).where(article.userId.eq(userId)).fetch();
-        if (subList.size() == 0)
+        if (locationIdList.size() == 0)
             return new ArrayList<>();
         List<Tuple> tuples;
         LocationDto locationDto = locationIdList.get(0);

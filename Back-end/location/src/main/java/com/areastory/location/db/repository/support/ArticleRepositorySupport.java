@@ -7,7 +7,7 @@ import com.areastory.location.dto.response.LocationResp;
 import java.util.List;
 
 public interface ArticleRepositorySupport {
-    List<LocationResp> getArticleList(List<LocationDto> locationList);
+//    List<LocationResp> getArticleList(List<LocationDto> locationList);
 
     List<LocationResp> getUserArticleList(Long userId, List<LocationDto> locationList);
 

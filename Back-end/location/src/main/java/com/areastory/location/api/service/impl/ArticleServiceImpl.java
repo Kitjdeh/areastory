@@ -17,6 +17,7 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
+    private final LocationMap locationMap;
 
     @Override
     @Transactional
@@ -41,9 +42,42 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public void updateArticle(ArticleKafkaDto articleKafkaDto) {
+        //증가로직
+        //dosi, sigungu, dongeupmyeon 1위 확인
+        LocationDto dongeupmyeonDto = new LocationDto(articleKafkaDto.getDosi(), articleKafkaDto.getSigungu(), articleKafkaDto.getDongeupmyeon());
+        checkLikeCount(dongeupmyeonDto, articleKafkaDto);
+
+        //dosi, sigungu 1위 확인
+        LocationDto sigunguDto = new LocationDto(articleKafkaDto.getDosi(), articleKafkaDto.getSigungu());
+        checkLikeCount(sigunguDto, articleKafkaDto);
+
+        //dosi 1위 확인
+        LocationDto dosiDto = new LocationDto(articleKafkaDto.getDosi());
+        checkLikeCount(dosiDto, articleKafkaDto);
+
         Article article = articleRepository.findById(articleKafkaDto.getArticleId()).orElseThrow();
         article.setDailyLikeCount(articleKafkaDto.getDailyLikeCount());
         article.setPublicYn(articleKafkaDto.getPublicYn());
+
+
+        //감소로직
+//        Long dailyLikeCount = articleKafkaDto.getDailyLikeCount();
+//        articleRepository.getDailyLikeCount(dailyLikeCount);
+
+
+//        LocationResp locationResp = locationMap.getMap().get(new LocationDto(articleKafkaDto.getDosi(), articleKafkaDto.getSigungu(), articleKafkaDto.getDongeupmyeon()));
+        //증가 로직
+//        if (locationResp == null || locationResp.getLikeCount() < articleKafkaDto.getDailyLikeCount()) {
+//            //dosi, sigungu, dongeupmyeon 단위 바꾸기
+//            locationMap.getMap().put(dongeupmyeonDto, new LocationResp(
+//                    articleKafkaDto.getArticleId(),
+//                    articleKafkaDto.getImage(),
+//                    articleKafkaDto.getDailyLikeCount(),
+//                    dongeupmyeonDto
+//            ));
+//        }
+
+//        }
     }
 
     @Override
