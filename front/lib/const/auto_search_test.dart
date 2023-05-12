@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LocationSearch extends StatefulWidget {
   final onLocationSelected;
@@ -24,6 +25,21 @@ class _LocationSearchState extends State<LocationSearch> {
   void initState() {
     super.initState();
     _loadOptions();
+    _myLocationSearch();
+  }
+
+  void _myLocationSearch() async {
+    final storage = new FlutterSecureStorage();
+    String? storedLocation;
+
+    while (storedLocation == null) {
+      storedLocation = await storage.read(key: "userlocation");
+      print(storedLocation);
+      await Future.delayed(Duration(seconds: 1)); // 1초 대기 후 다시 확인
+    }
+
+    // 저장된 위치 데이터 사용
+    print("저장된 위치: $storedLocation");
   }
 
   Future<void> _loadOptions() async {

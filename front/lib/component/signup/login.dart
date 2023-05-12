@@ -92,16 +92,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   image: AssetImage("asset/img/login/kakao_login_medium_narrow.png"),
                 ),
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  await viewModel.logout();
-                  setState(() {});
-
-                  /// 로그아웃시
-                  await storage.delete(key: "userId");
-                },
-                child: Text("로그아웃"),
-              )
+              // ElevatedButton(
+              //   onPressed: () async {
+              //     await viewModel.logout();
+              //     setState(() {});
+              //
+              //     /// 로그아웃시
+              //     await storage.delete(key: "userId");
+              //   },
+              //   child: Text("로그아웃"),
+              // )
             ],
           ),
         ),
