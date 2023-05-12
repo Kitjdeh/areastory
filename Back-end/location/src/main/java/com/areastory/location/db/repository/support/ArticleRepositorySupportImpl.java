@@ -223,7 +223,14 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
                     .groupBy(article.dosi)
                     .fetchOne();
         }
-        return (LocationResp) tuple;
+        return LocationResp.builder()
+                .dosi(tuple.get(0, String.class))
+                .sigungu(tuple.get(1, String.class))
+                .dongeupmyeon(tuple.get(2, String.class))
+                .likeCount(tuple.get(3, Long.class))
+                .image(tuple.get(4, String.class))
+                .articleId(tuple.get(5, Long.class))
+                .build();
     }
 
 
