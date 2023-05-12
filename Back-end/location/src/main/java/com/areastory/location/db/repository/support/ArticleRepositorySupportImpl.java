@@ -161,7 +161,7 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
     @Override
     public LocationResp getDailyLikeCountData(String type, Long articleId, LocationDto locationDto, Long dailyLikeCount) {
         SubQueryExpression<Tuple> subQuery;
-        Tuple tuple = null;
+        Tuple tuple;
         if (type.equals("dongeupmyeon")) {
             subQuery = JPAExpressions
                     .select(article.dosi, article.sigungu, article.dongeupmyeon, article.dailyLikeCount.max())
@@ -299,15 +299,6 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
         return be.and(eq);
     }
 
-    //    private List<LocationResp> tupleToDosiResp(List<Tuple> tuples) {
-//        return tuples.stream().map(tuple -> LocationResp.builder()
-//                        .articleId(tuple.get(article.articleId))
-//                        .dosi(tuple.get(article.dosi))
-//                        .likeCount(tuple.get(article.dailyLikeCount))
-//                        .image(tuple.get(article.image))
-//                        .build())
-//                .collect(Collectors.toList());
-//    }
     private LocationResp tupleToDosiResp(Tuple tuples) {
         if (tuples == null) {
             return null;
@@ -320,16 +311,6 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
                 .build();
     }
 
-    //    private List<LocationResp> tupleToSigunguResp(List<Tuple> tuples) {
-//        return tuples.stream().map(tuple -> LocationResp.builder()
-//                        .articleId(tuple.get(article.articleId))
-//                        .dosi(tuple.get(article.dosi))
-//                        .sigungu(tuple.get(article.sigungu))
-//                        .likeCount(tuple.get(article.dailyLikeCount))
-//                        .image(tuple.get(article.image))
-//                        .build())
-//                .collect(Collectors.toList());
-//    }
     private LocationResp tupleToSigunguResp(Tuple tuples) {
         if (tuples == null) {
             return null;
@@ -343,17 +324,7 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
                 .build();
     }
 
-    //    private List<LocationResp> tupleToDongeupmyeonResp(List<Tuple> tuples) {
-//        return tuples.stream().map(tuple -> LocationResp.builder()
-//                        .articleId(tuple.get(article.articleId))
-//                        .dosi(tuple.get(article.dosi))
-//                        .sigungu(tuple.get(article.sigungu))
-//                        .dongeupmyeon(tuple.get(article.dongeupmyeon))
-//                        .likeCount(tuple.get(article.dailyLikeCount))
-//                        .image(tuple.get(article.image))
-//                        .build())
-//                .collect(Collectors.toList());
-//    }
+
     private LocationResp tupleToDongeupmyeonResp(Tuple tuples) {
         if (tuples == null) {
             return null;
