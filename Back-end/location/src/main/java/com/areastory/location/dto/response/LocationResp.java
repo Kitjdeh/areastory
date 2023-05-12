@@ -1,13 +1,12 @@
 package com.areastory.location.dto.response;
 
+import com.areastory.location.dto.common.ArticleDto;
 import com.areastory.location.dto.common.LocationDto;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor
+@ToString
 public class LocationResp {
     @Setter
     private LocationDto locationDto;
@@ -20,12 +19,14 @@ public class LocationResp {
         this.image = image;
         this.articleId = articleId;
     }
+
     @Builder
     public LocationResp(String dosi, String sigungu, String image, Long articleId) {
         this.locationDto = new LocationDto(dosi, sigungu);
         this.image = image;
         this.articleId = articleId;
     }
+
     @Builder
     public LocationResp(String dosi, String image, Long articleId) {
         this.locationDto = new LocationDto(dosi);

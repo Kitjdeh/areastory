@@ -10,4 +10,10 @@ public interface ArticleRepositorySupport {
     List<LocationResp> getArticleList(List<LocationDto> locationList);
 
     List<LocationResp> getUserArticleList(Long userId, List<LocationDto> locationList);
+
+    List<LocationResp> getDongeupmyeon();
+
+    List<LocationResp> getSigungu();
+
+    List<LocationResp> getDosi();
 }
