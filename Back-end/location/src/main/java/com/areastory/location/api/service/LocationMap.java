@@ -72,13 +72,7 @@ public class LocationMap {
                                 .likeCount(o1.getLikeCount())
                                 .build()));
 
-//        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//        System.out.println(map.get(new LocationDto("경기도", "수원시 장안구", "율전동")));
-//        System.out.println(map.get(new LocationDto("충청북도", "진천군", "초평면")));
-//        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        System.out.println(map.size());
-        map.forEach((k, v) -> System.out.println((v.toString())));
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
     }
 }
 
