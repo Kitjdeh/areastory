@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/mypage/get_userArticles.dart';
 
 class MyAlbum extends StatefulWidget {
@@ -14,6 +15,9 @@ class _MyAlbumState extends State<MyAlbum> {
   List<dynamic> _articles = [];
   bool nextPage = true; // 다음페이지를 불러올 수 있는가?
   bool _isLoading = false; // 로딩 중인지 여부
+  final storage = new FlutterSecureStorage();
+  String? myId;
+
 
 
   @override
@@ -23,9 +27,15 @@ class _MyAlbumState extends State<MyAlbum> {
     printArticles(int.parse(widget.userId), _currentPage);
   }
 
+  void setMyId() async {
+    myId = await storage.read(key: "userId");
+  }
+
   void printArticles(userId, page) async {
     _articles.clear();
-    final articleData = await getUserArticles(userId: userId, page:page);
+    myId = await storage.read(key: "userId");
+
+    final articleData = myId == widget.userId ? await getUserArticles(userId: userId, page:page) : await getOtherArticles(userId: userId, page: page);
     setState(() {
       _articles.addAll(articleData.articles);
     });
@@ -44,6 +54,20 @@ class _MyAlbumState extends State<MyAlbum> {
     print("들어간 게시글");
     print("앨범사진 요청했습니다");
   }
+
+  void getortherarticle(userId) async {
+    if (_isLoading) return; // 이미 로딩 중인 경우 중복 요청 방지
+    ++_currentPage;
+    final articleData = await getOtherArticles(userId: userId,page: _currentPage);
+    setState(() {
+      _articles.addAll(articleData.articles);
+      nextPage = articleData.nextPage;
+      _isLoading = false; // 로딩 완료 상태로 설정
+    });
+    print("들어간 게시글");
+    print("앨범사진 요청했습니다");
+  }
+
 
   @override
   Widget build(BuildContext context) {
