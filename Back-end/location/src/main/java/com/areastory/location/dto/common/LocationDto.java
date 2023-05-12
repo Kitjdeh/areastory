@@ -2,12 +2,10 @@ package com.areastory.location.dto.common;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.util.Objects;
 
 @Getter
-@ToString
 public class LocationDto {
     private String dosi;
     private String sigungu;

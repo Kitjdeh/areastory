@@ -2,11 +2,13 @@ package com.areastory.location.dto.response;
 
 import com.areastory.location.dto.common.ArticleDto;
 import com.areastory.location.dto.common.LocationDto;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
-@ToString
 public class LocationResp {
     @Setter
     private LocationDto locationDto;
