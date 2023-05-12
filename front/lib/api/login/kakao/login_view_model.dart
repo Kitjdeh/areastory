@@ -13,7 +13,7 @@ class LoginViewModel {
     isLogined = await _socialLogin.login();
 
     // 카카오 로그인 성공시,
-    if(isLogined){
+    if(isLogined) {
       // 유저 정보 받아와라
       user = await UserApi.instance.me();
       return true;

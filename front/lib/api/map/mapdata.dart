@@ -44,16 +44,33 @@ Future<Map<String, AreaData>> postAreaData(
           areadata.add(AreaData.fromJson(e));
         })
       : null;
-  print("areadata${areadata}");
+  // print("areadata${areadata}");
   // print(areadata.first.locationDto.runtimeType);
   // print(areadata.first.)
-  await areadata != null
-      ? areadata.map((e) => e.locationDto!['dongeupmyeon'] != null
-          ? AreaInfo.addAll({e.locationDto!['dongupyeon'].toString() ?? "": e})
-          : e.locationDto!['sigungu'] != null
-              ? AreaInfo.addAll({e.locationDto!['sigungu'].toString() ?? "": e})
-              // print("e.locationDto${e.locationDto}")
-              : AreaInfo.addAll({e.locationDto!['dosi'].toString() ?? "": e}))
+  // await
+  //     ? areadata.map((e) =>
+  //     e.locationDto!['dongeupmyeon'] != null
+  //         ? AreaInfo.addAll({e.locationDto!['dongupyeon'] ?? "": e})
+  //         : e.locationDto!['sigungu'] != null
+  //             // ? AreaInfo.addAll({e.locationDto!['sigungu'] ?? "": e})
+  //             ? print("e.locationDto${e.locationDto} type${e.locationDto.runtimeType}")
+  //             : AreaInfo.addAll({e.locationDto!['dosi'] ?? "": e})
+  //             )
+  //     : null;
+  // await Future.forEach(visibleMapdata, (e) {
+  //   requestlist.add(e.mapinfo!);
+  // });
+  areadata != null
+      ? Future.forEach(areadata, (e) {
+        print(e.locationDto);
+          e.locationDto!['dongeupmyeon'] != null
+              ? AreaInfo.addAll({e.locationDto!['dongupyeon'] ?? "": e})
+              : e.locationDto!['sigungu'] != null
+                  ? AreaInfo.addAll({e.locationDto!['sigungu'] ?? "": e})
+                  // ? print(
+                  //     "e.locationDto${e.locationDto} type${e.locationDto.runtimeType}")
+                  : AreaInfo.addAll({e.locationDto!['dosi'] ?? "": e});
+        })
       : null;
   print("Areainfo${AreaInfo}");
   return AreaInfo;
