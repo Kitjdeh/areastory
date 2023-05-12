@@ -349,6 +349,13 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
 //                .collect(Collectors.toList());
 //    }
     private LocationResp tupleToDongeupmyeonResp(Tuple tuples) {
+        System.out.println(tuples.get(article.dosi));
+        System.out.println(tuples.get(article.sigungu));
+        System.out.println(tuples.get(article.dongeupmyeon));
+        System.out.println(tuples.get(article.dailyLikeCount));
+        System.out.println(tuples.get(article.image));
+        System.out.println(tuples.get(article.articleId));
+
         return LocationResp.builder()
                 .dosi(tuples.get(article.dosi))
                 .sigungu(tuples.get(article.sigungu))
