@@ -73,6 +73,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void updateUserInfo(Long userId, UserInfoReq userInfoReq, MultipartFile profile) throws IOException {
         User user = userRepository.findById(userId).orElseThrow();
         s3Util.deleteFile(user.getProfile());
