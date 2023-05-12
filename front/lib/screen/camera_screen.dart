@@ -168,6 +168,9 @@ class _CameraScreenState extends State<CameraScreen> {
           TextFormField(
             focusNode: _focusNode1,
             decoration: InputDecoration(labelText: '장소'),
+            enabled: false,
+            initialValue:
+                '서울특별시 서초구 역삼동',
             onTap: () {
               //120만큼 500milSec 동안 뷰를 올려줌
               _scrollController!.animateTo(120.0,

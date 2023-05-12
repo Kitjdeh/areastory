@@ -17,7 +17,7 @@ class LocationSearch extends StatefulWidget {
 }
 
 class _LocationSearchState extends State<LocationSearch> {
-  String? _selectedLocation;
+  String _selectedLocation = '서울특별시 서초구 역삼동';
   List<String>? _options;
 
   @override
@@ -61,6 +61,9 @@ class _LocationSearchState extends State<LocationSearch> {
                 color: const Color(0xffefefef),
               ),
               child: Autocomplete<String>(
+                initialValue: TextEditingValue(
+                  text: _selectedLocation,
+                ),
                 optionsBuilder: (TextEditingValue textEditingValue) {
                   if (textEditingValue.text == '') {
                     return const Iterable<String>.empty();
@@ -85,7 +88,7 @@ class _LocationSearchState extends State<LocationSearch> {
               if (_selectedLocation != null) {
                 widget.onLocationSelected(_selectedLocation!);
               }
-              _selectedLocation = null;
+              _selectedLocation = '';
             },
             child: Icon(
               Icons.search,
