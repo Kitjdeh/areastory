@@ -18,29 +18,32 @@ class LocationSearch extends StatefulWidget {
 }
 
 class _LocationSearchState extends State<LocationSearch> {
-  String? _selectedLocation;
+  String? storedLocation;
+  String _selectedLocation = '전체 지역';
   List<String>? _options;
 
   @override
   void initState() {
     super.initState();
     _loadOptions();
-    _myLocationSearch();
   }
 
-  void _myLocationSearch() async {
-    final storage = new FlutterSecureStorage();
-    String? storedLocation;
-
-    while (storedLocation == null) {
-      storedLocation = await storage.read(key: "userlocation");
-      print(storedLocation);
-      await Future.delayed(Duration(seconds: 1)); // 1초 대기 후 다시 확인
-    }
-
-    // 저장된 위치 데이터 사용
-    print("저장된 위치: $storedLocation");
-  }
+  // void _myLocationSearch() async {
+  //   final storage = new FlutterSecureStorage();
+  //
+  //   while (storedLocation == null) {
+  //     storedLocation = await storage.read(key: "userlocation");
+  //     print(storedLocation);
+  //     await Future.delayed(Duration(milliseconds: 200));
+  //   }
+  //
+  //   print("저장된 위치: $storedLocation");
+  //
+  //   setState(() {
+  //     _selectedLocation = storedLocation!;
+  //     widget.onLocationSelected(_selectedLocation!);
+  //   });
+  // }
 
   Future<void> _loadOptions() async {
     ByteData data = await rootBundle.load("asset/location/location.xlsx");
@@ -77,6 +80,9 @@ class _LocationSearchState extends State<LocationSearch> {
                 color: const Color(0xffefefef),
               ),
               child: Autocomplete<String>(
+                initialValue: TextEditingValue(
+                  text: _selectedLocation,
+                ),
                 optionsBuilder: (TextEditingValue textEditingValue) {
                   if (textEditingValue.text == '') {
                     return const Iterable<String>.empty();
@@ -101,7 +107,7 @@ class _LocationSearchState extends State<LocationSearch> {
               if (_selectedLocation != null) {
                 widget.onLocationSelected(_selectedLocation!);
               }
-              _selectedLocation = null;
+              _selectedLocation = '';
             },
             child: Icon(
               Icons.search,

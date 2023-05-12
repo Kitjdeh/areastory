@@ -13,6 +13,7 @@ import 'package:front/component/sns/comment_screen.dart';
 import 'package:front/component/sns/like_screen.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/livechat/chat_screen.dart';
+import 'package:front/screen/mypage_screen.dart';
 
 class ArticleComponent extends StatefulWidget {
   final int articleId;
@@ -98,13 +99,22 @@ class _ArticleComponentState extends State<ArticleComponent> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          AvatarWidget(
-            type: AvatarType.TYPE3,
-            nickname: nickname,
-            location: '${dosi} ${sigungu} ${dongeupmyeon}',
-            size: 40,
-            thumbPath:
-                "https://areastory-user.s3.ap-northeast-2.amazonaws.com/profile/8373fb5d-78e7-4613-afc9-5269c247f36a.1683607649926",
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          MyPageScreen(userId: widget.followingId.toString())));
+            },
+            child: AvatarWidget(
+              type: AvatarType.TYPE3,
+              nickname: nickname,
+              location: '${dosi} ${sigungu} ${dongeupmyeon}',
+              size: 40,
+              thumbPath:
+                  "https://areastory-user.s3.ap-northeast-2.amazonaws.com/profile/8373fb5d-78e7-4613-afc9-5269c247f36a.1683607649926",
+            ),
           ),
           Row(
             children: [

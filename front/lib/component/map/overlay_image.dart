@@ -66,7 +66,6 @@ class OverlayImage extends CustomOverlayImage {
     final maxLng = bound.east;
     final maxLat = bound.north;
     final minLat = bound.south;
-
     final midLat = (maxLat + minLat) / 2;
     final midLng = (maxLng + minLng) / 2;
 
@@ -109,7 +108,6 @@ class OverlayImage extends CustomOverlayImage {
     //         (e.longitude - midLng),
     //         (e.latitude - midLat)))
     //     .toList();
-
     //
     final List<Offset> listoffset = this
         .polygon
