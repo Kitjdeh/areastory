@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:front/component/alarm/toast.dart';
 import 'package:front/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
@@ -48,10 +49,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final file = File('${dir.path}/$fileName');
       await file.writeAsBytes(bytes);
       print(fileName);
-      return MultipartFile.fromFile(
-          file.path,
-          filename: fileName
-      );
+      return MultipartFile.fromFile(file.path, filename: fileName);
     } else {
       throw Exception('Failed to get file from URL');
     }
@@ -59,7 +57,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final storage = new FlutterSecureStorage(); /// flutter sercure storage에 연결.
+    final storage = new FlutterSecureStorage();
+
+    /// flutter sercure storage에 연결.
     final user = ModalRoute.of(context)?.settings.arguments as User?;
     int? kakaoid = user?.id?.toInt();
     String nickname = user?.kakaoAccount?.profile?.nickname ?? "닉네임을 적어주세요.";
@@ -102,35 +102,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   'registrationToken': this.widget.fcmToken
                 };
                 final formData = FormData.fromMap({
-                  'userReq': MultipartFile.fromString(
-                      json.encode(userReq),
-                      contentType: MediaType.parse('application/json')
-                  ),
+                  'userReq': MultipartFile.fromString(json.encode(userReq),
+                      contentType: MediaType.parse('application/json')),
                   'profile': _image != null
                       ? await MultipartFile.fromFile(
-                    _image!.path,
-                    filename: _image!.path.split('/').last,
-                  )
-                      :await getFileFromUrl(imgUrl),
+                          _image!.path,
+                          filename: _image!.path.split('/').last,
+                        )
+                      : await getFileFromUrl(imgUrl),
                 });
                 try {
                   print(formData);
                   final res = await Dio().post(
                       '${dotenv.get('BASE_URL')}/api/users/sign-up',
-                      data: formData
-                  );
-                  if (res.statusCode == 200){
+                      data: formData);
+                  if (res.statusCode == 200) {
                     print("회원가입 성공했습니다.");
+
                     /// 회원가입 성공시 storage에 저장
                     // print(res.data['data']['userId']);
-                    await storage.write(key: "userId", value: res.data['data']['userId'].toString());
+                    await storage.write(
+                        key: "userId",
+                        value: res.data['data']['userId'].toString());
+
                     /// 회원가입 성공시 페이지 이동.
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => MyApp(userId: res.data['data']['userId'].toString())),
+                      MaterialPageRoute(
+                          builder: (context) => MyApp(
+                              userId: res.data['data']['userId'].toString())),
                     );
                   }
                 } catch (e) {
+                  toast(context, '에러${e}');
                   print(e);
                 }
               },
