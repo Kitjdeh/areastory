@@ -25,41 +25,6 @@ import static com.areastory.location.db.entity.QArticle.article;
 public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
     private final JPAQueryFactory query;
 
-//    @Override
-//    public List<LocationResp> getArticleList(List<LocationDto> locationIdList) {
-//        if (locationIdList.size() == 0)
-//            return new ArrayList<>();
-//        JPAQuery<ArticleSub> subQuery = getSubQuery(locationIdList);
-//        if(!locationIdList.isEmpty()){
-//            LocationDto locationDto = locationIdList.get(0);
-//            if(locationDto.getDongeupmyeon() != null){
-//                subQuery = subQuery.groupBy(article.dosi, article.sigungu, article.dongeupmyeon);
-//            }else if(locationDto.getSigungu() != null){
-//                subQuery = subQuery.groupBy(article.dosi, article.sigungu);
-//            }else{
-//                subQuery = subQuery.groupBy(article.dosi);
-//            }
-//        }
-//        List<ArticleSub> subList = subQuery.fetch();
-//
-//        System.out.println(subList.size());
-//
-//        if (subList.size() == 0)
-//            return new ArrayList<>();
-//        JPAQuery<LocationResp> mainQuery = getMainQuery(subList);
-//        if(!locationIdList.isEmpty()){
-//            LocationDto locationDto = locationIdList.get(0);
-//            if(locationDto.getDongeupmyeon() != null){
-//                mainQuery = mainQuery.groupBy(article.dosi, article.sigungu, article.dongeupmyeon);
-//            }else if(locationDto.getSigungu() != null){
-//                mainQuery = mainQuery.groupBy(article.dosi, article.sigungu);
-//            }else{
-//                mainQuery = mainQuery.groupBy(article.dosi);
-//            }
-//        }
-//        return mainQuery.fetch();
-//    }
-
     private List<Tuple> dongeupmyeonTuple(List<LocationDto> locationList, Long userId) {
         //받아오는 값에 따라서 바뀌어야함
         SubQueryExpression<Tuple> subquery = JPAExpressions
@@ -98,16 +63,6 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
                 .fetch();
     }
 
-//    List<LocationResp> result = tuples.stream()
-//            .map(tuple -> LocationResp.builder().articleId(tuple.get(article.articleId))
-//                    .dosi(tuple.get(article.dosi))
-//                    .sigungu(tuple.get(article.sigungu))
-//                    .dongeupmyeon(tuple.get(article.dongeupmyeon))
-//                    .likeCount(tuple.get(article.dailyLikeCount))
-//                    .image(tuple.get(article.image))
-//                    .build())
-//            .collect(Collectors.toList());
-
     private List<Tuple> dosiTuple(List<LocationDto> locationList, Long userId) {
         //받아오는 값에 따라서 바뀌어야함
         SubQueryExpression<Tuple> subQuery = JPAExpressions
@@ -144,16 +99,7 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
             tuples = dosiTuple(locationIdList, userId);
             return tupleToDosiResp(tuples);
         }
-//        return tupleToLocationResp(tuples);
     }
-
-//    select *
-//    from article
-//    where (dosi, sigungu, dongeupmyeon, daily_like_count) in (
-//    select dosi, sigungu, dongeupmyeon, (daily_like_count)
-//    from article
-//    group by dosi, sigungu, dongeupmyeon)
-//    group by dosi, sigungu, dongeupmyeon;
 
     @Override
     public List<LocationResp> getDongeupmyeon() {
@@ -172,7 +118,6 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
                 .groupBy(article.dosi, article.sigungu, article.dongeupmyeon)
                 .fetch();
         return tupleToDongeupmyeonResp(tuples);
-//        return tupleToLocationResp(tuples);
     }
 
 
@@ -193,7 +138,6 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
                 .fetch();
 
         return tupleToSigunguResp(tuples);
-//        return tupleToLocationResp(tuples);
     }
 
     @Override
@@ -212,71 +156,76 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
                 .groupBy(article.dosi)
                 .fetch();
         return tupleToDosiResp(tuples);
-//        return tupleToLocationResp(tuples);
     }
 
+    @Override
+    public LocationResp getDailyLikeCountData(String type, Long articleId, LocationDto locationDto, Long dailyLikeCount) {
+        SubQueryExpression<Tuple> subQuery;
+        Tuple tuple = null;
+        if (type.equals("dongeupmyeon")) {
+            subQuery = JPAExpressions
+                    .select(article.dosi, article.sigungu, article.dongeupmyeon, article.dailyLikeCount.max())
+                    .from(article)
+                    .where(getWhereAnd(locationDto)
+                            .and(article.dailyLikeCount.gt(dailyLikeCount))
+                            .and(article.articleId.ne(articleId)))
+                    .groupBy(article.dosi, article.sigungu, article.dongeupmyeon);
 
-//    private JPAQuery<LocationResp> getMainQuery(List<ArticleSub> subList) {
-//        JPAQuery<LocationResp> select = null;
-//        if (!subList.isEmpty()) {
-//            LocationDto locationDto = subList.get(0);
-//            if (locationDto.getDongeupmyeon() != null) {
-//                select = query.select(Projections.constructor(LocationResp.class,
-//                        article.dosi,
-//                        article.sigungu,
-//                        article.dongeupmyeon,
-//                        article.image,
-//                        article.articleId
-//                ));
-//            } else if (locationDto.getSigungu() != null) {
-//                select = query.select(Projections.constructor(LocationResp.class,
-//                        article.dosi,
-//                        article.sigungu,
-//                        article.image,
-//                        article.articleId
-//                ));
-//            } else {
-//                select = query.select(Projections.constructor(LocationResp.class,
-//                        article.dosi,
-//                        article.image,
-//                        article.articleId
-//                ));
-//            }
-//        }
-//        return select
-//                .from(article)
-//                .where(article.publicYn.eq(true), getWhereOr(subList));
-//    }
-//
-//    private JPAQuery<ArticleSub> getSubQuery(List<LocationDto> locationList) {
-//        JPAQuery<ArticleSub> select = null;
-//        if (!locationList.isEmpty()) {
-//            LocationDto locationDto = locationList.get(0);
-//            if (locationDto.getDongeupmyeon() != null) {
-//                select = query.select(Projections.constructor(ArticleSub.class,
-//                        article.dosi,
-//                        article.sigungu,
-//                        article.dongeupmyeon,
-//                        article.dailyLikeCount.max()
-//                ));
-//            } else if (locationDto.getSigungu() != null) {
-//                select = query.select(Projections.constructor(ArticleSub.class,
-//                        article.dosi,
-//                        article.sigungu,
-//                        article.dailyLikeCount.max()
-//                ));
-//            } else {
-//                select = query.select(Projections.constructor(ArticleSub.class,
-//                        article.dosi,
-//                        article.dailyLikeCount.max()
-//                ));
-//            }
-//        }
-//
-//        return select
-//                .from(article)
-//                .where(article.publicYn.eq(true), getWhereOr(locationList));
-//    }
+            tuple = query
+                    .select(article.dosi, article.sigungu, article.dongeupmyeon, article.dailyLikeCount, article.image, article.articleId)
+                    .from(article)
+                    .where(
+                            Expressions.list(article.dosi, article.sigungu, article.dongeupmyeon, article.dailyLikeCount)
+                                    .in(subQuery)
+                                    .and(getWhereAnd(locationDto))
+                                    .and(article.articleId.ne(articleId))
+                    )
+                    .groupBy(article.dosi, article.sigungu, article.dongeupmyeon)
+                    .fetchOne();
+        } else if (type.equals("sigungu")) {
+            subQuery = JPAExpressions
+                    .select(article.dosi, article.sigungu, article.dailyLikeCount.max())
+                    .from(article)
+                    .where(getWhereAnd(locationDto)
+                            .and(article.dailyLikeCount.gt(dailyLikeCount))
+                            .and(article.articleId.ne(articleId)))
+                    .groupBy(article.dosi, article.sigungu);
+
+            tuple = query
+                    .select(article.dosi, article.sigungu, article.dailyLikeCount, article.image, article.articleId)
+                    .from(article)
+                    .where(
+                            Expressions.list(article.dosi, article.sigungu, article.dailyLikeCount)
+                                    .in(subQuery)
+                                    .and(getWhereAnd(locationDto))
+                                    .and(article.articleId.ne(articleId))
+                    )
+                    .groupBy(article.dosi, article.sigungu)
+                    .fetchOne();
+        } else if (type.equals("dosi")) {
+            subQuery = JPAExpressions
+                    .select(article.dosi, article.dailyLikeCount.max())
+                    .from(article)
+                    .where(getWhereAnd(locationDto)
+                            .and(article.dailyLikeCount.gt(dailyLikeCount))
+                            .and(article.articleId.ne(articleId)))
+                    .groupBy(article.dosi);
+
+            tuple = query
+                    .select(article.dosi, article.dailyLikeCount, article.image, article.articleId)
+                    .from(article)
+                    .where(
+                            Expressions.list(article.dosi, article.dailyLikeCount)
+                                    .in(subQuery)
+                                    .and(getWhereAnd(locationDto))
+                                    .and(article.articleId.ne(articleId))
+                    )
+                    .groupBy(article.dosi)
+                    .fetchOne();
+        }
+        return (LocationResp) tuple;
+    }
+
 
     private BooleanExpression getWhereOr(List<? extends LocationDto> locationList) {
         BooleanExpression whereBoolean = null;
