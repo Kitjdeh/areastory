@@ -86,16 +86,19 @@ public class ArticleServiceImpl implements ArticleService {
             //좋아요 취소를 눌렀을 때
             if (locationResp != null && locationResp.getLikeCount() == articleKafkaDto.getDailyLikeCount() + 1) {
                 Long dailyLikeCount = articleKafkaDto.getDailyLikeCount();
+                System.out.println("좋아요 카프카 넘어온거;?????" + dailyLikeCount);
                 //DB에서 dailyLikeCount 초과인 글들 가져오기
                 LocationResp locationData = articleRepository.getDailyLikeCountData(type, articleKafkaDto.getArticleId(), locationDto, dailyLikeCount);
                 //가져온 게시글의 PK 값이 현재 메모리에 있는 게시글의 PK 값과 다르다면 변경
                 if (locationData != null) {
+                    System.out.println("여기 오냐 1111");
                     locationMap.getMap().put(locationDto, new LocationResp(
                             locationData.getArticleId(),
                             locationData.getImage(),
                             locationData.getLikeCount(),
                             locationDto));
                 } else {
+                    System.out.println("여기 오냐???");
                     locationMap.getMap().put(locationDto, new LocationResp(
                             locationResp.getArticleId(),
                             locationResp.getImage(),
