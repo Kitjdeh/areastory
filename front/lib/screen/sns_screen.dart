@@ -1,4 +1,6 @@
 import "package:flutter/material.dart";
+import "package:front/api/follow/get_followings_search.dart";
+import "package:front/api/follow/get_followings_sort.dart";
 import "package:front/component/sns/avatar_widget.dart";
 import "package:front/component/sns/post_widget.dart";
 import "package:front/constant/home_tabs.dart";
@@ -37,7 +39,9 @@ Widget _myStory() {
   );
 }
 
-Widget _storyBoardList() {
+Widget _storyBoardList(
+// { required List followings,}
+    ) {
   return SingleChildScrollView(
     scrollDirection: Axis.horizontal,
     child: Row(
@@ -50,10 +54,13 @@ Widget _storyBoardList() {
           width: 5,
         ),
         ...List.generate(
+          // followings.length,
           100,
           (index) => AvatarWidget(
             type: AvatarType.TYPE1,
-            thumbPath: 'https://img.ridicdn.net/cover/1250058267/large',
+            // thumbPath: followings[index].profile,
+            thumbPath:
+                'https://areastory-user.s3.ap-northeast-2.amazonaws.com/profile/8373fb5d-78e7-4613-afc9-5269c247f36a.1683607649926',
             size: 70,
           ),
         ),
@@ -68,6 +75,7 @@ class _SnsScreenState extends State<SnsScreen> {
   bool _isFirstLoadRunning = false;
   bool _isLoadMoreRunning = false;
   List _articles = [];
+  // List _followings = [];
   String dropdownValue = list.first;
   String seletedLocationDosi = '';
   String seletedLocationSigungu = '';
@@ -119,6 +127,7 @@ class _SnsScreenState extends State<SnsScreen> {
     }
     _currentPage = 1;
     _articles.clear();
+    // _followings.clear();
     final articleData = await getArticles(
       sort: dropdownValue == '인기순' ? 'likeCount' : 'articleId',
       page: _currentPage,
@@ -126,6 +135,8 @@ class _SnsScreenState extends State<SnsScreen> {
       sigungu: seletedLocationSigungu,
       dongeupmyeon: seletedLocationDongeupmyeon,
     );
+    // final followData = await getFollowingsSearch(page: 0, search: '');
+    // _followings.addAll(followData);
     _articles.addAll(articleData.articles);
     _hasNextPage = articleData.nextPage;
 
@@ -259,7 +270,10 @@ class _SnsScreenState extends State<SnsScreen> {
           : ListView(
               controller: _controller,
               children: [
-                if (widget.location == null) _storyBoardList(),
+                if (widget.location == null)
+                  _storyBoardList(
+                      // followings: _followings,
+                      ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: List.generate(

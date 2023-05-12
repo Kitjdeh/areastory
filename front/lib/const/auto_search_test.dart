@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LocationSearch extends StatefulWidget {
   final onLocationSelected;
@@ -17,14 +18,33 @@ class LocationSearch extends StatefulWidget {
 }
 
 class _LocationSearchState extends State<LocationSearch> {
-  String _selectedLocation = '서울특별시 서초구 역삼동';
+  String? storedLocation;
+  String _selectedLocation = '전체 지역';
   List<String>? _options;
 
   @override
   void initState() {
     super.initState();
     _loadOptions();
+    // _myLocationSearch();
   }
+
+  // void _myLocationSearch() async {
+  //   final storage = new FlutterSecureStorage();
+  //
+  //   while (storedLocation == null) {
+  //     storedLocation = await storage.read(key: "userlocation");
+  //     print(storedLocation);
+  //     await Future.delayed(Duration(milliseconds: 200));
+  //   }
+  //
+  //   print("저장된 위치: $storedLocation");
+  //
+  //   setState(() {
+  //     _selectedLocation = storedLocation!;
+  //     widget.onLocationSelected(_selectedLocation!);
+  //   });
+  // }
 
   Future<void> _loadOptions() async {
     ByteData data = await rootBundle.load("asset/location/location.xlsx");
