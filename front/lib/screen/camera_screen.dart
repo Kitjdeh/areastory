@@ -140,13 +140,7 @@ class _CameraScreenState extends State<CameraScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 showImage(),
-                SizedBox(
-                  height: 50.0,
-                ),
                 createPostForm(),
-                SizedBox(
-                  height: 15.0,
-                )
               ],
             ),
           ),
@@ -157,55 +151,57 @@ class _CameraScreenState extends State<CameraScreen> {
 
   // 게시글 작성 폼
   Widget createPostForm() {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // 장소 입력 폼
-          TextFormField(
-            focusNode: _focusNode1,
-            decoration: InputDecoration(labelText: '장소'),
-            enabled: false,
-            initialValue:
-                '서울특별시 서초구 역삼동',
-            onTap: () {
-              //120만큼 500milSec 동안 뷰를 올려줌
-              _scrollController!.animateTo(120.0,
-                  duration: Duration(milliseconds: 500), curve: Curves.ease);
-            },
-          ),
-          TextFormField(
-            controller: contentController,
-            focusNode: _focusNode2,
-            decoration: InputDecoration(labelText: '내용'),
-            onTap: () {
-              //120만큼 500milSec 동안 뷰를 올려줌
-              _scrollController!.animateTo(120.0,
-                  duration: Duration(milliseconds: 500), curve: Curves.ease);
-            },
-            maxLines: 2,
-          ),
-          // 비공개 여부 체크박스
-          SwitchListTile(
-            title: Text('공개'),
-            value: _isSwitched,
-            onChanged: (value) {
-              setState(() {
-                _isSwitched = value;
-              });
-            },
-          ),
-          // 등록 버튼
-          ElevatedButton(
-            onPressed: () {
-              createArticle(_image, contentController);
-            },
-            child: Text('등록'),
-          ),
-        ],
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // 장소 입력 폼
+            TextFormField(
+              focusNode: _focusNode1,
+              decoration: InputDecoration(labelText: '장소'),
+              enabled: false,
+              initialValue: '서울특별시 서초구 역삼동',
+              onTap: () {
+                //120만큼 500milSec 동안 뷰를 올려줌
+                _scrollController!.animateTo(120.0,
+                    duration: Duration(milliseconds: 500), curve: Curves.ease);
+              },
+            ),
+            TextFormField(
+              controller: contentController,
+              focusNode: _focusNode2,
+              decoration: InputDecoration(labelText: '내용'),
+              onTap: () {
+                //120만큼 500milSec 동안 뷰를 올려줌
+                _scrollController!.animateTo(120.0,
+                    duration: Duration(milliseconds: 500), curve: Curves.ease);
+              },
+              maxLines: 2,
+            ),
+            // 비공개 여부 체크박스
+            SwitchListTile(
+              title: Text('공개'),
+              value: _isSwitched,
+              onChanged: (value) {
+                setState(() {
+                  _isSwitched = value;
+                });
+              },
+            ),
+            // 등록 버튼
+            ElevatedButton(
+              onPressed: () {
+                createArticle(_image, contentController);
+              },
+              child: Text('등록'),
+            ),
+          ],
+        ),
       ),
     );
   }

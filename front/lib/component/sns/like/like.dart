@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front/api/follow/create_following.dart';
 import 'package:front/api/follow/delete_following.dart';
+import 'package:front/screen/mypage_screen.dart';
 
 import '../../../api/user/get_user.dart';
 
@@ -44,18 +45,27 @@ class _LikeComponentState extends State<LikeComponent> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(snapshot.data!.profile),
-                        radius: 20,
-                      ),
-                      SizedBox(width: 16),
-                      Text(
-                        snapshot.data!.nickname,
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MyPageScreen(
+                                  userId: widget.followingId.toString())));
+                    },
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(snapshot.data!.profile),
+                          radius: 20,
+                        ),
+                        SizedBox(width: 16),
+                        Text(
+                          snapshot.data!.nickname,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
                   ),
                   if (widget.myId != widget.followingId)
                     ElevatedButton(

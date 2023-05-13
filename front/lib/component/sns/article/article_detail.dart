@@ -5,6 +5,7 @@ import 'package:front/api/like/create_article_like.dart';
 import 'package:front/api/like/delete_article_like.dart';
 import 'package:front/api/sns/get_article.dart';
 import 'package:front/component/sns/comment_screen.dart';
+import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/sns_screen.dart';
 
 class ArticleDetailComponent extends StatefulWidget {
@@ -285,10 +286,11 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                               ),
                                             );
                                           },
-                                          child: Text(
-                                            '해당지역 sns',
+                                          child: ImageData(
+                                            IconsPath.gosns,
+                                            width: 40,
                                           ),
-                                        )
+                                        ),
                                       ],
                                     ),
                                   ),
