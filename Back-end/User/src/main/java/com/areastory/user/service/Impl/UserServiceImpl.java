@@ -147,11 +147,11 @@ public class UserServiceImpl implements UserService {
         return ArticleResp.fromArticleDto(articleDtos);
     }
 
-//    @Override
-//    public ArticleResp getOtherUserArticleList(Long userId, int page) {
-//        Pageable pageable = PageRequest.of(page, 20, Sort.Direction.DESC, "createAt");
-//        Page<ArticleDto> articleDtos = articleRepository.getOtherUserArticleList(userId, pageable);
-//        return ArticleResp.fromArticleDto(articleDtos);
-//    }
+    @Override
+    public ArticleResp getOtherUserArticleList(Long userId, int page) {
+        Pageable pageable = PageRequest.of(page, 20, Sort.Direction.DESC, "createAt");
+        Page<ArticleDto> articleDtos = articleRepository.getOtherUserArticleList(userId, pageable);
+        return ArticleResp.fromArticleDto(articleDtos);
+    }
 
 }

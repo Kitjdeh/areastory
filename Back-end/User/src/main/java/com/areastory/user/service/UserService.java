@@ -38,6 +38,6 @@ public interface UserService {
 //    List<ArticleResp> getArticleList(Long userId);
         ArticleResp getArticleList(Long userId, int page);
 //    List<ArticleResp> getOtherUserArticleList(Long userId);
-//    ArticleResp getOtherUserArticleList(Long userId, int page);
+    ArticleResp getOtherUserArticleList(Long userId, int page);
 
 }

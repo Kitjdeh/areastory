@@ -1,6 +1,5 @@
 package com.areastory.user.dto.response;
 
-import com.areastory.user.db.entity.Article;
 import com.areastory.user.dto.common.ArticleDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
