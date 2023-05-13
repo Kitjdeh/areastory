@@ -11,7 +11,7 @@ class LocationSearch extends StatefulWidget {
   const LocationSearch({
     Key? key,
     required this.onLocationSelected,
-    this.location,
+    this.location = '',
   }) : super(key: key);
 
   @override
@@ -27,13 +27,6 @@ class _LocationSearchState extends State<LocationSearch> {
   void initState() {
     super.initState();
     _loadOptions();
-    _myLocationSearch();
-  }
-
-  void _myLocationSearch() async {
-    setState(() {
-      _selectedLocation = '서울특별시 서초구 역삼동';
-    });
   }
 
   Future<void> _loadOptions() async {
@@ -69,7 +62,7 @@ class _LocationSearchState extends State<LocationSearch> {
               height: 30,
               child: Autocomplete<String>(
                 initialValue: TextEditingValue(
-                  text: _selectedLocation,
+                  text: widget.location!,
                 ),
                 optionsBuilder: (TextEditingValue textEditingValue) {
                   if (textEditingValue.text == '') {

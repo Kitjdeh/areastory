@@ -281,14 +281,21 @@ class _MyPageScreenState extends State<MyPageScreen>
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.white,
-          leading: myId == null || widget.userId == myId
-              ? null
-              : IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.black,),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
+          // automaticallyImplyLeading: false,
+          // leading:IconButton(
+          //   icon: Icon(Icons.arrow_back, color: Colors.black,),
+          //   onPressed: () {
+          //     Navigator.of(context).pop();
+          //   },
+          // ),
+          // leading: myId == null || widget.userId == myId
+          //     ? null
+          //     : IconButton(
+          //         icon: Icon(Icons.arrow_back, color: Colors.black,),
+          //         onPressed: () {
+          //           Navigator.of(context).pop();
+          //         },
+          //       ),
           title: FutureBuilder<UserData>(
               future: getUser(userId: int.parse(widget.userId)),
               builder: (context, snapshot) {
@@ -298,7 +305,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                   );
                 } else if (snapshot.hasData) {
                   return Text(
-                    snapshot.data!.nickname.toString()+myId!+widget.userId,
+                    snapshot.data!.nickname.toString(),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,

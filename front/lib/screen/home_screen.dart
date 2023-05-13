@@ -18,25 +18,7 @@ class HomeScreen extends GetView<BottomNavController> {
     return WillPopScope(
         child: Obx(
           () => Scaffold(
-            // appBar: AppBar(
-            //   title: Text(
-            //     'AreaStory',
-            //     style: TextStyle(
-            //       color: Colors.blue,
-            //       fontWeight: FontWeight.w700,
-            //     ),
-            //   ),
-            //   backgroundColor: Colors.white,
-            //   actions: [
-            //     IconButton(
-            //       onPressed: () async {},
-            //       color: Colors.blue,
-            //       icon: Icon(
-            //         Icons.my_location,
-            //       ),
-            //     ),
-            //   ],
-            // ),
+
             body: SafeArea(
               child: IndexedStack(
                 index: controller.pageIndex.value,

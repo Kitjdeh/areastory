@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/sns/create_article.dart';
 import 'package:front/controllers/bottom_nav_controller.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,6 +16,7 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
+  String? storedLocation;
   final FocusNode _focusNode1 = FocusNode();
   final FocusNode _focusNode2 = FocusNode();
   final picker = ImagePicker();
@@ -22,27 +24,63 @@ class _CameraScreenState extends State<CameraScreen> {
   ScrollController? _scrollController;
   TextEditingController contentController = TextEditingController();
   late final userId = int.parse(widget.userId);
+  String seletedLocationDosi = '';
+  String seletedLocationSigungu = '';
+  String seletedLocationDongeupmyeon = '';
 
   File? _image;
 
   @override
   void initState() {
     super.initState();
+    _myLocationSearch();
     _scrollController = ScrollController();
   }
 
+  void _myLocationSearch() async {
+    final storage = new FlutterSecureStorage();
+
+    while (storedLocation == null) {
+      storedLocation = await storage.read(key: "userlocation");
+      print(storedLocation);
+      await Future.delayed(Duration(milliseconds: 200));
+    }
+
+    print("저장된 위치: $storedLocation");
+    setState(() {});
+    // storedLocation = '서울특별시 서초구 역삼동';
+    // handleLocationSelected(storedLocation!);
+  }
+
   void createArticle(image, content) async {
-    print(_isSwitched);
-    print(content.text);
-    print(image);
+    List<String> locationParts = storedLocation!.split(' ');
+    if (locationParts.length == 1) {
+      seletedLocationDosi = locationParts[0];
+    } else if (locationParts.length == 2) {
+      seletedLocationDosi = locationParts[0];
+      seletedLocationSigungu = locationParts[1];
+    } else if (locationParts.length == 3) {
+      if (locationParts[2][locationParts[2].length - 1] == "구") {
+        seletedLocationDosi = locationParts[0];
+        seletedLocationSigungu = locationParts[1] + locationParts[2];
+      } else {
+        seletedLocationDosi = locationParts[0];
+        seletedLocationSigungu = locationParts[1];
+        seletedLocationDongeupmyeon = locationParts[2];
+      }
+    } else {
+      seletedLocationDosi = locationParts[0];
+      seletedLocationSigungu = locationParts[1] + locationParts[2];
+      seletedLocationDongeupmyeon = locationParts[3];
+    }
     await postArticle(
       publicYn: _isSwitched,
       content: content.text,
       image: image,
       // 시,구,군 다 null 이면 안됨!
-      dosi: '서울특별시',
-      sigungu: '서초구',
-      dongeupmyeon: '역삼동',
+      dosi: seletedLocationDosi,
+      sigungu: seletedLocationSigungu,
+      dongeupmyeon: seletedLocationDongeupmyeon,
     );
 
     /// 라우터 이동. 현재는 이전 라우터로 이동한다.
@@ -165,7 +203,7 @@ class _CameraScreenState extends State<CameraScreen> {
               focusNode: _focusNode1,
               decoration: InputDecoration(labelText: '장소'),
               enabled: false,
-              initialValue: '서울특별시 서초구 역삼동',
+              initialValue: storedLocation,
               onTap: () {
                 //120만큼 500milSec 동안 뷰를 올려줌
                 _scrollController!.animateTo(120.0,

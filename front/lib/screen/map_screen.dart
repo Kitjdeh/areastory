@@ -303,7 +303,7 @@ class _CustomMapState extends State<_CustomMap> {
         mapinfo["dosi"] = dosi;
         areaname = dosi;
         keyname = dosi;
-        print(dosi);
+        // print(dosi);
       } else if (link == 'asset/map/sigungookorea.json') {
         num += 1;
         NM = feature.properties!['SIG_CD'];
@@ -361,7 +361,7 @@ class _CustomMapState extends State<_CustomMap> {
                 fullname: areaname,
                 polygons: _polygonLatLong,
                 urls: randomurl[cnt % 5]);
-                // urls: '');
+            // urls: '');
             localareadata != null ? allareaData.add(localareadata!) : null;
             cnt = cnt + 1;
           }
@@ -392,7 +392,7 @@ class _CustomMapState extends State<_CustomMap> {
               fullname: areaname,
               polygons: _polygonLatLong,
               urls: randomurl[cnt % 5]);
-              // urls: '');
+          // urls: '');
           localareadata != null ? allareaData.add(localareadata!) : null;
           cnt = cnt + 1;
         }
@@ -402,7 +402,7 @@ class _CustomMapState extends State<_CustomMap> {
     if (link == 'asset/map/ctp_korea.geojson') {
       bigareaData = allareaData;
       print(bigareaData);
-      print(namelist);
+      // print(namelist);
       // print("areamap${areamap}");
       print('빅데이터 들어감${num}');
     } else if (link == 'asset/map/sigungookorea.json') {
@@ -413,7 +413,7 @@ class _CustomMapState extends State<_CustomMap> {
     } else {
       smallareaData = allareaData;
       print(smallareaData.length);
-      print(namelist);
+      // print(namelist);
       print('최소단위 들어감${num}');
     }
     setState(() {});
@@ -461,11 +461,8 @@ class _CustomMapState extends State<_CustomMap> {
                     desiredAccuracy: LocationAccuracy.high);
                 mylatlng =
                     await LatLng(mypoisition!.latitude, mypoisition!.longitude);
-                // print('mypoisition${mypoisition}');
-                // print(mypoisition.runtimeType);
-                // Map<String, AreaData> result;
+
                 List<Map<String, String>> requestlist = [];
-                // await loadexcel();
                 await _loadGeoJson('asset/map/ctp_korea.geojson');
                 await _loadGeoJson('asset/map/sigungookorea.json');
                 await _loadGeoJson('asset/map/minimal.json');
@@ -504,20 +501,29 @@ class _CustomMapState extends State<_CustomMap> {
                 // await postAreaData(requestlist);
                 Map<String, AreaData> result = await postAreaData(requestlist);
                 List<Mapdata> newvisibleMapdata = [];
-                print('응답${result}');
+                // print('응답${result}');
                 await Future.forEach(visibleMapdata, (e) {
+
                   final areakey = e.keyname;
-                  // print('result값${result[areakey]} areakey${areakey}');
+                  // print(
+                  //     'result값${result[areakey]!.image ?? 'null'} areakey${areakey}');
                   final url = result[areakey]!.image ?? e.urls;
-                  final userid = result[areakey]!.articleId;
-                  e.urls = url;
-                  e.articleId = userid ?? 0;
-                  // print('url${url} e.urls${e.urls}');
-                  newvisibleMapdata.add(e);
+                  final ariticleid = result[areakey]!.articleId ?? 0;
+                  final mapinfo = e.mapinfo;
+                  final fullname = e.fullname;
+                  final keyname = e.keyname;
+                  final polygons = e.polygons;
+                  final newdata = Mapdata(
+                    mapinfo: mapinfo,
+                    fullname: fullname,
+                    keyname: keyname,
+                    polygons: polygons,
+                    urls: url,
+                    articleId: ariticleid
+                  );
+                  newvisibleMapdata.add(newdata);
                 });
-                nowareadata = newvisibleMapdata;
                 setState(() {
-                  print(newvisibleMapdata);
                   nowareadata = newvisibleMapdata;
                 });
                 // visibleMapdata.map((e) => print("mapdata ${e.keyname}"));
@@ -547,14 +553,43 @@ class _CustomMapState extends State<_CustomMap> {
                           point.longitude <= ne!.longitude;
                     });
                   }).toList();
-                  nowareadata = visibleMapdata;
-                  setState(() {
-                    nowareadata = visibleMapdata;
-                  });
+                  // nowareadata = visibleMapdata;
+                  //
+                  // setState(() {
+                  //   nowareadata = visibleMapdata;
+                  // });
                   await Future.forEach(visibleMapdata, (e) {
                     requestlist.add(e.mapinfo!);
                   });
                   var A = visibleMapdata.map((e) => e.mapinfo).toList();
+                  Map<String, AreaData> result = await postAreaData(requestlist);
+                  List<Mapdata> newvisibleMapdata = [];
+                  // print('응답${result}');
+                  await Future.forEach(visibleMapdata, (e) {
+
+                    final areakey = e.keyname;
+                    // print(
+                    //     'result값${result[areakey]!.image ?? 'null'} areakey${areakey}');
+                    final url = result[areakey]!.image ?? e.urls;
+                    final ariticleid = result[areakey]!.articleId ?? 0;
+                    final mapinfo = e.mapinfo;
+                    final fullname = e.fullname;
+                    final keyname = e.keyname;
+                    final polygons = e.polygons;
+                    final newdata = Mapdata(
+                        mapinfo: mapinfo,
+                        fullname: fullname,
+                        keyname: keyname,
+                        polygons: polygons,
+                        urls: url,
+                        articleId: ariticleid
+                    );
+                    newvisibleMapdata.add(newdata);
+                  });
+                  setState(() {
+                    nowareadata = newvisibleMapdata;
+                  });
+
                   // print(
                   //     "3nowareadata.length${nowareadata.length} visibleMapdata${visibleMapdata.length}");
                   // Map<String, AreaData> result =

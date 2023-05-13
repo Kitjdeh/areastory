@@ -277,6 +277,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      theme: ThemeData(
+        appBarTheme: AppBarTheme(
+          iconTheme: IconThemeData(
+            color: Colors.black,
+          )
+        )
+      ),
       initialBinding: InitBinding(userId: widget.userId),
       home: HomeScreen(userId: widget.userId),
     );

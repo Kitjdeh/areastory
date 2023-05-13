@@ -32,7 +32,7 @@ Future<Map<String, AreaData>> postAreaData(
       body: json.encode(data), headers: headers);
   final int statuscode = response.statusCode;
   print("statuscode${statuscode}");
-  print(response.body);
+  // print(response.body);
   await statuscode == 200
       ? responseJson = List<Map<String, dynamic>>.from(
           jsonDecode(utf8.decode(response.bodyBytes))) // 응답 데이터를 변환하여 저장
@@ -62,7 +62,7 @@ Future<Map<String, AreaData>> postAreaData(
   // });
   areadata != null
       ? Future.forEach(areadata, (e) {
-        print(e.locationDto);
+        // print(e.locationDto);
           e.locationDto!['dongeupmyeon'] != null
               ? AreaInfo.addAll({e.locationDto!['dongupyeon'] ?? "": e})
               : e.locationDto!['sigungu'] != null
@@ -72,6 +72,6 @@ Future<Map<String, AreaData>> postAreaData(
                   : AreaInfo.addAll({e.locationDto!['dosi'] ?? "": e});
         })
       : null;
-  print("Areainfo${AreaInfo}");
+  // print("Areainfo${AreaInfo}");
   return AreaInfo;
 }
