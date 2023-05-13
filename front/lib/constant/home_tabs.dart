@@ -46,4 +46,6 @@ class IconsPath {
   static String get postMoreIcon => 'asset/img/options/more_icon.jpg';
   static String get directMessage => 'asset/img/options/direct_msg_icon.jpg';
   static String get bookMarkOffIcon => 'asset/img/options/direct_msg_icon.jpg';
+  static String get deleteOnIcon => 'asset/img/options/delete_on_icon.png';
+  static String get deleteOffIcon => 'asset/img/options/delete_off_icon.png';
 }

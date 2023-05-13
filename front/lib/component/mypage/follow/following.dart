@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:front/api/mypage/get_following.dart';
+import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/mypage_screen.dart';
 
 class FollowingListScreen extends StatefulWidget {
@@ -11,30 +14,171 @@ class FollowingListScreen extends StatefulWidget {
 
 class _FollowingListScreenState extends State<FollowingListScreen> {
   // final List<int> numbers = List.generate(100, (index) => index);
+  List<String> filters = ['팔로잉 최신순', '팔로잉 오래된순', '팔로잉 이름순']; // 예시 필터 목록
+  String selectedFilter = '팔로잉 최신순'; // 초기 선택된 필터
+  int _filterIndex = 0;
+  int _currentPage = 0;
+  List<dynamic> _followings = [];
+  bool nextPage = true; // 다음페이지를 불러올 수 있는가?
+  bool _isLoading = false; // 로딩 중인지 여부
+  final storage = new FlutterSecureStorage();
+  String? myId;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    printFollowings(int.parse(widget.userId), _currentPage, _filterIndex);
+  }
+
+  void setMyId() async {
+    myId = await storage.read(key: "userId");
+  }
+
+  void printFollowings(userId, page, type) async {
+    _followings.clear();
+    myId = await storage.read(key: "userId");
+
+    final articleData = await getUserFollowings(userId: userId, page:page, type: type);
+    setState(() {
+      _currentPage = 0;
+      _followings.addAll(articleData.followings);
+    });
+    print("최초의 팔로잉목록 요청했습니다.");
+  }
+
+  void getuserfollowings(userId) async {
+    if (_isLoading) return; // 이미 로딩 중인 경우 중복 요청 방지
+    ++_currentPage;
+    // final followingData = await getUserFollowings(userId: userId,page: _currentPage);
+    // setState(() {
+    //   _followings.addAll(followingData.articles);
+    //   nextPage = followingData.nextPage;
+    //   _isLoading = false; // 로딩 완료 상태로 설정
+    // });
+    print("들어간 게시글");
+    print("앨범사진 요청했습니다");
+  }
+
+
+  void showFilterList() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return ListView.separated(
+          shrinkWrap: true, // 내용에 맞게 크기 조절
+          physics: NeverScrollableScrollPhysics(), // 스크롤 비활성화
+          itemCount: filters.length,
+          itemBuilder: (context, index) {
+            final filter = filters[index];
+            return RadioListTile(
+              title: Text(filter),
+              value: filter,
+              groupValue: selectedFilter,
+              onChanged: (value) {
+                setState(() {
+                  selectedFilter = value.toString(); // 선택한 필터 업데이트
+                  _filterIndex = index;
+                });
+                Navigator.pop(context); // 필터 목록 닫기
+                /// 선택한 필터를 사용하여 데이터 요청하는 메서드 호출
+                // printFollowings(); 를 실행한다.
+                print(index);
+              },
+              controlAffinity: ListTileControlAffinity.trailing, // 라디오 버튼을 오른쪽에 배치
+            );
+          },
+          separatorBuilder: (context, index) => SizedBox.shrink(), // 빈 SizedBox로 설정하여 구분선 제거
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        backgroundColor: Colors.white, // 앱 바의 배경색을 흰색으로 설정
+        title: Text(
+            "정렬 기준 : $selectedFilter",
+          style: TextStyle(color: Colors.black, fontSize: 15), // 글자색을 검정으로 설정
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.filter_list),
+            onPressed: showFilterList,
+            color: Colors.black, // 아이콘 색상을 검정으로 설정
+          ),
+        ],
+      ),
       body: renderSeparated(),
     );
   }
 
   Widget renderSeparated() {
-    return ListView.separated(
-      itemCount: 100,
-      itemBuilder: (context, index) {
-        return renderContainer();
-      },
-      separatorBuilder: (context, index) {
-        return SizedBox(
-          height: 30,
-        );
-      },
+    /// 받아온 목록이 없다면 없다고 표시할것.
+    // if (_articles.length == 0) {
+    //   return Container(
+    //     child: Column(
+    //       mainAxisAlignment: MainAxisAlignment.center,
+    //       children: [
+    //         Row(
+    //           mainAxisAlignment: MainAxisAlignment.center,
+    //           children: [Text("팔로잉한 사람이")],
+    //         ),
+    //         Row(
+    //           mainAxisAlignment: MainAxisAlignment.center,
+    //           children: [Text("없습니다")],
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // }
+
+    // return NotificationListener<ScrollNotification>(
+    //   onNotification: (ScrollNotification notification) {
+    //     if (notification is ScrollEndNotification) {
+    //       final double scrollPosition = notification.metrics.pixels;
+    //       final double maxScrollExtent = notification.metrics.maxScrollExtent;
+    //       final double triggerThreshold = 400.0; // 일정 높이
+    //
+    //       if (scrollPosition > maxScrollExtent - triggerThreshold && nextPage && !_isLoading) {
+    //         getuserarticle(int.parse(widget.userId));
+    //       }
+    //     }
+    //     return false;
+    //   },
+    //   child: Stack(
+
+    return Stack(
+      children: [
+        ListView.separated(
+        itemCount: 100,
+        itemBuilder: (context, index) {
+          print(index);
+          return renderContainer(
+            userId: index,
+          );
+        },
+        separatorBuilder: (context, index) {
+          return SizedBox(
+            height: 30,
+          );
+        },
+      ),
+        ///요청 때릴때 로딩
+        // if (_isLoading)
+        //   Center(
+        //     child: CircularProgressIndicator(),
+        //   )
+      ]
     );
   }
 
   Widget renderContainer({
     double? height,
+    required int userId,
   }) {
     return Container(
       height: MediaQuery.of(context).size.width*0.14,
@@ -75,7 +219,7 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
                       Expanded(
                         child: Container(
                           child: Text(
-                            "유저 닉네임",
+                            "유저 닉네임${userId.toString()}",
                             overflow: TextOverflow.ellipsis, // 글자가 너무 길 경우 생략되도록 설정
                             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                           ),
@@ -89,17 +233,20 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
 
 
             /// 버튼은 분기처리해야함.(팔로잉 해제)
+            if (myId == widget.userId)
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
-                child: ElevatedButton(
+                child: IconButton(
                     onPressed: (){
-
-                    },
-                    child: Text("팔로잉")),
+                      print("팔로잉 취소시킵니다?");
+                    }, icon: ImageData(IconsPath.deleteOnIcon),
+                    // IconButton(
+                    // onPressed: (){
+                    //   print("팔로잉 신청시킵니다?");
+                    // }, icon: ImageData(IconsPath.deleteOffIcon))
               ),
-          ],
-        ),
-      ),
-    );
+            ),
+      ]),
+    ));
   }
 }

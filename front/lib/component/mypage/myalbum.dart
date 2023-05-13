@@ -149,9 +149,9 @@ class _MyAlbumState extends State<MyAlbum> {
       child: Container(
         // child: Text(articleId.toString()),
         child: Image.network(
-            image,
-            fit: BoxFit.cover,
-          ),
+          image,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }

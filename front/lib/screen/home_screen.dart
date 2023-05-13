@@ -63,7 +63,8 @@ class HomeScreen extends GetView<BottomNavController> {
                     key: controller.myPageNavigationKey,
                     onGenerateRoute: (routeSetting) {
                       return MaterialPageRoute(
-                        builder: (context) => MyPageScreen(userId: userId),
+                        // builder: (context) => MyPageScreen(userId: userId),
+                        builder: (context) => MyPageScreen(userId: userId, key: UniqueKey()), // UniqueKey 지정
                       );
                     },
                   ),
