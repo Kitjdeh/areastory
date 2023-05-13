@@ -4,16 +4,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "article", indexes = {@Index(name = "idx_location2", columnList = "dosi,daily_like_count"),
-        @Index(name = "idx_location3", columnList = "dosi,sigungu,daily_like_count"),
-        @Index(name = "idx_location", columnList = "dosi,sigungu,dongeupmyeon,daily_like_count")
-})
+@Table(name = "article"
+//        indexes = {
+//        @Index(name = "idx_location4", columnList = "daily_like_count"),
+//        @Index(name = "idx_location2", columnList = "dosi,daily_like_count"),
+//        @Index(name = "idx_location3", columnList = "dosi,sigungu,daily_like_count"),
+//        @Index(name = "idx_location1", columnList = "dosi,sigungu,dongeupmyeon,daily_like_count")
+//}
+)
 public class Article extends Location {
     @Id
     private Long articleId;
@@ -21,7 +28,7 @@ public class Article extends Location {
     @Column(length = 200)
     private String image;
     @Setter
-    @Column(name="daily_like_count")
+    @Column(name = "daily_like_count")
     private Long dailyLikeCount;
     private LocalDateTime createdAt;
 
