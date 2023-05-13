@@ -158,4 +158,8 @@ public class UserController {
         return responseDefault.success(true, "다른 유저의 게시물 목록 조회", articleResp);
     }
 
+    @GetMapping("/{userId}/search")
+    public ResponseEntity<?> getUserBySearch(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam String search) {
+        return responseDefault.success(true, "검색 성공", userService.getUserBySearch(userId, page, search));
+    }
 }

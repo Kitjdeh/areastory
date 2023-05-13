@@ -2,15 +2,11 @@ package com.areastory.user.service;
 
 import com.areastory.user.dto.request.UserInfoReq;
 import com.areastory.user.dto.request.UserReq;
-import com.areastory.user.dto.response.ArticleResp;
-import com.areastory.user.dto.response.UserDetailResp;
-import com.areastory.user.dto.response.UserResp;
-import com.areastory.user.dto.response.UserSignUpResp;
+import com.areastory.user.dto.response.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 public interface UserService {
 
@@ -40,4 +36,5 @@ public interface UserService {
 //    List<ArticleResp> getOtherUserArticleList(Long userId);
     ArticleResp getOtherUserArticleList(Long userId, int page);
 
+    FollowerPageResp getUserBySearch(Long userId, int page, String search);
 }

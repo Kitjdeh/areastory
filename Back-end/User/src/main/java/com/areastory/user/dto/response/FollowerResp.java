@@ -32,4 +32,12 @@ public class FollowerResp {
                 .build();
     }
 
+    public static FollowerResp followerResp (Long userId, String nickname, String profile, Boolean check) {
+        return FollowerResp.builder()
+                .userId(userId)
+                .nickname(nickname)
+                .profile(profile)
+                .check(check)
+                .build();
+    }
 }

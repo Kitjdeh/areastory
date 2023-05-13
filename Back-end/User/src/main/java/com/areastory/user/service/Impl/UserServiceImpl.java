@@ -6,10 +6,7 @@ import com.areastory.user.db.repository.UserRepository;
 import com.areastory.user.dto.common.ArticleDto;
 import com.areastory.user.dto.request.UserInfoReq;
 import com.areastory.user.dto.request.UserReq;
-import com.areastory.user.dto.response.ArticleResp;
-import com.areastory.user.dto.response.UserDetailResp;
-import com.areastory.user.dto.response.UserResp;
-import com.areastory.user.dto.response.UserSignUpResp;
+import com.areastory.user.dto.response.*;
 import com.areastory.user.kafka.KafkaProperties;
 import com.areastory.user.kafka.UserProducer;
 import com.areastory.user.service.UserService;
@@ -28,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +35,14 @@ public class UserServiceImpl implements UserService {
     private final S3Util s3Util;
     private final UserProducer userProducer;
     private final Sha256Util sha256Util;
+
+    public String searchCondition(String search) {
+        if (search == null || search.isEmpty()) {
+            return "%";
+        } else {
+            return "%" + search + "%";
+        }
+    }
 
     @Override
     @Transactional
@@ -152,6 +156,12 @@ public class UserServiceImpl implements UserService {
         Pageable pageable = PageRequest.of(page, 20, Sort.Direction.DESC, "createAt");
         Page<ArticleDto> articleDtos = articleRepository.getOtherUserArticleList(userId, pageable);
         return ArticleResp.fromArticleDto(articleDtos);
+    }
+
+    @Override
+    public FollowerPageResp getUserBySearch(Long userId, int page, String search) {
+        Pageable pageable = PageRequest.of(page, 5);
+        return FollowerPageResp.fromFollowerResp(userRepository.getUserBySearch(userId, pageable, searchCondition(search)));
     }
 
 }

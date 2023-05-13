@@ -21,11 +21,11 @@ public class FollowingPageResp {
     private Boolean nextPage;
     private Boolean previousPage;
 
-    private List<FollowingResp> followers;
+    private List<FollowingResp> followings;
 
     public static FollowingPageResp fromFollowingResp(Page<FollowingResp> followingResps) {
         return FollowingPageResp.builder()
-                .followers(followingResps.getContent())
+                .followings(followingResps.getContent())
                 .pageSize(followingResps.getPageable().getPageSize())
                 .totalPageNumber(followingResps.getTotalPages())
                 .totalCount(followingResps.getTotalElements())
