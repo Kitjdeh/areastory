@@ -2,32 +2,32 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-Future<UserFollowersInfo> getUserFollowers({
+Future<SearchUsersInfo> getSearchUsers({
   required int userId,
   required int page,
-  required int type
+  required String? search
 }) async {
   final dio = Dio(BaseOptions(
-    baseUrl: '${dotenv.get('BASE_URL')}/api/follow',
+    baseUrl: '${dotenv.get('BASE_URL')}/api/users',
     // baseUrl: '${dotenv.get('BASE_URL')}/api/follow',
   ));
-  final response = await dio.get('/$userId', queryParameters: {
+  final response = await dio.get('/$userId/search', queryParameters: {
     'page': page,
-    'type': type+1,
+    'search': search,
   });
 
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());
-    final articleData = UserFollowersInfo.fromJson(jsonData["data"]);
-    print('내 팔로워 정보 불러오기 성공');
+    final articleData = SearchUsersInfo.fromJson(jsonData["data"]);
+    print('내 검색 정보 불러오기 성공');
     return articleData;
   } else {
-    print('내 팔로워 정보 불러오기 실패');
+    print('내 검색 정보 불러오기 실패');
     throw Exception('Failed to load userArticles');
   }
 }
 
-class UserFollowersInfo {
+class SearchUsersInfo {
   final int pageSize;
   final int totalPageNumber;
   final int totalCount;
@@ -36,7 +36,7 @@ class UserFollowersInfo {
   final bool previousPage;
   final List<Follow> followers;
 
-  UserFollowersInfo({
+  SearchUsersInfo({
     required this.pageSize,
     required this.totalPageNumber,
     required this.totalCount,
@@ -46,7 +46,7 @@ class UserFollowersInfo {
     required this.followers,
   });
 
-  factory UserFollowersInfo.fromJson(Map<String, dynamic> json) {
+  factory SearchUsersInfo.fromJson(Map<String, dynamic> json) {
     // final articlesList = json['articles'] as List<dynamic>;
     // final articles = articlesList
     //     .map((articleJson) => Follow.fromJson(articleJson))
@@ -56,7 +56,7 @@ class UserFollowersInfo {
         .map((followJson) => Follow.fromJson(followJson))
         .toList();
 
-    return UserFollowersInfo(
+    return SearchUsersInfo(
       pageSize: json['pageSize'],
       totalPageNumber: json['totalPageNumber'],
       totalCount: json['totalCount'],

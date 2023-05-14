@@ -127,6 +127,7 @@ class _FollowScreenState extends State<FollowScreen> {
     super.initState();
     _controller = ScrollController();
     printArticles();
+    // _followController.printArticles();
     _controller.addListener(_loadMoreData);
   }
 
@@ -198,19 +199,19 @@ class _FollowScreenState extends State<FollowScreen> {
       //   builder: (controller) {
       //     return ListView(
       //       children: [
-      //         _storyBoardList(),
+      //         _storyBoardList(followings: _followings),
       //         _postList(
       //           userId: userId,
       //           onDelete: onDelete,
       //           height: 350,
-      //           articles: _articles,
+      //           articles: _followController.articles,
       //           loadMoreData: _loadMoreData,
       //           currentPage: _currentPage,
       //           lastPage: _lastPage,
       //         ),
       //       ],
       //     );
-      //   }
+      //   })
       body: ListView(
         children: [
           _storyBoardList(followings: _followings),

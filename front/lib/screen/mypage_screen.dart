@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:front/api/follow/create_following.dart';
-import 'package:front/api/follow/delete_following.dart';
 import 'package:front/api/login/delete_user.dart';
 import 'package:front/api/login/kakao/kakao_login.dart';
 import 'package:front/api/login/kakao/login_view_model.dart';
@@ -373,7 +371,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                         const SizedBox(
                           width: 20,
                         ),
-                        if(myId == widget.userId)
+                        if(myId != widget.userId)
                           TextButton(
                             onPressed: () {
                               // 버튼이 클릭되었을 때 수행할 동작

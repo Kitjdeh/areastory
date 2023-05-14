@@ -17,7 +17,7 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
-  // final FollowController _followController = Get.find<FollowController>();
+  final FollowController _followController = Get.find<FollowController>();
   // String? storedLocation;
   String storedLocation = '사진을 찍어주세요';
   final FocusNode _focusNode1 = FocusNode();
