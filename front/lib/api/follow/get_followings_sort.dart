@@ -3,10 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-Future<List<Followings>> getFollowingsSort({
-  required int page,
-  required int type,
-}) async {
+Future<List<Followings>> getFollowingsSort() async {
   final dio = Dio(BaseOptions(
     baseUrl: '${dotenv.get('BASE_URL')}/api',
   ));
@@ -14,10 +11,8 @@ Future<List<Followings>> getFollowingsSort({
   final storage = FlutterSecureStorage();
   final userId = await storage.read(key: 'userId');
 
-  final response = await dio.get('/following/$userId', queryParameters: {
-    'page': page,
-    'type': type,
-  });
+  final response =
+      await dio.get('/following/$userId/list', queryParameters: {});
 
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());

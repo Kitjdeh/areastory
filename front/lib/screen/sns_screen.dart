@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:front/api/follow/get_followings_search.dart";
 import "package:front/api/follow/get_followings_sort.dart";
 import "package:front/component/sns/avatar_widget.dart";
@@ -10,8 +11,6 @@ import 'package:front/api/sns/get_articles.dart';
 import 'package:front/component/sns/article/article.dart';
 import 'package:front/const/auto_search_test.dart';
 import "package:get/get.dart";
-
-const List<String> list = <String>['인기순', '최신순'];
 
 class SnsScreen extends StatefulWidget {
   const SnsScreen({
@@ -39,9 +38,9 @@ Widget _myStory() {
   );
 }
 
-Widget _storyBoardList(
-// { required List followings,}
-    ) {
+Widget _storyBoardList({
+  required List followings,
+}) {
   return SingleChildScrollView(
     scrollDirection: Axis.horizontal,
     child: Row(
@@ -54,13 +53,12 @@ Widget _storyBoardList(
           width: 5,
         ),
         ...List.generate(
-          // followings.length,
-          100,
+          followings.length,
           (index) => AvatarWidget(
             type: AvatarType.TYPE1,
-            // thumbPath: followings[index].profile,
-            thumbPath:
-                'https://areastory-user.s3.ap-northeast-2.amazonaws.com/profile/8373fb5d-78e7-4613-afc9-5269c247f36a.1683607649926',
+            thumbPath: followings[index].profile,
+            // thumbPath:
+            //     'https://areastory-user.s3.ap-northeast-2.amazonaws.com/profile/8373fb5d-78e7-4613-afc9-5269c247f36a.1683607649926',
             size: 70,
           ),
         ),
@@ -70,16 +68,18 @@ Widget _storyBoardList(
 }
 
 class _SnsScreenState extends State<SnsScreen> {
+  String? storedLocation;
+  late String _selectedLocation;
   int _currentPage = 1;
   bool _hasNextPage = false;
   bool _isFirstLoadRunning = false;
   bool _isLoadMoreRunning = false;
   List _articles = [];
-  // List _followings = [];
-  String dropdownValue = list.first;
+  List _followings = [];
   String seletedLocationDosi = '';
   String seletedLocationSigungu = '';
   String seletedLocationDongeupmyeon = '';
+  String dropdownValue = '인기순';
 
   late final userId = int.parse(widget.userId);
   late ScrollController _controller;
@@ -88,7 +88,11 @@ class _SnsScreenState extends State<SnsScreen> {
   void initState() {
     super.initState();
     _controller = ScrollController();
-    printArticles();
+    if (widget.location != null) {
+      printArticles();
+    } else {
+      _myLocationSearch();
+    }
     _controller.addListener(_loadMoreData);
   }
 
@@ -96,6 +100,21 @@ class _SnsScreenState extends State<SnsScreen> {
   void dispose() {
     _controller.removeListener(_loadMoreData);
     super.dispose();
+  }
+
+  void _myLocationSearch() async {
+    final storage = new FlutterSecureStorage();
+
+    while (storedLocation == null) {
+      storedLocation = await storage.read(key: "userlocation");
+      print(storedLocation);
+      await Future.delayed(Duration(milliseconds: 200));
+    }
+
+    print("저장된 위치: $storedLocation");
+    handleLocationSelected(storedLocation!);
+    // storedLocation = '서울특별시 서초구 역삼동';
+    // handleLocationSelected(storedLocation!);
   }
 
   void printArticles() async {
@@ -127,7 +146,7 @@ class _SnsScreenState extends State<SnsScreen> {
     }
     _currentPage = 1;
     _articles.clear();
-    // _followings.clear();
+    _followings.clear();
     final articleData = await getArticles(
       sort: dropdownValue == '인기순' ? 'likeCount' : 'articleId',
       page: _currentPage,
@@ -135,8 +154,8 @@ class _SnsScreenState extends State<SnsScreen> {
       sigungu: seletedLocationSigungu,
       dongeupmyeon: seletedLocationDongeupmyeon,
     );
-    // final followData = await getFollowingsSearch(page: 0, search: '');
-    // _followings.addAll(followData);
+    final followData = await getFollowingsSort();
+    _followings.addAll(followData);
     _articles.addAll(articleData.articles);
     _hasNextPage = articleData.nextPage;
 
@@ -200,8 +219,8 @@ class _SnsScreenState extends State<SnsScreen> {
   }
 
   void onChangeSort(String dropdownValue) {
-    print(_controller.position.extentAfter);
     setState(() {
+      this.dropdownValue = dropdownValue;
       printArticles();
     });
   }
@@ -228,38 +247,38 @@ class _SnsScreenState extends State<SnsScreen> {
                 icon: Icon(Icons.arrow_back_ios_new_outlined),
                 color: Colors.black,
                 onPressed: () {
-                  Get.find<BottomNavController>().willPopAction();
+                  Navigator.of(context).pop();
                 },
               )
             : null,
         actions: [
-          widget.location != null
-              ? SizedBox(
-                  width: 0,
-                )
-              : LocationSearch(
-                  onLocationSelected: handleLocationSelected,
-                ),
+          if (widget.location == null)
+            LocationSearch(
+                onLocationSelected: handleLocationSelected,
+                location: storedLocation),
           const SizedBox(
-            width: 20,
+            width: 5,
           ),
-          DropdownButton<String>(
-            value: dropdownValue,
-            style: const TextStyle(color: Colors.black),
-            underline: null,
-            autofocus: true,
-            dropdownColor: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            onChanged: (String? value) {
-              dropdownValue = value!;
-              onChangeSort(value!);
+          ImageData(
+            IconsPath.livechat,
+            width: 80,
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          GestureDetector(
+            onTap: () {
+              dropdownValue == '인기순'
+                  ? onChangeSort('최신순')
+                  : onChangeSort('인기순');
             },
-            items: list.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
+            child: ImageData(
+              dropdownValue == '인기순' ? IconsPath.hot : IconsPath.recently,
+              width: 250,
+            ),
+          ),
+          SizedBox(
+            width: 5,
           )
         ],
       ),
@@ -272,8 +291,8 @@ class _SnsScreenState extends State<SnsScreen> {
               children: [
                 if (widget.location == null)
                   _storyBoardList(
-                      // followings: _followings,
-                      ),
+                    followings: _followings,
+                  ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: List.generate(

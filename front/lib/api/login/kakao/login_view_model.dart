@@ -9,9 +9,9 @@ class LoginViewModel {
   LoginViewModel(this._socialLogin);
 
   Future login() async {
+    print("개같은 $isLogined");
     // 로그인 요청
     isLogined = await _socialLogin.login();
-
     // 카카오 로그인 성공시,
     if(isLogined) {
       // 유저 정보 받아와라

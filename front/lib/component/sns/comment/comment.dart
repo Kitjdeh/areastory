@@ -4,6 +4,7 @@ import 'package:front/api/comment/get_comment.dart';
 import 'package:front/api/comment/update_comment.dart';
 import 'package:front/api/like/create_comment_like.dart';
 import 'package:front/api/like/delete_comment_like.dart';
+import 'package:front/screen/mypage_screen.dart';
 
 class CommentComponent extends StatefulWidget {
   final int commentId;
@@ -129,9 +130,18 @@ class _CommentComponentState extends State<CommentComponent> {
                     SizedBox(
                       width: 10,
                     ),
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundImage: NetworkImage(snapshot.data!.profile),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyPageScreen(
+                                    userId: widget.userId.toString())));
+                      },
+                      child: CircleAvatar(
+                        radius: 20,
+                        backgroundImage: NetworkImage(snapshot.data!.profile),
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -143,11 +153,22 @@ class _CommentComponentState extends State<CommentComponent> {
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                    snapshot.data!.nickname,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MyPageScreen(
+                                                      userId: widget.userId
+                                                          .toString())));
+                                    },
+                                    child: Text(
+                                      snapshot.data!.nickname,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
                                     ),
                                   ),
                                   SizedBox(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:front/constant/home_tabs.dart';
 
 class LocationSearch extends StatefulWidget {
   final onLocationSelected;
@@ -10,7 +11,7 @@ class LocationSearch extends StatefulWidget {
   const LocationSearch({
     Key? key,
     required this.onLocationSelected,
-    this.location,
+    this.location = '',
   }) : super(key: key);
 
   @override
@@ -27,23 +28,6 @@ class _LocationSearchState extends State<LocationSearch> {
     super.initState();
     _loadOptions();
   }
-
-  // void _myLocationSearch() async {
-  //   final storage = new FlutterSecureStorage();
-  //
-  //   while (storedLocation == null) {
-  //     storedLocation = await storage.read(key: "userlocation");
-  //     print(storedLocation);
-  //     await Future.delayed(Duration(milliseconds: 200));
-  //   }
-  //
-  //   print("저장된 위치: $storedLocation");
-  //
-  //   setState(() {
-  //     _selectedLocation = storedLocation!;
-  //     widget.onLocationSelected(_selectedLocation!);
-  //   });
-  // }
 
   Future<void> _loadOptions() async {
     ByteData data = await rootBundle.load("asset/location/location.xlsx");
@@ -69,19 +53,16 @@ class _LocationSearchState extends State<LocationSearch> {
       return const CircularProgressIndicator();
     }
     return Container(
+      margin: EdgeInsets.only(bottom: 5),
       constraints: BoxConstraints(maxWidth: 200.0),
       child: Row(
         children: [
           Expanded(
             child: Container(
-              height: 35,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                color: const Color(0xffefefef),
-              ),
+              height: 30,
               child: Autocomplete<String>(
                 initialValue: TextEditingValue(
-                  text: _selectedLocation,
+                  text: widget.location!,
                 ),
                 optionsBuilder: (TextEditingValue textEditingValue) {
                   if (textEditingValue.text == '') {
@@ -99,9 +80,6 @@ class _LocationSearchState extends State<LocationSearch> {
               ),
             ),
           ),
-          const SizedBox(
-            width: 5,
-          ),
           GestureDetector(
             onTap: () {
               if (_selectedLocation != null) {
@@ -109,9 +87,9 @@ class _LocationSearchState extends State<LocationSearch> {
               }
               _selectedLocation = '';
             },
-            child: Icon(
-              Icons.search,
-              color: Colors.black,
+            child: ImageData(
+              IconsPath.livechat,
+              width: 80,
             ),
           ),
         ],

@@ -112,8 +112,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
               nickname: nickname,
               location: '${dosi} ${sigungu} ${dongeupmyeon}',
               size: 40,
-              thumbPath:
-                  "https://areastory-user.s3.ap-northeast-2.amazonaws.com/profile/8373fb5d-78e7-4613-afc9-5269c247f36a.1683607649926",
+              thumbPath: profile,
             ),
           ),
           Row(
@@ -121,9 +120,8 @@ class _ArticleComponentState extends State<ArticleComponent> {
               if (widget.userId == widget.followingId)
                 Row(
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.update),
-                      onPressed: () {
+                    GestureDetector(
+                      onTap: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -131,31 +129,35 @@ class _ArticleComponentState extends State<ArticleComponent> {
                                       articleId: widget.articleId,
                                     )));
                       },
+                      child: ImageData(
+                        IconsPath.update,
+                        width: 60,
+                      ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
+                    SizedBox(
+                      width: 20,
+                    ),
+                    GestureDetector(
+                      onTap: () {
                         delArticle(widget.articleId);
                       },
+                      child: ImageData(
+                        IconsPath.delete,
+                        width: 60,
+                      ),
                     ),
                   ],
                 ),
               if (widget.userId != widget.followingId)
-                ElevatedButton(
-                  onPressed: () {
+                GestureDetector(
+                  onTap: () {
                     followYn
                         ? delFollowing(widget.followingId)
                         : createFollowing(widget.followingId);
                   },
-                  style: ElevatedButton.styleFrom(
-                    primary: followYn ? Colors.transparent : Colors.blue,
-                    side: BorderSide(color: Colors.white),
-                  ),
-                  child: Text(
-                    followYn ? '팔로잉' : '팔로우',
-                    style: TextStyle(
-                      color: Colors.white, // 텍스트 색상을 하얀색으로 설정
-                    ),
+                  child: ImageData(
+                    followYn ? IconsPath.following : IconsPath.follow,
+                    width: 300,
                   ),
                 ),
             ],
@@ -258,9 +260,6 @@ class _ArticleComponentState extends State<ArticleComponent> {
           ExpandableText(
             content,
             prefixText: nickname,
-            onPrefixTap: () {
-              print('개발하는남자 페이지 이동');
-            },
             prefixStyle: const TextStyle(fontWeight: FontWeight.bold),
             expandText: '더보기',
             collapseText: '접기',

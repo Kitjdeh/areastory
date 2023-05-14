@@ -12,15 +12,14 @@ Future<UserFollowingsInfo> getUserFollowings({
     // baseUrl: '${dotenv.get('BASE_URL')}/api/follow',
   ));
   final response = await dio.get('/$userId', queryParameters: {
-    'page': page,
-    'type': type
+    'page': 0,
+    'type': 1,
   });
 
   if (response.statusCode == 200) {
-    print('내 팔로잉 정보 불러오기 성공');
     final jsonData = json.decode(response.toString());
     final articleData = UserFollowingsInfo.fromJson(jsonData["data"]);
-    print('다른사람 게시글 정보 불러오기 성공');
+    print('내 팔로잉 정보 불러오기 성공');
     return articleData;
     // final jsonData = json.decode(response.toString());
     // final List<dynamic>articlesJson = jsonData["data"];
@@ -52,9 +51,13 @@ class UserFollowingsInfo {
   });
 
   factory UserFollowingsInfo.fromJson(Map<String, dynamic> json) {
-    final articlesList = json['articles'] as List<dynamic>;
-    final articles = articlesList
-        .map((articleJson) => Follow.fromJson(articleJson))
+    // final articlesList = json['articles'] as List<dynamic>;
+    // final articles = articlesList
+    //     .map((articleJson) => Follow.fromJson(articleJson))
+    //     .toList();
+    final List<dynamic> followingsList = json['followings'];
+    final List<Follow> followings = followingsList
+        .map((followJson) => Follow.fromJson(followJson))
         .toList();
 
     return UserFollowingsInfo(
@@ -64,26 +67,27 @@ class UserFollowingsInfo {
       pageNumber: json['pageNumber'],
       nextPage: json['nextPage'],
       previousPage: json['previousPage'],
-      followings:articles,
+      followings: followings,
+      // followings:articles,
     );
   }
 }
 
 class Follow {
   final int userId;
-  final String image;
+  final String profile;
   final String nickname;
 
   Follow(
       {required this.userId,
-        required this.image,
+        required this.profile,
         required this.nickname
       });
 
   factory Follow.fromJson(Map<String, dynamic> json) {
     return Follow(
       userId: json['userId'],
-      image: json['image'],
+      profile: json['profile'],
       nickname: json['nickname'],
     );
   }

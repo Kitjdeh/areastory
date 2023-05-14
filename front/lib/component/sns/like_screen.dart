@@ -81,7 +81,8 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
             icon: Icon(Icons.arrow_back_ios_new_outlined),
             color: Colors.black,
             onPressed: () {
-              Get.find<BottomNavController>().willPopAction();
+              // Get.find<BottomNavController>().willPopAction();
+              Navigator.of(context).pop();
             },
           ),
         ),

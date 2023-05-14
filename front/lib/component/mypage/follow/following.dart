@@ -39,10 +39,10 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
     _followings.clear();
     myId = await storage.read(key: "userId");
 
-    final articleData = await getUserFollowings(userId: userId, page:page, type: type);
+    final followingData = await getUserFollowings(userId: userId, page:page, type: type);
     setState(() {
       _currentPage = 0;
-      _followings.addAll(articleData.followings);
+      _followings.addAll(followingData.followings);
     });
     print("최초의 팔로잉목록 요청했습니다.");
   }
@@ -50,14 +50,13 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
   void getuserfollowings(userId) async {
     if (_isLoading) return; // 이미 로딩 중인 경우 중복 요청 방지
     ++_currentPage;
-    // final followingData = await getUserFollowings(userId: userId,page: _currentPage);
-    // setState(() {
-    //   _followings.addAll(followingData.articles);
-    //   nextPage = followingData.nextPage;
-    //   _isLoading = false; // 로딩 완료 상태로 설정
-    // });
-    print("들어간 게시글");
-    print("앨범사진 요청했습니다");
+    final followingData = await getUserFollowings(userId: userId,page: _currentPage,  type: _filterIndex);
+    setState(() {
+      _followings.addAll(followingData.followings);
+      nextPage = followingData.nextPage;
+      _isLoading = false; // 로딩 완료 상태로 설정
+    });
+    print("팔로잉 목록 요청했습니다");
   }
 
 
@@ -80,10 +79,12 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
                   selectedFilter = value.toString(); // 선택한 필터 업데이트
                   _filterIndex = index;
                 });
-                Navigator.pop(context); // 필터 목록 닫기
                 /// 선택한 필터를 사용하여 데이터 요청하는 메서드 호출
                 // printFollowings(); 를 실행한다.
+                printFollowings(int.parse(widget.userId), 0, index);
                 print(index);
+                Navigator.pop(context); // 필터 목록 닫기
+
               },
               controlAffinity: ListTileControlAffinity.trailing, // 라디오 버튼을 오른쪽에 배치
             );
@@ -118,47 +119,49 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
 
   Widget renderSeparated() {
     /// 받아온 목록이 없다면 없다고 표시할것.
-    // if (_articles.length == 0) {
-    //   return Container(
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: [
-    //         Row(
-    //           mainAxisAlignment: MainAxisAlignment.center,
-    //           children: [Text("팔로잉한 사람이")],
-    //         ),
-    //         Row(
-    //           mainAxisAlignment: MainAxisAlignment.center,
-    //           children: [Text("없습니다")],
-    //         ),
-    //       ],
-    //     ),
-    //   );
-    // }
+    if (_followings.length == 0) {
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Text("팔로잉한 사람이")],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Text("없습니다")],
+            ),
+          ],
+        ),
+      );
+    }
 
-    // return NotificationListener<ScrollNotification>(
-    //   onNotification: (ScrollNotification notification) {
-    //     if (notification is ScrollEndNotification) {
-    //       final double scrollPosition = notification.metrics.pixels;
-    //       final double maxScrollExtent = notification.metrics.maxScrollExtent;
-    //       final double triggerThreshold = 400.0; // 일정 높이
-    //
-    //       if (scrollPosition > maxScrollExtent - triggerThreshold && nextPage && !_isLoading) {
-    //         getuserarticle(int.parse(widget.userId));
-    //       }
-    //     }
-    //     return false;
-    //   },
-    //   child: Stack(
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification notification) {
+        if (notification is ScrollEndNotification) {
+          final double scrollPosition = notification.metrics.pixels;
+          final double maxScrollExtent = notification.metrics.maxScrollExtent;
+          final double triggerThreshold = 400.0; // 일정 높이
 
-    return Stack(
+          if (scrollPosition > maxScrollExtent - triggerThreshold && nextPage && !_isLoading) {
+            getuserfollowings(int.parse(widget.userId));
+          }
+        }
+        return false;
+      },
+      child: Stack(
+
+    // return Stack(
       children: [
         ListView.separated(
-        itemCount: 100,
+          itemCount: _followings.length + 1,
         itemBuilder: (context, index) {
           print(index);
           return renderContainer(
-            userId: index,
+            userId: _followings[index].userId.toString(),
+            image: _followings[index].profile.toString(),
+            nickname: _followings[index].nickname,
           );
         },
         separatorBuilder: (context, index) {
@@ -168,17 +171,19 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
         },
       ),
         ///요청 때릴때 로딩
-        // if (_isLoading)
-        //   Center(
-        //     child: CircularProgressIndicator(),
-        //   )
+        if (_isLoading)
+          Center(
+            child: CircularProgressIndicator(),
+          )
       ]
-    );
+    ));
   }
 
   Widget renderContainer({
     double? height,
-    required int userId,
+    required String userId,
+    required String image,
+    required String nickname,
   }) {
     return Container(
       height: MediaQuery.of(context).size.width*0.14,
@@ -198,7 +203,7 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              MyPageScreen(userId: '1')));
+                              MyPageScreen(userId: userId)));
                 },
                 child: Row(
                   children: [Container(
@@ -210,8 +215,12 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
                     child: ClipRRect(
                       /// 가장 완벽한 원을 만드는 방법은 상위가 되었든 뭐든, 높이길이의 50%(높이=넓이)
                       borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width*0.1),
-                      child: Image.asset(
-                        'asset/img/test01.jpg',
+                      // child: Image.asset(
+                      //   'asset/img/test01.jpg',
+                      //   fit: BoxFit.cover,
+                      // ),
+                      child: Image.network(
+                        image,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -219,7 +228,7 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
                       Expanded(
                         child: Container(
                           child: Text(
-                            "유저 닉네임${userId.toString()}",
+                            nickname,
                             overflow: TextOverflow.ellipsis, // 글자가 너무 길 경우 생략되도록 설정
                             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                           ),
