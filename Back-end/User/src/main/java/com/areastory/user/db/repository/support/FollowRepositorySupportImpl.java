@@ -48,7 +48,7 @@ public class FollowRepositorySupportImpl implements FollowRepositorySupport {
                         )))
                 .from(follow)
                 .where(follow.followingUser.userId.eq(userId))
-                .orderBy(findOrderType(type))
+                .orderBy(findFollowerOrderType(type))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -63,6 +63,29 @@ public class FollowRepositorySupportImpl implements FollowRepositorySupport {
     }
 
     @Override
+    public List<FollowerResp> findFollowersList(Long userId, int type) {
+
+        QFollow followSub = new QFollow("followSub");
+        BooleanExpression isFollowing = followSub.followerUser.userId.eq(userId).and(followSub.followingUser.eq(follow.followerUser));
+
+        return queryFactory
+                .select(Projections.constructor(FollowerResp.class,
+                        follow.followerUser.userId,
+                        follow.followerUser.nickname,
+                        follow.followerUser.profile,
+                        ExpressionUtils.as(
+                                JPAExpressions.selectOne()
+                                        .from(followSub)
+                                        .where(isFollowing)
+                                        .exists(),
+                                "check")))
+                .from(follow)
+                .where(follow.followingUser.userId.eq(userId))
+                .orderBy(findFollowerOrderType(type))
+                .fetch();
+    }
+
+    @Override
     public Page<FollowingResp> findFollowing(Long userId, Pageable pageable, int type) {
         List<FollowingResp> followingRespList = queryFactory
                 .select(Projections.constructor(FollowingResp.class,
@@ -71,7 +94,7 @@ public class FollowRepositorySupportImpl implements FollowRepositorySupport {
                         follow.followingUser.profile))
                 .from(follow)
                 .where(follow.followerUser.userId.eq(userId))
-                .orderBy(findOrderType(type))
+                .orderBy(findFollowingOrderType(type))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -195,7 +218,17 @@ public class FollowRepositorySupportImpl implements FollowRepositorySupport {
 //                .collect(Collectors.toList());
 //    }
 
-    public OrderSpecifier<?> findOrderType(int type) {
+    public OrderSpecifier<?> findFollowerOrderType(int type) {
+        switch (type) {
+            case 2:
+                return follow.createdAt.desc();
+            case 3:
+                return follow.createdAt.asc();
+        }
+        return follow.followerUser.nickname.asc();
+    }
+
+    public OrderSpecifier<?> findFollowingOrderType(int type) {
         switch (type) {
             case 2:
                 return follow.createdAt.desc();

@@ -50,6 +50,11 @@ public class FollowServiceImpl implements FollowService {
         return FollowerPageResp.fromFollowerResp(followers);
     }
 
+    @Override
+    public List<FollowerResp> findFollowersList(Long userId, int type) {
+        return followRepository.findFollowersList(userId, type);
+    }
+
 
     @Override
     public FollowingPageResp findFollowing(Long userId, int page, int type) {

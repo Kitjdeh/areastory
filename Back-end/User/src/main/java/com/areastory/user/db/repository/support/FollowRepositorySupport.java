@@ -11,6 +11,7 @@ public interface FollowRepositorySupport {
 
     Page<FollowerResp> findFollowers(Long userId, Pageable pageable, int type);
 //    List<FollowerResp> findFollowerResp(Long userId, String search);
+    List<FollowerResp> findFollowersList(Long userId, int type);
 
     Page<FollowingResp> findFollowing(Long userId, Pageable pageable, int type);
 
@@ -18,6 +19,7 @@ public interface FollowRepositorySupport {
     List<FollowingResp> findFollowingResp(Long userId, String search);
 
     List<FollowingResp> findFollowingList(Long userId);
+
 
 //    List<FollowingResp> findFollowingResp(Long userId, PageRequest pageRequest, String search);
 }

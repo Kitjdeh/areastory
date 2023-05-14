@@ -4,7 +4,6 @@ import com.areastory.user.dto.response.*;
 import com.areastory.user.service.FollowService;
 import com.areastory.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +33,10 @@ public class FollowController {
     @GetMapping("/follow/{userId}")
     public ResponseEntity<?> findFollowers(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam int type) {
         return responseDefault.success(true, "팔로워 목록 조회", followService.findFollowers(userId, page, type));
+    }
+    @GetMapping("/follow/{userId}/list")
+    public ResponseEntity<?> findFollowersList(@PathVariable("userId") Long userId, @RequestParam int type) {
+        return responseDefault.success(true, "팔로워 목록 조회", followService.findFollowersList(userId, type));
     }
 
     /*

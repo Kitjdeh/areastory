@@ -36,4 +36,14 @@ public class DummyController {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping("/following/dummy")
+    public ResponseEntity<?> dummyFollowing() {
+        for (int i = 5; i < 105; i++) {
+            User followingUser = userRepository.findById(Long.valueOf(i)).orElseThrow();
+            User followerUser = userRepository.findById(2L).orElseThrow();
+            followRepository.save(Follow.follow(followerUser, followingUser));
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
