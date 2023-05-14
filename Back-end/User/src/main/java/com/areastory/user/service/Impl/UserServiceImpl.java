@@ -7,6 +7,7 @@ import com.areastory.user.db.repository.ArticleRepository;
 import com.areastory.user.db.repository.ReportRepository;
 import com.areastory.user.db.repository.UserRepository;
 import com.areastory.user.dto.common.ArticleDto;
+import com.areastory.user.dto.request.ReportReq;
 import com.areastory.user.dto.request.UserInfoReq;
 import com.areastory.user.dto.request.UserReq;
 import com.areastory.user.dto.response.*;
@@ -169,14 +170,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean addReport(Long reportUserId, Long targetUserId) {
-        ReportId reportId = new ReportId(reportUserId, targetUserId);
+    public Boolean addReport(ReportReq reportReq) {
+        ReportId reportId = new ReportId(reportReq.getReportUserId(), reportReq.getTargetUserId());
         if (reportRepository.existsById(reportId))
             return false;
 
-        User reportUser = userRepository.findById(reportUserId).orElseThrow();
-        User targetUser = userRepository.findById(targetUserId).orElseThrow();
-        reportRepository.save(Report.report(reportUser, targetUser));
+        User reportUser = userRepository.findById(reportReq.getReportUserId()).orElseThrow();
+        User targetUser = userRepository.findById(reportReq.getTargetUserId()).orElseThrow();
+        reportRepository.save(Report.report(reportUser, targetUser, reportReq.getReportContent()));
         return true;
     }
 

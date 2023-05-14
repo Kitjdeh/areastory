@@ -24,11 +24,14 @@ public class Report extends BaseTime implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_user_id")
     private User targetUser;
+    @Column(name = "report_content")
+    private String reportContent;
 
-    public static Report report(User reportUser, User targetUser) {
+    public static Report report(User reportUser, User targetUser, String reportContent) {
         return Report.builder()
                 .reportUser(reportUser)
                 .targetUser(targetUser)
+                .reportContent(reportContent)
                 .build();
     }
 }

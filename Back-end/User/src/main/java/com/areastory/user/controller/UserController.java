@@ -1,6 +1,7 @@
 package com.areastory.user.controller;
 
 import com.areastory.user.dto.common.ArticleDto;
+import com.areastory.user.dto.request.ReportReq;
 import com.areastory.user.dto.request.UserInfoReq;
 import com.areastory.user.dto.request.UserReq;
 import com.areastory.user.dto.response.ArticleResp;
@@ -164,8 +165,8 @@ public class UserController {
     }
 
     @PostMapping("/report")
-    public ResponseEntity<?> addReport(Long reportUserId, Long targetUserId) {
-        if (userService.addReport(reportUserId, targetUserId))
+    public ResponseEntity<?> addReport(@RequestBody ReportReq reportReq) {
+        if (userService.addReport(reportReq))
             return responseDefault.success(true, "신고 성공", null);
         return responseDefault.notFound(false, "이미 신고한 대상", null);
     }

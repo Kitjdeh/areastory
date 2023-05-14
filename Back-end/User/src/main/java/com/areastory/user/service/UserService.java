@@ -1,5 +1,6 @@
 package com.areastory.user.service;
 
+import com.areastory.user.dto.request.ReportReq;
 import com.areastory.user.dto.request.UserInfoReq;
 import com.areastory.user.dto.request.UserReq;
 import com.areastory.user.dto.response.*;
@@ -38,5 +39,5 @@ public interface UserService {
 
     FollowerPageResp getUserBySearch(Long userId, int page, String search);
 
-    Boolean addReport(Long reportUserId, Long targetUserId);
+    Boolean addReport(ReportReq reportReq);
 }
