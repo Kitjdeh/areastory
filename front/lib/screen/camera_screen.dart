@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/sns/create_article.dart';
 import 'package:front/controllers/bottom_nav_controller.dart';
+import 'package:front/screen/follow_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 
@@ -68,6 +69,13 @@ class _CameraScreenState extends State<CameraScreen> {
     );
 
     /// 라우터 이동. 현재는 이전 라우터로 이동한다.
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) => FollowScreen(
+    //               userId: userId.toString(),
+    //               signal: '1',
+    //             )));
     Get.back();
   }
 
@@ -81,7 +89,7 @@ class _CameraScreenState extends State<CameraScreen> {
     final image = await picker.pickImage(source: imageSource);
     final storage = new FlutterSecureStorage();
     storedLocation = (await storage.read(key: "userlocation"))!;
-
+    // storedLocation = '서울특별시 강남구 역삼동';
     setState(() {
       _image = File(image!.path);
     });

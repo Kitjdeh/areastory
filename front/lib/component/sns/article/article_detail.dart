@@ -48,7 +48,6 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
     setState(() {});
   }
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -142,26 +141,19 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                               Row(
                                 children: [
                                   if (widget.userId != snapshot.data!.userId)
-                                    ElevatedButton(
-                                      onPressed: () {
+                                    GestureDetector(
+                                      onTap: () {
                                         snapshot.data!.followYn
                                             ? delFollowing(
                                                 snapshot.data!.userId)
                                             : createFollowing(
                                                 snapshot.data!.userId);
                                       },
-                                      style: ElevatedButton.styleFrom(
-                                        primary: snapshot.data!.followYn
-                                            ? Colors.grey
-                                            : Colors.blue,
-                                        side: BorderSide(color: Colors.white),
-                                      ),
-                                      child: Text(
-                                        snapshot.data!.followYn ? '팔로잉' : '팔로우',
-                                        style: TextStyle(
-                                          color:
-                                              Colors.white, // 텍스트 색상을 하얀색으로 설정
-                                        ),
+                                      child: ImageData(
+                                        snapshot.data!.followYn
+                                            ? IconsPath.following
+                                            : IconsPath.follow,
+                                        width: 300,
                                       ),
                                     ),
                                   SizedBox(

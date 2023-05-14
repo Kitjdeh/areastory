@@ -7,8 +7,13 @@ import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/mypage_screen.dart';
 
 class FollowScreen extends StatefulWidget {
-  const FollowScreen({Key? key, required this.userId}) : super(key: key);
+  const FollowScreen({
+    Key? key,
+    required this.userId,
+    this.signal,
+  }) : super(key: key);
   final String userId;
+  final String? signal;
 
   @override
   State<FollowScreen> createState() => _FollowScreenState();
@@ -70,10 +75,10 @@ Widget _storyBoardList({
     scrollDirection: Axis.horizontal,
     child: Row(
       children: [
-        const SizedBox(
-          width: 10,
-        ),
-        _myStory(),
+        // const SizedBox(
+        //   width: 10,
+        // ),
+        // _myStory(),
         const SizedBox(
           width: 5,
         ),
@@ -114,6 +119,7 @@ class _FollowScreenState extends State<FollowScreen> {
   int _lastPage = 0;
   List _articles = [];
   List _followings = [];
+  String signal = '';
 
   late final userId = int.parse(widget.userId);
   late ScrollController _controller;
@@ -124,7 +130,26 @@ class _FollowScreenState extends State<FollowScreen> {
     _controller = ScrollController();
     printArticles();
     _controller.addListener(_loadMoreData);
+    // signal = widget.signal!;
   }
+
+  // @override
+  // void didUpdateWidget(covariant FollowScreen oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+  //   if (oldWidget.signal != widget.signal) {
+  //     setState(() {
+  //       signal = widget.signal!;
+  //     });
+  //     handleSignal(signal);
+  //   }
+  // }
+
+  // void handleSignal(String signal) {
+  //   if (signal == '1') {
+  //     printArticles();
+  //     signal = '';
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -185,24 +210,38 @@ class _FollowScreenState extends State<FollowScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: ImageData(
+        leading: ImageData(
           IconsPath.logo,
           width: 270,
         ),
+        title: Text(
+          "Followings",
+          style: TextStyle(color: Colors.black),
+        ),
+        centerTitle: true,
+
+        /// 앱바 그림자효과 제거
       ),
-      body: ListView(
-        children: [
-          _storyBoardList(followings: _followings),
-          _postList(
-            userId: userId,
-            onDelete: onDelete,
-            height: 350,
-            articles: _articles,
-            loadMoreData: _loadMoreData,
-            currentPage: _currentPage,
-            lastPage: _lastPage,
-          ),
-        ],
+      body: RefreshIndicator(
+        onRefresh: () {
+          return Future<void>.delayed(Duration(seconds: 2), () {
+            printArticles();
+          });
+        },
+        child: ListView(
+          children: [
+            _storyBoardList(followings: _followings),
+            _postList(
+              userId: userId,
+              onDelete: onDelete,
+              height: 350,
+              articles: _articles,
+              loadMoreData: _loadMoreData,
+              currentPage: _currentPage,
+              lastPage: _lastPage,
+            ),
+          ],
+        ),
       ),
     );
   }

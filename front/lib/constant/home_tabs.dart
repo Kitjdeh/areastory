@@ -57,4 +57,5 @@ class IconsPath {
   static String get recently => 'asset/img/recently.png';
   static String get hot => 'asset/img/hot.png';
   static String get findlocation => 'asset/img/findlocation.png';
+  static String get mylocation => 'asset/img/mylocation.png';
 }

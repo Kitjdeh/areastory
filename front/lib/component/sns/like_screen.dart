@@ -17,44 +17,58 @@ class SnsLikeScreen extends StatefulWidget {
 class _SnsLikeScreenState extends State<SnsLikeScreen>
     with TickerProviderStateMixin {
   int _currentPage = 1;
+  bool _hasNextPage = false;
+  bool _isFirstLoadRunning = false;
+  bool _isLoadMoreRunning = false;
   int? _lastPage = 0;
 
   List _likes = [];
+  late ScrollController _controller;
 
   @override
   void initState() {
     super.initState();
+    _controller = ScrollController();
     printLikes();
+    _controller.addListener(_loadMoreData);
   }
 
   void printLikes() async {
+    setState(() {
+      _isFirstLoadRunning = true;
+    });
     _currentPage = 1;
     _likes.clear();
     final likeData = await getArticleLikes(
       articleId: widget.articleId,
     );
     _likes.addAll(likeData.users);
-    _lastPage = likeData.totalPageNumber;
-    setState(() {});
+    _hasNextPage = likeData.nextPage;
+
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
   }
 
   void _loadMoreData() async {
-    _currentPage++;
+    if (_hasNextPage == true &&
+        _isFirstLoadRunning == false &&
+        _isLoadMoreRunning == false &&
+        _controller.position.extentAfter < 3000)
+      setState(() {
+        _isLoadMoreRunning = true;
+      });
+    _currentPage += 1;
     final newLikes = await getArticleLikes(
       articleId: widget.articleId,
     );
     _likes.addAll(newLikes.users);
-    _lastPage = newLikes.totalPageNumber;
+    _hasNextPage = newLikes.nextPage;
 
     setState(() {
-      // scrollToIndex(5);
+      print('성공');
+      _isLoadMoreRunning = false;
     });
-  }
-
-  final ScrollController _scrollController = ScrollController();
-
-  void scrollToIndex(int index) {
-    _scrollController.jumpTo(index * 100); // jumpTo 메서드를 사용하여 스크롤합니다.
   }
 
   void _updateIsChildActive(bool isChildActive) {
@@ -97,29 +111,37 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
                   onRefresh: () async {
                     printLikes();
                   },
-                  child: ListView.separated(
-                    controller: _scrollController,
-                    itemCount: _likes.length + 1,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index < _likes.length) {
-                        return LikeComponent(
-                          myId: widget.userId,
-                          followingId: _likes[index].userId,
-                          height: 100,
-                          onUpdateIsChildActive: _updateIsChildActive,
-                        );
-                      } else if (_currentPage < _lastPage!) {
-                        _loadMoreData();
-                        return Container(
-                          height: 50,
-                          alignment: Alignment.center,
-                          child: const CircularProgressIndicator(),
-                        );
-                      }
-                    },
-                    separatorBuilder: (context, index) {
-                      return renderContainer(height: 3);
-                    },
+                  child: ListView(
+                    controller: _controller,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: List.generate(
+                          _likes.length,
+                          (index) => LikeComponent(
+                            myId: widget.userId,
+                            followingId: _likes[index].userId,
+                            height: 100,
+                            onUpdateIsChildActive: _updateIsChildActive,
+                          ),
+                        ),
+                      ),
+                      if (_isLoadMoreRunning)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      if (!_isLoadMoreRunning && !_hasNextPage)
+                        Container(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          color: Colors.white,
+                          child: const Center(
+                            child: Text('더이상 좋아요가 없습니다'),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
@@ -127,14 +149,6 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
           ],
         ),
       ),
-    );
-  }
-
-  Widget renderContainer({
-    double? height,
-  }) {
-    return Container(
-      height: height,
     );
   }
 }

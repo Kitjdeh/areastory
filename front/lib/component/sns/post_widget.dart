@@ -61,7 +61,6 @@ class _ArticleComponentState extends State<ArticleComponent> {
     widget.onDelete(articleId);
   }
 
-
   String _formatDate(dynamic createdAt) {
     DateTime dateTime;
 
@@ -85,6 +84,117 @@ class _ArticleComponentState extends State<ArticleComponent> {
     } else {
       return '${difference.inDays}일 전';
     }
+  }
+
+  Widget _optionList() {
+    return Container(
+      height: 150,
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextButton.icon(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SnsUpdateScreen(
+                            articleId: widget.articleId,
+                          )));
+            },
+            icon: Icon(
+              Icons.update,
+              color: Colors.black,
+            ),
+            label: Text(
+              "수정하기",
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          TextButton.icon(
+            onPressed: () {
+              Navigator.of(context).pop();
+              showDeleteConfirmationDialog();
+            },
+            icon: Icon(
+              Icons.delete,
+              color: Colors.black,
+            ),
+            label: Text(
+              "삭제하기",
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showDeleteConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(
+                Icons.warning,
+                color: Colors.orange,
+              ),
+              SizedBox(width: 8),
+              Text(
+                '삭제 확인',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '정말로 삭제하시겠습니까?',
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(height: 16),
+              Text(
+                '삭제 후에는 복구할 수 없습니다.',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.red,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: Text(
+                '취소',
+                style: TextStyle(color: Colors.grey),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                '삭제',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                delArticle(widget.articleId);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _header({
@@ -119,35 +229,20 @@ class _ArticleComponentState extends State<ArticleComponent> {
           Row(
             children: [
               if (widget.userId == widget.followingId)
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SnsUpdateScreen(
-                                      articleId: widget.articleId,
-                                    )));
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      // 모달 이외 클릭시 모달창 닫힘.
+                      builder: (BuildContext context) {
+                        return _optionList();
                       },
-                      child: ImageData(
-                        IconsPath.update,
-                        width: 60,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        delArticle(widget.articleId);
-                      },
-                      child: ImageData(
-                        IconsPath.delete,
-                        width: 60,
-                      ),
-                    ),
-                  ],
+                    );
+                  },
+                  child: ImageData(
+                    IconsPath.postMoreIcon,
+                    width: 60,
+                  ),
                 ),
               if (widget.userId != widget.followingId)
                 GestureDetector(
@@ -214,21 +309,6 @@ class _ArticleComponentState extends State<ArticleComponent> {
                 ),
               ),
             ],
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => LiveChatScreen(
-                            userId: widget.userId,
-                            roomId: 'test',
-                          )));
-            },
-            child: ImageData(
-              IconsPath.bookMarkOffIcon,
-              width: 50,
-            ),
           ),
         ],
       ),
