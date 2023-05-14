@@ -4,7 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/sns/create_article.dart';
 import 'package:front/controllers/bottom_nav_controller.dart';
+
 import 'package:front/screen/follow_screen.dart';
+
+import 'package:front/controllers/follow_screen_controller.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 
@@ -17,6 +21,8 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
+  final FollowController _followController = Get.find<FollowController>();
+  // String? storedLocation;
   String storedLocation = '사진을 찍어주세요';
   final FocusNode _focusNode1 = FocusNode();
   final FocusNode _focusNode2 = FocusNode();
@@ -68,6 +74,9 @@ class _CameraScreenState extends State<CameraScreen> {
       dongeupmyeon: seletedLocationDongeupmyeon,
     );
 
+    // FollowScreen 컨트롤러의 printArticles 함수 실행
+    // Get.find<FollowController>().printArticles();
+    // _followController.printArticles();
     /// 라우터 이동. 현재는 이전 라우터로 이동한다.
     // Navigator.push(
     //     context,

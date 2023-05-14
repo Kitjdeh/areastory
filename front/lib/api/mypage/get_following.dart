@@ -12,8 +12,8 @@ Future<UserFollowingsInfo> getUserFollowings({
     // baseUrl: '${dotenv.get('BASE_URL')}/api/follow',
   ));
   final response = await dio.get('/$userId', queryParameters: {
-    'page': 0,
-    'type': 1,
+    'page': page,
+    'type': type+1,
   });
 
   if (response.statusCode == 200) {
@@ -21,10 +21,6 @@ Future<UserFollowingsInfo> getUserFollowings({
     final articleData = UserFollowingsInfo.fromJson(jsonData["data"]);
     print('내 팔로잉 정보 불러오기 성공');
     return articleData;
-    // final jsonData = json.decode(response.toString());
-    // final List<dynamic>articlesJson = jsonData["data"];
-    // final userArticlesData = articlesJson.map((json) => UserFollowingsInfo.fromJson(json)).toList();
-    // return userArticlesData;
   } else {
     print('내 팔로잉 정보 불러오기 실패');
     throw Exception('Failed to load userArticles');

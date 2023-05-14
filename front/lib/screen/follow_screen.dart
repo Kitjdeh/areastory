@@ -4,6 +4,8 @@ import 'package:front/api/sns/get_follow_articles.dart';
 import 'package:front/component/sns/avatar_widget.dart';
 import 'package:front/component/sns/post_widget.dart';
 import 'package:front/constant/home_tabs.dart';
+import 'package:front/controllers/follow_screen_controller.dart';
+import 'package:get/get.dart';
 import 'package:front/screen/mypage_screen.dart';
 
 class FollowScreen extends StatefulWidget {
@@ -112,6 +114,8 @@ Widget _storyBoardList({
 }
 
 class _FollowScreenState extends State<FollowScreen> {
+  final FollowController _followController = Get.put(FollowController());
+
   int _currentPage = 1;
   bool _hasNextPage = false;
   bool _isFirstLoadRunning = false;
@@ -129,6 +133,7 @@ class _FollowScreenState extends State<FollowScreen> {
     super.initState();
     _controller = ScrollController();
     printArticles();
+    // _followController.printArticles();
     _controller.addListener(_loadMoreData);
     // signal = widget.signal!;
   }
@@ -206,43 +211,73 @@ class _FollowScreenState extends State<FollowScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
-        leading: ImageData(
-          IconsPath.logo,
-          width: 270,
-        ),
-        title: Text(
-          "Followings",
-          style: TextStyle(color: Colors.black),
-        ),
-        centerTitle: true,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: ImageData(
+            IconsPath.logo,
+            width: 270,
+          ),
+          title: Text(
+            "Followings",
+            style: TextStyle(color: Colors.black),
+          ),
+          centerTitle: true,
 
-        /// 앱바 그림자효과 제거
-      ),
-      body: RefreshIndicator(
-        onRefresh: () {
-          return Future<void>.delayed(Duration(seconds: 2), () {
-            printArticles();
-          });
-        },
-        child: ListView(
-          children: [
-            _storyBoardList(followings: _followings),
-            _postList(
-              userId: userId,
-              onDelete: onDelete,
-              height: 350,
-              articles: _articles,
-              loadMoreData: _loadMoreData,
-              currentPage: _currentPage,
-              lastPage: _lastPage,
-            ),
-          ],
+          /// 앱바 그림자효과 제거
         ),
-      ),
-    );
+        body: RefreshIndicator(
+          onRefresh: () {
+            return Future<void>.delayed(Duration(seconds: 2), () {
+              printArticles();
+            });
+          },
+          child: ListView(
+            children: [
+              _storyBoardList(followings: _followings),
+              _postList(
+                userId: userId,
+                onDelete: onDelete,
+                height: 350,
+                articles: _articles,
+                loadMoreData: _loadMoreData,
+                currentPage: _currentPage,
+                lastPage: _lastPage,
+              ),
+            ],
+          ),
+          // body: GetBuilder<FollowController>(
+          //   builder: (controller) {
+          //     return ListView(
+          //       children: [
+          //         _storyBoardList(followings: _followings),
+          //         _postList(
+          //           userId: userId,
+          //           onDelete: onDelete,
+          //           height: 350,
+          //           articles: _followController.articles,
+          //           loadMoreData: _loadMoreData,
+          //           currentPage: _currentPage,
+          //           lastPage: _lastPage,
+          //         ),
+          //       ],
+          //     );
+          //   })
+          // body: ListView(
+          //   children: [
+          //     _storyBoardList(followings: _followings),
+          //     _postList(
+          //       userId: userId,
+          //       onDelete: onDelete,
+          //       height: 350,
+          //       articles: _articles,
+          //       loadMoreData: _loadMoreData,
+          //       currentPage: _currentPage,
+          //       lastPage: _lastPage,
+          //     ),
+          //   ],
+          // ),
+        ));
   }
 }

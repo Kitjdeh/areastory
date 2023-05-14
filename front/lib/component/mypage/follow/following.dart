@@ -14,8 +14,9 @@ class FollowingListScreen extends StatefulWidget {
 
 class _FollowingListScreenState extends State<FollowingListScreen> {
   // final List<int> numbers = List.generate(100, (index) => index);
-  List<String> filters = ['팔로잉 최신순', '팔로잉 오래된순', '팔로잉 이름순']; // 예시 필터 목록
-  String selectedFilter = '팔로잉 최신순'; // 초기 선택된 필터
+  // List<String> filters = ['팔로잉 최신순', '팔로잉 오래된순', '팔로잉 이름순']; // 예시 필터 목록
+  List<String> filters = ['팔로잉 이름순', '팔로잉 최신순', '팔로잉 오래된순']; // 예시 필터 목록
+  String selectedFilter = '팔로잉 이름순'; // 초기 선택된 필터
   int _filterIndex = 0;
   int _currentPage = 0;
   List<dynamic> _followings = [];
@@ -93,14 +94,14 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
         );
       },
     );
-  }
+    }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 0,
-        backgroundColor: Colors.white, // 앱 바의 배경색을 흰색으로 설정
+        backgroundColor: Colors.white, //앱 바의 배경색을 흰색으로 설정
         title: Text(
             "정렬 기준 : $selectedFilter",
           style: TextStyle(color: Colors.black, fontSize: 15), // 글자색을 검정으로 설정
@@ -155,7 +156,7 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
     // return Stack(
       children: [
         ListView.separated(
-          itemCount: _followings.length + 1,
+          itemCount: _followings.length,
         itemBuilder: (context, index) {
           print(index);
           return renderContainer(
