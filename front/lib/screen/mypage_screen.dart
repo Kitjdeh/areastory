@@ -318,28 +318,48 @@ class _MyPageScreenState extends State<MyPageScreen>
                   return Text('No data');
                 }
               }),
-          actions: widget.userId == myId
-              ? [
-                  GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        // 모달 이외 클릭시 모달창 닫힘.
-                        builder: (BuildContext context) {
-                          return _optionList();
-                        },
-                      );
+          actions: [
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    // 모달 이외 클릭시 모달창 닫힘.
+                    builder: (BuildContext context) {
+                      return _optionList();
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 15),
-                      child: ImageData(
-                        IconsPath.menunIcon,
-                        width: 100,
-                      ),
-                    ),
-                  )
-                ]
-              : null,
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: ImageData(
+                    IconsPath.menunIcon,
+                    width: 100,
+                  ),
+                ),
+              )
+          ],
+          // actions: widget.userId == myId
+          //     ? [
+          //         GestureDetector(
+          //           onTap: () {
+          //             showModalBottomSheet(
+          //               context: context,
+          //               // 모달 이외 클릭시 모달창 닫힘.
+          //               builder: (BuildContext context) {
+          //                 return _optionList();
+          //               },
+          //             );
+          //           },
+          //           child: Padding(
+          //             padding: const EdgeInsets.only(right: 15),
+          //             child: ImageData(
+          //               IconsPath.menunIcon,
+          //               width: 100,
+          //             ),
+          //           ),
+          //         )
+          //       ]
+          //     : null,
         ),
         body: SafeArea(
             child: Column(

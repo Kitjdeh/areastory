@@ -71,20 +71,6 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
     );
   }
 
-  // Widget renderSeparated() {
-  //   return ListView.separated(
-  //     itemCount: 100,
-  //     itemBuilder: (context, index) {
-  //       return renderContainer();
-  //     },
-  //     separatorBuilder: (context, index) {
-  //       return SizedBox(
-  //         height: 10,
-  //       );
-  //     },
-  //   );
-  // }
-
   Widget renderContainer({
     // double? height,
     required String image,
@@ -141,7 +127,6 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
               ),
             )
             /// 팔로워 신청
-            // IconButton(onPressed: (){}, icon: Icon(Icons.restore_from_trash))
           ],
         ),
       ),
