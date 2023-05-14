@@ -8,10 +8,10 @@ spring:
   #    driver-class-name: org.h2.Driver
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: k8a302
+    username: ${DB_USER}
     #    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/areastory
-    url: jdbc:mysql://3.39.250.180:3306/areastory_test
-    password: ssafy12!
+    url: ${DB_URL}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -27,10 +27,10 @@ logging.level:
 cloud:
   aws:
     s3:
-      bucket: areastory-user
+      bucket: ${BUCKET}
     credentials:
-      access-key: AKIA3JCA7IWZKYII6T5M
-      secret-key: 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
+      access-key: ${ACCESS-KEY}
+      secret-key: ${SECRET-KEY}
     region:
       static: ap-northeast-2
     stack:
