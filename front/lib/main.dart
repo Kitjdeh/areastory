@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:front/binding/init_bindings.dart';
+import 'package:front/screen/map_screen.dart';
+import 'package:geojson/geojson.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:beamer/beamer.dart';
@@ -17,18 +19,24 @@ import 'package:front/firebase_options.dart';
 import 'package:front/permission/OverlayPermission.dart';
 import 'package:front/screen/home_screen.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
+
 /// 앱이 백그라운드 상태일때 메시지 수신. 항상 main.dart의 최상위.
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await setupFlutterNotifications();
+
   showFlutterNotification(message);
   print(message);
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   print('Handling a background message ${message.messageId}');
 }
+
 late AndroidNotificationChannel channel;
 
 bool isFlutterLocalNotificationsInitialized = false;
@@ -41,7 +49,7 @@ Future<void> setupFlutterNotifications() async {
     'high_importance_channel', // id
     'High Importance Notifications', // title
     description:
-    'This channel is used for important notifications.', // description
+        'This channel is used for important notifications.', // description
     importance: Importance.high,
   );
 
@@ -53,7 +61,7 @@ Future<void> setupFlutterNotifications() async {
   /// default FCM channel to enable heads up notifications.
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
   /// Update the iOS foreground notification presentation options to allow
@@ -89,6 +97,7 @@ void showFlutterNotification(RemoteMessage message) {
     );
   }
 }
+
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 void main() async {
@@ -116,7 +125,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -133,14 +141,13 @@ void main() async {
   if (!kIsWeb) {
     await setupFlutterNotifications();
   }
-  var fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "${dotenv.get('FIREBASE_KEY')}");
+  var fcmToken = await FirebaseMessaging.instance
+      .getToken(vapidKey: "${dotenv.get('FIREBASE_KEY')}");
 
-  FirebaseMessaging.instance.onTokenRefresh
-      .listen((fcmToken) {
+  FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
     // TODO: If necessary send token to application server.
     /// 만약 토큰이 바뀐다면 처리할 구간
     /// 예를 들면 백엔드 user정보의 토큰을 바꿔준다.
-
   });
 
   /// 기존 FCM 토큰을 삭제.
@@ -150,7 +157,8 @@ void main() async {
   var channel = const AndroidNotificationChannel(
     'high_importance_channel', // id
     'High Importance Notifications', // name
-    description: 'This channel is used for important notifications.', // description
+    description:
+        'This channel is used for important notifications.', // description
     importance: Importance.high,
     playSound: true, // 알림 소리 여부
     enableVibration: true, // 진동 여부
@@ -167,19 +175,29 @@ void main() async {
   //   }
   //   runApp(MyApp());
   // });
+  // FlutterNativeSplash.preserve(widgetsBinding: )
+  // 도,시 단위 데이터 입력 리스트
+
+
   runApp(MaterialApp(
     routes: {
       '/signup': (context) => SignUpScreen(fcmToken: fcmToken),
       '/login': (context) => LoginScreen(fcmToken: fcmToken),
     },
+
     /// login -> myapp으로 값을 내린다. storage말고 그냥 내리는거 고려.
-    home: userId != null ? MyApp(userId: userId) : LoginScreen(fcmToken: fcmToken),
+    home: userId != null
+        ? MyApp(userId: userId)
+        : LoginScreen(fcmToken: fcmToken),
     // home: LoginScreen(),
   ));
 }
 
 class MyApp extends StatefulWidget {
-  MyApp({super.key, required this.userId});
+  MyApp({
+    super.key,
+    required this.userId,
+  });
   String userId;
 
   @override
@@ -190,19 +208,17 @@ class _MyAppState extends State<MyApp> {
   String? _token;
   String? initialMessage;
   bool _resolved = false;
-
   @override
   void initState() {
     super.initState();
-
     FirebaseMessaging.instance.getInitialMessage().then(
           (value) => setState(
             () {
-          _resolved = true;
-          initialMessage = value?.data.toString();
-        },
-      ),
-    );
+              _resolved = true;
+              initialMessage = value?.data.toString();
+            },
+          ),
+        );
 
     FirebaseMessaging.onMessage.listen(showFlutterNotification);
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -213,7 +229,9 @@ class _MyAppState extends State<MyApp> {
         arguments: MessageArguments(message, true),
       );
     });
-  }int _messageCount = 0;
+  }
+
+  int _messageCount = 0;
 
   /// The API endpoint here accepts a raw FCM payload for demonstration purposes.
   String constructFCMPayload(String? token) {
@@ -278,12 +296,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          iconTheme: IconThemeData(
-            color: Colors.black,
-          )
-        )
-      ),
+          appBarTheme: AppBarTheme(
+              iconTheme: IconThemeData(
+        color: Colors.black,
+      ))),
       initialBinding: InitBinding(userId: widget.userId),
       home: HomeScreen(userId: widget.userId),
     );

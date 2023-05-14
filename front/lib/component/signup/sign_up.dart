@@ -16,7 +16,6 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key, required this.fcmToken}) : super(key: key);
   final fcmToken;
-
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
