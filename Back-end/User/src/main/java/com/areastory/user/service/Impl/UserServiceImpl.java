@@ -1,7 +1,10 @@
 package com.areastory.user.service.Impl;
 
+import com.areastory.user.db.entity.Report;
+import com.areastory.user.db.entity.ReportId;
 import com.areastory.user.db.entity.User;
 import com.areastory.user.db.repository.ArticleRepository;
+import com.areastory.user.db.repository.ReportRepository;
 import com.areastory.user.db.repository.UserRepository;
 import com.areastory.user.dto.common.ArticleDto;
 import com.areastory.user.dto.request.UserInfoReq;
@@ -32,6 +35,7 @@ import java.security.NoSuchAlgorithmException;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
+    private final ReportRepository reportRepository;
     private final S3Util s3Util;
     private final UserProducer userProducer;
     private final Sha256Util sha256Util;
@@ -162,6 +166,18 @@ public class UserServiceImpl implements UserService {
     public FollowerPageResp getUserBySearch(Long userId, int page, String search) {
         Pageable pageable = PageRequest.of(page, 5);
         return FollowerPageResp.fromFollowerResp(userRepository.getUserBySearch(userId, pageable, searchCondition(search)));
+    }
+
+    @Override
+    public Boolean addReport(Long reportUserId, Long targetUserId) {
+        ReportId reportId = new ReportId(reportUserId, targetUserId);
+        if (reportRepository.existsById(reportId))
+            return false;
+
+        User reportUser = userRepository.findById(reportUserId).orElseThrow();
+        User targetUser = userRepository.findById(targetUserId).orElseThrow();
+        reportRepository.save(Report.report(reportUser, targetUser));
+        return true;
     }
 
 }

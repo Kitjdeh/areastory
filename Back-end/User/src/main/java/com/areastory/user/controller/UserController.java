@@ -162,4 +162,12 @@ public class UserController {
     public ResponseEntity<?> getUserBySearch(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam String search) {
         return responseDefault.success(true, "검색 성공", userService.getUserBySearch(userId, page, search));
     }
+
+    @PostMapping("/report")
+    public ResponseEntity<?> addReport(Long reportUserId, Long targetUserId) {
+        if (userService.addReport(reportUserId, targetUserId))
+            return responseDefault.success(true, "신고 성공", null);
+        return responseDefault.notFound(false, "이미 신고한 대상", null);
+    }
+
 }

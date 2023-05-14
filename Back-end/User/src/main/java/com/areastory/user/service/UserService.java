@@ -37,4 +37,6 @@ public interface UserService {
     ArticleResp getOtherUserArticleList(Long userId, int page);
 
     FollowerPageResp getUserBySearch(Long userId, int page, String search);
+
+    Boolean addReport(Long reportUserId, Long targetUserId);
 }
