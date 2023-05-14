@@ -16,7 +16,7 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
-  String? storedLocation;
+  String storedLocation = '사진을 찍어주세요';
   final FocusNode _focusNode1 = FocusNode();
   final FocusNode _focusNode2 = FocusNode();
   final picker = ImagePicker();
@@ -33,23 +33,7 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   void initState() {
     super.initState();
-    _myLocationSearch();
     _scrollController = ScrollController();
-  }
-
-  void _myLocationSearch() async {
-    final storage = new FlutterSecureStorage();
-
-    while (storedLocation == null) {
-      storedLocation = await storage.read(key: "userlocation");
-      print(storedLocation);
-      await Future.delayed(Duration(milliseconds: 200));
-    }
-
-    print("저장된 위치: $storedLocation");
-    setState(() {});
-    // storedLocation = '서울특별시 서초구 역삼동';
-    // handleLocationSelected(storedLocation!);
   }
 
   void createArticle(image, content) async {
@@ -93,45 +77,15 @@ class _CameraScreenState extends State<CameraScreen> {
     super.dispose();
   }
 
-  // 비동기 처리를 통해 카메라와 갤러리에서 이미지를 가져온다.
   Future getImage(ImageSource imageSource) async {
     final image = await picker.pickImage(source: imageSource);
+    final storage = new FlutterSecureStorage();
+    storedLocation = (await storage.read(key: "userlocation"))!;
 
     setState(() {
-      _image = File(image!.path); // 가져온 이미지를 _image에 저장
+      _image = File(image!.path);
     });
   }
-
-  // 이미지를 보여주는 위젯
-  Widget showImage() {
-    return Container(
-      color: Colors.white,
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width / 1.3,
-      child: Center(
-        child: _image == null
-            ? GestureDetector(
-                child: Icon(Icons.add_a_photo, color: Colors.blue, size: 100),
-                onTap: () {
-                  getImage(ImageSource.camera);
-                },
-              )
-            : GestureDetector(
-                child: Image.file(File(_image!.path)),
-                onTap: () {
-                  getImage(ImageSource.camera);
-                },
-              ),
-      ),
-    );
-  }
-
-  // 실행과 동시에 카메라 실행시켜라(최원준)
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getImage(ImageSource.camera);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +132,9 @@ class _CameraScreenState extends State<CameraScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 showImage(),
-                createPostForm(),
+                createPostForm(
+                  storedLocation: storedLocation,
+                ),
               ],
             ),
           ),
@@ -187,8 +143,32 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
+  // 이미지를 보여주는 위젯
+  Widget showImage() {
+    return Container(
+      color: Colors.white,
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.width / 1.3,
+      child: Center(
+        child: _image == null
+            ? GestureDetector(
+                child: Icon(Icons.add_a_photo, color: Colors.blue, size: 100),
+                onTap: () {
+                  getImage(ImageSource.camera);
+                },
+              )
+            : GestureDetector(
+                child: Image.file(File(_image!.path)),
+                onTap: () {
+                  getImage(ImageSource.camera);
+                },
+              ),
+      ),
+    );
+  }
+
   // 게시글 작성 폼
-  Widget createPostForm() {
+  Widget createPostForm({String? storedLocation}) {
     return Container(
       color: Colors.white,
       child: Padding(
@@ -199,16 +179,12 @@ class _CameraScreenState extends State<CameraScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // 장소 입력 폼
-            TextFormField(
-              focusNode: _focusNode1,
-              decoration: InputDecoration(labelText: '장소'),
-              enabled: false,
-              initialValue: storedLocation,
-              onTap: () {
-                //120만큼 500milSec 동안 뷰를 올려줌
-                _scrollController!.animateTo(120.0,
-                    duration: Duration(milliseconds: 500), curve: Curves.ease);
-              },
+            Text(
+              '위치 : ${storedLocation}',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+              ),
             ),
             TextFormField(
               controller: contentController,

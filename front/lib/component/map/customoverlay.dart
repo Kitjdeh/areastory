@@ -114,15 +114,23 @@ class CustomPolygonLayer extends StatelessWidget {
                     backgroundColor: Colors.transparent,
                     isScrollControlled: true,
                     builder: (BuildContext context) {
-                      return SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Center(
-                          child: ArticleDetailComponent(
-                            articleId: articleId,
-                            userId: userId,
-                            // 지금 로그인한 유저Id
-                            height: 500,
-                            location: area, // 길이가 1단어~4단어 아무렇게나
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height,
+                            child: Center(
+                              child: ArticleDetailComponent(
+                                articleId: articleId,
+                                userId: userId,
+                                // 지금 로그인한 유저Id
+                                height: 500,
+                                location: area, // 길이가 1단어~4단어 아무렇게나
+                              ),
+                            ),
                           ),
                         ),
                       );
