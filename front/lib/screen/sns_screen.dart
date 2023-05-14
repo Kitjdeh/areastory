@@ -1,16 +1,12 @@
 import "package:flutter/material.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
-import "package:front/api/follow/get_followings_search.dart";
 import "package:front/api/follow/get_followings_sort.dart";
 import "package:front/component/sns/avatar_widget.dart";
 import "package:front/component/sns/post_widget.dart";
 import "package:front/constant/home_tabs.dart";
-import "package:front/controllers/bottom_nav_controller.dart";
-import "package:front/livechat/chat_screen.dart";
 import 'package:front/api/sns/get_articles.dart';
-import 'package:front/component/sns/article/article.dart';
 import 'package:front/const/auto_search_test.dart';
-import "package:get/get.dart";
+import "package:front/screen/mypage_screen.dart";
 
 class SnsScreen extends StatefulWidget {
   const SnsScreen({
@@ -54,12 +50,26 @@ Widget _storyBoardList({
         ),
         ...List.generate(
           followings.length,
-          (index) => AvatarWidget(
-            type: AvatarType.TYPE1,
-            thumbPath: followings[index].profile,
-            // thumbPath:
-            //     'https://areastory-user.s3.ap-northeast-2.amazonaws.com/profile/8373fb5d-78e7-4613-afc9-5269c247f36a.1683607649926',
-            size: 70,
+          (index) => Builder(
+            builder: (BuildContext builderContext) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    builderContext, // builderContext를 사용하여 Navigator.push() 호출
+                    MaterialPageRoute(
+                      builder: (context) => MyPageScreen(
+                        userId: followings[index].userId.toString(),
+                      ),
+                    ),
+                  );
+                },
+                child: AvatarWidget(
+                  type: AvatarType.TYPE1,
+                  thumbPath: followings[index].profile,
+                  size: 70,
+                ),
+              );
+            },
           ),
         ),
       ],
@@ -107,18 +117,16 @@ class _SnsScreenState extends State<SnsScreen> {
 
     while (storedLocation == null) {
       storedLocation = await storage.read(key: "userlocation");
-      print(storedLocation);
       await Future.delayed(Duration(milliseconds: 200));
     }
 
     print("저장된 위치: $storedLocation");
     handleLocationSelected(storedLocation!);
-    // storedLocation = '서울특별시 서초구 역삼동';
+    // storedLocation = '서울특별시 영등포구 여의도동';
     // handleLocationSelected(storedLocation!);
   }
 
   void printArticles() async {
-    print('print');
     setState(() {
       _isFirstLoadRunning = true;
     });
@@ -169,7 +177,6 @@ class _SnsScreenState extends State<SnsScreen> {
         _isFirstLoadRunning == false &&
         _isLoadMoreRunning == false &&
         _controller.position.extentAfter < 3000) {
-      print('more');
       setState(() {
         _isLoadMoreRunning = true;
       });
@@ -252,13 +259,6 @@ class _SnsScreenState extends State<SnsScreen> {
               )
             : null,
         actions: [
-          if (widget.location == null)
-            LocationSearch(
-                onLocationSelected: handleLocationSelected,
-                location: storedLocation),
-          const SizedBox(
-            width: 5,
-          ),
           ImageData(
             IconsPath.livechat,
             width: 80,
@@ -289,6 +289,15 @@ class _SnsScreenState extends State<SnsScreen> {
           : ListView(
               controller: _controller,
               children: [
+                if (widget.location == null)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 30,
+                    ),
+                    child: LocationSearch(
+                        onLocationSelected: handleLocationSelected,
+                        location: storedLocation != null ? storedLocation : ''),
+                  ),
                 if (widget.location == null)
                   _storyBoardList(
                     followings: _followings,

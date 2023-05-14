@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
@@ -20,7 +22,7 @@ class LocationSearch extends StatefulWidget {
 
 class _LocationSearchState extends State<LocationSearch> {
   String? storedLocation;
-  String _selectedLocation = '전체 지역';
+  String _selectedLocation = '';
   List<String>? _options;
 
   @override
@@ -29,23 +31,67 @@ class _LocationSearchState extends State<LocationSearch> {
     _loadOptions();
   }
 
-  Future<void> _loadOptions() async {
-    ByteData data = await rootBundle.load("asset/location/location.xlsx");
-    var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-    var excel = Excel.decodeBytes(bytes);
+  void _loadOptions() async {
+    String jsonData =
+        await rootBundle.loadString('asset/location/location.json');
+    Map<String, dynamic> jsonDataMap = jsonDecode(jsonData);
+    List<Map<String, dynamic>> dataList =
+        jsonDataMap['Sheet1'].cast<Map<String, dynamic>>();
+
     var options = <String>[];
 
-    for (var table in excel.tables.keys) {
-      for (var row in excel.tables[table]!.rows) {
-        var option = '${row[0]?.value} ${row[1]?.value} ${row[2]?.value}';
-
-        options.add(option.toString());
+    for (var test in dataList) {
+      if (test.length == 1) {
+        var option = test["dosi"];
+        options.add(option);
+      } else if (test.length == 2) {
+        var option = test["dosi"] + ' ' + test["sigungu"];
+        options.add(option);
+      } else {
+        var option =
+            test["dosi"] + ' ' + test["sigungu"] + ' ' + test["dongeupmyeon"];
+        options.add(option);
       }
     }
+
     setState(() {
       _options = options;
     });
   }
+
+  // Future<void> _loadOptions() async {
+  //   ByteData data = await rootBundle.load("asset/location/location.xlsx");
+  //   var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+  //   var excel = Excel.decodeBytes(bytes);
+  //   var options = <String>[];
+  //   int cnt = 0;
+  //   for (var table in excel.tables.keys) {
+  //     for (var row in excel.tables[table]!.rows) {
+  //       cnt += 1;
+  //       // print(row[2]?.value);
+  //       print(cnt);
+  //       var option = '';
+  //       for (var test in row) {
+  //           var str = test!.value.toString();
+  //         option = str.toString() + option;
+  //       }
+  //       print(option);
+  // if (row[1] != null && row[2] != null) {
+  //   var option = '${row[0]?.value} ${row[1]?.value} ${row[2]?.value}';
+  //   options.add(option.toString());
+  // } else if (row[1] != null) {
+  //   var option = '${row[0]?.value} ${row[1]?.value}';
+  //   options.add(option.toString());
+  // } else {
+  //   var option = '${row[0]?.value}';
+  //   options.add(option.toString());
+  // }
+  //     }
+  //   }
+  //   setState(() {
+  //     _options = options;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +134,7 @@ class _LocationSearchState extends State<LocationSearch> {
               _selectedLocation = '';
             },
             child: ImageData(
-              IconsPath.livechat,
+              IconsPath.findlocation,
               width: 80,
             ),
           ),

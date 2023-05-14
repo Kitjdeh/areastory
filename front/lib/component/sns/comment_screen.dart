@@ -8,9 +8,11 @@ import 'package:get/get.dart';
 const List<String> list = <String>['인기순', '최신순'];
 
 class SnsCommentScreen extends StatefulWidget {
-  const SnsCommentScreen(
-      {Key? key, required this.articleId, required this.userId})
-      : super(key: key);
+  const SnsCommentScreen({
+    Key? key,
+    required this.articleId,
+    required this.userId,
+  }) : super(key: key);
   final int articleId;
   final int userId;
 
@@ -123,7 +125,6 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
           icon: Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black,
           onPressed: () {
-            // Get.find<BottomNavController>().willPopAction();
             Navigator.of(context).pop();
           },
         ),

@@ -220,9 +220,9 @@ class _CustomMapState extends State<_CustomMap> {
       // b must be east of pt.x
     }
 
-    double m = (aY - bY) / (aX - bX); // Rise over run
-    double bee = (-aX) * m + aY; // y = mx + b
-    double x = (pY - bee) / m; // algebra is neat!
+    double m = (aY - bY) / (aX - bX);
+    double bee = (-aX) * m + aY;
+    double x = (pY - bee) / m;
 
     return x > pX;
   }
@@ -503,7 +503,6 @@ class _CustomMapState extends State<_CustomMap> {
                 List<Mapdata> newvisibleMapdata = [];
                 // print('응답${result}');
                 await Future.forEach(visibleMapdata, (e) {
-
                   final areakey = e.keyname;
                   // print(
                   //     'result값${result[areakey]!.image ?? 'null'} areakey${areakey}');
@@ -514,13 +513,12 @@ class _CustomMapState extends State<_CustomMap> {
                   final keyname = e.keyname;
                   final polygons = e.polygons;
                   final newdata = Mapdata(
-                    mapinfo: mapinfo,
-                    fullname: fullname,
-                    keyname: keyname,
-                    polygons: polygons,
-                    urls: url,
-                    articleId: ariticleid
-                  );
+                      mapinfo: mapinfo,
+                      fullname: fullname,
+                      keyname: keyname,
+                      polygons: polygons,
+                      urls: url,
+                      articleId: ariticleid);
                   newvisibleMapdata.add(newdata);
                 });
                 setState(() {
@@ -562,11 +560,11 @@ class _CustomMapState extends State<_CustomMap> {
                     requestlist.add(e.mapinfo!);
                   });
                   var A = visibleMapdata.map((e) => e.mapinfo).toList();
-                  Map<String, AreaData> result = await postAreaData(requestlist);
+                  Map<String, AreaData> result =
+                      await postAreaData(requestlist);
                   List<Mapdata> newvisibleMapdata = [];
                   // print('응답${result}');
                   await Future.forEach(visibleMapdata, (e) {
-
                     final areakey = e.keyname;
                     // print(
                     //     'result값${result[areakey]!.image ?? 'null'} areakey${areakey}');
@@ -582,8 +580,7 @@ class _CustomMapState extends State<_CustomMap> {
                         keyname: keyname,
                         polygons: polygons,
                         urls: url,
-                        articleId: ariticleid
-                    );
+                        articleId: ariticleid);
                     newvisibleMapdata.add(newdata);
                   });
                   setState(() {

@@ -61,6 +61,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
     widget.onDelete(articleId);
   }
 
+
   String _formatDate(dynamic createdAt) {
     DateTime dateTime;
 
@@ -266,8 +267,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
             maxLines: 2,
             expandOnTextTap: true,
             collapseOnTextTap: true,
-            linkColor: Colors.grey,
-          )
+          ),
         ],
       ),
     );
