@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:front/binding/init_bindings.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
-import 'package:beamer/beamer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -14,7 +12,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/component/signup/login.dart';
 import 'package:front/component/signup/sign_up.dart';
 import 'package:front/firebase_options.dart';
-import 'package:front/permission/OverlayPermission.dart';
 import 'package:front/screen/home_screen.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 /// 앱이 백그라운드 상태일때 메시지 수신. 항상 main.dart의 최상위.

@@ -3,6 +3,8 @@ import 'package:front/api/sns/get_follow_articles.dart';
 import 'package:front/component/sns/avatar_widget.dart';
 import 'package:front/component/sns/post_widget.dart';
 import 'package:front/constant/home_tabs.dart';
+import 'package:front/controllers/follow_screen_controller.dart';
+import 'package:get/get.dart';
 
 class FollowScreen extends StatefulWidget {
   const FollowScreen({Key? key, required this.userId}) : super(key: key);
@@ -87,6 +89,8 @@ Widget _storyBoardList() {
 }
 
 class _FollowScreenState extends State<FollowScreen> {
+  final FollowController _followController = Get.put(FollowController());
+
   int _currentPage = 1;
   int _lastPage = 0;
   List _articles = [];
@@ -147,19 +151,23 @@ class _FollowScreenState extends State<FollowScreen> {
           width: 270,
         ),
       ),
-      body: ListView(
-        children: [
-          _storyBoardList(),
-          _postList(
-            userId: userId,
-            onDelete: onDelete,
-            height: 350,
-            articles: _articles,
-            loadMoreData: _loadMoreData,
-            currentPage: _currentPage,
-            lastPage: _lastPage,
-          ),
-        ],
+      body: GetBuilder<FollowController>(
+        builder: (controller) {
+          return ListView(
+            children: [
+              _storyBoardList(),
+              _postList(
+                userId: userId,
+                onDelete: onDelete,
+                height: 350,
+                articles: _articles,
+                loadMoreData: _loadMoreData,
+                currentPage: _currentPage,
+                lastPage: _lastPage,
+              ),
+            ],
+          );
+        }
       ),
     );
   }

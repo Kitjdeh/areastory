@@ -18,7 +18,6 @@ class HomeScreen extends GetView<BottomNavController> {
     return WillPopScope(
         child: Obx(
           () => Scaffold(
-
             body: SafeArea(
               child: IndexedStack(
                 index: controller.pageIndex.value,
