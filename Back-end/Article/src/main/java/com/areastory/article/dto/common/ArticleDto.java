@@ -30,7 +30,6 @@ public class ArticleDto {
     private String dosi;
     private String sigungu;
     private String dongeupmyeon;
-    private String test;
 
 
     public ArticleDto(Long articleId, Long userId, String nickname, String profile, String content, String image, Long dailyLikeCount, Long totalLikeCount, Long commentCount, Boolean likeYn, Boolean followYn, LocalDateTime createdAt, String dosi, String sigungu, String dongeupmyeon) {
