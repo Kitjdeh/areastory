@@ -12,6 +12,7 @@ public interface NotificationService {
     boolean deleteNotification(Long userId, Long notificationId);
 
     NotificationResp selectAllNotifications(Long userId, Pageable pageable);
+    NotificationDto selectNotification(Long userId,Long notificationId);
 
     void checkNotification(Long userId, Long notificationId);
 

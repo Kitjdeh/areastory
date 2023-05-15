@@ -1,5 +1,6 @@
 package com.areastory.user.controller;
 
+import com.areastory.user.dto.common.NotificationDto;
 import com.areastory.user.dto.response.NotificationResp;
 import com.areastory.user.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,12 @@ public class NotificationController {
     public ResponseEntity<NotificationResp> selectAllNotification(Long userId,
                                                                   @PageableDefault(sort = {"notificationId"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable) {
         NotificationResp notificationResp = notificationService.selectAllNotifications(userId, pageable);
+        return ResponseEntity.ok(notificationResp);
+    }
+
+    @GetMapping("/notifications/{notificationId}")
+    public ResponseEntity<NotificationDto> selectNotification(Long userId, @PathVariable Long notificationId) {
+        NotificationDto notificationResp = notificationService.selectNotification(userId, notificationId);
         return ResponseEntity.ok(notificationResp);
     }
 

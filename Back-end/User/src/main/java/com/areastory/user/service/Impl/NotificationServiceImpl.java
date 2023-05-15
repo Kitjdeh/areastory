@@ -45,7 +45,15 @@ public class NotificationServiceImpl implements NotificationService {
                 .pageSize(notifications.getPageable().getPageSize())
                 .totalPageNumber(notifications.getTotalPages())
                 .totalCount(notifications.getTotalElements())
+                .pageNumber(notifications.getPageable().getPageNumber() + 1)
+                .nextPage(notifications.hasNext())
+                .previousPage(notifications.hasPrevious())
                 .build();
+    }
+
+    @Override
+    public NotificationDto selectNotification(Long userId, Long notificationId) {
+        return toDto(notificationRepository.findByNotificationIdAndUserId(notificationId, userId));
     }
 
     @Override
