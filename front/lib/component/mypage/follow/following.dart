@@ -22,6 +22,7 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
   List<dynamic> _followings = [];
   bool nextPage = true; // 다음페이지를 불러올 수 있는가?
   bool _isLoading = false; // 로딩 중인지 여부
+  Map<String, bool> followStatusMap = {}; //팔로잉 버튼 와리가리
   final storage = new FlutterSecureStorage();
   String? myId;
 
@@ -44,6 +45,9 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
     setState(() {
       _currentPage = 0;
       _followings.addAll(followingData.followings);
+      followingData.followings.forEach((user) {
+        followStatusMap[user.userId.toString()] = false;
+      });
     });
     print("최초의 팔로잉목록 요청했습니다.");
   }
@@ -56,6 +60,9 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
       _followings.addAll(followingData.followings);
       nextPage = followingData.nextPage;
       _isLoading = false; // 로딩 완료 상태로 설정
+      followingData.followings.forEach((user) {
+        followStatusMap[user.userId.toString()] = false;
+      });
     });
     print("팔로잉 목록 요청했습니다");
   }
@@ -243,20 +250,55 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
 
 
             /// 버튼은 분기처리해야함.(팔로잉 해제)
-            if (myId == widget.userId)
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: IconButton(
-                    onPressed: (){
-                      print("팔로잉 취소시킵니다?");
-                    }, icon: ImageData(IconsPath.deleteOnIcon),
-                    // IconButton(
-                    // onPressed: (){
-                    //   print("팔로잉 신청시킵니다?");
-                    // }, icon: ImageData(IconsPath.deleteOffIcon))
-              ),
-            ),
-      ]),
-    ));
-  }
-}
+            // if (_followingStatusMap[userId] == false) {
+            //   // 팔로잉 취소시킵니다 버튼
+            //   IconButton(
+            //     onPressed: (){
+            //       print("팔로잉 취소시킵니다?");
+            //       setState(() {
+            //         _followingStatusMap[userId] = true;
+            //       });
+            //     },
+            //     icon: ImageData(IconsPath.deleteOnIcon),
+            //   ),
+            // } else {
+            //   // 팔로잉 신청시킵니다 버튼
+            //   IconButton(
+            //     onPressed: (){
+            //       print("팔로잉 신청시킵니다?");
+            //       setState(() {
+            //         _followingStatusMap[userId] = false;
+            //       });
+            //     },
+            //     icon: ImageData(IconsPath.deleteOnIcon),
+            //   ),
+            // }
+            // if (myId == widget.userId)
+            //   if(followStatusMap[userId]! == false)
+            //     Container(
+            //       padding: EdgeInsets.symmetric(horizontal: 20),
+            //       child: IconButton(
+            //           onPressed: (){
+            //             print("팔로잉 취소시킵니다?");
+            //             setState(() {
+            //               followStatusMap[userId] = true;
+            //             });
+            //           }, icon: ImageData(IconsPath.deleteOnIcon),
+            //       ),
+            //     ),
+            //     if(followStatusMap[userId]! == true)
+            //   Container(
+            //     padding: EdgeInsets.symmetric(horizontal: 20),
+            //     child: IconButton(
+            //       onPressed: (){
+            //         print("팔로잉 신청시킵니다?");
+            //         setState(() {
+            //           followStatusMap[userId] = false;
+            //         });
+            //       }, icon: ImageData(IconsPath.deleteOnIcon),
+            //     ),
+            //   ),
+//       ]),
+//     ));
+//   }
+// }
