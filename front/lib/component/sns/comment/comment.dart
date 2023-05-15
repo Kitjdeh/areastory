@@ -4,6 +4,7 @@ import 'package:front/api/comment/get_comment.dart';
 import 'package:front/api/comment/update_comment.dart';
 import 'package:front/api/like/create_comment_like.dart';
 import 'package:front/api/like/delete_comment_like.dart';
+import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/mypage_screen.dart';
 
 class CommentComponent extends StatefulWidget {
@@ -107,6 +108,71 @@ class _CommentComponentState extends State<CommentComponent> {
     });
   }
 
+  void showDeleteConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(
+                Icons.warning,
+                color: Colors.orange,
+              ),
+              SizedBox(width: 8),
+              Text(
+                '삭제 확인',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '정말로 삭제하시겠습니까?',
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(height: 16),
+              Text(
+                '삭제 후에는 복구할 수 없습니다.',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.red,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: Text(
+                '취소',
+                style: TextStyle(color: Colors.grey),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                '삭제',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                delComment(widget.articleId, widget.commentId);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<CommentData>(
@@ -181,49 +247,66 @@ class _CommentComponentState extends State<CommentComponent> {
                                       fontSize: 12,
                                     ),
                                   ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
                                   if (widget.myId == widget.userId)
                                     Row(
                                       children: [
-                                        IconButton(
-                                          icon: isEditing
-                                              ? Icon(Icons.abc)
-                                              : Icon(Icons.update),
-                                          onPressed: () {
+                                        GestureDetector(
+                                          onTap: () {
                                             isEditing
                                                 ? saveEditing()
                                                 : startEditing();
                                           },
+                                          child: isEditing
+                                              ? Text('수정')
+                                              : ImageData(
+                                                  IconsPath.update,
+                                                  width: 60,
+                                                ),
                                         ),
-                                        IconButton(
-                                          icon: Icon(Icons.delete),
-                                          onPressed: () {
-                                            delComment(widget.articleId,
-                                                widget.commentId);
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            showDeleteConfirmationDialog();
                                           },
+                                          child: ImageData(
+                                            IconsPath.delete,
+                                            width: 60,
+                                          ),
                                         ),
                                       ],
                                     ),
                                 ],
                               ),
-                              Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      snapshot.data!.likeYn
-                                          ? delCommentLike(widget.articleId,
-                                              widget.commentId)
-                                          : createCommentLike(widget.articleId,
-                                              widget.commentId);
-                                    },
-                                    child: Image.asset(
-                                      snapshot.data!.likeYn
-                                          ? 'asset/img/like.png'
-                                          : 'asset/img/nolike.png',
-                                      height: 30,
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
+                                child: Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        snapshot.data!.likeYn
+                                            ? delCommentLike(widget.articleId,
+                                                widget.commentId)
+                                            : createCommentLike(
+                                                widget.articleId,
+                                                widget.commentId);
+                                      },
+                                      child: Image.asset(
+                                        snapshot.data!.likeYn
+                                            ? 'asset/img/like.png'
+                                            : 'asset/img/nolike.png',
+                                        height: 30,
+                                      ),
                                     ),
-                                  ),
-                                  Text('${snapshot.data!.likeCount}'),
-                                ],
+                                    Text('${snapshot.data!.likeCount}'),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
