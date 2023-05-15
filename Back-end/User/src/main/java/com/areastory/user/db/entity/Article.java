@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(name = "article", indexes = @Index(name = "idx_user_id", columnList = "user_id, article_id"))
+@Table(name = "article"
+//        , indexes = @Index(name = "idx_user_id", columnList = "user_id, article_id")
+)
 public class Article {
 
     @Id
