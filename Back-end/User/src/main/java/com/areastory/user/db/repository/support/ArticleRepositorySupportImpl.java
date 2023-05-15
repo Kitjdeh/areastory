@@ -59,6 +59,7 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport{
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+        
         JPAQuery<Long> articlsSize = queryFactory
                 .select(article.count())
                 .from(article)
