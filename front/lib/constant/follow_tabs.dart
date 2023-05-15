@@ -11,6 +11,6 @@ class TabInfo {
 }
 
 const FOLLOWTABS = [
-  TabInfo(icon: Icons.book_outlined, label: '팔로우'),
+  TabInfo(icon: Icons.book_outlined, label: '팔로워'),
   TabInfo(icon: Icons.map_outlined, label: '팔로잉'),
 ];

@@ -46,6 +46,8 @@ class IconsPath {
   static String get postMoreIcon => 'asset/img/options/more_icon.jpg';
   static String get directMessage => 'asset/img/options/direct_msg_icon.jpg';
   static String get bookMarkOffIcon => 'asset/img/options/direct_msg_icon.jpg';
+  static String get deleteOnIcon => 'asset/img/options/delete_on_icon.png';
+  static String get deleteOffIcon => 'asset/img/options/delete_off_icon.png';
   static String get delete => 'asset/img/delete.png';
   static String get follow => 'asset/img/follow.png';
   static String get following => 'asset/img/following.png';
@@ -55,4 +57,5 @@ class IconsPath {
   static String get recently => 'asset/img/recently.png';
   static String get hot => 'asset/img/hot.png';
   static String get findlocation => 'asset/img/findlocation.png';
+  static String get mylocation => 'asset/img/mylocation.png';
 }

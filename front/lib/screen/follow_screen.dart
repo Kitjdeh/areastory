@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:front/api/follow/get_followings_sort.dart';
 import 'package:front/api/sns/get_follow_articles.dart';
 import 'package:front/component/sns/avatar_widget.dart';
 import 'package:front/component/sns/post_widget.dart';
 import 'package:front/constant/home_tabs.dart';
+import 'package:front/controllers/follow_screen_controller.dart';
+import 'package:get/get.dart';
+import 'package:front/screen/mypage_screen.dart';
 
 class FollowScreen extends StatefulWidget {
-  const FollowScreen({Key? key, required this.userId}) : super(key: key);
+  const FollowScreen({
+    Key? key,
+    required this.userId,
+    this.signal,
+  }) : super(key: key);
   final String userId;
+  final String? signal;
 
   @override
   State<FollowScreen> createState() => _FollowScreenState();
@@ -61,24 +70,42 @@ Widget _postList({
   );
 }
 
-Widget _storyBoardList() {
+Widget _storyBoardList({
+  required List followings,
+}) {
   return SingleChildScrollView(
     scrollDirection: Axis.horizontal,
     child: Row(
       children: [
-        const SizedBox(
-          width: 10,
-        ),
-        _myStory(),
+        // const SizedBox(
+        //   width: 10,
+        // ),
+        // _myStory(),
         const SizedBox(
           width: 5,
         ),
         ...List.generate(
-          100,
-          (index) => AvatarWidget(
-            type: AvatarType.TYPE1,
-            thumbPath: 'https://img.ridicdn.net/cover/1250058267/large',
-            size: 70,
+          followings.length,
+          (index) => Builder(
+            builder: (BuildContext builderContext) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    builderContext, // builderContext를 사용하여 Navigator.push() 호출
+                    MaterialPageRoute(
+                      builder: (context) => MyPageScreen(
+                        userId: followings[index].userId.toString(),
+                      ),
+                    ),
+                  );
+                },
+                child: AvatarWidget(
+                  type: AvatarType.TYPE1,
+                  thumbPath: followings[index].profile,
+                  size: 70,
+                ),
+              );
+            },
           ),
         ),
       ],
@@ -87,80 +114,170 @@ Widget _storyBoardList() {
 }
 
 class _FollowScreenState extends State<FollowScreen> {
+  final FollowController _followController = Get.put(FollowController());
+
   int _currentPage = 1;
+  bool _hasNextPage = false;
+  bool _isFirstLoadRunning = false;
+  bool _isLoadMoreRunning = false;
   int _lastPage = 0;
   List _articles = [];
+  List _followings = [];
+  String signal = '';
 
   late final userId = int.parse(widget.userId);
+  late ScrollController _controller;
 
   @override
   void initState() {
     super.initState();
+    _controller = ScrollController();
     printArticles();
+    // _followController.printArticles();
+    _controller.addListener(_loadMoreData);
+    // signal = widget.signal!;
+  }
+
+  // @override
+  // void didUpdateWidget(covariant FollowScreen oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+  //   if (oldWidget.signal != widget.signal) {
+  //     setState(() {
+  //       signal = widget.signal!;
+  //     });
+  //     handleSignal(signal);
+  //   }
+  // }
+
+  // void handleSignal(String signal) {
+  //   if (signal == '1') {
+  //     printArticles();
+  //     signal = '';
+  //   }
+  // }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_loadMoreData);
+    super.dispose();
   }
 
   void printArticles() async {
+    setState(() {
+      _isFirstLoadRunning = true;
+    });
     _currentPage = 1;
     _articles.clear();
+    _followings.clear();
     final articleData = await getFollowArticles(
       page: _currentPage,
     );
+    final followData = await getFollowingsSort();
+
     _articles.addAll(articleData.articles);
-    _lastPage = articleData.totalPageNumber;
-    setState(() {});
-  }
-
-  void _loadMoreData() async {
-    _currentPage++;
-    final newArticles = await getFollowArticles(
-      page: _currentPage,
-    );
-    _articles.addAll(newArticles.articles);
-    _lastPage = newArticles.totalPageNumber;
-
+    _followings.addAll(followData);
+    _articles.addAll(articleData.articles);
+    _hasNextPage = articleData.nextPage;
     setState(() {
-      // scrollToIndex(5);
+      _isFirstLoadRunning = false;
     });
   }
 
-  final ScrollController _scrollController = ScrollController();
+  void _loadMoreData() async {
+    if (_hasNextPage == true &&
+        _isFirstLoadRunning == false &&
+        _isLoadMoreRunning == false &&
+        _controller.position.extentAfter < 3000) {
+      setState(() {
+        _isLoadMoreRunning = true;
+      });
+      _currentPage += 1;
+      final newArticles = await getFollowArticles(
+        page: _currentPage,
+      );
+      _articles.addAll(newArticles.articles);
+      _hasNextPage = newArticles.nextPage;
 
-  void scrollToIndex(int index) {
-    _scrollController.jumpTo(index * 520); // jumpTo 메서드를 사용하여 스크롤합니다.
+      setState(() {
+        _isLoadMoreRunning = false;
+      });
+    }
   }
 
   void onDelete(int articleId) {
     setState(() {});
   }
 
-  void _updateIsChildActive(followingId) async {}
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
-        title: ImageData(
-          IconsPath.logo,
-          width: 270,
-        ),
-      ),
-      body: ListView(
-        children: [
-          _storyBoardList(),
-          _postList(
-            userId: userId,
-            onDelete: onDelete,
-            height: 350,
-            articles: _articles,
-            loadMoreData: _loadMoreData,
-            currentPage: _currentPage,
-            lastPage: _lastPage,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: ImageData(
+            IconsPath.logo,
+            width: 270,
           ),
-        ],
-      ),
-    );
+          title: Text(
+            "Followings",
+            style: TextStyle(color: Colors.black),
+          ),
+          centerTitle: true,
+
+          /// 앱바 그림자효과 제거
+        ),
+        body: RefreshIndicator(
+          onRefresh: () {
+            return Future<void>.delayed(Duration(seconds: 2), () {
+              printArticles();
+            });
+          },
+          child: ListView(
+            children: [
+              _storyBoardList(followings: _followings),
+              _postList(
+                userId: userId,
+                onDelete: onDelete,
+                height: 350,
+                articles: _articles,
+                loadMoreData: _loadMoreData,
+                currentPage: _currentPage,
+                lastPage: _lastPage,
+              ),
+            ],
+          ),
+          // body: GetBuilder<FollowController>(
+          //   builder: (controller) {
+          //     return ListView(
+          //       children: [
+          //         _storyBoardList(followings: _followings),
+          //         _postList(
+          //           userId: userId,
+          //           onDelete: onDelete,
+          //           height: 350,
+          //           articles: _followController.articles,
+          //           loadMoreData: _loadMoreData,
+          //           currentPage: _currentPage,
+          //           lastPage: _lastPage,
+          //         ),
+          //       ],
+          //     );
+          //   })
+          // body: ListView(
+          //   children: [
+          //     _storyBoardList(followings: _followings),
+          //     _postList(
+          //       userId: userId,
+          //       onDelete: onDelete,
+          //       height: 350,
+          //       articles: _articles,
+          //       loadMoreData: _loadMoreData,
+          //       currentPage: _currentPage,
+          //       lastPage: _lastPage,
+          //     ),
+          //   ],
+          // ),
+        ));
   }
 }

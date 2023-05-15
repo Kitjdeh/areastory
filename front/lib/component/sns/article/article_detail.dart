@@ -6,6 +6,7 @@ import 'package:front/api/like/delete_article_like.dart';
 import 'package:front/api/sns/get_article.dart';
 import 'package:front/component/sns/comment_screen.dart';
 import 'package:front/constant/home_tabs.dart';
+import 'package:front/screen/mypage_screen.dart';
 import 'package:front/screen/sns_screen.dart';
 
 class ArticleDetailComponent extends StatefulWidget {
@@ -48,6 +49,12 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<ArticleData>(
         future: getArticle(
@@ -76,7 +83,7 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                     child: Column(
                       children: [
                         Container(
-                          color: Color(0xFF0A2647),
+                          color: Color(0xFFFFFFFF),
                           height: 60,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -86,12 +93,23 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                   SizedBox(
                                     width: 10,
                                   ),
-                                  ClipOval(
-                                    child: Image.network(
-                                      snapshot.data!.profile,
-                                      width: 45,
-                                      height: 45,
-                                      fit: BoxFit.cover,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MyPageScreen(
+                                                      userId: widget.userId
+                                                          .toString())));
+                                    },
+                                    child: ClipOval(
+                                      child: Image.network(
+                                        snapshot.data!.profile,
+                                        width: 45,
+                                        height: 45,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
                                   SizedBox(
@@ -107,13 +125,13 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.white,
+                                          color: Colors.black,
                                         ),
                                       ),
                                       Text(
                                         '${widget.location}',
                                         style: TextStyle(
-                                          color: Colors.white,
+                                          color: Colors.black,
                                         ),
                                       ),
                                     ],
@@ -123,26 +141,19 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                               Row(
                                 children: [
                                   if (widget.userId != snapshot.data!.userId)
-                                    ElevatedButton(
-                                      onPressed: () {
+                                    GestureDetector(
+                                      onTap: () {
                                         snapshot.data!.followYn
                                             ? delFollowing(
                                                 snapshot.data!.userId)
                                             : createFollowing(
                                                 snapshot.data!.userId);
                                       },
-                                      style: ElevatedButton.styleFrom(
-                                        primary: snapshot.data!.followYn
-                                            ? Colors.transparent
-                                            : Colors.blue,
-                                        side: BorderSide(color: Colors.white),
-                                      ),
-                                      child: Text(
-                                        snapshot.data!.followYn ? '팔로잉' : '팔로우',
-                                        style: TextStyle(
-                                          color:
-                                              Colors.white, // 텍스트 색상을 하얀색으로 설정
-                                        ),
+                                      child: ImageData(
+                                        snapshot.data!.followYn
+                                            ? IconsPath.following
+                                            : IconsPath.follow,
+                                        width: 300,
                                       ),
                                     ),
                                   SizedBox(
@@ -260,38 +271,45 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                     decoration: BoxDecoration(
                                       color: Color(0x65FFFFFF),
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          snapshot.data!.content,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.normal,
-                                            color: Colors.black,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            snapshot.data!.content,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.black,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => SnsScreen(
-                                                    location: widget.location,
-                                                    userId: widget.userId
-                                                        .toString()),
-                                              ),
-                                            );
-                                          },
-                                          child: ImageData(
-                                            IconsPath.gosns,
-                                            width: 40,
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SnsScreen(
+                                                          location:
+                                                              widget.location,
+                                                          userId: widget.userId
+                                                              .toString()),
+                                                ),
+                                              );
+                                            },
+                                            child: ImageData(
+                                              IconsPath.gosns,
+                                              width: 40,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

@@ -269,9 +269,9 @@ class _CustomMapState extends State<_CustomMap> {
       // b must be east of pt.x
     }
 
-    double m = (aY - bY) / (aX - bX); // Rise over run
-    double bee = (-aX) * m + aY; // y = mx + b
-    double x = (pY - bee) / m; // algebra is neat!
+    double m = (aY - bY) / (aX - bX);
+    double bee = (-aX) * m + aY;
+    double x = (pY - bee) / m;
 
     return x > pX;
   }

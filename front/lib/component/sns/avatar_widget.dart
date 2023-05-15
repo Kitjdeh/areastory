@@ -10,6 +10,7 @@ class AvatarWidget extends StatelessWidget {
   AvatarType type;
   double? size;
   String? location;
+  int? userId;
 
   AvatarWidget({
     Key? key,
@@ -19,6 +20,7 @@ class AvatarWidget extends StatelessWidget {
     this.nickname,
     this.size = 70,
     this.location,
+    this.userId,
   }) : super(key: key);
 
   Widget type1Widget() {

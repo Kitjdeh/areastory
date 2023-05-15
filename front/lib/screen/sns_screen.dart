@@ -1,16 +1,13 @@
 import "package:flutter/material.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
-import "package:front/api/follow/get_followings_search.dart";
 import "package:front/api/follow/get_followings_sort.dart";
 import "package:front/component/sns/avatar_widget.dart";
 import "package:front/component/sns/post_widget.dart";
 import "package:front/constant/home_tabs.dart";
-import "package:front/controllers/bottom_nav_controller.dart";
-import "package:front/livechat/chat_screen.dart";
 import 'package:front/api/sns/get_articles.dart';
-import 'package:front/component/sns/article/article.dart';
 import 'package:front/const/auto_search_test.dart';
-import "package:get/get.dart";
+import "package:front/livechat/chat_screen.dart";
+import "package:front/screen/mypage_screen.dart";
 
 class SnsScreen extends StatefulWidget {
   const SnsScreen({
@@ -45,21 +42,35 @@ Widget _storyBoardList({
     scrollDirection: Axis.horizontal,
     child: Row(
       children: [
-        const SizedBox(
-          width: 10,
-        ),
-        _myStory(),
+        // const SizedBox(
+        //   width: 10,
+        // ),
+        // _myStory(),
         const SizedBox(
           width: 5,
         ),
         ...List.generate(
           followings.length,
-          (index) => AvatarWidget(
-            type: AvatarType.TYPE1,
-            thumbPath: followings[index].profile,
-            // thumbPath:
-            //     'https://areastory-user.s3.ap-northeast-2.amazonaws.com/profile/8373fb5d-78e7-4613-afc9-5269c247f36a.1683607649926',
-            size: 70,
+          (index) => Builder(
+            builder: (BuildContext builderContext) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    builderContext, // builderContext를 사용하여 Navigator.push() 호출
+                    MaterialPageRoute(
+                      builder: (context) => MyPageScreen(
+                        userId: followings[index].userId.toString(),
+                      ),
+                    ),
+                  );
+                },
+                child: AvatarWidget(
+                  type: AvatarType.TYPE1,
+                  thumbPath: followings[index].profile,
+                  size: 70,
+                ),
+              );
+            },
           ),
         ),
       ],
@@ -107,18 +118,16 @@ class _SnsScreenState extends State<SnsScreen> {
 
     while (storedLocation == null) {
       storedLocation = await storage.read(key: "userlocation");
-      print(storedLocation);
       await Future.delayed(Duration(milliseconds: 200));
     }
 
     print("저장된 위치: $storedLocation");
     handleLocationSelected(storedLocation!);
-    // storedLocation = '서울특별시 서초구 역삼동';
+    // storedLocation = '서울특별시 영등포구 여의도동';
     // handleLocationSelected(storedLocation!);
   }
 
   void printArticles() async {
-    print('print');
     setState(() {
       _isFirstLoadRunning = true;
     });
@@ -126,9 +135,12 @@ class _SnsScreenState extends State<SnsScreen> {
       List<String> locationParts = widget.location!.split(' ');
       if (locationParts.length == 1) {
         seletedLocationDosi = locationParts[0];
+        seletedLocationSigungu = '';
+        seletedLocationDongeupmyeon = '';
       } else if (locationParts.length == 2) {
         seletedLocationDosi = locationParts[0];
         seletedLocationSigungu = locationParts[1];
+        seletedLocationDongeupmyeon = '';
       } else if (locationParts.length == 3) {
         if (locationParts[2][locationParts[2].length - 1] == "구") {
           seletedLocationDosi = locationParts[0];
@@ -169,7 +181,6 @@ class _SnsScreenState extends State<SnsScreen> {
         _isFirstLoadRunning == false &&
         _isLoadMoreRunning == false &&
         _controller.position.extentAfter < 3000) {
-      print('more');
       setState(() {
         _isLoadMoreRunning = true;
       });
@@ -195,34 +206,63 @@ class _SnsScreenState extends State<SnsScreen> {
     setState(() {});
   }
 
-  void handleLocationSelected(String selectedLocation) {
+  void handleLocationSelected(String selectedLocation) async {
     List<String> locationParts = selectedLocation.split(' ');
     print(locationParts);
 
-    if (locationParts.length == 3) {
+    if (locationParts.length == 1) {
+      seletedLocationDosi = locationParts[0];
+      seletedLocationSigungu = '';
+      seletedLocationDongeupmyeon = '';
+    } else if (locationParts.length == 2) {
       seletedLocationDosi = locationParts[0];
       seletedLocationSigungu = locationParts[1];
-      seletedLocationDongeupmyeon = locationParts[2];
+      seletedLocationDongeupmyeon = '';
+    } else if (locationParts.length == 3) {
+      if (locationParts[2][locationParts[2].length - 1] == "구") {
+        seletedLocationDosi = locationParts[0];
+        seletedLocationSigungu = locationParts[1] + locationParts[2];
+      } else {
+        seletedLocationDosi = locationParts[0];
+        seletedLocationSigungu = locationParts[1];
+        seletedLocationDongeupmyeon = locationParts[2];
+      }
     } else {
       seletedLocationDosi = locationParts[0];
-      seletedLocationSigungu = locationParts[1] + ' ' + locationParts[2];
+      seletedLocationSigungu = locationParts[1] + locationParts[2];
       seletedLocationDongeupmyeon = locationParts[3];
     }
 
-    print(seletedLocationDosi);
-    print(seletedLocationSigungu);
-    print(seletedLocationDongeupmyeon);
+    _currentPage = 1;
+    _articles.clear();
+    final articleData = await getArticles(
+      sort: dropdownValue == '인기순' ? 'likeCount' : 'articleId',
+      page: _currentPage,
+      dosi: seletedLocationDosi,
+      sigungu: seletedLocationSigungu,
+      dongeupmyeon: seletedLocationDongeupmyeon,
+    );
+    _articles.addAll(articleData.articles);
+    _hasNextPage = articleData.nextPage;
 
-    setState(() {
-      printArticles();
-    });
+    setState(() {});
   }
 
-  void onChangeSort(String dropdownValue) {
-    setState(() {
-      this.dropdownValue = dropdownValue;
-      printArticles();
-    });
+  void onChangeSort(String dropdownValue) async {
+    this.dropdownValue = dropdownValue;
+    _currentPage = 1;
+    _articles.clear();
+    final articleData = await getArticles(
+      sort: dropdownValue == '인기순' ? 'likeCount' : 'articleId',
+      page: _currentPage,
+      dosi: seletedLocationDosi,
+      sigungu: seletedLocationSigungu,
+      dongeupmyeon: seletedLocationDongeupmyeon,
+    );
+    _articles.addAll(articleData.articles);
+    _hasNextPage = articleData.nextPage;
+
+    setState(() {});
   }
 
   @override
@@ -252,19 +292,25 @@ class _SnsScreenState extends State<SnsScreen> {
               )
             : null,
         actions: [
-          if (widget.location == null)
-            LocationSearch(
-                onLocationSelected: handleLocationSelected,
-                location: storedLocation),
-          const SizedBox(
-            width: 5,
-          ),
-          ImageData(
-            IconsPath.livechat,
-            width: 80,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LiveChatScreen(
+                            userId: userId,
+                            roomId: seletedLocationSigungu != ''
+                                ? seletedLocationSigungu
+                                : seletedLocationDosi,
+                          )));
+            },
+            child: ImageData(
+              IconsPath.livechat,
+              width: 80,
+            ),
           ),
           SizedBox(
-            width: 5,
+            width: 20,
           ),
           GestureDetector(
             onTap: () {
@@ -286,42 +332,60 @@ class _SnsScreenState extends State<SnsScreen> {
           ? const Center(
               child: const CircularProgressIndicator(),
             )
-          : ListView(
-              controller: _controller,
-              children: [
-                if (widget.location == null)
-                  _storyBoardList(
-                    followings: _followings,
-                  ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: List.generate(
-                    _articles.length,
-                    (index) => ArticleComponent(
-                      userId: userId,
-                      onDelete: onDelete,
-                      articleId: _articles[index].articleId,
-                      followingId: _articles[index].userId,
-                      height: 300,
+          : RefreshIndicator(
+              onRefresh: () {
+                return Future<void>.delayed(Duration(seconds: 2), () {
+                  onChangeSort(dropdownValue);
+                });
+              },
+              child: ListView(
+                controller: _controller,
+                children: [
+                  if (widget.location == null)
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 30,
+                      ),
+                      child: LocationSearch(
+                          onLocationSelected: handleLocationSelected,
+                          myLocationSearch: _myLocationSearch,
+                          location:
+                              storedLocation != null ? storedLocation : ''),
+                    ),
+                  // if (widget.location == null)
+                  //   _storyBoardList(
+                  //     followings: _followings,
+                  //   ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: List.generate(
+                      _articles.length,
+                      (index) => ArticleComponent(
+                        userId: userId,
+                        onDelete: onDelete,
+                        articleId: _articles[index].articleId,
+                        followingId: _articles[index].userId,
+                        height: 300,
+                      ),
                     ),
                   ),
-                ),
-                if (_isLoadMoreRunning)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10, bottom: 40),
-                    child: Center(
-                      child: CircularProgressIndicator(),
+                  if (_isLoadMoreRunning)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, bottom: 40),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
                     ),
-                  ),
-                if (!_isLoadMoreRunning && !_hasNextPage)
-                  Container(
-                    padding: const EdgeInsets.only(top: 30, bottom: 40),
-                    color: Colors.white,
-                    child: const Center(
-                      child: Text('더이상 게시글이 없습니다'),
+                  if (!_isLoadMoreRunning && !_hasNextPage)
+                    Container(
+                      padding: const EdgeInsets.only(top: 30, bottom: 40),
+                      color: Colors.white,
+                      child: const Center(
+                        child: Text('더이상 게시글이 없습니다'),
+                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
     );
   }

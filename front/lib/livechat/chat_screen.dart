@@ -159,8 +159,8 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          // "${widget.roomId}의 STORY (현재원:${userCount})",
-          "서초구의 STORY",
+          "${widget.roomId} (참가인원:${userCount})",
+          // "${widget.roomId}의 STORY",
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,

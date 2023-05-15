@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:front/screen/mypage_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
@@ -80,65 +82,116 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           style: TextStyle(color: Colors.black),
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          GestureDetector(
-              onTap: () {
-                _getImageFromGallery();
-              },
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage: _image != null
-                    ? Image.file(_image!).image
-                    : Image.network(widget.img).image,
-                // backgroundImage: NetworkImage(imgUrl)),
-              )),
-          TextFormField(
-            initialValue: widget.nickname,
-            maxLength: 10,
-            decoration: const InputDecoration(
-              hintText: '변경할 닉네임을 입력하세요',
-            ),
-            onChanged: (value) {
-              setState(() {
-                _nickname = value;
-              });
-            },
+      body: SingleChildScrollView(
+        child: Container(
+          color: Colors.white,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Text("프로필설정", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+              Container(
+                height: 300,
+                child: Stack(
+                  children: [
+                    Image.asset(
+                      'asset/img/login/bgimg.png',
+                      width: 400,
+                      // height: 300,
+                      fit: BoxFit.cover,
+                    ),
+                    Positioned(
+                      top: 60,
+                      left: MediaQuery.of(context).size.width / 2 - 85,
+                      child: GestureDetector(
+                          onTap: () {
+                            _getImageFromGallery();
+                          },
+                          child: CircleAvatar(
+                            radius: 80,
+                            backgroundImage: _image != null
+                                ? Image.file(_image!).image
+                                : Image.network(widget.img).image,
+                            // backgroundImage: NetworkImage(imgUrl)),
+                          )),
+                    ),
+                  ],
+                ),
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  child: TextFormField(
+                    initialValue: widget.nickname,
+                    maxLength: 10,
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      hintText: '변경할 닉네임을 입력하세요',
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.deny(
+                          RegExp(r"\s")), // 띄어쓰기를 거부합니다.
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _nickname = value;
+                      });
+                    },
+                  ),
+                ),
+              ]),
+              ElevatedButton(
+                  style: ButtonStyle(
+                    fixedSize: MaterialStateProperty.all(Size(150, 40)),
+                    backgroundColor: MaterialStateProperty.all(Colors.grey),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50), // 모서리 반경 조절
+                      ),
+                    ),
+                  ),
+                  onPressed: () async {
+                    final userInfoReq = {
+                      'nickname': _nickname == null ? widget.nickname : _nickname,
+                    };
+                    final formData = FormData.fromMap({
+                      'userInfoReq': MultipartFile.fromString(
+                          json.encode(userInfoReq),
+                          contentType: MediaType.parse('application/json')),
+                      'profile': _image != null
+                          ? await MultipartFile.fromFile(
+                        _image!.path,
+                        filename: _image!.path.split('/').last,
+                      )
+                          : await getFileFromUrl(widget.img),
+                    });
+                    print("_image: ${_image}");
+                    try {
+                      print(formData);
+                      final res = await Dio().patch(
+                          '${dotenv.get('BASE_URL')}/api/users/${widget.userId}',
+                          data: formData
+                      );
+                      if (res.statusCode == 200){
+                        print("회원정보 수정 성공");
+                        Navigator.of(context).pop();
+                        // 이전 페이지의 build() 메서드에서 상태 업데이트
+                        // Navigator.pushReplacement(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => MyPageScreen(
+                        //       userId: widget.userId,
+                        //     ),
+                        //   ),
+                        // );
+                      }
+                    } catch (e) {
+                      print(e);
+                    }
+                  },
+                  child: Text("수정하기"))
+            ],
           ),
-          ElevatedButton(
-              onPressed: () async {
-                final userInfoReq = {
-                  'nickname': _nickname == null ? widget.nickname : _nickname,
-                };
-                final formData = FormData.fromMap({
-                  'userInfoReq': MultipartFile.fromString(
-                      json.encode(userInfoReq),
-                      contentType: MediaType.parse('application/json')),
-                  'profile': _image != null
-                      ? await MultipartFile.fromFile(
-                          _image!.path,
-                          filename: _image!.path.split('/').last,
-                        )
-                      : await getFileFromUrl(widget.img),
-                });
-                print("_image: ${_image}");
-                try {
-                  print(formData);
-                  final res = await Dio().patch(
-                      '${dotenv.get('BASE_URL')}/api/users/${widget.userId}',
-                      data: formData
-                  );
-                  if (res.statusCode == 200){
-                    print("회원정보 수정 성공");
-                    Navigator.of(context).pop();
-                  }
-                } catch (e) {
-                  print(e);
-                }
-              },
-              child: Text("회원정보 수정"))
-        ],
+        ),
       ),
     );
   }
