@@ -99,7 +99,7 @@ flutter:
     - asset/location/location.json
     - asset/location/final_location.xlsx
     - asset/map/
-
+    - asset/video/
     - local.env
 
   # To add assets to your application, add an assets section, like this:

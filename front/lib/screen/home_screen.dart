@@ -19,6 +19,7 @@ class HomeScreen extends GetView<BottomNavController> {
   List<Mapdata> middleareaData = [];
   // 읍, 면, 동 단위 데이터 입력 리스트
   List<Mapdata> smallareaData = [];
+  List<Mapdata> customareaData = [];
   Future<void> loadmapdata(String link) async {
     List<List<LatLng>> _polygon = [];
     Map<String, String> areamap = {};
@@ -170,7 +171,6 @@ class HomeScreen extends GetView<BottomNavController> {
     await Future.delayed(Duration(milliseconds: 100), () {
       data = true;
     });
-
     return data;
   }
 
