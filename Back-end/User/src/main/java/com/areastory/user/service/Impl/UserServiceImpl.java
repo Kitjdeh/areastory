@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ArticleResp getOtherUserArticleList(Long userId, int page) {
-        Pageable pageable = PageRequest.of(page, 20, Sort.Direction.DESC, "createAt");
+        Pageable pageable = PageRequest.of(page, 20, Sort.Direction.DESC, "createdAt");
         Page<ArticleDto> articleDtos = articleRepository.getOtherUserArticleList(userId, pageable);
         return ArticleResp.fromArticleDto(articleDtos);
     }
