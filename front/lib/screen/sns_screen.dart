@@ -114,17 +114,17 @@ class _SnsScreenState extends State<SnsScreen> {
   }
 
   void _myLocationSearch() async {
-    // final storage = new FlutterSecureStorage();
-    //
-    // while (storedLocation == null) {
-    //   storedLocation = await storage.read(key: "userlocation");
-    //   await Future.delayed(Duration(milliseconds: 200));
-    // }
-    //
-    // print("저장된 위치: $storedLocation");
-    // handleLocationSelected(storedLocation!);
-    storedLocation = '서울특별시 영등포구 여의도동';
+    final storage = new FlutterSecureStorage();
+
+    while (storedLocation == null) {
+      storedLocation = await storage.read(key: "userlocation");
+      await Future.delayed(Duration(milliseconds: 200));
+    }
+
+    print("저장된 위치: $storedLocation");
     handleLocationSelected(storedLocation!);
+    // storedLocation = '서울특별시 영등포구 여의도동';
+    // handleLocationSelected(storedLocation!);
   }
 
   void printArticles() async {

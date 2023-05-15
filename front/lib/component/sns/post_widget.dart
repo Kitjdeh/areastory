@@ -12,7 +12,6 @@ import 'package:front/component/sns/avatar_widget.dart';
 import 'package:front/component/sns/comment_screen.dart';
 import 'package:front/component/sns/like_screen.dart';
 import 'package:front/constant/home_tabs.dart';
-import 'package:front/livechat/chat_screen.dart';
 import 'package:front/screen/mypage_screen.dart';
 
 class ArticleComponent extends StatefulWidget {
