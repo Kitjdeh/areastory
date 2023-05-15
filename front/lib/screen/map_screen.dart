@@ -189,7 +189,7 @@ class _CustomMapState extends State<_CustomMap> {
   Position? mypoisition;
   LatLng? mylatlng;
   String? Strlocation;
-  double _zoom = 12.0;
+  double _zoom = 11.0;
   int? userId;
   final storage = new FlutterSecureStorage();
   final LatLng companyLatLng = LatLng(37.5013, 127.0397);
@@ -304,6 +304,7 @@ class _CustomMapState extends State<_CustomMap> {
               ? nowallareadata = widget.middleareaData
               : nowallareadata = widget.bigareaData;
     });
+
     print('posistionchanged 작동함');
     List<Map<String, String>> requestlist = [];
     // print('nowallareadata${nowallareadata.length}');
@@ -518,7 +519,6 @@ class _CustomMapState extends State<_CustomMap> {
                 mylatlng =
                     await LatLng(mypoisition!.latitude, mypoisition!.longitude);
                 List<Map<String, String>> requestlist = [];
-
                 nowallareadata = widget.middleareaData;
                 Strlocation;
                 await Future.forEach(widget.smallareaData, (mapdata) {
@@ -529,7 +529,6 @@ class _CustomMapState extends State<_CustomMap> {
                   }
                 });
                 await storage.write(key: "userlocation", value: Strlocation);
-
                 final bounds = mapController.bounds;
                 final sw = bounds!.southWest;
                 final ne = bounds!.northEast;
@@ -549,36 +548,39 @@ class _CustomMapState extends State<_CustomMap> {
 
                 // Future<Map<String, AreaData>>result =
                 // await postAreaData(requestlist);
-                //---------------
-                // Map<String, AreaData> result = await postAreaData(requestlist);
-                // List<Mapdata> newvisibleMapdata = [];
-                // // print('응답${result}');
-                // await Future.forEach(visibleMapdata, (e) {
-                //   final areakey = e.keyname;
-                //   final url = result[areakey]!.image ?? e.urls;
-                //   final ariticleid = result[areakey]!.articleId ?? 0;
-                //   final mapinfo = e.mapinfo;
-                //   final fullname = e.fullname;
-                //   final keyname = e.keyname;
-                //   final polygons = e.polygons;
-                //   final newdata = Mapdata(
-                //       mapinfo: mapinfo,
-                //       fullname: fullname,
-                //       keyname: keyname,
-                //       polygons: polygons,
-                //       urls: url,
-                //       articleId: ariticleid);
-                //   newvisibleMapdata.add(newdata);
-                // });
-                // setState(() {
-                //   nowareadata = newvisibleMapdata;
-                // });
-                //---------
+
+                //--------post-----------
+                Map<String, AreaData> result = await postAreaData(requestlist);
+                List<Mapdata> newvisibleMapdata = [];
+                // print('응답${result}');
+                await Future.forEach(visibleMapdata, (e) {
+                  final areakey = e.keyname;
+                  final url = result[areakey]!.image ?? e.urls;
+                  final ariticleid = result[areakey]!.articleId ?? 0;
+                  final mapinfo = e.mapinfo;
+                  final fullname = e.fullname;
+                  final keyname = e.keyname;
+                  final polygons = e.polygons;
+                  final newdata = Mapdata(
+                      mapinfo: mapinfo,
+                      fullname: fullname,
+                      keyname: keyname,
+                      polygons: polygons,
+                      urls: url,
+                      articleId: ariticleid);
+                  newvisibleMapdata.add(newdata);
+                });
+                setState(() {
+                  nowareadata = newvisibleMapdata;
+                });
+
+                //-----post----------
               },
               onPositionChanged: (pos, hasGesture) {
                 if (_debounce?.isActive ?? false) _debounce!.cancel();
                 _debounce = Timer(debounceDuration, () async {
                   print("mapController.zoom${mapController.zoom}");
+                  // nowallareadata = widget.smallareaData;
                   await _zoom > 13.0
                       ? nowallareadata = widget.smallareaData
                       : _zoom > 9.0
@@ -600,15 +602,17 @@ class _CustomMapState extends State<_CustomMap> {
                           point.longitude <= ne!.longitude;
                     });
                   }).toList();
-                  // nowareadata = visibleMapdata;
-                  //
-                  // setState(() {
-                  //   nowareadata = visibleMapdata;
-                  // });
+                  nowareadata = visibleMapdata;
+
+                  setState(() {
+                    nowareadata = visibleMapdata;
+                  });
                   await Future.forEach(visibleMapdata, (e) {
                     requestlist.add(e.mapinfo!);
                   });
                   var A = visibleMapdata.map((e) => e.mapinfo).toList();
+
+                  //----------------------------------post-----
                   Map<String, AreaData> result =
                       await postAreaData(requestlist);
                   List<Mapdata> newvisibleMapdata = [];
@@ -636,6 +640,7 @@ class _CustomMapState extends State<_CustomMap> {
                   setState(() {
                     nowareadata = newvisibleMapdata;
                   });
+                  //--------------------post-------------
                 });
               },
             ),
@@ -706,7 +711,7 @@ class _CustomMapState extends State<_CustomMap> {
                         backgroundColor: Colors.transparent,
                         isScrollControlled: true,
                         builder: (BuildContext context) {
-                          getAlarm(userId ??2);
+                          getAlarm(userId ?? 2);
                           return SizedBox(
                             height: MediaQuery.of(context).size.height * 0.8,
                             child: Center(
