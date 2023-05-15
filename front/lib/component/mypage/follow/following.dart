@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:front/api/follow/create_following.dart';
+import 'package:front/api/follow/delete_following.dart';
 import 'package:front/api/mypage/get_following.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/mypage_screen.dart';
@@ -250,55 +252,35 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
 
 
             /// 버튼은 분기처리해야함.(팔로잉 해제)
-            // if (_followingStatusMap[userId] == false) {
-            //   // 팔로잉 취소시킵니다 버튼
-            //   IconButton(
-            //     onPressed: (){
-            //       print("팔로잉 취소시킵니다?");
-            //       setState(() {
-            //         _followingStatusMap[userId] = true;
-            //       });
-            //     },
-            //     icon: ImageData(IconsPath.deleteOnIcon),
-            //   ),
-            // } else {
-            //   // 팔로잉 신청시킵니다 버튼
-            //   IconButton(
-            //     onPressed: (){
-            //       print("팔로잉 신청시킵니다?");
-            //       setState(() {
-            //         _followingStatusMap[userId] = false;
-            //       });
-            //     },
-            //     icon: ImageData(IconsPath.deleteOnIcon),
-            //   ),
-            // }
             if (myId == widget.userId)
-              if(followStatusMap[userId]! == false)
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: IconButton(
-                      onPressed: (){
-                        print("팔로잉 취소시킵니다?");
-                        setState(() {
-                          followStatusMap[userId] = true;
-                        });
-                      }, icon: ImageData(IconsPath.deleteOnIcon),
-                  ),
-                ),
-                if(followStatusMap[userId]! == true)
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: IconButton(
-                  onPressed: (){
-                    print("팔로잉 신청시킵니다?");
+                  onPressed: () {
+                    print("팔로잉 상태 변경합니다.");
+                    if (followStatusMap[userId] == false) {
+                      print("팔로잉 취소합니다. userId: $userId");
+                      deleteFollowing(followingId: int.parse(userId));
+                    } else {
+                      print("팔로잉 신청합니다. userId: $userId");
+                      postFollowing(followingId: int.parse(userId));
+                    }
                     setState(() {
-                      followStatusMap[userId] = false;
+                      if (followStatusMap[userId] == false) {
+                        followStatusMap[userId] = true;
+                      } else {
+                        followStatusMap[userId] = false;
+                      }
                     });
-                  }, icon: ImageData(IconsPath.deleteOnIcon),
+                  },
+                  icon: followStatusMap[userId] == false
+                      ? ImageData(IconsPath.deleteOnIcon)
+                      : ImageData(IconsPath.deleteOffIcon),
                 ),
               ),
-      ]),
-    ));
+          ],
+        ),
+      ),
+    );
   }
 }
