@@ -273,32 +273,32 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
             //     icon: ImageData(IconsPath.deleteOnIcon),
             //   ),
             // }
-            // if (myId == widget.userId)
-            //   if(followStatusMap[userId]! == false)
-            //     Container(
-            //       padding: EdgeInsets.symmetric(horizontal: 20),
-            //       child: IconButton(
-            //           onPressed: (){
-            //             print("팔로잉 취소시킵니다?");
-            //             setState(() {
-            //               followStatusMap[userId] = true;
-            //             });
-            //           }, icon: ImageData(IconsPath.deleteOnIcon),
-            //       ),
-            //     ),
-            //     if(followStatusMap[userId]! == true)
-            //   Container(
-            //     padding: EdgeInsets.symmetric(horizontal: 20),
-            //     child: IconButton(
-            //       onPressed: (){
-            //         print("팔로잉 신청시킵니다?");
-            //         setState(() {
-            //           followStatusMap[userId] = false;
-            //         });
-            //       }, icon: ImageData(IconsPath.deleteOnIcon),
-            //     ),
-            //   ),
-//       ]),
-//     ));
-//   }
-// }
+            if (myId == widget.userId)
+              if(followStatusMap[userId]! == false)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: IconButton(
+                      onPressed: (){
+                        print("팔로잉 취소시킵니다?");
+                        setState(() {
+                          followStatusMap[userId] = true;
+                        });
+                      }, icon: ImageData(IconsPath.deleteOnIcon),
+                  ),
+                ),
+                if(followStatusMap[userId]! == true)
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: IconButton(
+                  onPressed: (){
+                    print("팔로잉 신청시킵니다?");
+                    setState(() {
+                      followStatusMap[userId] = false;
+                    });
+                  }, icon: ImageData(IconsPath.deleteOnIcon),
+                ),
+              ),
+      ]),
+    ));
+  }
+}
