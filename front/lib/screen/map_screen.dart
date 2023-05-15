@@ -218,7 +218,7 @@ class _CustomMapState extends State<_CustomMap> {
   }
 
   @override
-  void initState()  {
+  void initState() {
     super.initState();
     // _loadMapadata();
     print("지도에서 이닛스테이트가 돌아가요");
@@ -478,7 +478,7 @@ class _CustomMapState extends State<_CustomMap> {
       );
     }
     return Expanded(
-      flex: 3,
+      flex: 1,
       child: Stack(
         children: [
           FlutterMap(
@@ -509,7 +509,7 @@ class _CustomMapState extends State<_CustomMap> {
                 await Future.forEach(widget.smallareaData, (mapdata) {
                   if (ifpolygoninsdie(mylatlng!, mapdata.polygons!)) {
                     String result = mapdata.mapinfo!.values.join(' ');
-                    toast(context, "내위치: ${result}");
+                    // toast(context, "내위치: ${result}");
                     Strlocation = result;
                   }
                 });
@@ -598,8 +598,8 @@ class _CustomMapState extends State<_CustomMap> {
                   // print('result${result}');
                   await Future.forEach(visibleMapdata, (e) {
                     final areakey = e.keyname;
-                    print(
-                        'resultareakey${result[areakey]!.image} e ${e} areakey${areakey}');
+                    // print(
+                    //     'resultareakey${result[areakey]!.image} e ${e} areakey${areakey}');
                     final url = result[areakey]!.image ?? e.urls;
                     final ariticleid = result[areakey]!.articleId ?? 0;
                     final mapinfo = e.mapinfo;
@@ -689,12 +689,12 @@ class _CustomMapState extends State<_CustomMap> {
                         backgroundColor: Colors.transparent,
                         isScrollControlled: true,
                         builder: (BuildContext context) {
-                          // getAlarm(userId ??2);
+                          getAlarm(userId ??2);
                           return SizedBox(
                             height: MediaQuery.of(context).size.height * 0.8,
                             child: Center(
-                              child: StreamBuilder<Object>(
-                                  stream: null,
+                              child: FutureBuilder<Object>(
+                                  future: null,
                                   builder: (context, snapshot) {
                                     return Container(
                                       decoration: BoxDecoration(

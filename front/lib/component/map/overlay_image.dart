@@ -151,12 +151,9 @@ class OverlayImage extends CustomOverlayImage {
     );
   }
 }
-
 class OverlayImageLayer extends StatelessWidget {
   final List<CustomOverlayImage> overlayImages;
-
   const OverlayImageLayer({super.key, this.overlayImages = const []});
-
   @override
   Widget build(BuildContext context) {
     final map = FlutterMapState.maybeOf(context)!;
