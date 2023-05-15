@@ -75,7 +75,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         await storage.write(
                             key: "userId",
                             value: res.data['userId'].toString());
-
                         /// 로그인 성공시 페이지 이동.
                         Navigator.pushReplacement(
                           context,
