@@ -1,6 +1,7 @@
 package com.areastory.user.controller;
 
 import com.areastory.user.dto.common.ArticleDto;
+import com.areastory.user.dto.request.ReportReq;
 import com.areastory.user.dto.request.UserInfoReq;
 import com.areastory.user.dto.request.UserReq;
 import com.areastory.user.dto.response.ArticleResp;
@@ -149,13 +150,25 @@ public class UserController {
         다른 유저가 작성한 게시물 목록 조회
         한 페이지당 20개, 작성 시간 역순으로 정렬
      */
-//    @GetMapping("/other/{userId}/articles")
-//    public ResponseEntity<?> getOtherUserArticleList(@PathVariable("userId") Long userId, @RequestParam int page) {
-//        if (!userService.findUser(userId)) {
-//            return responseDefault.notFound(false, "존재하지 않는 회원", null);
-//        }
-//        ArticleResp articleResp = userService.getOtherUserArticleList(userId, page);
-//        return responseDefault.success(true, "다른 유저의 게시물 목록 조회", articleResp);
-//    }
+    @GetMapping("/other/{userId}/articles")
+    public ResponseEntity<?> getOtherUserArticleList(@PathVariable("userId") Long userId, @RequestParam int page) {
+        if (!userService.findUser(userId)) {
+            return responseDefault.notFound(false, "존재하지 않는 회원", null);
+        }
+        ArticleResp articleResp = userService.getOtherUserArticleList(userId, page);
+        return responseDefault.success(true, "다른 유저의 게시물 목록 조회", articleResp);
+    }
+
+    @GetMapping("/{userId}/search")
+    public ResponseEntity<?> getUserBySearch(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam String search) {
+        return responseDefault.success(true, "검색 성공", userService.getUserBySearch(userId, page, search));
+    }
+
+    @PostMapping("/report")
+    public ResponseEntity<?> addReport(@RequestBody ReportReq reportReq) {
+        if (userService.addReport(reportReq))
+            return responseDefault.success(true, "신고 성공", null);
+        return responseDefault.notFound(false, "이미 신고한 대상", null);
+    }
 
 }

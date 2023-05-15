@@ -23,4 +23,21 @@ public class FollowerResp {
                 .build();
     }
 
+    public static FollowerResp fromEntityWithCheck(Follow follow, Boolean check) {
+        return FollowerResp.builder()
+                .userId(follow.getFollowerUser().getUserId())
+                .nickname(follow.getFollowerUser().getNickname())
+                .profile(follow.getFollowerUser().getProfile())
+                .check(check)
+                .build();
+    }
+
+    public static FollowerResp followerResp (Long userId, String nickname, String profile, Boolean check) {
+        return FollowerResp.builder()
+                .userId(userId)
+                .nickname(nickname)
+                .profile(profile)
+                .check(check)
+                .build();
+    }
 }

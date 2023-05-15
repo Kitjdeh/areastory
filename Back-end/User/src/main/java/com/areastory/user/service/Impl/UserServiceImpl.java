@@ -1,15 +1,16 @@
 package com.areastory.user.service.Impl;
 
+import com.areastory.user.db.entity.Report;
+import com.areastory.user.db.entity.ReportId;
 import com.areastory.user.db.entity.User;
 import com.areastory.user.db.repository.ArticleRepository;
+import com.areastory.user.db.repository.ReportRepository;
 import com.areastory.user.db.repository.UserRepository;
 import com.areastory.user.dto.common.ArticleDto;
+import com.areastory.user.dto.request.ReportReq;
 import com.areastory.user.dto.request.UserInfoReq;
 import com.areastory.user.dto.request.UserReq;
-import com.areastory.user.dto.response.ArticleResp;
-import com.areastory.user.dto.response.UserDetailResp;
-import com.areastory.user.dto.response.UserResp;
-import com.areastory.user.dto.response.UserSignUpResp;
+import com.areastory.user.dto.response.*;
 import com.areastory.user.kafka.KafkaProperties;
 import com.areastory.user.kafka.UserProducer;
 import com.areastory.user.service.UserService;
@@ -28,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,9 +36,18 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
+    private final ReportRepository reportRepository;
     private final S3Util s3Util;
     private final UserProducer userProducer;
     private final Sha256Util sha256Util;
+
+    public String searchCondition(String search) {
+        if (search == null || search.isEmpty()) {
+            return "%";
+        } else {
+            return "%" + search + "%";
+        }
+    }
 
     @Override
     @Transactional
@@ -147,11 +156,29 @@ public class UserServiceImpl implements UserService {
         return ArticleResp.fromArticleDto(articleDtos);
     }
 
-//    @Override
-//    public ArticleResp getOtherUserArticleList(Long userId, int page) {
-//        Pageable pageable = PageRequest.of(page, 20, Sort.Direction.DESC, "createAt");
-//        Page<ArticleDto> articleDtos = articleRepository.getOtherUserArticleList(userId, pageable);
-//        return ArticleResp.fromArticleDto(articleDtos);
-//    }
+    @Override
+    public ArticleResp getOtherUserArticleList(Long userId, int page) {
+        Pageable pageable = PageRequest.of(page, 20, Sort.Direction.DESC, "createdAt");
+        Page<ArticleDto> articleDtos = articleRepository.getOtherUserArticleList(userId, pageable);
+        return ArticleResp.fromArticleDto(articleDtos);
+    }
+
+    @Override
+    public FollowerPageResp getUserBySearch(Long userId, int page, String search) {
+        Pageable pageable = PageRequest.of(page, 5);
+        return FollowerPageResp.fromFollowerResp(userRepository.getUserBySearch(userId, pageable, searchCondition(search)));
+    }
+
+    @Override
+    public Boolean addReport(ReportReq reportReq) {
+        ReportId reportId = new ReportId(reportReq.getReportUserId(), reportReq.getTargetUserId());
+        if (reportRepository.existsById(reportId))
+            return false;
+
+        User reportUser = userRepository.findById(reportReq.getReportUserId()).orElseThrow();
+        User targetUser = userRepository.findById(reportReq.getTargetUserId()).orElseThrow();
+        reportRepository.save(Report.report(reportUser, targetUser, reportReq.getReportContent()));
+        return true;
+    }
 
 }

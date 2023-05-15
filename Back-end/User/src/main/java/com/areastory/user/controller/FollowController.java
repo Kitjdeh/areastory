@@ -1,8 +1,6 @@
 package com.areastory.user.controller;
 
-import com.areastory.user.dto.response.FollowerResp;
-import com.areastory.user.dto.response.FollowingResp;
-import com.areastory.user.dto.response.ResponseDefault;
+import com.areastory.user.dto.response.*;
 import com.areastory.user.service.FollowService;
 import com.areastory.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,19 +22,41 @@ public class FollowController {
 
     /*
         팔로워 목록 조회
-        한 페이지당 20개, 팔로워 이름 순으로 정렬
-        이름으로 검색
+        한 페이지당 20개, 정렬 타입 (1 : 이름순, 2 : 최신순, 3 : 오래된순)
+        이름으로 검색 (X)
      */
-    @GetMapping("/follow/{userId}")
-    public ResponseEntity<?> findFollowers(@PathVariable("userId") Long userId, @RequestParam String search) {
-        List<FollowerResp> followers = followService.findFollowers(userId, search);
-        return responseDefault.success(true, "팔로워 목록 조회", followers);
-    }
 //    @GetMapping("/follow/{userId}")
-//    public ResponseEntity<?> findFollowers(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam String search) {
-//        List<FollowerResp> followers = followService.findFollowers(userId, page, search);
+//    public ResponseEntity<?> findFollowers(@PathVariable("userId") Long userId, @RequestParam String search) {
+//        List<FollowerResp> followers = followService.findFollowers(userId, search);
 //        return responseDefault.success(true, "팔로워 목록 조회", followers);
 //    }
+    @GetMapping("/follow/{userId}")
+    public ResponseEntity<?> findFollowers(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam int type) {
+        return responseDefault.success(true, "팔로워 목록 조회", followService.findFollowers(userId, page, type));
+    }
+    @GetMapping("/follow/{userId}/list")
+    public ResponseEntity<?> findFollowersList(@PathVariable("userId") Long userId, @RequestParam int type) {
+        return responseDefault.success(true, "팔로워 목록 조회", followService.findFollowersList(userId, type));
+    }
+
+    /*
+        팔로잉 목록 조회
+        한 페이지당 20개, 정렬 타입 (1 : 이름순, 2 : 최신순, 3 : 오래된순)
+        이름으로 검색 (X)
+     */
+    @GetMapping("/following/{userId}")
+    public ResponseEntity<?> findFollowing(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam int type) {
+        return responseDefault.success(true, "팔로잉 목록 조회", followService.findFollowing(userId, page, type));
+    }
+
+    /*
+        팔로잉 목록 조회 리스트 형식
+     */
+    @GetMapping("/following/{userId}/list")
+    public ResponseEntity<?> findFollowingList(@PathVariable("userId") Long userId) {
+        List<FollowingResp> following = followService.findFollowingList(userId);
+        return responseDefault.success(true, "팔로잉 목록 조회", following);
+    }
 
 
     /*
@@ -44,11 +64,11 @@ public class FollowController {
         한 페이지당 20개
         팔로잉한 유저 이름 순, 팔로잉 시간 순, 역순으로 정렬
      */
-    @GetMapping("/following/type/{userId}")
-    public ResponseEntity<?> findFollowing(@PathVariable("userId") Long userId, @RequestParam int type) {
-        List<FollowingResp> following = followService.findFollowing(userId, type);
-        return responseDefault.success(true, "팔로잉 목록 조회", following);
-    }
+//    @GetMapping("/following/type/{userId}")
+//    public ResponseEntity<?> findFollowing(@PathVariable("userId") Long userId, @RequestParam int type) {
+//        List<FollowingResp> following = followService.findFollowing(userId, type);
+//        return responseDefault.success(true, "팔로잉 목록 조회", following);
+//    }
 //    @GetMapping("/following/{userId}")
 //    public ResponseEntity<?> findFollowing(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam int type) {
 //        List<FollowingResp> following = followService.findFollowing(userId, page, type);
@@ -61,11 +81,11 @@ public class FollowController {
         유저 이름 순
         => 무조건 이름 순인데, type을 받지않기 위해 새롭게 기능 추가
      */
-    @GetMapping("/following/{userId}")
-    public ResponseEntity<?> findFollowingBySearch(@PathVariable("userId") Long userId, @RequestParam String search) {
-        List<FollowingResp> following = followService.findFollowingBySearch(userId, search);
-        return responseDefault.success(true, "팔로잉 검색 목록 조회", following);
-    }
+//    @GetMapping("/following/{userId}")
+//    public ResponseEntity<?> findFollowingBySearch(@PathVariable("userId") Long userId, @RequestParam String search) {
+//        List<FollowingResp> following = followService.findFollowingBySearch(userId, search);
+//        return responseDefault.success(true, "팔로잉 검색 목록 조회", following);
+//    }
 //    @GetMapping("/following/search/{userId}")
 //    public ResponseEntity<?> findFollowingBySearch(@PathVariable("userId") Long userId, @RequestParam int page, @RequestParam String search) {
 //        List<FollowingResp> following = followService.findFollowingBySearch(userId, page, search);

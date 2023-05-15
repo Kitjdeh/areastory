@@ -5,7 +5,9 @@ import com.areastory.user.db.entity.FollowId;
 import com.areastory.user.db.entity.User;
 import com.areastory.user.db.repository.FollowRepository;
 import com.areastory.user.db.repository.UserRepository;
+import com.areastory.user.dto.response.FollowerPageResp;
 import com.areastory.user.dto.response.FollowerResp;
+import com.areastory.user.dto.response.FollowingPageResp;
 import com.areastory.user.dto.response.FollowingResp;
 import com.areastory.user.kafka.FollowProducer;
 import com.areastory.user.kafka.KafkaProperties;
@@ -14,14 +16,14 @@ import com.areastory.user.kafka.UserProducer;
 import com.areastory.user.service.FollowService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,18 +44,33 @@ public class FollowServiceImpl implements FollowService {
         }
     }
 
-//    public List<FollowerResp> findFollowers(Long userId, int page, String search) {
-//        PageRequest pageRequest = PageRequest.of(page, 20);
-//        return followRepository.findFollowerResp(userId, pageRequest, searchCondition(search));
-//    }
+    public FollowerPageResp findFollowers(Long userId, int page, int type) {
+        Pageable pageable = PageRequest.of(page, 15);
+        Page<FollowerResp> followers = followRepository.findFollowers(userId, pageable, type);
+        return FollowerPageResp.fromFollowerResp(followers);
+    }
 
     @Override
-    public List<FollowerResp> findFollowers(Long userId, String search) {
-        return followRepository.findFollowerResp(userId, searchCondition(search));
+    public List<FollowerResp> findFollowersList(Long userId, int type) {
+        return followRepository.findFollowersList(userId, type);
+    }
+
+
+    @Override
+    public FollowingPageResp findFollowing(Long userId, int page, int type) {
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<FollowingResp> following = followRepository.findFollowing(userId, pageable, type);
+        return FollowingPageResp.fromFollowingResp(following);
+    }
+
+    @Override
+    public List<FollowingResp> findFollowingList(Long userId) {
+        return followRepository.findFollowingList(userId);
     }
 
 //    @Override
-//    public List<FollowingResp> findFollowing(Long userId, int page, int type) {
+//    public List<FollowingResp> findFollowing(Long userId, int type) {
+//        return followRepository.findFollowing(userId, type);
 //        PageRequest pageRequest;
 //        if (type == 1) {
 //            pageRequest = PageRequest.of(page, 20, Sort.Direction.ASC, "followingUser.nickname");
@@ -66,21 +83,6 @@ public class FollowServiceImpl implements FollowService {
 //                .stream().map(FollowingResp::fromEntity).collect(
 //                        Collectors.toList());
 //    }
-    @Override
-    public List<FollowingResp> findFollowing(Long userId, int type) {
-        return followRepository.findFollowing(userId, type);
-//        PageRequest pageRequest;
-//        if (type == 1) {
-//            pageRequest = PageRequest.of(page, 20, Sort.Direction.ASC, "followingUser.nickname");
-//        } else if (type == 2) {
-//            pageRequest = PageRequest.of(page, 20, Sort.Direction.ASC, "createdAt");
-//        } else {
-//            pageRequest = PageRequest.of(page, 20, Sort.Direction.DESC, "createdAt");
-//        }
-//        return followRepository.findByFollowerUser_UserId(userId, pageRequest)
-//                .stream().map(FollowingResp::fromEntity).collect(
-//                        Collectors.toList());
-    }
 
     @Override
     public List<FollowingResp> findFollowingBySearch(Long userId, String search) {
