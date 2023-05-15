@@ -175,7 +175,6 @@ void main() async {
   // FlutterNativeSplash.preserve(widgetsBinding: )
   // 도,시 단위 데이터 입력 리스트
 
-
   runApp(MaterialApp(
     routes: {
       '/signup': (context) => SignUpScreen(fcmToken: fcmToken),
@@ -296,7 +295,9 @@ class _MyAppState extends State<MyApp> {
           appBarTheme: AppBarTheme(
               iconTheme: IconThemeData(
         color: Colors.black,
-      ))),
+      )),
+        fontFamily: "SUIT",
+      ),
       initialBinding: InitBinding(userId: widget.userId),
       home: HomeScreen(userId: widget.userId),
     );
