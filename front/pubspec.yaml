@@ -98,6 +98,7 @@ flutter:
     - asset/location/location.xlsx
     - asset/location/location.json
     - asset/location/final_location.xlsx
+    - asset/location/socket_location.json
     - asset/map/
 
     - local.env

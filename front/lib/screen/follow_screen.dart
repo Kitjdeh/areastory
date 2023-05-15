@@ -119,7 +119,6 @@ class _FollowScreenState extends State<FollowScreen> {
   bool _isToggleOn = false; // 토글 상태 변수
   Duration _animationDuration = Duration(milliseconds: 300);
 
-
   int _currentPage = 1;
   bool _hasNextPage = false;
   bool _isFirstLoadRunning = false;
@@ -159,12 +158,12 @@ class _FollowScreenState extends State<FollowScreen> {
   //   }
   // }
 
-  // void handleSignal(String signal) {
-  //   if (signal == '1') {
-  //     printArticles();
-  //     signal = '';
-  //   }
-  // }
+  void handleSignal(String signal) {
+    if (signal == '1') {
+      printArticles();
+      signal = '';
+    }
+  }
 
   @override
   void dispose() {
@@ -250,84 +249,88 @@ class _FollowScreenState extends State<FollowScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: ImageData(
-            IconsPath.logo,
-            width: 270,
-          ),
-          title: Text(
-            "Followings",
-            style: TextStyle(color: Colors.black),
-          ),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              onPressed: _toggleSwitch, // 토글 버튼 클릭 시 토글 상태 변경
-              icon: Icon(
-                _isToggleOn ? Icons.toggle_on : Icons.toggle_off, // 토글 상태에 따라 아이콘 변경
-                color: Colors.black,
-              ),
-            ),
-          ],
-          /// 앱바 그림자효과 제거
+        elevation: 0,
+        leading: ImageData(
+          IconsPath.logo,
+          width: 270,
         ),
-        body:_buildBody(),);
-        // RefreshIndicator(
-        //   onRefresh: () {
-        //     return Future<void>.delayed(Duration(seconds: 2), () {
-        //       printArticles();
-        //     });
-        //   },
-        //   child: ListView(
-        //     children: [
-        //       _storyBoardList(followings: _followings),
-        //       _postList(
-        //         userId: userId,
-        //         onDelete: onDelete,
-        //         height: 350,
-        //         articles: _articles,
-        //         loadMoreData: _loadMoreData,
-        //         currentPage: _currentPage,
-        //         lastPage: _lastPage,
-        //       ),
-        //     ],
-        //   ),
-        // )
+        title: Text(
+          "Followings",
+          style: TextStyle(color: Colors.black),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: _toggleSwitch, // 토글 버튼 클릭 시 토글 상태 변경
+            icon: Icon(
+              _isToggleOn
+                  ? Icons.toggle_on
+                  : Icons.toggle_off, // 토글 상태에 따라 아이콘 변경
+              color: Colors.black,
+            ),
+          ),
+        ],
+
+        /// 앱바 그림자효과 제거
+      ),
+      body: _buildBody(),
+    );
+    // RefreshIndicator(
+    //   onRefresh: () {
+    //     return Future<void>.delayed(Duration(seconds: 2), () {
+    //       printArticles();
+    //     });
+    //   },
+    //   child: ListView(
+    //     children: [
+    //       _storyBoardList(followings: _followings),
+    //       _postList(
+    //         userId: userId,
+    //         onDelete: onDelete,
+    //         height: 350,
+    //         articles: _articles,
+    //         loadMoreData: _loadMoreData,
+    //         currentPage: _currentPage,
+    //         lastPage: _lastPage,
+    //       ),
+    //     ],
+    //   ),
+    // )
     // );
-          // body: GetBuilder<FollowController>(
-          //   builder: (controller) {
-          //     return ListView(
-          //       children: [
-          //         _storyBoardList(followings: _followings),
-          //         _postList(
-          //           userId: userId,
-          //           onDelete: onDelete,
-          //           height: 350,
-          //           articles: _followController.articles,
-          //           loadMoreData: _loadMoreData,
-          //           currentPage: _currentPage,
-          //           lastPage: _lastPage,
-          //         ),
-          //       ],
-          //     );
-          //   })
-          // body: ListView(
-          //   children: [
-          //     _storyBoardList(followings: _followings),
-          //     _postList(
-          //       userId: userId,
-          //       onDelete: onDelete,
-          //       height: 350,
-          //       articles: _articles,
-          //       loadMoreData: _loadMoreData,
-          //       currentPage: _currentPage,
-          //       lastPage: _lastPage,
-          //     ),
-          //   ],
-          // ),
-        // ));
+    // body: GetBuilder<FollowController>(
+    //   builder: (controller) {
+    //     return ListView(
+    //       children: [
+    //         _storyBoardList(followings: _followings),
+    //         _postList(
+    //           userId: userId,
+    //           onDelete: onDelete,
+    //           height: 350,
+    //           articles: _followController.articles,
+    //           loadMoreData: _loadMoreData,
+    //           currentPage: _currentPage,
+    //           lastPage: _lastPage,
+    //         ),
+    //       ],
+    //     );
+    //   })
+    // body: ListView(
+    //   children: [
+    //     _storyBoardList(followings: _followings),
+    //     _postList(
+    //       userId: userId,
+    //       onDelete: onDelete,
+    //       height: 350,
+    //       articles: _articles,
+    //       loadMoreData: _loadMoreData,
+    //       currentPage: _currentPage,
+    //       lastPage: _lastPage,
+    //     ),
+    //   ],
+    // ),
+    // ));
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front/api/follow/create_following.dart';
 import 'package:front/api/follow/delete_following.dart';
+import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/mypage_screen.dart';
 
 import '../../../api/user/get_user.dart';
@@ -68,22 +69,17 @@ class _LikeComponentState extends State<LikeComponent> {
                     ),
                   ),
                   if (widget.myId != widget.followingId)
-                    ElevatedButton(
-                      onPressed: () {
+                    GestureDetector(
+                      onTap: () {
                         snapshot.data!.followYn
                             ? delFollowing(widget.followingId)
                             : createFollowing(widget.followingId);
                       },
-                      style: ElevatedButton.styleFrom(
-                        primary: snapshot.data!.followYn
-                            ? Colors.transparent
-                            : Colors.blue,
-                      ),
-                      child: Text(
-                        snapshot.data!.followYn ? '팔로잉' : '팔로우',
-                        style: TextStyle(
-                          color: Colors.white, // 텍스트 색상을 하얀색으로 설정
-                        ),
+                      child: ImageData(
+                        snapshot.data!.followYn
+                            ? IconsPath.following
+                            : IconsPath.follow,
+                        width: 300,
                       ),
                     ),
                 ],

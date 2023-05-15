@@ -11,9 +11,7 @@ class NotFoundPage extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("찾을 수 없는 페이지 입니다. 추후 뒤로가기 버튼 만들꺼임.")
-            ],
+            children: [Text("찾을 수 없는 페이지 입니다. 추후 뒤로가기 버튼 만들꺼임.")],
           )
         ],
       ),

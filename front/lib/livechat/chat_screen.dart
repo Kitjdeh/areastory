@@ -12,11 +12,13 @@ import 'package:stomp_dart_client/stomp_frame.dart';
 class LiveChatScreen extends StatefulWidget {
   final int userId;
   final String roomId;
+  final String roomName;
 
   const LiveChatScreen({
     Key? key,
     required this.userId,
     required this.roomId,
+    required this.roomName,
   }) : super(key: key);
 
   @override
@@ -159,7 +161,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "${widget.roomId} (참가인원:${userCount})",
+          "${widget.roomName} (참가인원:${userCount})",
           // "${widget.roomId}의 STORY",
           style: TextStyle(color: Colors.black),
         ),

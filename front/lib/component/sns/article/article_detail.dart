@@ -198,11 +198,11 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                                   : createArticleLike(
                                                       widget.articleId);
                                             },
-                                            child: Image.asset(
+                                            child: ImageData(
                                               snapshot.data!.likeYn
-                                                  ? 'asset/img/like.png'
-                                                  : 'asset/img/nolike.png',
-                                              height: 30,
+                                                  ? IconsPath.likeOnIcon
+                                                  : IconsPath.likeOffIcon,
+                                              width: 60,
                                             ),
                                           ),
                                         ),
@@ -244,9 +244,9 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                                 },
                                               );
                                             },
-                                            child: Image.asset(
-                                              'asset/img/comment.png',
-                                              height: 30,
+                                            child: ImageData(
+                                              IconsPath.replyIcon,
+                                              width: 60,
                                             ),
                                           ),
                                         ),
