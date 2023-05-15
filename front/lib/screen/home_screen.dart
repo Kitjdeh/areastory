@@ -19,7 +19,6 @@ class HomeScreen extends GetView<BottomNavController> {
   List<Mapdata> middleareaData = [];
   // 읍, 면, 동 단위 데이터 입력 리스트
   List<Mapdata> smallareaData = [];
-
   Future<void> loadmapdata(String link) async {
     List<List<LatLng>> _polygon = [];
     Map<String, String> areamap = {};
@@ -147,8 +146,7 @@ class HomeScreen extends GetView<BottomNavController> {
     }
     if (link == 'asset/map/ctp_korea.geojson') {
       bigareaData = allareaData;
-      print(bigareaData);
-
+      print(bigareaData.length);
       print('빅데이터 들어감${num}');
     } else if (link == 'asset/map/sigungookorea.json') {
       middleareaData = allareaData;
@@ -172,6 +170,7 @@ class HomeScreen extends GetView<BottomNavController> {
     await Future.delayed(Duration(milliseconds: 100), () {
       data = true;
     });
+
     return data;
   }
 
@@ -265,7 +264,20 @@ class HomeScreen extends GetView<BottomNavController> {
                 ),
                 onWillPop: controller.willPopAction);
           } else {
-            return CircularProgressIndicator();
+            return Center(
+              child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage('asset/img/login_logo.png'),
+                        fit: BoxFit.cover),
+                  ),
+                  child: Scaffold(
+                    body: Center(child: Text('잠시만 기다려 주세요')),
+                    backgroundColor: Colors.grey[300],
+                  )),
+            );
           }
         });
   }
