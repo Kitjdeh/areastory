@@ -9,6 +9,7 @@ import 'package:front/api/map/mapdata.dart';
 import 'package:front/component/alarm/toast.dart';
 import 'package:front/component/map/customoverlay.dart';
 import 'package:front/component/sns/article/article_detail.dart';
+import 'package:front/controllers/map_test_controller.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geojson/geojson.dart';
 import 'package:image_editor/image_editor.dart';
@@ -19,7 +20,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svg_provider;
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:debounce_throttle/debounce_throttle.dart';
-
+import 'package:get/get.dart';
 import '../api/alarm/get_alarm.dart';
 
 String sangjunurl = 'https://source.unsplash.com/random/?party';
@@ -58,14 +59,16 @@ class _MapScreenState extends State<MapScreen> {
   List<Mapdata> bigareaData = [];
   List<Mapdata> middleareaData = [];
   List<Mapdata> smallareaData = [];
+  final MapTempController _mapTempController = Get.find<MapTempController>();
+
   @override
   void initState() {
     super.initState();
-    setState(() {
-      bigareaData = widget.bigareaData;
-      middleareaData = widget.middleareaData;
-      smallareaData = widget.smallareaData;
-    });
+    // setState(() {
+    //   bigareaData = widget.bigareaData;
+    //   middleareaData = widget.middleareaData;
+    //   smallareaData = widget.smallareaData;
+    // });
   }
 
   void _getData() {}
@@ -82,13 +85,24 @@ class _MapScreenState extends State<MapScreen> {
               if (snapshot.data == '위치 권한이 허가되었습니다.') {
                 return Column(
                   children: [
-                    Expanded(
-                      child: _CustomMap(
-                        bigareaData: bigareaData,
-                        middleareaData: middleareaData,
-                        smallareaData: smallareaData,
-                      ),
-                    ),
+                    Expanded(child: GetBuilder<MapTempController>(
+                      builder: (controller){
+                        return _CustomMap(
+                              bigareaData: _mapTempController.bigareaData,
+                              middleareaData: _mapTempController.middleareaData,
+                              smallareaData: _mapTempController.smallareaData,
+                        );
+                      },
+                    )
+
+                    )
+                    // Expanded(
+                    //   child: _CustomMap(
+                    //     bigareaData: bigareaData,
+                    //     middleareaData: middleareaData,
+                    //     smallareaData: smallareaData,
+                    //   ),
+                    // ),
                   ],
                   // children: [_ChoolCheckButton()],
                 );
@@ -477,6 +491,7 @@ class _CustomMapState extends State<_CustomMap> {
         ),
       );
     }
+
     return Expanded(
       flex: 1,
       child: Stack(
@@ -534,29 +549,31 @@ class _CustomMapState extends State<_CustomMap> {
 
                 // Future<Map<String, AreaData>>result =
                 // await postAreaData(requestlist);
-                Map<String, AreaData> result = await postAreaData(requestlist);
-                List<Mapdata> newvisibleMapdata = [];
-                // print('응답${result}');
-                await Future.forEach(visibleMapdata, (e) {
-                  final areakey = e.keyname;
-                  final url = result[areakey]!.image ?? e.urls;
-                  final ariticleid = result[areakey]!.articleId ?? 0;
-                  final mapinfo = e.mapinfo;
-                  final fullname = e.fullname;
-                  final keyname = e.keyname;
-                  final polygons = e.polygons;
-                  final newdata = Mapdata(
-                      mapinfo: mapinfo,
-                      fullname: fullname,
-                      keyname: keyname,
-                      polygons: polygons,
-                      urls: url,
-                      articleId: ariticleid);
-                  newvisibleMapdata.add(newdata);
-                });
-                setState(() {
-                  nowareadata = newvisibleMapdata;
-                });
+                //---------------
+                // Map<String, AreaData> result = await postAreaData(requestlist);
+                // List<Mapdata> newvisibleMapdata = [];
+                // // print('응답${result}');
+                // await Future.forEach(visibleMapdata, (e) {
+                //   final areakey = e.keyname;
+                //   final url = result[areakey]!.image ?? e.urls;
+                //   final ariticleid = result[areakey]!.articleId ?? 0;
+                //   final mapinfo = e.mapinfo;
+                //   final fullname = e.fullname;
+                //   final keyname = e.keyname;
+                //   final polygons = e.polygons;
+                //   final newdata = Mapdata(
+                //       mapinfo: mapinfo,
+                //       fullname: fullname,
+                //       keyname: keyname,
+                //       polygons: polygons,
+                //       urls: url,
+                //       articleId: ariticleid);
+                //   newvisibleMapdata.add(newdata);
+                // });
+                // setState(() {
+                //   nowareadata = newvisibleMapdata;
+                // });
+                //---------
               },
               onPositionChanged: (pos, hasGesture) {
                 if (_debounce?.isActive ?? false) _debounce!.cancel();

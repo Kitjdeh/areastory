@@ -134,6 +134,7 @@ class OverlayImage extends CustomOverlayImage {
           ),
         ),
         decoration: ShapeDecoration(
+          color:Colors.blue,
           image: DecorationImage(
               image:
                   // AssetImage(url)

@@ -73,7 +73,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
     // FollowScreen 컨트롤러의 printArticles 함수 실행
     // Get.find<FollowController>().printArticles();
-    // _followController.printArticles();
+    _followController.printArticles();
     /// 라우터 이동. 현재는 이전 라우터로 이동한다.
     // Navigator.push(
     //     context,
