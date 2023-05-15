@@ -1,4 +1,6 @@
+import "dart:convert";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:front/api/follow/get_followings_sort.dart";
 import "package:front/component/sns/avatar_widget.dart";
@@ -91,6 +93,7 @@ class _SnsScreenState extends State<SnsScreen> {
   String seletedLocationSigungu = '';
   String seletedLocationDongeupmyeon = '';
   String dropdownValue = '인기순';
+  late Map<String, int> socketLocation;
 
   late final userId = int.parse(widget.userId);
   late ScrollController _controller;
@@ -104,7 +107,23 @@ class _SnsScreenState extends State<SnsScreen> {
     } else {
       _myLocationSearch();
     }
+    _loadOptions();
     _controller.addListener(_loadMoreData);
+  }
+
+  void _loadOptions() async {
+    String jsonData =
+        await rootBundle.loadString('asset/location/socket_location.json');
+    Map<String, dynamic> jsonDataMap = jsonDecode(jsonData);
+    List<Map<String, dynamic>> dataList =
+        jsonDataMap['Sheet1'].cast<Map<String, dynamic>>();
+
+    Map<String, int> processedData = {};
+    for (var data in dataList) {
+      processedData[data['location']] = data['number'];
+    }
+
+    socketLocation = processedData;
   }
 
   @override
@@ -300,13 +319,27 @@ class _SnsScreenState extends State<SnsScreen> {
                       builder: (context) => LiveChatScreen(
                             userId: userId,
                             roomId: seletedLocationSigungu != ''
+                                ? socketLocation[seletedLocationSigungu]
+                                    .toString()
+                                : socketLocation[seletedLocationDosi]
+                                    .toString(),
+                            roomName: seletedLocationSigungu != ''
                                 ? seletedLocationSigungu
                                 : seletedLocationDosi,
                           )));
             },
-            child: ImageData(
-              IconsPath.livechat,
-              width: 80,
+            child: Row(
+              children: [
+                Text(
+                    seletedLocationSigungu != ''
+                        ? seletedLocationSigungu + ' '
+                        : seletedLocationDosi + ' ',
+                    style: TextStyle(color: Colors.black, fontSize: 16)),
+                ImageData(
+                  IconsPath.livechat,
+                  width: 80,
+                ),
+              ],
             ),
           ),
           SizedBox(

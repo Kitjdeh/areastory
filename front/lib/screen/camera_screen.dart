@@ -1,14 +1,11 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/sns/create_article.dart';
-import 'package:front/controllers/bottom_nav_controller.dart';
-
-import 'package:front/screen/follow_screen.dart';
-
+import 'package:front/constant/home_tabs.dart';
 import 'package:front/controllers/follow_screen_controller.dart';
-
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 
@@ -104,6 +101,27 @@ class _CameraScreenState extends State<CameraScreen> {
     });
   }
 
+  void showCreateConfirmationDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // 대화 상자 바깥을 터치하여 닫히지 않도록 설정
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text('죄송합니다'),
+          content: Text('사진과 내용을 채워주세요'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop(); // 대화 상자 닫기
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // 화면 세로 고정
@@ -124,7 +142,7 @@ class _CameraScreenState extends State<CameraScreen> {
           }
         },
         child: Scaffold(
-          backgroundColor: const Color(0xFFECF9FF),
+          backgroundColor: Colors.white,
           appBar: AppBar(
             title: Text(
               "게시글 등록",
@@ -162,24 +180,30 @@ class _CameraScreenState extends State<CameraScreen> {
 
   // 이미지를 보여주는 위젯
   Widget showImage() {
-    return Container(
-      color: Colors.white,
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width / 1.3,
-      child: Center(
-        child: _image == null
-            ? GestureDetector(
-                child: Icon(Icons.add_a_photo, color: Colors.blue, size: 100),
-                onTap: () {
-                  getImage(ImageSource.camera);
-                },
-              )
-            : GestureDetector(
-                child: Image.file(File(_image!.path)),
-                onTap: () {
-                  getImage(ImageSource.camera);
-                },
-              ),
+    return Padding(
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+      child: Container(
+        color: Colors.black12,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height * 0.5,
+        child: Center(
+          child: _image == null
+              ? GestureDetector(
+                  child: ImageData(
+                    IconsPath.camera,
+                    width: 270,
+                  ),
+                  onTap: () {
+                    getImage(ImageSource.camera);
+                  },
+                )
+              : GestureDetector(
+                  child: Image.file(File(_image!.path)),
+                  onTap: () {
+                    getImage(ImageSource.camera);
+                  },
+                ),
+        ),
       ),
     );
   }
@@ -197,22 +221,48 @@ class _CameraScreenState extends State<CameraScreen> {
           children: [
             // 장소 입력 폼
             Text(
-              '위치 : ${storedLocation}',
+              '장소: ${storedLocation}',
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.black,
               ),
             ),
-            TextFormField(
-              controller: contentController,
-              focusNode: _focusNode2,
-              decoration: InputDecoration(labelText: '내용'),
-              onTap: () {
-                //120만큼 500milSec 동안 뷰를 올려줌
-                _scrollController!.animateTo(120.0,
-                    duration: Duration(milliseconds: 500), curve: Curves.ease);
-              },
-              maxLines: 2,
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              '내용',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.grey,
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextFormField(
+                controller: contentController,
+                focusNode: _focusNode2,
+                decoration: InputDecoration(
+                  hintText: contentController.text.isEmpty ? '내용을 입력해 주세요' : '',
+                  border: InputBorder.none, // Remove default border
+                  contentPadding: EdgeInsets.all(16.0), // Adjust padding
+                ),
+                onTap: () {
+                  // 120만큼 500 milliseconds 동안 뷰를 올려줌
+                  _scrollController!.animateTo(
+                    120.0,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.ease,
+                  );
+                },
+                maxLines: 2,
+              ),
             ),
             // 비공개 여부 체크박스
             SwitchListTile(
@@ -223,12 +273,18 @@ class _CameraScreenState extends State<CameraScreen> {
                   _isSwitched = value;
                 });
               },
+              activeColor: Colors.black, // Set the active color to black
+              inactiveTrackColor: Colors
+                  .black12, // Set the inactive track color to a dark shade of gray
             ),
             // 등록 버튼
             ElevatedButton(
               onPressed: () {
-                createArticle(_image, contentController);
+                _image != null && !contentController.text.isEmpty
+                    ? createArticle(_image, contentController)
+                    : showCreateConfirmationDialog();
               },
+              style: ElevatedButton.styleFrom(primary: Colors.black),
               child: Text('등록'),
             ),
           ],

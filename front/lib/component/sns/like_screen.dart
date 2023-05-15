@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front/api/like/get_article_likes.dart';
 import 'package:front/component/sns/like/like.dart';
-import 'package:front/controllers/bottom_nav_controller.dart';
-import 'package:get/get.dart';
 
 class SnsLikeScreen extends StatefulWidget {
   const SnsLikeScreen({Key? key, required this.articleId, required this.userId})
@@ -14,8 +12,7 @@ class SnsLikeScreen extends StatefulWidget {
   State<SnsLikeScreen> createState() => _SnsLikeScreenState();
 }
 
-class _SnsLikeScreenState extends State<SnsLikeScreen>
-    with TickerProviderStateMixin {
+class _SnsLikeScreenState extends State<SnsLikeScreen> {
   int _currentPage = 1;
   bool _hasNextPage = false;
   bool _isFirstLoadRunning = false;
@@ -41,6 +38,7 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
     _likes.clear();
     final likeData = await getArticleLikes(
       articleId: widget.articleId,
+      page: _currentPage,
     );
     _likes.addAll(likeData.users);
     _hasNextPage = likeData.nextPage;
@@ -61,6 +59,7 @@ class _SnsLikeScreenState extends State<SnsLikeScreen>
     _currentPage += 1;
     final newLikes = await getArticleLikes(
       articleId: widget.articleId,
+      page: _currentPage,
     );
     _likes.addAll(newLikes.users);
     _hasNextPage = newLikes.nextPage;

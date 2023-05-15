@@ -102,17 +102,17 @@ class _LocationSearchState extends State<LocationSearch> {
               width: 80,
             ),
           ),
-          SizedBox(
-            width: 10,
-          ),
-          GestureDetector(
-            onTap: () async {
-              await widget.myLocationSearch();
-            },
-            child: ImageData(
-              IconsPath.mylocation,
-            ),
-          ),
+          // SizedBox(
+          //   width: 10,
+          // ),
+          // GestureDetector(
+          //   onTap: () async {
+          //     await widget.myLocationSearch();
+          //   },
+          //   child: ImageData(
+          //     IconsPath.mylocation,
+          //   ),
+          // ),
         ],
       ),
     );

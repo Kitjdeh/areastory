@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expandable_text/expandable_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:front/api/follow/create_following.dart';
 import 'package:front/api/follow/delete_following.dart';
@@ -131,63 +132,26 @@ class _ArticleComponentState extends State<ArticleComponent> {
     );
   }
 
-  void showDeleteConfirmationDialog() {
-    showDialog(
+  void showDeleteConfirmationDialog() async {
+    return showDialog<void>(
       context: context,
+      barrierDismissible: false, // 대화 상자 바깥을 터치하여 닫히지 않도록 설정
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              Icon(
-                Icons.warning,
-                color: Colors.orange,
-              ),
-              SizedBox(width: 8),
-              Text(
-                '삭제 확인',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '정말로 삭제하시겠습니까?',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 16),
-              Text(
-                '삭제 후에는 복구할 수 없습니다.',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.red,
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: Text(
-                '취소',
-                style: TextStyle(color: Colors.grey),
-              ),
+        return CupertinoAlertDialog(
+          title: Text('게시글 삭제'),
+          content: Text('정말로 이 게시글을 삭제하시겠습니까?'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text('취소'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // 대화 상자 닫기
               },
             ),
-            TextButton(
-              child: Text(
-                '삭제',
-                style: TextStyle(color: Colors.red),
-              ),
+            CupertinoDialogAction(
+              child: Text('확인'),
               onPressed: () {
                 delArticle(widget.articleId);
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // 대화 상자 닫기
               },
             ),
           ],

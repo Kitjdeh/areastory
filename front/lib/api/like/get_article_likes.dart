@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 Future<UserData> getArticleLikes({
   required int articleId,
+  required int page,
 }) async {
   final dio = Dio(BaseOptions(
     baseUrl: '${dotenv.get('BASE_URL')}/api/articles/like',
@@ -15,6 +16,7 @@ Future<UserData> getArticleLikes({
 
   final response = await dio.get('/$articleId', queryParameters: {
     'userId': userId,
+    'page': page,
   });
 
   if (response.statusCode == 200) {
@@ -49,9 +51,7 @@ class UserData {
 
   factory UserData.fromJson(Map<String, dynamic> json) {
     final userList = json['users'] as List<dynamic>;
-    final users = userList
-        .map((userJson) => User.fromJson(userJson))
-        .toList();
+    final users = userList.map((userJson) => User.fromJson(userJson)).toList();
 
     return UserData(
       pageSize: json['pageSize'],

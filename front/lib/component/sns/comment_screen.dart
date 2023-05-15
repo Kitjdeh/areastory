@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:front/api/comment/create_comment.dart';
 import 'package:front/api/comment/get_comments.dart';
+import 'package:front/api/mypage/get_userInfo.dart';
+import 'package:front/component/sns/avatar_widget.dart';
 import 'package:front/component/sns/comment/comment.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/controllers/bottom_nav_controller.dart';
@@ -27,6 +29,7 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
 
   List _comments = [];
   String dropdownValue = '인기순';
+  String? myImg;
 
   final TextEditingController _commentController = TextEditingController();
   late ScrollController _controller;
@@ -36,6 +39,7 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
     super.initState();
     _controller = ScrollController();
     printComments();
+    myImageFind();
     _controller.addListener(_loadMoreData);
   }
 
@@ -43,6 +47,12 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
   void dispose() {
     _commentController.dispose();
     super.dispose();
+  }
+
+  void myImageFind() async {
+    var myImage;
+    myImage = await getUserInfo(userId: widget.userId);
+    myImg = myImage.profile!;
   }
 
   void onDelete(int commentId) async {
@@ -204,6 +214,11 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
             ),
             Row(
               children: [
+                AvatarWidget(
+                  type: AvatarType.TYPE1,
+                  thumbPath: myImg!,
+                  size: 40,
+                ),
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.all(8.0),

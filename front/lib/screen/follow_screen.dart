@@ -138,23 +138,23 @@ class _FollowScreenState extends State<FollowScreen> {
     // signal = widget.signal!;
   }
 
-  // @override
-  // void didUpdateWidget(covariant FollowScreen oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-  //   if (oldWidget.signal != widget.signal) {
-  //     setState(() {
-  //       signal = widget.signal!;
-  //     });
-  //     handleSignal(signal);
-  //   }
-  // }
+  @override
+  void didUpdateWidget(covariant FollowScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.signal != widget.signal) {
+      setState(() {
+        signal = widget.signal!;
+      });
+      handleSignal(signal);
+    }
+  }
 
-  // void handleSignal(String signal) {
-  //   if (signal == '1') {
-  //     printArticles();
-  //     signal = '';
-  //   }
-  // }
+  void handleSignal(String signal) {
+    if (signal == '1') {
+      printArticles();
+      signal = '';
+    }
+  }
 
   @override
   void dispose() {
