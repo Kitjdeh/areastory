@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:front/api/follow/create_following.dart';
+import 'package:front/api/follow/delete_following.dart';
 import 'package:front/api/mypage/get_following.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/mypage_screen.dart';
@@ -22,6 +24,7 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
   List<dynamic> _followings = [];
   bool nextPage = true; // 다음페이지를 불러올 수 있는가?
   bool _isLoading = false; // 로딩 중인지 여부
+  Map<String, bool> followStatusMap = {}; //팔로잉 버튼 와리가리
   final storage = new FlutterSecureStorage();
   String? myId;
 
@@ -44,6 +47,9 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
     setState(() {
       _currentPage = 0;
       _followings.addAll(followingData.followings);
+      followingData.followings.forEach((user) {
+        followStatusMap[user.userId.toString()] = false;
+      });
     });
     print("최초의 팔로잉목록 요청했습니다.");
   }
@@ -56,6 +62,9 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
       _followings.addAll(followingData.followings);
       nextPage = followingData.nextPage;
       _isLoading = false; // 로딩 완료 상태로 설정
+      followingData.followings.forEach((user) {
+        followStatusMap[user.userId.toString()] = false;
+      });
     });
     print("팔로잉 목록 요청했습니다");
   }
@@ -247,16 +256,31 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: IconButton(
-                    onPressed: (){
-                      print("팔로잉 취소시킵니다?");
-                    }, icon: ImageData(IconsPath.deleteOnIcon),
-                    // IconButton(
-                    // onPressed: (){
-                    //   print("팔로잉 신청시킵니다?");
-                    // }, icon: ImageData(IconsPath.deleteOffIcon))
+                  onPressed: () {
+                    print("팔로잉 상태 변경합니다.");
+                    if (followStatusMap[userId] == false) {
+                      print("팔로잉 취소합니다. userId: $userId");
+                      deleteFollowing(followingId: int.parse(userId));
+                    } else {
+                      print("팔로잉 신청합니다. userId: $userId");
+                      postFollowing(followingId: int.parse(userId));
+                    }
+                    setState(() {
+                      if (followStatusMap[userId] == false) {
+                        followStatusMap[userId] = true;
+                      } else {
+                        followStatusMap[userId] = false;
+                      }
+                    });
+                  },
+                  icon: followStatusMap[userId] == false
+                      ? ImageData(IconsPath.deleteOnIcon)
+                      : ImageData(IconsPath.deleteOffIcon),
+                ),
               ),
-            ),
-      ]),
-    ));
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -49,6 +49,13 @@ class _MyPageScreenState extends State<MyPageScreen>
     return _buildMyPageScreen();
   }
 
+  void _toggleFollowing() {
+    // 팔로잉 상태를 토글하는 함수
+    setState(() {
+      followYn = !followYn;
+    });
+  }
+
   /// 유저 정보 위젯
   Widget _information() {
     return FutureBuilder<UserData>(
@@ -195,55 +202,6 @@ class _MyPageScreenState extends State<MyPageScreen>
     );
   }
 
-  // Future<void> _showReportDialog() async {
-  //   await showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Text("신고 유형 선택"),
-  //         content: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             RadioListTile<String>(
-  //               title: Text("불건전한 게시글"),
-  //               value: "불건전한 게시글",
-  //               groupValue: selectedReportType,
-  //               onChanged: (value) {
-  //                 setState(() {
-  //                   selectedReportType = value;
-  //                 });
-  //               },
-  //             ),
-  //             RadioListTile<String>(
-  //               title: Text("불건전한 닉네임"),
-  //               value: "불건전한 닉네임",
-  //               groupValue: selectedReportType,
-  //               onChanged: (value) {
-  //                 setState(() {
-  //                   selectedReportType = value;
-  //                 });
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //         actions: [
-  //           TextButton(
-  //             child: Text("확인"),
-  //             onPressed: () {
-  //               // 선택한 신고 유형에 따라 처리할 동작을 수행
-  //               if (selectedReportType != null) {
-  //                 print(selectedReportType);
-  //                 // _submitReport(selectedReportType!);
-  //               }
-  //               Navigator.of(context).pop();
-  //             },
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
   Widget _optionList() {
     return Container(
       height: 150,
@@ -375,7 +333,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                           TextButton(
                             onPressed: () {
                               // 버튼이 클릭되었을 때 수행할 동작
-                              print("감자입니다.");
+                              print("팔로잉신청합니다..");
                             },
                             child: Text(
                               "팔로잉",

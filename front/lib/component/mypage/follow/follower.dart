@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/mypage/get_follower.dart';
-import 'package:front/api/mypage/get_following.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/mypage_screen.dart';
+import 'package:flutter/cupertino.dart'; // 1. Cupertino 패키지 추가
 
 class FollowerListScreen extends StatefulWidget {
   FollowerListScreen({Key? key, required this.userId}) : super(key: key);
@@ -21,6 +21,7 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
   List<dynamic> _followers = [];
   bool nextPage = true; // 다음페이지를 불러올 수 있는가?
   bool _isLoading = false; // 로딩 중인지 여부
+  Map<String, bool> followStatusMap = {}; //팔로잉 버튼 와리가리
   final storage = new FlutterSecureStorage();
   String? myId;
 
@@ -43,6 +44,9 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
     setState(() {
       _currentPage = 0;
       _followers.addAll(followerData.followers);
+      followerData.followers.forEach((user) {
+        followStatusMap[user.userId.toString()] = false;
+      });
     });
     print("최초의 팔로워목록 요청했습니다.");
   }
@@ -55,6 +59,9 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
       _followers.addAll(followersData.followers);
       nextPage = followersData.nextPage;
       _isLoading = false; // 로딩 완료 상태로 설정
+      followersData.followers.forEach((user) {
+        followStatusMap[user.userId.toString()] = false;
+      });
     });
     print("팔로워 목록 요청했습니다");
   }
@@ -94,6 +101,40 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
       },
     );
   }
+
+  // 2. 확인 대화 상자를 표시하고 선택 결과를 처리하는 메서드
+  Future<void> showDeleteConfirmationDialog(String userId) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // 대화 상자 바깥을 터치하여 닫히지 않도록 설정
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text('팔로워 취소'),
+          content: Text('정말로 이 팔로워를 취소하시겠습니까?'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop(); // 대화 상자 닫기
+              },
+            ),
+            CupertinoDialogAction(
+              child: Text('확인'),
+              onPressed: () {
+                print("팔로워 취소합니다?");
+                // deleteFollower(followerId: int.parse(userId)); // 팔로워 취소 함수 호출
+                setState(() {
+                  followStatusMap[userId] = true; // 팔로워 상태 업데이트
+                });
+                Navigator.of(context).pop(); // 대화 상자 닫기
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,6 +206,9 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
                   );
                 },
                 separatorBuilder: (context, index) {
+                  if(followStatusMap[_followers[index].userId.toString()] == true){
+                    return  Container(height: 0);
+                  }
                   return SizedBox(
                     height: 30,
                   );
@@ -186,6 +230,9 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
     required String nickname,
     required bool check,
   }) {
+    if(followStatusMap[userId] == true){
+      return  Container(height: 0);
+    }
     return Container(
         height: MediaQuery.of(context).size.width*0.14,
         child: Container(
@@ -228,10 +275,16 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
                         ),
                           Expanded(
                             child: Container(
-                              child: Text(
-                                nickname,
-                                overflow: TextOverflow.ellipsis, // 글자가 너무 길 경우 생략되도록 설정
-                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    nickname,
+                                    overflow: TextOverflow.ellipsis, // 글자가 너무 길 경우 생략되도록 설정
+                                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -247,17 +300,27 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: IconButton(
-                      onPressed: (){
-                        print("팔로잉 취소시킵니다?");
-                        print(check);
-                      }, icon: ImageData(IconsPath.deleteOnIcon),
-                      // IconButton(
-                      // onPressed: (){
-                      //   print("팔로잉 신청시킵니다?");
-                      // }, icon: ImageData(IconsPath.deleteOffIcon))
+                      onPressed: () {
+                        print("팔로워 상태 변경합니다.");
+                        if (followStatusMap[userId] == false) {
+                          print("팔로워 취소합니다. userId: $userId");
+                          // deleteFollower(followerId: int.parse(userId));
+                          showDeleteConfirmationDialog(userId);
+                        }
+                        // setState(() {
+                        //   if (followStatusMap[userId] == false) {
+                        //     followStatusMap[userId] = true;
+                        //   }
+                        // });
+                      },
+                      icon: followStatusMap[userId] == false
+                          ? ImageData(IconsPath.deleteOnIcon)
+                          : ImageData(IconsPath.deleteOffIcon),
                     ),
                   ),
-              ]),
-        ));
+              ],
+          ),
+        ),
+    );
   }
 }

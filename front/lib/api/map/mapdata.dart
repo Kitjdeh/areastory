@@ -18,10 +18,9 @@ class AreaData {
 
 Future<Map<String, AreaData>> postAreaData(
     List<Map<String, String>> data) async {
-  print('post요청함수 시작');
-  // print(data);
+
   List<Map<String, dynamic>> responseJson = [];
-  // print('data값${data.first}');
+
   List<AreaData> areadata = [];
   Map<String, AreaData> AreaInfo = {};
   Map<String, String> headers = {
@@ -31,8 +30,7 @@ Future<Map<String, AreaData>> postAreaData(
   http.Response response = await http.post(Uri.parse(url),
       body: json.encode(data), headers: headers);
   final int statuscode = response.statusCode;
-  print("statuscode${statuscode}");
-  // print(response.body);
+
   await statuscode == 200
       ? responseJson = List<Map<String, dynamic>>.from(
           jsonDecode(utf8.decode(response.bodyBytes))) // 응답 데이터를 변환하여 저장
@@ -40,38 +38,17 @@ Future<Map<String, AreaData>> postAreaData(
       : print("에러가 발생 에러코드${response.statusCode}");
   await statuscode == 200
       ? Future.forEach(responseJson, (e) {
-          // print('e${e} type${e.runtimeType}');
           areadata.add(AreaData.fromJson(e));
         })
       : null;
-  // print("areadata${areadata}");
-  // print(areadata.first.locationDto.runtimeType);
-  // print(areadata.first.)
-  // await
-  //     ? areadata.map((e) =>
-  //     e.locationDto!['dongeupmyeon'] != null
-  //         ? AreaInfo.addAll({e.locationDto!['dongupyeon'] ?? "": e})
-  //         : e.locationDto!['sigungu'] != null
-  //             // ? AreaInfo.addAll({e.locationDto!['sigungu'] ?? "": e})
-  //             ? print("e.locationDto${e.locationDto} type${e.locationDto.runtimeType}")
-  //             : AreaInfo.addAll({e.locationDto!['dosi'] ?? "": e})
-  //             )
-  //     : null;
-  // await Future.forEach(visibleMapdata, (e) {
-  //   requestlist.add(e.mapinfo!);
-  // });
   areadata != null
       ? Future.forEach(areadata, (e) {
-        // print(e.locationDto);
           e.locationDto!['dongeupmyeon'] != null
               ? AreaInfo.addAll({e.locationDto!['dongupyeon'] ?? "": e})
               : e.locationDto!['sigungu'] != null
                   ? AreaInfo.addAll({e.locationDto!['sigungu'] ?? "": e})
-                  // ? print(
-                  //     "e.locationDto${e.locationDto} type${e.locationDto.runtimeType}")
                   : AreaInfo.addAll({e.locationDto!['dosi'] ?? "": e});
         })
       : null;
-  // print("Areainfo${AreaInfo}");
   return AreaInfo;
 }

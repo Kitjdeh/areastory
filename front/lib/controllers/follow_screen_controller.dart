@@ -7,16 +7,16 @@ class FollowController extends GetxController {
   bool _isFirstLoadRunning = false;
   bool _isLoadMoreRunning = false;
   int _lastPage = 0;
-  List _articles = [];
+  List articles = [];
   List _followings = [];
 
 
   void printArticles() async {
     print("오모나 세상에나");
     _currentPage = 1;
-    _articles.clear();
+    articles.clear();
     final articleData = await getFollowArticles(page: _currentPage);
-    _articles.addAll(articleData.articles);
+    articles.addAll(articleData.articles);
     _lastPage = articleData.totalPageNumber;
     update(); // 상태 변경을 리스너에게 알립니다
   }
@@ -24,7 +24,7 @@ class FollowController extends GetxController {
   void loadMoreData() async {
     _currentPage++;
     final newArticles = await getFollowArticles(page: _currentPage);
-    _articles.addAll(newArticles.articles);
+    articles.addAll(newArticles.articles);
     _lastPage = newArticles.totalPageNumber;
     update(); // 상태 변경을 리스너에게 알립니다
   }
