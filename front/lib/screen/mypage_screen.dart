@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:front/api/follow/create_following.dart';
+import 'package:front/api/follow/delete_following.dart';
 import 'package:front/api/login/delete_user.dart';
 import 'package:front/api/login/kakao/kakao_login.dart';
 import 'package:front/api/login/kakao/login_view_model.dart';
@@ -215,6 +217,7 @@ class _MyPageScreenState extends State<MyPageScreen>
         children: [
           TextButton.icon(
             onPressed: () async {
+              // postFollowing(followingId: int.parse(widget.userId));
               await viewModel.logout();
               setState(() {});
 
@@ -336,14 +339,15 @@ class _MyPageScreenState extends State<MyPageScreen>
                         const SizedBox(
                           width: 20,
                         ),
-                        if (myId == widget.userId && isNotFollowing)
+                        if (myId != widget.userId && !snapshot.data!.followYn)
                           TextButton(
                             onPressed: () {
                               _toggleFollowing(snapshot.data!.followYn);
                               print("팔로잉신청합니다..");
+                              postFollowing(followingId: int.parse(widget.userId));
                             },
                             child: Text(
-                              "팔로잉하기",
+                              "팔로잉신청",
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 10,
@@ -351,10 +355,11 @@ class _MyPageScreenState extends State<MyPageScreen>
                               ),
                             ),
                           ),
-                        if (myId == widget.userId && isFollowing)
+                        if (myId != widget.userId && snapshot.data!.followYn)
                           TextButton(
                             onPressed: () {
                               _toggleFollowing(snapshot.data!.followYn);
+                              deleteFollowing(followingId: int.parse(widget.userId));
                               print("팔로잉취소합니다.");
                             },
                             child: Text(
@@ -362,7 +367,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 10,
-                                color: Colors.blue,
+                                color: Colors.red,
                               ),
                             ),
                           ),
