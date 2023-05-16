@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front/api/follow/get_followings_sort.dart';
 import 'package:front/api/sns/get_follow_articles.dart';
-import 'package:front/component/follow/follow_map.dart';
 import 'package:front/component/sns/avatar_widget.dart';
 import 'package:front/component/sns/post_widget.dart';
 import 'package:front/constant/home_tabs.dart';
@@ -22,20 +21,6 @@ class FollowScreen extends StatefulWidget {
   State<FollowScreen> createState() => _FollowScreenState();
 }
 
-Widget _myStory() {
-  return Stack(
-    children: [
-      AvatarWidget(
-        type: AvatarType.TYPE2,
-        thumbPath:
-            'https://areastory-user.s3.ap-northeast-2.amazonaws.com/profile/8373fb5d-78e7-4613-afc9-5269c247f36a.1683607649926',
-        size: 70,
-      ),
-    ],
-  );
-}
-
-
 Widget _storyBoardList({
   required List followings,
 }) {
@@ -43,10 +28,6 @@ Widget _storyBoardList({
     scrollDirection: Axis.horizontal,
     child: Row(
       children: [
-        // const SizedBox(
-        //   width: 10,
-        // ),
-        // _myStory(),
         const SizedBox(
           width: 5,
         ),
@@ -100,34 +81,8 @@ class _FollowScreenState extends State<FollowScreen> {
     super.initState();
     _controller = ScrollController();
     printArticles();
-    // _followController.printArticles();
     _controller.addListener(_loadMoreData);
-    // signal = widget.signal!;
   }
-
-  void _toggleSwitch() {
-    setState(() {
-      _isToggleOn = !_isToggleOn; // 토글 상태 변경
-    });
-  }
-
-  // @override
-  // void didUpdateWidget(covariant FollowScreen oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-  //   if (oldWidget.signal != widget.signal) {
-  //     setState(() {
-  //       signal = widget.signal!;
-  //     });
-  //     handleSignal(signal);
-  //   }
-  // }
-
-  // void handleSignal(String signal) {
-  //   if (signal == '1') {
-  //     printArticles();
-  //     signal = '';
-  //   }
-  // }
 
   @override
   void dispose() {
