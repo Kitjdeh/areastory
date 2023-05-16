@@ -61,7 +61,7 @@ Widget _storyBoardList({
 }
 
 class _FollowScreenState extends State<FollowScreen> {
-  final FollowController _followController = Get.put(FollowController());
+  final FollowController _followController = Get.find<FollowController>();
   bool _isToggleOn = false; // 토글 상태 변수
   Duration _animationDuration = Duration(milliseconds: 300);
 
@@ -79,9 +79,10 @@ class _FollowScreenState extends State<FollowScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = ScrollController();
-    printArticles();
-    _controller.addListener(_loadMoreData);
+    // _controller = ScrollController();
+    // printArticles();
+    // _controller.addListener(_loadMoreData);
+    _followController.init(int.parse(widget.userId));
   }
 
   @override
@@ -132,8 +133,10 @@ class _FollowScreenState extends State<FollowScreen> {
   }
 
   void onDelete(int articleId) {
-    setState(() {});
+    // setState(() {});
+    _followController.ondelete(articleId);
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -154,51 +157,55 @@ class _FollowScreenState extends State<FollowScreen> {
 
         /// 앱바 그림자효과 제거
       ),
-      body: _isFirstLoadRunning
-          ? const Center(
-              child: const CircularProgressIndicator(),
-            )
-          : RefreshIndicator(
-              onRefresh: () {
-                return Future<void>.delayed(Duration(seconds: 2), () {
-                  printArticles();
-                });
-              },
-              child: ListView(
-                controller: _controller,
-                children: [
-                  _storyBoardList(followings: _followings),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: List.generate(
-                      _articles.length,
-                      (index) => ArticleComponent(
-                        userId: userId,
-                        onDelete: onDelete,
-                        articleId: _articles[index].articleId,
-                        followingId: _articles[index].userId,
-                        height: 300,
-                      ),
+      body: GetBuilder<FollowController>(
+        builder: (controller){
+          return _followController.isFirstLoadRunning
+              ? const Center(
+            child: const CircularProgressIndicator(),
+          )
+              : RefreshIndicator(
+            onRefresh: () {
+              return Future<void>.delayed(Duration(seconds: 2), () {
+                _followController.printArticles();
+              });
+            },
+            child: ListView(
+              controller: _followController.scrollController,
+              children: [
+                _storyBoardList(followings: _followController.followings),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: List.generate(
+                    _followController.articles.length,
+                        (index) => ArticleComponent(
+                      userId: _followController.userId,
+                      onDelete: onDelete,
+                      articleId: _followController.articles[index].articleId,
+                      followingId: _followController.articles[index].userId,
+                      height: 300,
                     ),
                   ),
-                  if (_isLoadMoreRunning)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 40),
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                ),
+                if (_followController.isLoadMoreRunning)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 40),
+                    child: Center(
+                      child: CircularProgressIndicator(),
                     ),
-                  if (!_isLoadMoreRunning && !_hasNextPage)
-                    Container(
-                      padding: const EdgeInsets.only(top: 30, bottom: 40),
-                      color: Colors.white,
-                      child: const Center(
-                        child: Text('더이상 게시글이 없습니다'),
-                      ),
+                  ),
+                if (!_followController.isLoadMoreRunning && !_followController.hasNextPage)
+                  Container(
+                    padding: const EdgeInsets.only(top: 30, bottom: 40),
+                    color: Colors.white,
+                    child: const Center(
+                      child: Text('더이상 게시글이 없습니다'),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
+          );
+        },
+      )
     );
   }
 }
