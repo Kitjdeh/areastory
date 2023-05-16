@@ -13,13 +13,13 @@ class ArticleDetailComponent extends StatefulWidget {
   final int articleId;
   final int userId;
   final double height;
-  final String location;
+  String? location;
 
   ArticleDetailComponent({
     required this.articleId,
     required this.userId,
     required this.height,
-    required this.location,
+    this.location,
     Key? key,
   }) : super(key: key);
 
@@ -129,7 +129,9 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                         ),
                                       ),
                                       Text(
-                                        '${widget.location}',
+                                        widget.location != null
+                                            ? '${widget.location}'
+                                            : '${snapshot.data!.dosi} ${snapshot.data!.sigungu} ${snapshot.data!.dongeupmyeon}',
                                         style: TextStyle(
                                           color: Colors.black,
                                         ),
@@ -294,12 +296,14 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SnsScreen(
-                                                          location:
-                                                              widget.location,
-                                                          userId: widget.userId
-                                                              .toString()),
+                                                  builder: (context) => SnsScreen(
+                                                      location: widget
+                                                                  .location !=
+                                                              null
+                                                          ? widget.location
+                                                          : '${snapshot.data!.dosi} ${snapshot.data!.sigungu} ${snapshot.data!.dongeupmyeon}',
+                                                      userId: widget.userId
+                                                          .toString()),
                                                 ),
                                               );
                                             },

@@ -1,71 +1,64 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter/material.dart';
 
-Future<AllAlarmData> getAlarm(
-  int userId,
-) async {
-  AllAlarmData responseJson;
+Future<AlarmData> getAlarm({
+  required int notificationId,
+  required int userId,
+}) async {
   final dio = Dio(BaseOptions(
     baseUrl: '${dotenv.get('BASE_URL')}/api/notifications',
   ));
-  final response = await dio.get('/$userId', queryParameters: {
+
+  final response = await dio.get('/$notificationId', queryParameters: {
     'userId': userId,
   });
+
   if (response.statusCode == 200) {
-    responseJson = AllAlarmData.fromJson(response.data);
+    final jsonData = json.decode(response.toString());
+    final alarmData = AlarmData.fromJson(jsonData);
+    print('알람 요청 성공');
+    return alarmData;
   } else {
-    throw Exception('Failed to get data');
-  }
-  return responseJson;
-}
-
-
-class AllAlarmData {
-  final int? pageSize;
-  final int? totalPageNumber;
-  final int? totalCount;
-  final List<AlarmData>? notificatio;
-  AllAlarmData(
-      {this.pageSize, this.totalPageNumber, this.totalCount, this.notificatio});
-  factory AllAlarmData.fromJson(Map<String, dynamic> json) {
-    return AllAlarmData(
-        pageSize: json["pageSize"],
-        totalPageNumber: json["totalPageNumber"],
-        totalCount: json["totalCount"],
-        notificatio: json["notificatio"]);
+    print('실패');
+    throw Exception('Failed to load articles');
   }
 }
 
 class AlarmData {
   final int? notificationId;
-  final bool? checked;
-  final String? title;
+  final bool checked;
+  final String title;
   final String? body;
   final DateTime? createdAt;
-  final int? articleId;
+  final int articleId;
   final int? commentId;
   final int? userId;
+  final String type;
 
-  AlarmData(
-      {this.notificationId,
-      this.checked,
-      this.title,
-      this.body,
-      this.createdAt,
-      this.articleId,
-      this.commentId,
-      this.userId});
+  AlarmData({
+    this.notificationId,
+    required this.checked,
+    required this.title,
+    this.body,
+    this.createdAt,
+    required this.articleId,
+    this.commentId,
+    this.userId,
+    required this.type,
+  });
+
   factory AlarmData.fromJson(Map<String, dynamic> json) {
     return AlarmData(
       notificationId: json["notificationId"],
       checked: json["checked"],
       title: json["title"],
       body: json["body"],
-      createdAt: json["createdAt"],
+      createdAt: DateTime.parse(json['createdAt']),
       articleId: json["articleId"],
       commentId: json["commentId"],
       userId: json["userId"],
+      type: json["type"],
     );
   }
 }

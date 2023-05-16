@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:front/api/mypage/get_userInfo.dart';
+import 'package:front/api/user/get_user.dart';
+import 'package:front/component/sns/avatar_widget.dart';
 import 'package:front/controllers/bottom_nav_controller.dart';
 import 'package:front/livechat/chat.dart';
 import 'package:front/livechat/enter_or_quit.dart';
@@ -32,6 +35,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
   late final StompClient _stompClient;
   bool _connected = false;
   int userCount = 0;
+  bool? textYn = false;
 
   @override
   void initState() {
@@ -113,6 +117,9 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
       );
       _messageController.clear();
     }
+    setState(() {
+      textYn = false;
+    });
   }
 
   void _disconnect() {
@@ -204,19 +211,69 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
           ),
           Row(
             children: [
+              FutureBuilder<UserData>(
+                future: getUser(userId: widget.userId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // 로딩중일 때 표시할 위젯
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    // 에러가 발생했을 때 표시할 위젯
+                    return Text('에러 발생: ${snapshot.error}');
+                  } else if (!snapshot.hasData) {
+                    // 데이터가 없을 때 표시할 위젯
+                    return Text('데이터가 없습니다.');
+                  } else {
+                    return AvatarWidget(
+                      type: AvatarType.TYPE1,
+                      thumbPath: snapshot.data!.profile,
+                      size: 30,
+                    );
+                  }
+                },
+              ),
               Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
                   child: TextField(
                     controller: _messageController,
-                    decoration: InputDecoration(hintText: 'Type a message'),
+                    decoration: InputDecoration(
+                      hintText: '이야기를 작성해주세요',
+                      border: InputBorder.none,
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        textYn = value.isNotEmpty;
+                      });
+                    },
+                    maxLines: null, // maxLines 속성 제거
                   ),
                 ),
               ),
-              IconButton(
-                icon: Icon(Icons.send),
-                onPressed: _sendMessage,
+              SizedBox(
+                width: 5,
               ),
+              GestureDetector(
+                onTap: () {
+                  textYn! ? _sendMessage() : print('작성해줘');
+                },
+                child: Text(
+                  '게시',
+                  style: TextStyle(
+                    color: textYn! ? Colors.blue : Colors.black,
+                    fontSize: 23,
+                  ),
+                ),
+              )
             ],
           ),
         ],
