@@ -224,8 +224,9 @@ class _CustomMapState extends State<_CustomMap> {
     await Future.forEach(widget.smallareaData, (mapdata) {
       if (ifpolygoninsdie(mylatlng!, mapdata.polygons!)) {
         String result = mapdata.mapinfo!.values.join(' ');
-        // toast(context, "내위치: ${result}");
+        toast(context, "내위치: ${result}");
         Strlocation = result;
+        storage.write(key: "userlocation", value: Strlocation);
       }
     });
   }

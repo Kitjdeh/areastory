@@ -141,17 +141,17 @@ class _SnsScreenState extends State<SnsScreen> {
   }
 
   void _myLocationSearch() async {
-    // final storage = new FlutterSecureStorage();
-    //
-    // while (storedLocation == null) {
-    //   storedLocation = await storage.read(key: "userlocation");
-    //   await Future.delayed(Duration(milliseconds: 200));
-    // }
-    //
-    // print("저장된 위치: $storedLocation");
-    // handleLocationSelected(storedLocation!);
-    storedLocation = '서울특별시 영등포구 여의도동';
+    final storage = new FlutterSecureStorage();
+
+    while (storedLocation == null) {
+      storedLocation = await storage.read(key: "userlocation");
+      await Future.delayed(Duration(milliseconds: 200));
+    }
+
+    print("저장된 위치: $storedLocation");
     handleLocationSelected(storedLocation!);
+    // storedLocation = '서울특별시 영등포구 여의도동';
+    // handleLocationSelected(storedLocation!);
   }
 
   void printArticles() async {
@@ -340,9 +340,11 @@ class _SnsScreenState extends State<SnsScreen> {
             child: Row(
               children: [
                 Text(
-                    seletedLocationSigungu != ''
-                        ? seletedLocationSigungu + ' '
-                        : seletedLocationDosi + ' ',
+                    widget.location != null
+                        ? ''
+                        : seletedLocationSigungu != ''
+                            ? seletedLocationSigungu + ' '
+                            : seletedLocationDosi + ' ',
                     style: TextStyle(color: Colors.black, fontSize: 16)),
                 ImageData(
                   IconsPath.livechat,
@@ -354,15 +356,17 @@ class _SnsScreenState extends State<SnsScreen> {
           SizedBox(
             width: 10,
           ),
-          GestureDetector(
-            onTap: () {
-              _myLocationSearch();
-            },
-            child: ImageData(
-              IconsPath.mylocation,
-              width: 80,
+          if (widget.location == null)
+            GestureDetector(
+              onTap: () {
+                _myLocationSearch();
+                printArticles();
+              },
+              child: ImageData(
+                IconsPath.mylocation,
+                width: 80,
+              ),
             ),
-          ),
           SizedBox(
             width: 10,
           ),

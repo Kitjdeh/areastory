@@ -213,26 +213,10 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
           ),
           Row(
             children: [
-              FutureBuilder<UserData>(
-                future: getUser(userId: widget.userId),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    // 로딩중일 때 표시할 위젯
-                    return CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    // 에러가 발생했을 때 표시할 위젯
-                    return Text('에러 발생: ${snapshot.error}');
-                  } else if (!snapshot.hasData) {
-                    // 데이터가 없을 때 표시할 위젯
-                    return Text('데이터가 없습니다.');
-                  } else {
-                    return AvatarWidget(
-                      type: AvatarType.TYPE1,
-                      thumbPath: snapshot.data!.profile,
-                      size: 30,
-                    );
-                  }
-                },
+              AvatarWidget(
+                type: AvatarType.TYPE1,
+                thumbPath: widget.profile!,
+                size: 30,
               ),
               Expanded(
                 child: Container(

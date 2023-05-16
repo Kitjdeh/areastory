@@ -74,6 +74,7 @@ class _CameraScreenState extends State<CameraScreen> {
     // FollowScreen 컨트롤러의 printArticles 함수 실행
     // Get.find<FollowController>().printArticles();
     _followController.printArticles();
+
     /// 라우터 이동. 현재는 이전 라우터로 이동한다.
     // Navigator.push(
     //     context,
@@ -93,9 +94,9 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future getImage(ImageSource imageSource) async {
     final image = await picker.pickImage(source: imageSource);
-    // final storage = new FlutterSecureStorage();
-    // storedLocation = (await storage.read(key: "userlocation"))!;
-    storedLocation = '서울특별시 영등포구 여의도동';
+    final storage = new FlutterSecureStorage();
+    storedLocation = (await storage.read(key: "userlocation"))!;
+    // storedLocation = '서울특별시 영등포구 여의도동';
     setState(() {
       _image = File(image!.path);
     });
