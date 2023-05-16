@@ -28,4 +28,5 @@ public class LocationServiceImpl implements LocationService {
         return articleRepository.getUserArticleList(userId, locationList);
     }
 
+
 }

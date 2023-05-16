@@ -17,4 +17,6 @@ public interface ArticleRepositorySupport {
     List<LocationResp> getDosi();
 
     LocationResp getDailyLikeCountData(String type, Long articleId, LocationDto locationDto, Long dailyLikeCount);
+
+//    List<Article> test();
 }

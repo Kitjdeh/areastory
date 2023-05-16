@@ -1,6 +1,7 @@
 package com.areastory.location.db.repository.support;
 
 import com.areastory.location.db.entity.ArticleSub;
+import com.areastory.location.db.entity.QArticle;
 import com.areastory.location.dto.common.LocationDto;
 import com.areastory.location.dto.response.LocationResp;
 import com.querydsl.core.Tuple;
@@ -8,6 +9,7 @@ import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -24,7 +26,47 @@ import static com.areastory.location.db.entity.QArticle.article;
 @RequiredArgsConstructor
 public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
     private final JPAQueryFactory query;
+//
+//    @Override
+//    public List<Article> test() {
+////
+////        JPQLQuery<Long> maxLikeCount = JPAExpressions
+////                .select(article.dailyLikeCount.max())
+////                .from(article)
+////                .where(article.dosi.eq("서울특별시").and(article.sigungu.eq("강남구"))).groupBy(article.dosi, article.sigungu);
+////
+////        List<Article> result = query.select(article)
+////                .from(article)
+////                .join(article)
+////                .on(article.dosi.eq(article.dosi).and(article.sigungu.eq(article.sigungu)).and(article.dailyLikeCount.eq(maxLikeCount)))
+////                .groupBy(article.dosi, article.sigungu, article.dailyLikeCount)
+////                .orderBy(article.articleId.desc())
+////                .fetch();
+//
+//////
+////
+////        List<Article> result = query.select(article)
+////                .from(article)
+////                .join(
+////                        JPAExpressions.select(article.dosi, article.sigungu, article.dailyLikeCount.max())
+////                                .from(article)
+////                                .where(article.dosi.eq("서울특별시").and(article.sigungu.eq("강남구")))
+////                                .groupBy(article.dosi, article.sigungu), article)
+////                .on(article.dosi.eq(article.dosi).and(article.sigungu.eq(article.sigungu)).and(article.dailyLikeCount.eq(article.dailyLikeCount.max())))
+////                .orderBy(article.articleId.desc())
+////                .fetch();
+////        return result;
+//    }
 
+    //    SELECT a.*
+//    FROM article a
+//    JOIN (
+//                    SELECT dosi, sigungu, MAX(daily_like_count) AS max_like_count
+//    FROM article
+//    WHERE dosi = '서울특별시' AND sigungu = '강남구'
+//    GROUP BY dosi, sigungu
+//) b ON a.dosi = b.dosi AND a.sigungu = b.sigungu AND a.daily_like_count = b.max_like_count
+//    order by article_id desc;
     private List<Tuple> dongeupmyeonTuple(List<LocationDto> locationList, Long userId) {
         //받아오는 값에 따라서 바뀌어야함
         SubQueryExpression<Tuple> subquery = JPAExpressions
@@ -45,8 +87,24 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
     }
 
     private List<Tuple> sigunguTuple(List<LocationDto> locationList, Long userId) {
-        //받아오는 값에 따라서 바뀌어야함
-        SubQueryExpression<Tuple> subquery = JPAExpressions
+//        //받아오는 값에 따라서 바뀌어야함
+//        SubQueryExpression<Tuple> subquery = JPAExpressions
+//                .select(article.dosi, article.sigungu, article.dailyLikeCount.max())
+//                .from(article)
+//                .where(getWhereOr(locationList).and(article.userId.eq(userId))
+//                )
+//                .groupBy(article.dosi, article.sigungu);
+//
+//        return query
+//                .select(article.dosi, article.sigungu, article.dailyLikeCount, article.image, article.articleId)
+//                .from(article)
+//                .where(
+//                        Expressions.list(article.dosi, article.sigungu, article.dailyLikeCount).in(subquery).and(article.userId.eq(userId))
+//                )
+//                .groupBy(article.dosi, article.sigungu)
+//                .fetch();
+        QArticle qArticle = new QArticle("a");
+        JPQLQuery<Tuple> subquery = JPAExpressions
                 .select(article.dosi, article.sigungu, article.dailyLikeCount.max())
                 .from(article)
                 .where(getWhereOr(locationList).and(article.userId.eq(userId))
@@ -57,11 +115,15 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
                 .select(article.dosi, article.sigungu, article.dailyLikeCount, article.image, article.articleId)
                 .from(article)
                 .where(
-                        Expressions.list(article.dosi, article.sigungu, article.dailyLikeCount).in(subquery).and(article.userId.eq(userId))
+                        article.dosi.in(subquery.select(qArticle.dosi)),
+                        article.sigungu.in(subquery.select(qArticle.sigungu)),
+                        article.dailyLikeCount.in(subquery.select(qArticle.dailyLikeCount)),
+                        article.userId.eq(userId)
                 )
                 .groupBy(article.dosi, article.sigungu)
                 .fetch();
     }
+
 
     private List<Tuple> dosiTuple(List<LocationDto> locationList, Long userId) {
         //받아오는 값에 따라서 바뀌어야함

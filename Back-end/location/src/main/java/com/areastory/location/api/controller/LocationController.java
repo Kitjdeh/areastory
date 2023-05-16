@@ -1,8 +1,9 @@
 package com.areastory.location.api.controller;
 
+import com.areastory.location.api.service.LocationService;
+import com.areastory.location.db.repository.ArticleRepository;
 import com.areastory.location.dto.common.LocationDto;
 import com.areastory.location.dto.response.LocationResp;
-import com.areastory.location.api.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class LocationController {
     private final LocationService locationService;
+    private final ArticleRepository articleRepository;
 
     @PostMapping("/map")
     public ResponseEntity<List<LocationResp>> getMap(@RequestBody List<LocationDto> locationList) {
@@ -35,4 +37,10 @@ public class LocationController {
             return ResponseEntity.noContent().build();
         }
     }
+
+//    @GetMapping("/test")
+//    public ResponseEntity<?> test() {
+////        List<Article> articles = articleRepository.test();
+//        return ResponseEntity.ok(articles);
+//    }
 }
