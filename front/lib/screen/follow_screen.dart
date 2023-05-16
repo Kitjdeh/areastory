@@ -158,12 +158,12 @@ class _FollowScreenState extends State<FollowScreen> {
   //   }
   // }
 
-  void handleSignal(String signal) {
-    if (signal == '1') {
-      printArticles();
-      signal = '';
-    }
-  }
+  // void handleSignal(String signal) {
+  //   if (signal == '1') {
+  //     printArticles();
+  //     signal = '';
+  //   }
+  // }
 
   @override
   void dispose() {

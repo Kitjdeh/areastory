@@ -6,6 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:front/api/map/mapdata.dart';
+import 'package:front/component/alarm/alarm_screen.dart';
 import 'package:front/component/alarm/toast.dart';
 import 'package:front/component/map/customoverlay.dart';
 import 'package:front/component/sns/article/article_detail.dart';
@@ -20,7 +21,7 @@ import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:debounce_throttle/debounce_throttle.dart';
 
-import '../api/alarm/get_alarm.dart';
+import '../api/alarm/get_alarms.dart';
 
 String sangjunurl = 'https://source.unsplash.com/random/?party';
 String seoul2url = 'https://source.unsplash.com/random/?cat';
@@ -683,48 +684,16 @@ class _CustomMapState extends State<_CustomMap> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   FloatingActionButton(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        isScrollControlled: true,
-                        builder: (BuildContext context) {
-                          getAlarm(userId ??2);
-                          return SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child: Center(
-                              child: FutureBuilder<Object>(
-                                  future: null,
-                                  builder: (context, snapshot) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white30,
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                      ),
-                                      child: ListView.separated(
-                                        // controller: _scrollController,
-                                        itemCount: 4,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return Container(
-                                            height: 50,
-                                            alignment: Alignment.center,
-                                            child:
-                                                const CircularProgressIndicator(),
-                                          );
-                                        },
+                    onPressed: () async {
+                      final strUser = await storage.read(key: "userId");
+                      final userId = await int.parse(strUser!);
 
-                                        separatorBuilder: (context, index) {
-                                          return SizedBox(height: 20);
-                                        },
-                                      ),
-                                    );
-                                  }),
-                            ),
-                          );
-                        },
-                      );
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AlarmScreen(
+                                    userId: userId,
+                                  )));
                     },
                     child: Container(
                       // decoration: BoxDecoration(

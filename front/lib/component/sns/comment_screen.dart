@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front/api/comment/create_comment.dart';
 import 'package:front/api/comment/get_comments.dart';
-import 'package:front/api/mypage/get_userInfo.dart';
+import 'package:front/api/user/get_user.dart';
 import 'package:front/component/sns/avatar_widget.dart';
 import 'package:front/component/sns/comment/comment.dart';
 import 'package:front/constant/home_tabs.dart';
@@ -29,7 +29,7 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
 
   List _comments = [];
   String dropdownValue = '인기순';
-  String? myImg;
+  bool? textYn = false;
 
   final TextEditingController _commentController = TextEditingController();
   late ScrollController _controller;
@@ -39,7 +39,6 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
     super.initState();
     _controller = ScrollController();
     printComments();
-    myImageFind();
     _controller.addListener(_loadMoreData);
   }
 
@@ -47,12 +46,6 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
   void dispose() {
     _commentController.dispose();
     super.dispose();
-  }
-
-  void myImageFind() async {
-    var myImage;
-    myImage = await getUserInfo(userId: widget.userId);
-    myImg = myImage.profile!;
   }
 
   void onDelete(int commentId) async {
@@ -113,7 +106,9 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
 
     _comments.insert(0, newComment.comments.first);
 
-    setState(() {});
+    setState(() {
+      textYn = false;
+    });
 
     _commentController.clear();
   }
@@ -214,31 +209,72 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
             ),
             Row(
               children: [
-                AvatarWidget(
-                  type: AvatarType.TYPE1,
-                  thumbPath: myImg!,
-                  size: 40,
+                FutureBuilder<UserData>(
+                  future: getUser(userId: widget.userId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // 로딩중일 때 표시할 위젯
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      // 에러가 발생했을 때 표시할 위젯
+                      return Text('에러 발생: ${snapshot.error}');
+                    } else if (!snapshot.hasData) {
+                      // 데이터가 없을 때 표시할 위젯
+                      return Text('데이터가 없습니다.');
+                    } else {
+                      return AvatarWidget(
+                        type: AvatarType.TYPE1,
+                        thumbPath: snapshot.data!.profile,
+                        size: 30,
+                      );
+                    }
+                  },
                 ),
                 Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller:
-                          _commentController, // TextEditingController setup
-                      decoration: InputDecoration(
-                        labelText: '댓글 입력',
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 1,
                       ),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: TextField(
+                      controller: _commentController,
+                      decoration: InputDecoration(
+                        hintText: '댓글를 작성해주세요',
+                        border: InputBorder.none,
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          textYn = value.isNotEmpty;
+                        });
+                      },
+                      maxLines: null, // maxLines 속성 제거
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () {
-                    final value = _commentController
-                        .text; // Get the value from the TextEditingController
-                    createComment(value);
-                  },
+                SizedBox(
+                  width: 5,
                 ),
+                GestureDetector(
+                  onTap: () {
+                    if (textYn == true) {
+                      final value = _commentController.text;
+                      createComment(value);
+                    }
+                  },
+                  child: Text(
+                    '게시',
+                    style: TextStyle(
+                      color: textYn! ? Colors.blue : Colors.black,
+                      fontSize: 23,
+                    ),
+                  ),
+                )
               ],
             ),
           ],
