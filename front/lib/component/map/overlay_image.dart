@@ -126,25 +126,38 @@ class OverlayImage extends CustomOverlayImage {
       width: bounds.size.x.toDouble(),
       height: bounds.size.y.toDouble(),
       child: DecoratedBox(
-
         child: Center(
-          child: Text(
-            '${localname}',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 10, color: Colors.pink),
+          child: Opacity(
+            opacity: 0.5,
+            child: Text(
+              '${localname}',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 10, color: Colors.black54),
+            ),
           ),
         ),
         decoration: ShapeDecoration(
-          color:Colors.blue,
+          color: Colors.blue,
           image: DecorationImage(
               image:
-                  // AssetImage('asset/video/sangjunseoyong.PNG')
-                  NetworkImage(url)
+                  // AssetImage('asset/video/현제_집밖.PNG')
+                  localname == '역삼동'
+                      ? AssetImage('asset/video/상준_바나프레소.PNG')
+                      : localname == '성북구'
+                          ? AssetImage('asset/video/지하철들어옴.PNG')
+                          : localname == '장안구'
+                              ? AssetImage('asset/video/수민_버스밖.PNG')
+                              : localname == '야탑동'
+                                  ? AssetImage('asset/video/현제_집밖.PNG')
+                                  : localname == '강남구'
+                                      ? AssetImage('asset/video/멀캠입장.PNG')
+                                      : localname == '화성시'
+                                          ? AssetImage('asset/video/동탄.PNG')
+                                          : AssetImage(url)
               // AssetImage('asset/img/doji.jpg')
               ,
               // opacity: 0.5,
-              fit: BoxFit.cover
-          ),
+              fit: BoxFit.fill),
           shape: newpolygon.PolygonBorder(
             polygon: polygon,
             // polygon: polygon,
@@ -154,6 +167,7 @@ class OverlayImage extends CustomOverlayImage {
     );
   }
 }
+
 class OverlayImageLayer extends StatelessWidget {
   final List<CustomOverlayImage> overlayImages;
   const OverlayImageLayer({super.key, this.overlayImages = const []});
