@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:front/api/follow/create_following.dart';
+import 'package:front/api/follow/delete_following.dart';
 import 'package:front/api/mypage/get_search.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/controllers/bottom_nav_controller.dart';
@@ -22,6 +24,8 @@ class _SearchScreenState extends State<SearchScreen> {
   final storage = new FlutterSecureStorage();
   String? myId;
   String? _word;
+  Map<String, bool> followingStatusMap = {}; //팔로잉 버튼 와리가리
+
 
   @override
   void initState() {
@@ -42,6 +46,9 @@ class _SearchScreenState extends State<SearchScreen> {
     setState(() {
       _currentPage = 0;
       _followers.addAll(followerData.followers);
+      followerData.followers.forEach((user) {
+        followingStatusMap[user.userId.toString()] = user.check;
+      });
     });
     print("최초의 유저검색 요청했습니다.");
   }
@@ -54,6 +61,9 @@ class _SearchScreenState extends State<SearchScreen> {
       _followers.addAll(followerData.followers);
       nextPage = followerData.nextPage;
       _isLoading = false; // 로딩 완료 상태로 설정
+      followerData.followers.forEach((user) {
+        followingStatusMap[user.userId.toString()] = user.check;
+      });
     });
     print("유저검색 목록 요청했습니다");
   }
@@ -228,16 +238,24 @@ class _SearchScreenState extends State<SearchScreen> {
                 /// 버튼은 분기처리해야함.(팔로잉 해제)
                 if (myId == widget.userId)
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    // padding: EdgeInsets.symmetric(horizontal: 20),
                     child: IconButton(
-                      onPressed: (){
-                        print("팔로잉 취소시킵니다?");
-                        print(check);
-                      }, icon: ImageData(IconsPath.deleteOnIcon),
-                      // IconButton(
-                      // onPressed: (){
-                      //   print("팔로잉 신청시킵니다?");
-                      // }, icon: ImageData(IconsPath.deleteOffIcon))
+                        onPressed: () {
+                          print("팔로워 상태 변경합니다.");
+                          if (followingStatusMap[userId] == true) {
+                            print("팔로잉 취소합니다. userId: $userId");
+                            deleteFollowing(followingId: int.parse(userId));
+                          }else{
+                            print("팔로잉 신청합니다. userId: $userId");
+                            postFollowing(followingId: int.parse(userId));
+                          }
+                          setState(() {
+                            followingStatusMap[userId] = !followingStatusMap[userId]!;
+                          });
+                        },
+                        icon: followingStatusMap[userId] == false
+                            ? Icon(Icons.group_add)
+                            : Icon(Icons.group_remove)
                     ),
                   ),
               ]),
