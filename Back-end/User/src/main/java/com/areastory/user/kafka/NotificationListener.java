@@ -49,6 +49,7 @@ public class NotificationListener {
                 .articleId(notificationKafkaDto.getArticleId())
                 .commentId(notificationKafkaDto.getCommentId())
                 .userId(notificationKafkaDto.getUserId())
+                .otherUserId(notificationKafkaDto.getOtherUserId())
                 .type(notificationKafkaDto.getType())
                 .build();
         notificationService.addNotification(notificationDto);

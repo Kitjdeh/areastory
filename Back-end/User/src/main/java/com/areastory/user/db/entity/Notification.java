@@ -31,6 +31,7 @@ public class Notification extends BaseTime {
     private Long commentId;
     @Column(name = "user_id")
     private Long userId;
+    private Long otherUserId;
     private String type;
 
     public void check() {

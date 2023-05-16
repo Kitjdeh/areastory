@@ -20,5 +20,6 @@ public class NotificationDto{
     private Long articleId;
     private Long commentId;
     private Long userId;
-    private String type; 
+    private String type;
+    private Long otherUserId;
 }
