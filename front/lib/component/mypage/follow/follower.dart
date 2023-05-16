@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:front/api/follow/create_following.dart';
+import 'package:front/api/follow/delete_following.dart';
 import 'package:front/api/mypage/get_follower.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/mypage_screen.dart';
@@ -21,7 +23,8 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
   List<dynamic> _followers = [];
   bool nextPage = true; // 다음페이지를 불러올 수 있는가?
   bool _isLoading = false; // 로딩 중인지 여부
-  Map<String, bool> followStatusMap = {}; //팔로잉 버튼 와리가리
+  Map<String, bool> followStatusMap = {}; //팔로워 버튼 와리가리
+  Map<String, bool> followingStatusMap = {}; //팔로잉 버튼 와리가리
   final storage = new FlutterSecureStorage();
   String? myId;
 
@@ -46,6 +49,7 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
       _followers.addAll(followerData.followers);
       followerData.followers.forEach((user) {
         followStatusMap[user.userId.toString()] = false;
+        followingStatusMap[user.userId.toString()] = user.check;
       });
     });
     print("최초의 팔로워목록 요청했습니다.");
@@ -61,6 +65,7 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
       _isLoading = false; // 로딩 완료 상태로 설정
       followersData.followers.forEach((user) {
         followStatusMap[user.userId.toString()] = false;
+        followingStatusMap[user.userId.toString()] = user.check;
       });
     });
     print("팔로워 목록 요청했습니다");
@@ -292,13 +297,36 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
                     ),
                   ),
                 ),
-
-
-
                 /// 버튼은 분기처리해야함.(팔로잉 해제)
                 if (myId == widget.userId)
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    // padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: IconButton(
+                      onPressed: () {
+                        print("팔로워 상태 변경합니다.");
+                        if (followingStatusMap[userId] == true) {
+                          print("팔로잉 취소합니다. userId: $userId");
+                          deleteFollowing(followingId: int.parse(userId));
+                        }else{
+                          print("팔로잉 신청합니다. userId: $userId");
+                          postFollowing(followingId: int.parse(userId));
+                        }
+                        setState(() {
+                          followingStatusMap[userId] = !followingStatusMap[userId]!;
+                        });
+                      },
+                      icon: followingStatusMap[userId] == false
+                          ? Icon(Icons.group_add)
+                          : Icon(Icons.group_remove)
+                    ),
+                  ),
+
+
+
+                /// 버튼은 분기처리해야함.(팔로워 해제)
+                if (myId == widget.userId)
+                  Container(
+                    padding: EdgeInsets.only(right: 20),
                     child: IconButton(
                       onPressed: () {
                         print("팔로워 상태 변경합니다.");
@@ -307,11 +335,6 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
                           // deleteFollower(followerId: int.parse(userId));
                           showDeleteConfirmationDialog(userId);
                         }
-                        // setState(() {
-                        //   if (followStatusMap[userId] == false) {
-                        //     followStatusMap[userId] = true;
-                        //   }
-                        // });
                       },
                       icon: followStatusMap[userId] == false
                           ? ImageData(IconsPath.deleteOnIcon)

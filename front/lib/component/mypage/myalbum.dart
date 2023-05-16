@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/mypage/get_userArticles.dart';
+import 'package:front/component/mypage/articles/detail_articles.dart';
+import 'package:front/component/sns/article/article_detail.dart';
+import 'package:get/get.dart';
 
 class MyAlbum extends StatefulWidget {
   MyAlbum({Key? key, required this.userId}) : super(key: key);
@@ -143,8 +146,15 @@ class _MyAlbumState extends State<MyAlbum> {
     // double? height,
   }) {
     return GestureDetector(
-      onTap: () {
-        print(articleId);
+        onTap: () {
+          print("게시글상세 띄웁니다. articleId: $articleId");
+          Get.to(() => AlbumDetail(articleId: articleId));
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => AlbumDetail(articleId: articleId),
+          //   ),
+          // );
       },
       child: Container(
         // child: Text(articleId.toString()),

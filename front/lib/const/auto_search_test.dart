@@ -70,6 +70,16 @@ class _LocationSearchState extends State<LocationSearch> {
         children: [
           Expanded(
             child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 5,
+              ),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
               height: 30,
               child: Autocomplete<String>(
                 initialValue: TextEditingValue(
@@ -91,10 +101,15 @@ class _LocationSearchState extends State<LocationSearch> {
               ),
             ),
           ),
+          SizedBox(
+            width: 10,
+          ),
           GestureDetector(
             onTap: () {
-              if (_selectedLocation != null) {
+              if (_selectedLocation != '') {
                 widget.onLocationSelected(_selectedLocation!);
+              } else {
+                widget.onLocationSelected(widget.location);
               }
             },
             child: ImageData(
@@ -103,7 +118,7 @@ class _LocationSearchState extends State<LocationSearch> {
             ),
           ),
           // SizedBox(
-          //   width: 10,
+          //   width: 5,
           // ),
           // GestureDetector(
           //   onTap: () async {
@@ -111,6 +126,7 @@ class _LocationSearchState extends State<LocationSearch> {
           //   },
           //   child: ImageData(
           //     IconsPath.mylocation,
+          //     width: 80,
           //   ),
           // ),
         ],

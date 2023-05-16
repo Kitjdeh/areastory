@@ -4,6 +4,7 @@ import 'package:front/api/follow/delete_following.dart';
 import 'package:front/api/like/create_article_like.dart';
 import 'package:front/api/like/delete_article_like.dart';
 import 'package:front/api/sns/get_article.dart';
+import 'package:front/api/user/get_user.dart';
 import 'package:front/component/sns/comment_screen.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/mypage_screen.dart';
@@ -13,13 +14,13 @@ class ArticleDetailComponent extends StatefulWidget {
   final int articleId;
   final int userId;
   final double height;
-  final String location;
+  String? location;
 
   ArticleDetailComponent({
     required this.articleId,
     required this.userId,
     required this.height,
-    required this.location,
+    this.location,
     Key? key,
   }) : super(key: key);
 
@@ -28,6 +29,19 @@ class ArticleDetailComponent extends StatefulWidget {
 }
 
 class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
+  late final profile;
+
+  @override
+  void initState() {
+    super.initState();
+    getProfile();
+  }
+
+  void getProfile() async {
+    final mine = await getUser(userId: widget.userId);
+    profile = mine.profile;
+  }
+
   void createFollowing(followingId) async {
     await postFollowing(followingId: followingId);
     setState(() {});
@@ -46,12 +60,6 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
   void delArticleLike(articleId) async {
     await deleteArticleLike(articleId: articleId);
     setState(() {});
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
   }
 
   @override
@@ -129,7 +137,9 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                         ),
                                       ),
                                       Text(
-                                        '${widget.location}',
+                                        widget.location != null
+                                            ? '${widget.location}'
+                                            : '${snapshot.data!.dosi} ${snapshot.data!.sigungu} ${snapshot.data!.dongeupmyeon}',
                                         style: TextStyle(
                                           color: Colors.black,
                                         ),
@@ -140,6 +150,76 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                               ),
                               Row(
                                 children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            snapshot.data!.totalLikeCount
+                                                .toString(),
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              snapshot.data!.likeYn
+                                                  ? delArticleLike(
+                                                      widget.articleId)
+                                                  : createArticleLike(
+                                                      widget.articleId);
+                                            },
+                                            child: ImageData(
+                                              snapshot.data!.likeYn
+                                                  ? IconsPath.likeOnIcon
+                                                  : IconsPath.likeOffIcon,
+                                              width: 102,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            snapshot.data!.commentCount
+                                                .toString(),
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              showModalBottomSheet(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return SnsCommentScreen(
+                                                    articleId: widget.articleId,
+                                                    userId: widget.userId,
+                                                    profile: profile,
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            child: ImageData(
+                                              IconsPath.replyIcon,
+                                              width: 95,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
                                   if (widget.userId != snapshot.data!.userId)
                                     GestureDetector(
                                       onTap: () {
@@ -181,91 +261,6 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                   child: SizedBox(),
                                 ),
                                 Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 16.0,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              snapshot.data!.likeYn
-                                                  ? delArticleLike(
-                                                      widget.articleId)
-                                                  : createArticleLike(
-                                                      widget.articleId);
-                                            },
-                                            child: ImageData(
-                                              snapshot.data!.likeYn
-                                                  ? IconsPath.likeOnIcon
-                                                  : IconsPath.likeOffIcon,
-                                              width: 60,
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            snapshot.data!.totalLikeCount
-                                                .toString(),
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 16.0,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              showModalBottomSheet(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return SnsCommentScreen(
-                                                      articleId:
-                                                          widget.articleId,
-                                                      userId: widget.userId);
-                                                },
-                                              );
-                                            },
-                                            child: ImageData(
-                                              IconsPath.replyIcon,
-                                              width: 60,
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            snapshot.data!.commentCount
-                                                .toString(),
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
                                   flex: 2,
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -294,12 +289,14 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SnsScreen(
-                                                          location:
-                                                              widget.location,
-                                                          userId: widget.userId
-                                                              .toString()),
+                                                  builder: (context) => SnsScreen(
+                                                      location: widget
+                                                                  .location !=
+                                                              null
+                                                          ? widget.location
+                                                          : '${snapshot.data!.dosi} ${snapshot.data!.sigungu} ${snapshot.data!.dongeupmyeon}',
+                                                      userId: widget.userId
+                                                          .toString()),
                                                 ),
                                               );
                                             },

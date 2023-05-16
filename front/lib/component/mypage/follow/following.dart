@@ -274,8 +274,8 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
                     });
                   },
                   icon: followStatusMap[userId] == false
-                      ? ImageData(IconsPath.deleteOnIcon)
-                      : ImageData(IconsPath.deleteOffIcon),
+                      ? Icon(Icons.group_remove)
+                      : Icon(Icons.group_add)
                 ),
               ),
           ],

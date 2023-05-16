@@ -6,6 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:front/api/map/mapdata.dart';
+import 'package:front/component/alarm/alarm_screen.dart';
 import 'package:front/component/alarm/toast.dart';
 import 'package:front/component/map/customoverlay.dart';
 import 'package:front/component/sns/article/article_detail.dart';
@@ -223,8 +224,9 @@ class _CustomMapState extends State<_CustomMap> {
     await Future.forEach(widget.smallareaData, (mapdata) {
       if (ifpolygoninside(mylatlng!, mapdata.polygons!)) {
         String result = mapdata.mapinfo!.values.join(' ');
-        // toast(context, "내위치: ${result}");
+        toast(context, "내위치: ${result}");
         Strlocation = result;
+        storage.write(key: "userlocation", value: Strlocation);
       }
     });
   }
@@ -708,48 +710,17 @@ class _CustomMapState extends State<_CustomMap> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   FloatingActionButton(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        isScrollControlled: true,
-                        builder: (BuildContext context) {
-                          getAlarm(userId ?? 2);
-                          return SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child: Center(
-                              child: FutureBuilder<Object>(
-                                  future: null,
-                                  builder: (context, snapshot) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white30,
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                      ),
-                                      child: ListView.separated(
-                                        // controller: _scrollController,
-                                        itemCount: 4,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return Container(
-                                            height: 50,
-                                            alignment: Alignment.center,
-                                            child:
-                                                const CircularProgressIndicator(),
-                                          );
-                                        },
+                    onPressed: () async {
+                      final strUser = await storage.read(key: "userId");
+                      final userId = await int.parse(strUser!);
 
-                                        separatorBuilder: (context, index) {
-                                          return SizedBox(height: 20);
-                                        },
-                                      ),
-                                    );
-                                  }),
-                            ),
-                          );
-                        },
-                      );
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AlarmScreen(
+                                    userId: userId,
+                                    signal: '1',
+                                  )));
                     },
                     child: Container(
                       // decoration: BoxDecoration(
