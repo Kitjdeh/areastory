@@ -326,8 +326,10 @@ class _MyPageScreenState extends State<MyPageScreen>
                       child: CircularProgressIndicator(),
                     );
                   } else if (snapshot.hasData) {
-                    final bool isFollowing = snapshot.data!.followYn == true || followYn == true;
-                    final bool isNotFollowing = snapshot.data!.followYn == false || followYn == false;
+                    final bool isFollowing =
+                        snapshot.data!.followYn == true || followYn == true;
+                    final bool isNotFollowing =
+                        snapshot.data!.followYn == false || followYn == false;
 
                     return Row(
                       children: [
@@ -374,8 +376,8 @@ class _MyPageScreenState extends State<MyPageScreen>
                               ),
                             ),
                           ),
-                    ],
-                  );
+                      ],
+                    );
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {

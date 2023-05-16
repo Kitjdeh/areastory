@@ -148,7 +148,7 @@ class _MyAlbumState extends State<MyAlbum> {
     return GestureDetector(
         onTap: () {
           print("게시글상세 띄웁니다. articleId: $articleId");
-          Get.to(() => AlbumDetail(articleId: articleId));
+          Get.to(() => AlbumDetail(articleId: articleId, userId: int.parse(myId!), followingId: int.parse(widget.userId),));
           // Navigator.push(
           //   context,
           //   MaterialPageRoute(

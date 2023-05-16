@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/follow/create_following.dart';
+import 'package:front/api/follow/delete_follower.dart';
 import 'package:front/api/follow/delete_following.dart';
 import 'package:front/api/mypage/get_follower.dart';
 import 'package:front/constant/home_tabs.dart';
@@ -127,7 +128,7 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
               child: Text('확인'),
               onPressed: () {
                 print("팔로워 취소합니다?");
-                // deleteFollower(followerId: int.parse(userId)); // 팔로워 취소 함수 호출
+                deleteFollower(followerId: int.parse(userId)); // 팔로워 취소 함수 호출
                 setState(() {
                   followStatusMap[userId] = true; // 팔로워 상태 업데이트
                 });

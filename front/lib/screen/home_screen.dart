@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/controllers/bottom_nav_controller.dart';
+import 'package:front/controllers/follow_screen_controller.dart';
 import 'package:front/controllers/map_test_controller.dart';
 import 'package:front/screen/camera_screen.dart';
 import 'package:front/screen/follow_screen.dart';
@@ -21,6 +22,8 @@ class HomeScreen extends GetView<BottomNavController> {
   // 읍, 면, 동 단위 데이터 입력 리스트
   List<Mapdata> smallareaData = [];
   final MapTempController _mapTempController = Get.put(MapTempController());
+  final FollowController _followController = Get.put(FollowController());
+
 
   Future<void> loadmapdata(String link) async {
     List<List<LatLng>> _polygon = [];
@@ -112,8 +115,8 @@ class HomeScreen extends GetView<BottomNavController> {
                 keyname: keyname,
                 fullname: areaname,
                 polygons: _polygonLatLong,
-                urls: randomurl[cnt % 5]);
-            // urls: '');
+                // urls: randomurl[cnt % 5]);
+            urls: '');
             localareadata != null ? allareaData.add(localareadata!) : null;
             cnt = cnt + 1;
           }
@@ -139,8 +142,8 @@ class HomeScreen extends GetView<BottomNavController> {
               keyname: keyname,
               fullname: areaname,
               polygons: _polygonLatLong,
-              urls: randomurl[cnt % 5]);
-          // urls: '');
+              // urls: randomurl[cnt % 5]);
+          urls: '');
           localareadata != null ? allareaData.add(localareadata!) : null;
           cnt = cnt + 1;
         }
@@ -166,9 +169,9 @@ class HomeScreen extends GetView<BottomNavController> {
 
   Future<bool> fetchData() async {
     bool data = false;
-    await loadmapdata('asset/map/ctp_korea.geojson');
-    await loadmapdata('asset/map/sigungookorea.json');
-    await loadmapdata('asset/map/minimal.json');
+    // await loadmapdata('asset/map/ctp_korea.geojson');
+    // await loadmapdata('asset/map/sigungookorea.json');
+    // await loadmapdata('asset/map/minimal.json');
     // Change to API call
     await _mapTempController.fetchData();
     await Future.delayed(Duration(milliseconds: 100), () {

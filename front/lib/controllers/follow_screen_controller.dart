@@ -1,32 +1,80 @@
-import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+import 'package:front/api/follow/get_followings_sort.dart';
 import 'package:front/api/sns/get_follow_articles.dart';
+import 'package:front/component/sns/avatar_widget.dart';
+import 'package:front/component/sns/post_widget.dart';
+import 'package:front/constant/home_tabs.dart';
+import 'package:front/controllers/follow_screen_controller.dart';
+import 'package:get/get.dart';
+import 'package:front/screen/mypage_screen.dart';
 
 class FollowController extends GetxController {
+  bool _isToggleOn = false; // 토글 상태 변수
+  Duration _animationDuration = Duration(milliseconds: 300);
+
   int _currentPage = 1;
-  bool _hasNextPage = false;
-  bool _isFirstLoadRunning = false;
-  bool _isLoadMoreRunning = false;
-  int _lastPage = 0;
+  bool hasNextPage = false;
+  bool isFirstLoadRunning = false;
+  bool isLoadMoreRunning = false;
   List articles = [];
-  List _followings = [];
+  List followings = [];
+
+  late int userId;
+  late ScrollController scrollController = ScrollController();
+
+  void init(userId){
+    print("팔로우컨트롤러 진짜 돌아가요---------------------------");
+    scrollController.addListener(loadMoreData);
+    this.userId = userId;
+    printArticles();
+    update();
+  }
+
+  void dispose(){
+    scrollController.removeListener(loadMoreData);
+    update();
+  }
 
 
   void printArticles() async {
-    print("오모나 세상에나");
+    isFirstLoadRunning = true;
+    update();
     _currentPage = 1;
     articles.clear();
-    final articleData = await getFollowArticles(page: _currentPage);
+    followings.clear();
+    final articleData = await getFollowArticles(
+      page: _currentPage,
+    );
+    final followData = await getFollowingsSort();
+
     articles.addAll(articleData.articles);
-    _lastPage = articleData.totalPageNumber;
-    update(); // 상태 변경을 리스너에게 알립니다
+    followings.addAll(followData);
+    hasNextPage = articleData.nextPage;
+    isFirstLoadRunning = false;
+    update();
+    print("팔로우컨트롤러${articles.length}");
   }
 
   void loadMoreData() async {
-    _currentPage++;
-    final newArticles = await getFollowArticles(page: _currentPage);
-    articles.addAll(newArticles.articles);
-    _lastPage = newArticles.totalPageNumber;
-    update(); // 상태 변경을 리스너에게 알립니다
+    if (hasNextPage == true &&
+        isFirstLoadRunning == false &&
+        isLoadMoreRunning == false &&
+        scrollController.position.extentAfter < 3000) {
+      isLoadMoreRunning = true;
+      update();
+      _currentPage += 1;
+      final newArticles = await getFollowArticles(
+        page: _currentPage,
+      );
+      articles.addAll(newArticles.articles);
+      hasNextPage = newArticles.nextPage;
+      isLoadMoreRunning = false;
+      update();
+    }
+  }
+
+  void ondelete(int articleId) {
+    update();
   }
 
 }
