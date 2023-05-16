@@ -102,8 +102,8 @@ class MapTempController extends GetxController {
                 keyname: keyname,
                 fullname: areaname,
                 polygons: _polygonLatLong,
-                urls: randomurl[cnt % 5]);
-            // urls: '');
+                // urls: randomurl[cnt % 5]);
+            urls: '');
             localareadata != null ? allareaData.add(localareadata!) : null;
             cnt = cnt + 1;
           }
@@ -129,8 +129,8 @@ class MapTempController extends GetxController {
               keyname: keyname,
               fullname: areaname,
               polygons: _polygonLatLong,
-              urls: randomurl[cnt % 5]);
-          // urls: '');
+              // urls: randomurl[cnt % 5]);
+          urls: '');
           localareadata != null ? allareaData.add(localareadata!) : null;
           cnt = cnt + 1;
         }

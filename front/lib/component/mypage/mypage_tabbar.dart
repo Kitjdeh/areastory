@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:front/component/mypage/myalbum.dart';
+import 'package:front/component/mypage/mymap.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/constant/mypage_tabs.dart';
+import 'package:front/controllers/map_test_controller.dart';
+import 'package:get/get.dart';
 
-class MypageTabbar extends StatefulWidget {
-  const MypageTabbar({Key? key, required this.userId}) : super(key: key);
+class MypageTabbar extends StatefulWidget {   MypageTabbar({Key? key, required this.userId}) : super(key: key);
   final String userId;
 
   @override
@@ -15,6 +17,7 @@ class _MypageTabbarState extends State<MypageTabbar>
     with TickerProviderStateMixin {
   late TabController mypagecontroller;
   int _currentIndex = 0;
+  final MapTempController _mapTempController = Get.find<MapTempController>();
 
   @override
   void initState() {
@@ -59,7 +62,10 @@ class _MypageTabbarState extends State<MypageTabbar>
               child: TabBarView(
                 controller: mypagecontroller,
                   physics: NeverScrollableScrollPhysics(), // 슬라이드 이동 비활성화
-                  children: [MyAlbum(userId: widget.userId), Text("지도는 준비중입니다.")]),
+                  children: [MyAlbum(userId: widget.userId), MyMap(             bigareaData: _mapTempController.bigareaData,
+                    middleareaData: _mapTempController.middleareaData,
+                    smallareaData: _mapTempController.smallareaData
+                      )]),
             )
           ],
         ),
@@ -67,3 +73,4 @@ class _MypageTabbarState extends State<MypageTabbar>
     );
   }
 }
+

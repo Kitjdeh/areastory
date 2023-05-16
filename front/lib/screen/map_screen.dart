@@ -86,16 +86,14 @@ class _MapScreenState extends State<MapScreen> {
                 return Column(
                   children: [
                     Expanded(child: GetBuilder<MapTempController>(
-                      builder: (controller){
+                      builder: (controller) {
                         return _CustomMap(
-                              bigareaData: _mapTempController.bigareaData,
-                              middleareaData: _mapTempController.middleareaData,
-                              smallareaData: _mapTempController.smallareaData,
+                          bigareaData: _mapTempController.bigareaData,
+                          middleareaData: _mapTempController.middleareaData,
+                          smallareaData: _mapTempController.smallareaData,
                         );
                       },
-                    )
-
-                    )
+                    ))
                     // Expanded(
                     //   child: _CustomMap(
                     //     bigareaData: bigareaData,
@@ -223,7 +221,7 @@ class _CustomMapState extends State<_CustomMap> {
     await mapController.move(mylatlng ?? companyLatLng, _zoom);
     print(_zoom);
     await Future.forEach(widget.smallareaData, (mapdata) {
-      if (ifpolygoninsdie(mylatlng!, mapdata.polygons!)) {
+      if (ifpolygoninside(mylatlng!, mapdata.polygons!)) {
         String result = mapdata.mapinfo!.values.join(' ');
         // toast(context, "내위치: ${result}");
         Strlocation = result;
@@ -260,7 +258,7 @@ class _CustomMapState extends State<_CustomMap> {
   //   }
   // }
 
-  bool ifpolygoninsdie(LatLng points, List<LatLng> polygons) {
+  bool ifpolygoninside(LatLng points, List<LatLng> polygons) {
     int intersectCount = 0;
     for (int j = 0; j < polygons.length - 1; j++) {
       if (rayCastIntersect(points, polygons[j], polygons[j + 1])) {
@@ -522,11 +520,13 @@ class _CustomMapState extends State<_CustomMap> {
                 nowallareadata = widget.middleareaData;
                 Strlocation;
                 await Future.forEach(widget.smallareaData, (mapdata) {
-                  if (ifpolygoninsdie(mylatlng!, mapdata.polygons!)) {
+                  if (ifpolygoninside(mylatlng!, mapdata.polygons!)) {
                     String result = mapdata.mapinfo!.values.join(' ');
-                    // toast(context, "내위치: ${result}");
+                    toast(context, "내위치: ${result}");
+
                     Strlocation = result;
                   }
+                  print("현위치: ${mapdata.mapinfo!.values.join(' ')}");
                 });
                 await storage.write(key: "userlocation", value: Strlocation);
                 final bounds = mapController.bounds;
@@ -579,14 +579,15 @@ class _CustomMapState extends State<_CustomMap> {
               onPositionChanged: (pos, hasGesture) {
                 if (_debounce?.isActive ?? false) _debounce!.cancel();
                 _debounce = Timer(debounceDuration, () async {
-                  print("mapController.zoom${mapController.zoom}");
+
                   // nowallareadata = widget.smallareaData;
                   await _zoom > 13.0
                       ? nowallareadata = widget.smallareaData
-                      : _zoom > 9.0
+                      : _zoom > 10.0
                           ? nowallareadata = widget.middleareaData
                           : nowallareadata = widget.bigareaData;
                   print('posistionchanged 작동함');
+                  print("mapController.zoom${mapController.zoom}");
                   List<Map<String, String>> requestlist = [];
                   // print('nowallareadata${nowallareadata.length}');
                   // 현재 보이는 화면의 경계를 계산
@@ -622,6 +623,7 @@ class _CustomMapState extends State<_CustomMap> {
                     // print(
                     //     'resultareakey${result[areakey]!.image} e ${e} areakey${areakey}');
                     final url = result[areakey]!.image ?? e.urls;
+                    print(url);
                     final ariticleid = result[areakey]!.articleId ?? 0;
                     final mapinfo = e.mapinfo;
                     final fullname = e.fullname;
@@ -657,8 +659,8 @@ class _CustomMapState extends State<_CustomMap> {
                     polygons: [
                       Polygon(
                         isFilled: false,
-                        color: Colors.green,
-                        borderColor: Colors.green,
+                        color: Colors.white,
+                        borderColor: Colors.white,
                         points: mapdata.polygons!,
                         borderStrokeWidth: 3.0,
                       ),
@@ -670,9 +672,9 @@ class _CustomMapState extends State<_CustomMap> {
                       child: PolylineLayer(
                           polylines: widget.middleareaData
                               .map((e) => Polyline(
-                                    borderStrokeWidth: 4.0,
+                                    borderStrokeWidth: 5.0,
                                     points: e.polygons!,
-                                    borderColor: Colors.blue,
+                                    borderColor: Colors.grey,
                                   ))
                               .toList()),
                     )
@@ -680,9 +682,10 @@ class _CustomMapState extends State<_CustomMap> {
                       child: PolylineLayer(
                           polylines: widget.bigareaData
                               .map((e) => Polyline(
-                                    borderStrokeWidth: 4.0,
+                                    borderStrokeWidth: 5.0,
                                     points: e.polygons!,
-                                    borderColor: Colors.red,
+                                    borderColor: Colors.grey,
+                                    color: Colors.grey
                                   ))
                               .toList()),
                     ),
