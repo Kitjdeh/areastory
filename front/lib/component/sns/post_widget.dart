@@ -8,6 +8,7 @@ import 'package:front/api/like/create_article_like.dart';
 import 'package:front/api/like/delete_article_like.dart';
 import 'package:front/api/sns/delete_article.dart';
 import 'package:front/api/sns/get_article.dart';
+import 'package:front/api/user/get_user.dart';
 import 'package:front/component/sns/article_update_screen.dart';
 import 'package:front/component/sns/avatar_widget.dart';
 import 'package:front/component/sns/comment_screen.dart';
@@ -35,6 +36,19 @@ class ArticleComponent extends StatefulWidget {
 }
 
 class _ArticleComponentState extends State<ArticleComponent> {
+  late final profile;
+
+  @override
+  void initState() {
+    super.initState();
+    getProfile();
+  }
+
+  void getProfile() async {
+    final mine = await getUser(userId: widget.userId);
+    profile = mine.profile;
+  }
+
   void createFollowing(followingId) async {
     await postFollowing(followingId: followingId);
     setState(() {});
@@ -264,6 +278,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
                           builder: (context) => SnsCommentScreen(
                                 articleId: widget.articleId,
                                 userId: widget.userId,
+                                profile: profile,
                               )));
                 },
                 child: ImageData(
@@ -329,6 +344,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
                   builder: (context) => SnsCommentScreen(
                         articleId: widget.articleId,
                         userId: widget.userId,
+                        profile: profile,
                       )));
         },
         child: Text(

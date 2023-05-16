@@ -4,20 +4,26 @@ import 'package:front/api/alarm/patch_alarms.dart';
 import 'package:front/component/alarm/alarm.dart';
 
 class AlarmScreen extends StatefulWidget {
-  const AlarmScreen({Key? key, required this.userId}) : super(key: key);
+  const AlarmScreen({
+    Key? key,
+    required this.userId,
+    this.signal,
+  }) : super(key: key);
   final int userId;
+  final String? signal;
 
   @override
   State<AlarmScreen> createState() => _AlarmScreenState();
 }
 
 class _AlarmScreenState extends State<AlarmScreen> {
-  int _currentPage = 1;
+  int _currentPage = 0;
   bool _hasNextPage = false;
   bool _isFirstLoadRunning = false;
   bool _isLoadMoreRunning = false;
-
   List _alarms = [];
+  String signal = '';
+
   late ScrollController _controller;
 
   @override
@@ -26,6 +32,25 @@ class _AlarmScreenState extends State<AlarmScreen> {
     _controller = ScrollController();
     printAlarms();
     _controller.addListener(_loadMoreData);
+    signal = widget.signal!;
+  }
+
+  @override
+  void didUpdateWidget(covariant AlarmScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.signal != widget.signal) {
+      setState(() {
+        signal = widget.signal!;
+      });
+      handleSignal(signal);
+    }
+  }
+
+  void handleSignal(String signal) {
+    if (signal == '1') {
+      printAlarms();
+      signal = '';
+    }
   }
 
   void cheAlarms() async {
@@ -42,7 +67,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
     setState(() {
       _isFirstLoadRunning = true;
     });
-    _currentPage = 1;
+    _currentPage = 0;
     _alarms.clear();
     final alarmData = await getAlarms(
       userId: widget.userId,
@@ -60,7 +85,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
     if (_hasNextPage == true &&
         _isFirstLoadRunning == false &&
         _isLoadMoreRunning == false &&
-        _controller.position.extentAfter < 3000)
+        _controller.position.extentAfter < 1000)
       setState(() {
         _isLoadMoreRunning = true;
       });
@@ -107,12 +132,21 @@ class _AlarmScreenState extends State<AlarmScreen> {
             },
           ),
           actions: [
-            ElevatedButton(
-              onPressed: () {
-                cheAlarms();
-              },
-              child: Text('모든 알림 체크'),
-            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 10,
+              ),
+              child: ElevatedButton(
+                onPressed: () {
+                  cheAlarms();
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
+                ),
+                child: Text('모든 알림 체크'),
+              ),
+            )
           ],
         ),
         body: Column(
@@ -153,6 +187,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
                         Container(
                           padding: const EdgeInsets.only(bottom: 10),
                           color: Colors.white,
+                          height: 100,
                           child: const Center(
                             child: Text('더이상 알림이 없습니다'),
                           ),

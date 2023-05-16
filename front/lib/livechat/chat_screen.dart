@@ -16,12 +16,14 @@ class LiveChatScreen extends StatefulWidget {
   final int userId;
   final String roomId;
   final String roomName;
+  final String? profile;
 
   const LiveChatScreen({
     Key? key,
     required this.userId,
     required this.roomId,
     required this.roomName,
+    this.profile,
   }) : super(key: key);
 
   @override
@@ -183,7 +185,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
           color: Colors.black,
           onPressed: () {
             _disconnect;
-            Get.find<BottomNavController>().willPopAction();
+            Navigator.of(context).pop();
           },
         ),
       ),

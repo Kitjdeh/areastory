@@ -35,41 +35,6 @@ Widget _myStory() {
   );
 }
 
-Widget _postList({
-  required int userId,
-  required void Function(int articleId) onDelete,
-  required int height,
-  required List articles,
-  required int currentPage,
-  required int lastPage,
-  required void Function() loadMoreData,
-}) {
-  return Column(
-    children: List.generate(
-      articles.length + 1,
-      (index) {
-        if (index < articles.length) {
-          return ArticleComponent(
-            userId: userId,
-            onDelete: onDelete,
-            articleId: articles[index].articleId,
-            followingId: articles[index].userId,
-            height: 350,
-          );
-        } else if (currentPage < lastPage!) {
-          loadMoreData();
-          return Container(
-            height: 50,
-            alignment: Alignment.center,
-            child: const CircularProgressIndicator(),
-          );
-        }
-        return SizedBox
-            .shrink(); // Return an empty widget if the condition is not met
-      },
-    ),
-  );
-}
 
 Widget _storyBoardList({
   required List followings,
@@ -123,7 +88,6 @@ class _FollowScreenState extends State<FollowScreen> {
   bool _hasNextPage = false;
   bool _isFirstLoadRunning = false;
   bool _isLoadMoreRunning = false;
-  int _lastPage = 0;
   List _articles = [];
   List _followings = [];
   String signal = '';
@@ -185,7 +149,6 @@ class _FollowScreenState extends State<FollowScreen> {
 
     _articles.addAll(articleData.articles);
     _followings.addAll(followData);
-    _articles.addAll(articleData.articles);
     _hasNextPage = articleData.nextPage;
     setState(() {
       _isFirstLoadRunning = false;
@@ -217,35 +180,6 @@ class _FollowScreenState extends State<FollowScreen> {
     setState(() {});
   }
 
-  Widget _buildBody() {
-    if (_isToggleOn) {
-      // 토글 상태에 따라 다른 body를 반환
-      return FollowMapScreen();
-    } else {
-      return RefreshIndicator(
-        onRefresh: () {
-          return Future<void>.delayed(Duration(seconds: 2), () {
-            printArticles();
-          });
-        },
-        child: ListView(
-          children: [
-            _storyBoardList(followings: _followings),
-            _postList(
-              userId: userId,
-              onDelete: onDelete,
-              height: 350,
-              articles: _articles,
-              loadMoreData: _loadMoreData,
-              currentPage: _currentPage,
-              lastPage: _lastPage,
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -262,75 +196,54 @@ class _FollowScreenState extends State<FollowScreen> {
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: _toggleSwitch, // 토글 버튼 클릭 시 토글 상태 변경
-            icon: Icon(
-              _isToggleOn
-                  ? Icons.toggle_on
-                  : Icons.toggle_off, // 토글 상태에 따라 아이콘 변경
-              color: Colors.black,
-            ),
-          ),
-        ],
 
         /// 앱바 그림자효과 제거
       ),
-      body: _buildBody(),
+      body: _isFirstLoadRunning
+          ? const Center(
+              child: const CircularProgressIndicator(),
+            )
+          : RefreshIndicator(
+              onRefresh: () {
+                return Future<void>.delayed(Duration(seconds: 2), () {
+                  printArticles();
+                });
+              },
+              child: ListView(
+                controller: _controller,
+                children: [
+                  _storyBoardList(followings: _followings),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: List.generate(
+                      _articles.length,
+                      (index) => ArticleComponent(
+                        userId: userId,
+                        onDelete: onDelete,
+                        articleId: _articles[index].articleId,
+                        followingId: _articles[index].userId,
+                        height: 300,
+                      ),
+                    ),
+                  ),
+                  if (_isLoadMoreRunning)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, bottom: 40),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  if (!_isLoadMoreRunning && !_hasNextPage)
+                    Container(
+                      padding: const EdgeInsets.only(top: 30, bottom: 40),
+                      color: Colors.white,
+                      child: const Center(
+                        child: Text('더이상 게시글이 없습니다'),
+                      ),
+                    ),
+                ],
+              ),
+            ),
     );
-    // RefreshIndicator(
-    //   onRefresh: () {
-    //     return Future<void>.delayed(Duration(seconds: 2), () {
-    //       printArticles();
-    //     });
-    //   },
-    //   child: ListView(
-    //     children: [
-    //       _storyBoardList(followings: _followings),
-    //       _postList(
-    //         userId: userId,
-    //         onDelete: onDelete,
-    //         height: 350,
-    //         articles: _articles,
-    //         loadMoreData: _loadMoreData,
-    //         currentPage: _currentPage,
-    //         lastPage: _lastPage,
-    //       ),
-    //     ],
-    //   ),
-    // )
-    // );
-    // body: GetBuilder<FollowController>(
-    //   builder: (controller) {
-    //     return ListView(
-    //       children: [
-    //         _storyBoardList(followings: _followings),
-    //         _postList(
-    //           userId: userId,
-    //           onDelete: onDelete,
-    //           height: 350,
-    //           articles: _followController.articles,
-    //           loadMoreData: _loadMoreData,
-    //           currentPage: _currentPage,
-    //           lastPage: _lastPage,
-    //         ),
-    //       ],
-    //     );
-    //   })
-    // body: ListView(
-    //   children: [
-    //     _storyBoardList(followings: _followings),
-    //     _postList(
-    //       userId: userId,
-    //       onDelete: onDelete,
-    //       height: 350,
-    //       articles: _articles,
-    //       loadMoreData: _loadMoreData,
-    //       currentPage: _currentPage,
-    //       lastPage: _lastPage,
-    //     ),
-    //   ],
-    // ),
-    // ));
   }
 }

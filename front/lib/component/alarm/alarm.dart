@@ -43,8 +43,7 @@ class _AlarmComponentState extends State<AlarmComponent> {
 
   void delAlarm(notificationId) async {
     await deleteAlarm(notificationId: notificationId);
-    setState(() {});
-    // widget.onDelete(commentId);
+    widget.onDelete(notificationId);
   }
 
   String _formatDate(dynamic createdAt) {
@@ -75,67 +74,89 @@ class _AlarmComponentState extends State<AlarmComponent> {
   Widget _profile({
     required String type,
     required String title,
-    required String userId,
-    required int articleId,
+    required int otherUserId,
+    int? articleId,
     required bool checked,
   }) {
     return FutureBuilder<UserData>(
-      future: getUser(userId: widget.userId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          // 로딩중일 때 표시할 위젯
-          return CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          // 에러가 발생했을 때 표시할 위젯
-          return Text('에러 발생: ${snapshot.error}');
-        } else if (!snapshot.hasData) {
-          // 데이터가 없을 때 표시할 위젯
-          return Text('데이터가 없습니다.');
-        } else {
-          return Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MyPageScreen(userId: userId)));
-                },
-                child: AvatarWidget(
-                  type: AvatarType.TYPE1,
-                  thumbPath: snapshot.data!.profile,
-                  size: 30,
-                ),
-              ),
-              GestureDetector(
+        future: getUser(userId: otherUserId),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Row(
+              children: [
+                GestureDetector(
                   onTap: () {
-                    if (!checked) {
-                      cheAlarm(widget.notificationId);
-                    }
-                    if (type == 'comment' ||
-                        type == 'article-like' ||
-                        type == 'comment-like') {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ArticleDetailComponent(
-                                  articleId: articleId,
-                                  userId: widget.userId,
-                                  height: 500)));
-                    } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  MyPageScreen(userId: userId)));
-                    }
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                MyPageScreen(userId: otherUserId.toString())));
                   },
-                  child: Text('${snapshot.data!.nickname}님이 $title')),
-            ],
-          );
-        }
-      },
-    );
+                  child: AvatarWidget(
+                    type: AvatarType.TYPE1,
+                    thumbPath: snapshot.data!.profile,
+                    size: 30,
+                  ),
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      if (!checked) {
+                        cheAlarm(widget.notificationId);
+                      }
+                      if (type == 'comment' ||
+                          type == 'article-like' ||
+                          type == 'comment-like') {
+                        showModalBottomSheet(
+                          context: context,
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true,
+                          builder: (BuildContext context) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: GestureDetector(
+                                onTap: () {},
+                                child: SizedBox(
+                                  height: MediaQuery.of(context).size.height,
+                                  child: Center(
+                                    child: ArticleDetailComponent(
+                                      articleId: articleId!,
+                                      userId: widget.userId,
+                                      height: 500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      } else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyPageScreen(
+                                    userId: otherUserId.toString())));
+                      }
+                    },
+                    child: Text(
+                      title,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          } else if (snapshot.hasError) {
+            return Container(
+              height: 0,
+            );
+          } else {
+            return Container(
+              height: 0,
+            );
+          }
+        });
   }
 
   @override
@@ -146,45 +167,59 @@ class _AlarmComponentState extends State<AlarmComponent> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Container(
-              color: snapshot.data!.checked ? Colors.white : Colors.grey,
+              color: snapshot.data!.checked ? Colors.grey : Colors.white,
               padding: const EdgeInsets.all(16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _profile(
-                    type: snapshot.data!.type,
-                    title: snapshot.data!.title,
-                    userId: snapshot.data!.userId.toString(),
-                    articleId: snapshot.data!.articleId,
-                    checked: snapshot.data!.checked,
+                  Expanded(
+                    flex: 8,
+                    child: _profile(
+                      type: snapshot.data!.type,
+                      title: snapshot.data!.title,
+                      otherUserId: snapshot.data!.otherUserId!,
+                      articleId: snapshot.data!.articleId,
+                      checked: snapshot.data!.checked,
+                    ),
                   ),
-                  Row(
-                    children: [
-                      Text(
-                        _formatDate(snapshot.data!.createdAt),
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
+                  Expanded(
+                    flex: 2,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          _formatDate(snapshot.data!.createdAt),
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          delAlarm(snapshot.data!.notificationId);
-                        },
-                        child: ImageData(
-                          IconsPath.delete,
-                          width: 60,
+                        SizedBox(
+                          width: 5,
                         ),
-                      ),
-                    ],
+                        GestureDetector(
+                          onTap: () {
+                            delAlarm(snapshot.data!.notificationId);
+                          },
+                          child: ImageData(
+                            IconsPath.delete,
+                            width: 60,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             );
           } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
+            return Container(
+              height: 0,
+            );
           } else {
-            return Container();
+            return Container(
+              height: 0,
+            );
           }
         });
   }

@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:front/api/follow/get_followings_sort.dart";
+import "package:front/api/user/get_user.dart";
 import "package:front/component/sns/avatar_widget.dart";
 import "package:front/component/sns/post_widget.dart";
 import "package:front/constant/home_tabs.dart";
@@ -93,6 +94,7 @@ class _SnsScreenState extends State<SnsScreen> {
   String seletedLocationSigungu = '';
   String seletedLocationDongeupmyeon = '';
   String dropdownValue = '인기순';
+  late final profile;
   late Map<String, int> socketLocation;
 
   late final userId = int.parse(widget.userId);
@@ -109,6 +111,12 @@ class _SnsScreenState extends State<SnsScreen> {
     }
     _loadOptions();
     _controller.addListener(_loadMoreData);
+    getProfile();
+  }
+
+  void getProfile() async {
+    final mine = await getUser(userId: int.parse(widget.userId));
+    profile = mine.profile;
   }
 
   void _loadOptions() async {
@@ -326,6 +334,7 @@ class _SnsScreenState extends State<SnsScreen> {
                             roomName: seletedLocationSigungu != ''
                                 ? seletedLocationSigungu
                                 : seletedLocationDosi,
+                            profile: profile,
                           )));
             },
             child: Row(

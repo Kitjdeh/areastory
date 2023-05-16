@@ -713,6 +713,7 @@ class _CustomMapState extends State<_CustomMap> {
                           MaterialPageRoute(
                               builder: (context) => AlarmScreen(
                                     userId: userId,
+                                    signal: '1',
                                   )));
                     },
                     child: Container(
