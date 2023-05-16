@@ -8,15 +8,13 @@ import java.util.List;
 
 public interface ArticleRepositorySupport {
 
-    List<LocationResp> getUserArticleList(Long userId, List<LocationDto> locationList);
-
-    List<LocationResp> getDongeupmyeon();
-
-    List<LocationResp> getSigungu();
-
-    List<LocationResp> getDosi();
 
     LocationResp getDailyLikeCountData(String type, Long articleId, LocationDto locationDto, Long dailyLikeCount);
 
-//    List<Article> test();
+    List<LocationResp> getInitDosi();
+
+    List<LocationResp> getInitSigungu();
+
+    List<LocationResp> getInitDongeupmyeon();
+
 }
