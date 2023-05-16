@@ -295,7 +295,9 @@ class _MyAppState extends State<MyApp> {
           appBarTheme: AppBarTheme(
               iconTheme: IconThemeData(
         color: Colors.black,
-      ))),
+      )),
+        fontFamily: "SUIT",
+      ),
       initialBinding: InitBinding(userId: widget.userId),
       home: HomeScreen(userId: widget.userId),
     );

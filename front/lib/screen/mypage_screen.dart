@@ -27,8 +27,8 @@ class _MyPageScreenState extends State<MyPageScreen>
   String? myId;
   late TabController tabController;
   int? cntArticles;
-  late bool followYn;
   late String? selectedReportType = "불건전한 닉네임";
+  late bool followYn = false;
 
   void setMyId() async {
     myId = await storage.read(key: "userId");
@@ -49,10 +49,13 @@ class _MyPageScreenState extends State<MyPageScreen>
     return _buildMyPageScreen();
   }
 
-  void _toggleFollowing() {
+  void _toggleFollowing(val) {
     // 팔로잉 상태를 토글하는 함수
     setState(() {
-      followYn = !followYn;
+      if (followYn == null)
+        followYn = val;
+      else
+        followYn = !followYn!;
     });
   }
 
@@ -237,7 +240,8 @@ class _MyPageScreenState extends State<MyPageScreen>
               onPressed: () async {
                 print("신고하기");
                 // await _showReportDialog();
-                final msg = await reportUser(targetUserId: int.parse(widget.userId));
+                final msg =
+                    await reportUser(targetUserId: int.parse(widget.userId));
                 print(msg);
                 toast(context, msg.toString());
               },
@@ -316,6 +320,9 @@ class _MyPageScreenState extends State<MyPageScreen>
                       child: CircularProgressIndicator(),
                     );
                   } else if (snapshot.hasData) {
+                    final bool isFollowing = snapshot.data!.followYn == true || followYn == true;
+                    final bool isNotFollowing = snapshot.data!.followYn == false || followYn == false;
+
                     return Row(
                       children: [
                         Text(
@@ -329,23 +336,38 @@ class _MyPageScreenState extends State<MyPageScreen>
                         const SizedBox(
                           width: 20,
                         ),
-                        if(myId != widget.userId)
+                        if (myId == widget.userId && isNotFollowing)
                           TextButton(
                             onPressed: () {
-                              // 버튼이 클릭되었을 때 수행할 동작
+                              _toggleFollowing(snapshot.data!.followYn);
                               print("팔로잉신청합니다..");
                             },
                             child: Text(
-                              "팔로잉",
+                              "팔로잉하기",
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 15,
+                                fontSize: 10,
                                 color: Colors.blue,
                               ),
                             ),
                           ),
-                      ],
-                    );
+                        if (myId == widget.userId && isFollowing)
+                          TextButton(
+                            onPressed: () {
+                              _toggleFollowing(snapshot.data!.followYn);
+                              print("팔로잉취소합니다.");
+                            },
+                            child: Text(
+                              "팔로잉취소",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                    ],
+                  );
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {

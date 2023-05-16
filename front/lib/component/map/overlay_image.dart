@@ -126,6 +126,7 @@ class OverlayImage extends CustomOverlayImage {
       width: bounds.size.x.toDouble(),
       height: bounds.size.y.toDouble(),
       child: DecoratedBox(
+
         child: Center(
           child: Text(
             '${localname}',
@@ -134,14 +135,16 @@ class OverlayImage extends CustomOverlayImage {
           ),
         ),
         decoration: ShapeDecoration(
+          color:Colors.blue,
           image: DecorationImage(
               image:
-                  // AssetImage(url)
+                  // AssetImage('asset/video/sangjunseoyong.PNG')
                   NetworkImage(url)
               // AssetImage('asset/img/doji.jpg')
               ,
               // opacity: 0.5,
-              fit: BoxFit.cover),
+              fit: BoxFit.cover
+          ),
           shape: newpolygon.PolygonBorder(
             polygon: polygon,
             // polygon: polygon,

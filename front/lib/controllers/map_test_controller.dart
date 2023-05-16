@@ -1,26 +1,16 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:front/constant/home_tabs.dart';
-import 'package:front/controllers/bottom_nav_controller.dart';
-import 'package:front/controllers/map_test_controller.dart';
-import 'package:front/screen/camera_screen.dart';
-import 'package:front/screen/follow_screen.dart';
 import 'package:front/screen/map_screen.dart';
-import 'package:front/screen/mypage_screen.dart';
-import 'package:front/screen/sns_screen.dart';
 import 'package:geojson/geojson.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 
-class HomeScreen extends GetView<BottomNavController> {
-  HomeScreen({Key? key, required this.userId}) : super(key: key);
-  final String userId;
+class MapTempController extends GetxController {
   List<Mapdata> bigareaData = [];
   // 시,군, 구 단위 데이터 입력 리스트
   List<Mapdata> middleareaData = [];
   // 읍, 면, 동 단위 데이터 입력 리스트
   List<Mapdata> smallareaData = [];
-  final MapTempController _mapTempController = Get.put(MapTempController());
+
 
   Future<void> loadmapdata(String link) async {
     List<List<LatLng>> _polygon = [];
@@ -165,123 +155,18 @@ class HomeScreen extends GetView<BottomNavController> {
   }
 
   Future<bool> fetchData() async {
+    print("자 지도함수 돌아갑니다~ 감자 고구마");
     bool data = false;
     await loadmapdata('asset/map/ctp_korea.geojson');
     await loadmapdata('asset/map/sigungookorea.json');
     await loadmapdata('asset/map/minimal.json');
     // Change to API call
-    await _mapTempController.fetchData();
     await Future.delayed(Duration(milliseconds: 100), () {
       data = true;
     });
+    print("자 지도함수 끝~ 고구마 고구마");
+    update();
     return data;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    /// willPopScore: 뒤로가기 이벤트 처리할때 사용한다.
-    return FutureBuilder<Object>(
-        future: fetchData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return WillPopScope(
-                child: Obx(
-                  () => Scaffold(
-                    body: SafeArea(
-                      child: IndexedStack(
-                        index: controller.pageIndex.value,
-                        children: [
-                          MapScreen(
-                            bigareaData: bigareaData,
-                            middleareaData: middleareaData,
-                            smallareaData: smallareaData,
-                          ),
-                          Navigator(
-                            key: controller.snsPageNavigationKey,
-                            onGenerateRoute: (routeSetting) {
-                              return MaterialPageRoute(
-                                builder: (context) => SnsScreen(userId: userId),
-                              );
-                            },
-                          ),
-                          CameraScreen(userId: userId),
-                          Navigator(
-                            key: controller.followPageNavigationKey,
-                            onGenerateRoute: (routeSetting) {
-                              return MaterialPageRoute(
-                                builder: (context) =>
-                                    FollowScreen(userId: userId),
-                              );
-                            },
-                          ),
-                          Navigator(
-                            key: controller.myPageNavigationKey,
-                            onGenerateRoute: (routeSetting) {
-                              return MaterialPageRoute(
-                                builder: (context) =>
-                                    MyPageScreen(userId: userId),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    bottomNavigationBar: BottomNavigationBar(
-                      /// 바텀 내브바 css효과들 건드릴때 쓰십쇼
-                      type: BottomNavigationBarType.fixed,
-                      showUnselectedLabels: false,
-                      showSelectedLabels: false,
-                      elevation: 0,
-
-                      /// 앞으로 어디선가 컨트롤러값을 변경시킬때는 쓰세요.
-                      currentIndex: controller.pageIndex.value,
-                      onTap: controller.changeBottomNav,
-                      items: [
-                        BottomNavigationBarItem(
-                          icon: ImageData(IconsPath.mapOff),
-                          activeIcon: ImageData(IconsPath.mapOn),
-                          label: 'map',
-                        ),
-                        BottomNavigationBarItem(
-                          icon: ImageData(IconsPath.articlesOff),
-                          activeIcon: ImageData(IconsPath.articlesOn),
-                          label: 'articles',
-                        ),
-                        BottomNavigationBarItem(
-                          icon: ImageData(IconsPath.uploadOff),
-                          label: 'upload',
-                        ),
-                        BottomNavigationBarItem(
-                          icon: ImageData(IconsPath.followOff),
-                          activeIcon: ImageData(IconsPath.followOn),
-                          label: 'follow',
-                        ),
-                        BottomNavigationBarItem(
-                          icon: ImageData(IconsPath.mypageOff),
-                          activeIcon: ImageData(IconsPath.mypageOn),
-                          label: 'mypage',
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                onWillPop: controller.willPopAction);
-          } else {
-            return Center(
-              child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage('asset/img/login_logo.png'),
-                        fit: BoxFit.cover),
-                  ),
-                  child: Scaffold(
-                    body: Center(child: Text('잠시만 기다려 주세요')),
-                    backgroundColor: Colors.grey[300],
-                  )),
-            );
-          }
-        });
-  }
 }

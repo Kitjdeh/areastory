@@ -10,6 +10,7 @@ import 'package:front/component/alarm/alarm_screen.dart';
 import 'package:front/component/alarm/toast.dart';
 import 'package:front/component/map/customoverlay.dart';
 import 'package:front/component/sns/article/article_detail.dart';
+import 'package:front/controllers/map_test_controller.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geojson/geojson.dart';
 import 'package:image_editor/image_editor.dart';
@@ -20,8 +21,8 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svg_provider;
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:debounce_throttle/debounce_throttle.dart';
-
-import '../api/alarm/get_alarms.dart';
+import 'package:get/get.dart';
+import '../api/alarm/get_alarm.dart';
 
 String sangjunurl = 'https://source.unsplash.com/random/?party';
 String seoul2url = 'https://source.unsplash.com/random/?cat';
@@ -59,14 +60,16 @@ class _MapScreenState extends State<MapScreen> {
   List<Mapdata> bigareaData = [];
   List<Mapdata> middleareaData = [];
   List<Mapdata> smallareaData = [];
+  final MapTempController _mapTempController = Get.find<MapTempController>();
+
   @override
   void initState() {
     super.initState();
-    setState(() {
-      bigareaData = widget.bigareaData;
-      middleareaData = widget.middleareaData;
-      smallareaData = widget.smallareaData;
-    });
+    // setState(() {
+    //   bigareaData = widget.bigareaData;
+    //   middleareaData = widget.middleareaData;
+    //   smallareaData = widget.smallareaData;
+    // });
   }
 
   void _getData() {}
@@ -83,13 +86,22 @@ class _MapScreenState extends State<MapScreen> {
               if (snapshot.data == '위치 권한이 허가되었습니다.') {
                 return Column(
                   children: [
-                    Expanded(
-                      child: _CustomMap(
-                        bigareaData: bigareaData,
-                        middleareaData: middleareaData,
-                        smallareaData: smallareaData,
-                      ),
-                    ),
+                    Expanded(child: GetBuilder<MapTempController>(
+                      builder: (controller) {
+                        return _CustomMap(
+                          bigareaData: _mapTempController.bigareaData,
+                          middleareaData: _mapTempController.middleareaData,
+                          smallareaData: _mapTempController.smallareaData,
+                        );
+                      },
+                    ))
+                    // Expanded(
+                    //   child: _CustomMap(
+                    //     bigareaData: bigareaData,
+                    //     middleareaData: middleareaData,
+                    //     smallareaData: smallareaData,
+                    //   ),
+                    // ),
                   ],
                   // children: [_ChoolCheckButton()],
                 );
@@ -176,7 +188,7 @@ class _CustomMapState extends State<_CustomMap> {
   Position? mypoisition;
   LatLng? mylatlng;
   String? Strlocation;
-  double _zoom = 12.0;
+  double _zoom = 11.0;
   int? userId;
   final storage = new FlutterSecureStorage();
   final LatLng companyLatLng = LatLng(37.5013, 127.0397);
@@ -212,7 +224,7 @@ class _CustomMapState extends State<_CustomMap> {
     await Future.forEach(widget.smallareaData, (mapdata) {
       if (ifpolygoninsdie(mylatlng!, mapdata.polygons!)) {
         String result = mapdata.mapinfo!.values.join(' ');
-        toast(context, "내위치: ${result}");
+        // toast(context, "내위치: ${result}");
         Strlocation = result;
       }
     });
@@ -291,6 +303,7 @@ class _CustomMapState extends State<_CustomMap> {
               ? nowallareadata = widget.middleareaData
               : nowallareadata = widget.bigareaData;
     });
+
     print('posistionchanged 작동함');
     List<Map<String, String>> requestlist = [];
     // print('nowallareadata${nowallareadata.length}');
@@ -478,6 +491,7 @@ class _CustomMapState extends State<_CustomMap> {
         ),
       );
     }
+
     return Expanded(
       flex: 1,
       child: Stack(
@@ -504,7 +518,6 @@ class _CustomMapState extends State<_CustomMap> {
                 mylatlng =
                     await LatLng(mypoisition!.latitude, mypoisition!.longitude);
                 List<Map<String, String>> requestlist = [];
-
                 nowallareadata = widget.middleareaData;
                 Strlocation;
                 await Future.forEach(widget.smallareaData, (mapdata) {
@@ -515,7 +528,6 @@ class _CustomMapState extends State<_CustomMap> {
                   }
                 });
                 await storage.write(key: "userlocation", value: Strlocation);
-
                 final bounds = mapController.bounds;
                 final sw = bounds!.southWest;
                 final ne = bounds!.northEast;
@@ -535,6 +547,8 @@ class _CustomMapState extends State<_CustomMap> {
 
                 // Future<Map<String, AreaData>>result =
                 // await postAreaData(requestlist);
+
+                //--------post-----------
                 Map<String, AreaData> result = await postAreaData(requestlist);
                 List<Mapdata> newvisibleMapdata = [];
                 // print('응답${result}');
@@ -558,11 +572,14 @@ class _CustomMapState extends State<_CustomMap> {
                 setState(() {
                   nowareadata = newvisibleMapdata;
                 });
+
+                //-----post----------
               },
               onPositionChanged: (pos, hasGesture) {
                 if (_debounce?.isActive ?? false) _debounce!.cancel();
                 _debounce = Timer(debounceDuration, () async {
                   print("mapController.zoom${mapController.zoom}");
+                  // nowallareadata = widget.smallareaData;
                   await _zoom > 13.0
                       ? nowallareadata = widget.smallareaData
                       : _zoom > 9.0
@@ -584,15 +601,17 @@ class _CustomMapState extends State<_CustomMap> {
                           point.longitude <= ne!.longitude;
                     });
                   }).toList();
-                  // nowareadata = visibleMapdata;
-                  //
-                  // setState(() {
-                  //   nowareadata = visibleMapdata;
-                  // });
+                  nowareadata = visibleMapdata;
+
+                  setState(() {
+                    nowareadata = visibleMapdata;
+                  });
                   await Future.forEach(visibleMapdata, (e) {
                     requestlist.add(e.mapinfo!);
                   });
                   var A = visibleMapdata.map((e) => e.mapinfo).toList();
+
+                  //----------------------------------post-----
                   Map<String, AreaData> result =
                       await postAreaData(requestlist);
                   List<Mapdata> newvisibleMapdata = [];
@@ -620,6 +639,7 @@ class _CustomMapState extends State<_CustomMap> {
                   setState(() {
                     nowareadata = newvisibleMapdata;
                   });
+                  //--------------------post-------------
                 });
               },
             ),
