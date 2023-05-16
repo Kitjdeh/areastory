@@ -42,6 +42,10 @@ public class NotificationListener {
                 body = "터치하여 " + notificationKafkaDto.getOtherUsername() + "님에 대해 알아보세요";
                 break;
         }
+
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println(notificationKafkaDto.getCreatedAt());
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         NotificationDto notificationDto = NotificationDto.builder()
                 .title(title)
                 .body(body)
