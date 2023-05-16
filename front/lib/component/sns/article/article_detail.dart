@@ -4,6 +4,7 @@ import 'package:front/api/follow/delete_following.dart';
 import 'package:front/api/like/create_article_like.dart';
 import 'package:front/api/like/delete_article_like.dart';
 import 'package:front/api/sns/get_article.dart';
+import 'package:front/api/user/get_user.dart';
 import 'package:front/component/sns/comment_screen.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/mypage_screen.dart';
@@ -28,6 +29,19 @@ class ArticleDetailComponent extends StatefulWidget {
 }
 
 class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
+  late final profile;
+
+  @override
+  void initState() {
+    super.initState();
+    getProfile();
+  }
+
+  void getProfile() async {
+    final mine = await getUser(userId: widget.userId);
+    profile = mine.profile;
+  }
+
   void createFollowing(followingId) async {
     await postFollowing(followingId: followingId);
     setState(() {});
@@ -46,12 +60,6 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
   void delArticleLike(articleId) async {
     await deleteArticleLike(articleId: articleId);
     setState(() {});
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
   }
 
   @override
@@ -240,9 +248,10 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                                 builder:
                                                     (BuildContext context) {
                                                   return SnsCommentScreen(
-                                                      articleId:
-                                                          widget.articleId,
-                                                      userId: widget.userId);
+                                                    articleId: widget.articleId,
+                                                    userId: widget.userId,
+                                                    profile: profile,
+                                                  );
                                                 },
                                               );
                                             },

@@ -65,11 +65,12 @@ class Notification {
   final bool? checked;
   final String? title;
   final String? body;
-  final DateTime? createdAt;
+  final String? createdAt;
   final int? articleId;
   final int? commentId;
   final int? userId;
   final String type;
+  final int? otherUserId;
 
   Notification({
     this.notificationId,
@@ -80,6 +81,7 @@ class Notification {
     this.articleId,
     this.commentId,
     this.userId,
+    this.otherUserId,
     required this.type,
   });
 
@@ -89,10 +91,11 @@ class Notification {
       checked: json["checked"],
       title: json["title"],
       body: json["body"],
-      createdAt: DateTime.parse(json['createdAt']),
+      createdAt: json['createdAt'],
       articleId: json["articleId"],
       commentId: json["commentId"],
       userId: json["userId"],
+      otherUserId: json["otherUserId"],
       type: json["type"],
     );
   }
