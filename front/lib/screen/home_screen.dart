@@ -112,8 +112,8 @@ class HomeScreen extends GetView<BottomNavController> {
                 keyname: keyname,
                 fullname: areaname,
                 polygons: _polygonLatLong,
-                urls: randomurl[cnt % 5]);
-            // urls: '');
+                // urls: randomurl[cnt % 5]);
+            urls: '');
             localareadata != null ? allareaData.add(localareadata!) : null;
             cnt = cnt + 1;
           }
@@ -139,8 +139,8 @@ class HomeScreen extends GetView<BottomNavController> {
               keyname: keyname,
               fullname: areaname,
               polygons: _polygonLatLong,
-              urls: randomurl[cnt % 5]);
-          // urls: '');
+              // urls: randomurl[cnt % 5]);
+          urls: '');
           localareadata != null ? allareaData.add(localareadata!) : null;
           cnt = cnt + 1;
         }
@@ -166,9 +166,9 @@ class HomeScreen extends GetView<BottomNavController> {
 
   Future<bool> fetchData() async {
     bool data = false;
-    await loadmapdata('asset/map/ctp_korea.geojson');
-    await loadmapdata('asset/map/sigungookorea.json');
-    await loadmapdata('asset/map/minimal.json');
+    // await loadmapdata('asset/map/ctp_korea.geojson');
+    // await loadmapdata('asset/map/sigungookorea.json');
+    // await loadmapdata('asset/map/minimal.json');
     // Change to API call
     await _mapTempController.fetchData();
     await Future.delayed(Duration(milliseconds: 100), () {
