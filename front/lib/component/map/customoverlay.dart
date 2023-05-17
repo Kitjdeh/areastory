@@ -27,12 +27,14 @@ class CustomPolygonLayer extends StatelessWidget {
   final int userId;
   final String area;
   final int articleId;
+  final bool entitle;
 
   /// screen space culling of polygons based on bounding box
   final bool polygonCulling;
 
   CustomPolygonLayer(
       {super.key,
+        required this.entitle,
       this.polygons = const [],
       this.area = '',
       this.polygonCulling = false,
@@ -95,6 +97,7 @@ class CustomPolygonLayer extends StatelessWidget {
           // ];
           final customoverlayImages = <CustomOverlay.CustomOverlayImage>[
             CustomOverlay.OverlayImage(
+              entitle: entitle,
               area: area,
               url: urls[cnt],
               offset: polygon.offsets,
