@@ -62,4 +62,7 @@ class IconsPath {
   static String get nowlocation => 'asset/img/nowlocation.png';
   static String get zoomIn => 'asset/img/zoomIn.png';
   static String get zoomOut => 'asset/img/zoomOut.png';
+  static String get like => 'asset/img/like.png';
+  static String get nolike => 'asset/img/nolike.png';
+  static String get comment => 'asset/img/comment.png';
 }

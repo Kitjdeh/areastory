@@ -96,27 +96,28 @@ class _LocationSearchState extends State<LocationSearch> {
                 onSelected: (String selection) {
                   setState(() {
                     _selectedLocation = selection;
+                    widget.onLocationSelected(_selectedLocation!);
                   });
                 },
               ),
             ),
           ),
-          SizedBox(
-            width: 10,
-          ),
-          GestureDetector(
-            onTap: () {
-              if (_selectedLocation != '') {
-                widget.onLocationSelected(_selectedLocation!);
-              } else {
-                widget.onLocationSelected(widget.location);
-              }
-            },
-            child: ImageData(
-              IconsPath.findlocation,
-              width: 80,
-            ),
-          ),
+          // SizedBox(
+          //   width: 10,
+          // ),
+          // GestureDetector(
+          //   onTap: () {
+          //     if (_selectedLocation != '') {
+          //       widget.onLocationSelected(_selectedLocation!);
+          //     } else {
+          //       widget.onLocationSelected(widget.location);
+          //     }
+          //   },
+          //   child: ImageData(
+          //     IconsPath.findlocation,
+          //     width: 80,
+          //   ),
+          // ),
           // SizedBox(
           //   width: 5,
           // ),

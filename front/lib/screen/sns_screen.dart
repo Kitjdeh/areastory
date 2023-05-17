@@ -173,7 +173,7 @@ class _SnsScreenState extends State<SnsScreen> {
       } else if (locationParts.length == 3) {
         if (locationParts[2][locationParts[2].length - 1] == "구") {
           seletedLocationDosi = locationParts[0];
-          seletedLocationSigungu = locationParts[1] + locationParts[2];
+          seletedLocationSigungu = locationParts[1] + ' ' + locationParts[2];
         } else {
           seletedLocationDosi = locationParts[0];
           seletedLocationSigungu = locationParts[1];
@@ -181,7 +181,7 @@ class _SnsScreenState extends State<SnsScreen> {
         }
       } else {
         seletedLocationDosi = locationParts[0];
-        seletedLocationSigungu = locationParts[1] + locationParts[2];
+        seletedLocationSigungu = locationParts[1] + ' ' + locationParts[2];
         seletedLocationDongeupmyeon = locationParts[3];
       }
     }
@@ -249,7 +249,7 @@ class _SnsScreenState extends State<SnsScreen> {
     } else if (locationParts.length == 3) {
       if (locationParts[2][locationParts[2].length - 1] == "구") {
         seletedLocationDosi = locationParts[0];
-        seletedLocationSigungu = locationParts[1] + locationParts[2];
+        seletedLocationSigungu = locationParts[1] + ' ' + locationParts[2];
       } else {
         seletedLocationDosi = locationParts[0];
         seletedLocationSigungu = locationParts[1];
@@ -257,7 +257,7 @@ class _SnsScreenState extends State<SnsScreen> {
       }
     } else {
       seletedLocationDosi = locationParts[0];
-      seletedLocationSigungu = locationParts[1] + locationParts[2];
+      seletedLocationSigungu = locationParts[1] + ' ' + locationParts[2];
       seletedLocationDongeupmyeon = locationParts[3];
     }
 
@@ -295,7 +295,7 @@ class _SnsScreenState extends State<SnsScreen> {
     } else if (locationParts.length == 3) {
       if (locationParts[2][locationParts[2].length - 1] == "구") {
         seletedLocationDosi = locationParts[0];
-        seletedLocationSigungu = locationParts[1] + locationParts[2];
+        seletedLocationSigungu = locationParts[1] + ' ' + locationParts[2];
       } else {
         seletedLocationDosi = locationParts[0];
         seletedLocationSigungu = locationParts[1];
@@ -303,7 +303,7 @@ class _SnsScreenState extends State<SnsScreen> {
       }
     } else {
       seletedLocationDosi = locationParts[0];
-      seletedLocationSigungu = locationParts[1] + locationParts[2];
+      seletedLocationSigungu = locationParts[1] + ' ' + locationParts[2];
       seletedLocationDongeupmyeon = locationParts[3];
     }
 

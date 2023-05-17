@@ -150,87 +150,6 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                               ),
                               Row(
                                 children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            snapshot.data!.totalLikeCount
-                                                .toString(),
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              snapshot.data!.likeYn
-                                                  ? delArticleLike(
-                                                      widget.articleId)
-                                                  : createArticleLike(
-                                                      widget.articleId);
-                                            },
-                                            child: ImageData(
-                                              snapshot.data!.likeYn
-                                                  ? IconsPath.likeOnIcon
-                                                  : IconsPath.likeOffIcon,
-                                              width: 102,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            snapshot.data!.commentCount
-                                                .toString(),
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          SnsCommentScreen(
-                                                            articleId: widget
-                                                                .articleId,
-                                                            userId:
-                                                                widget.userId,
-                                                            profile: profile,
-                                                          )));
-                                              // showModalBottomSheet(
-                                              //   context: context,
-                                              //   builder:
-                                              //       (BuildContext context) {
-                                              //     return SnsCommentScreen(
-                                              //       articleId: widget.articleId,
-                                              //       userId: widget.userId,
-                                              //       profile: profile,
-                                              //     );
-                                              //   },
-                                              // );
-                                            },
-                                            child: ImageData(
-                                              IconsPath.replyIcon,
-                                              width: 95,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
                                   if (widget.userId != snapshot.data!.userId)
                                     GestureDetector(
                                       onTap: () {
@@ -281,52 +200,191 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                       padding: EdgeInsets.symmetric(
                                         horizontal: 10,
                                       ),
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              flex: 10,
-                                              child: Text(
-                                                snapshot.data!.content,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.normal,
-                                                  color: Colors.black,
-                                                ),
-                                                maxLines: 3,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => SnsScreen(
-                                                          location: widget
-                                                                      .location !=
-                                                                  null
-                                                              ? widget.location
-                                                              : '${snapshot.data!.dosi} ${snapshot.data!.sigungu} ${snapshot.data!.dongeupmyeon}',
-                                                          userId: widget.userId
-                                                              .toString()),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 8,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            snapshot.data!
+                                                                    .likeYn
+                                                                ? delArticleLike(
+                                                                    widget
+                                                                        .articleId)
+                                                                : createArticleLike(
+                                                                    widget
+                                                                        .articleId);
+                                                          },
+                                                          child: ImageData(
+                                                            snapshot.data!
+                                                                    .likeYn
+                                                                ? IconsPath
+                                                                    .like
+                                                                : IconsPath
+                                                                    .nolike,
+                                                            width: 102,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          snapshot.data!
+                                                              .totalLikeCount
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  );
-                                                },
-                                                child: ImageData(
-                                                  IconsPath.gosns,
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            SnsCommentScreen(
+                                                                              articleId: widget.articleId,
+                                                                              userId: widget.userId,
+                                                                              profile: profile,
+                                                                            )));
+                                                          },
+                                                          child: ImageData(
+                                                            IconsPath.comment,
+                                                            width: 95,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          snapshot.data!
+                                                              .commentCount
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  snapshot.data!.content,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    color: Colors.black,
+                                                  ),
+                                                  maxLines: 3,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                          Expanded(
+                                            flex: 3,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) => SnsScreen(
+                                                            location: widget
+                                                                        .location !=
+                                                                    null
+                                                                ? widget
+                                                                    .location
+                                                                : '${snapshot.data!.dosi} ${snapshot.data!.sigungu} ${snapshot.data!.dongeupmyeon}',
+                                                            userId: widget
+                                                                .userId
+                                                                .toString()),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      if (widget.location!
+                                                          .contains(snapshot
+                                                              .data!
+                                                              .dosi as Pattern))
+                                                        Text(
+                                                            '${snapshot.data!.dosi}'),
+                                                      if (widget.location!
+                                                          .contains(snapshot
+                                                                  .data!.sigungu
+                                                              as Pattern))
+                                                        Text(
+                                                            '${snapshot.data!.sigungu}'),
+                                                      if (widget.location!
+                                                          .contains(snapshot
+                                                                  .data!
+                                                                  .dongeupmyeon
+                                                              as Pattern))
+                                                        Text(
+                                                            '${snapshot.data!.dongeupmyeon}'),
+                                                      Text('SNS 가기'),
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) => SnsScreen(
+                                                            location: widget
+                                                                        .location !=
+                                                                    null
+                                                                ? widget
+                                                                    .location
+                                                                : '${snapshot.data!.dosi} ${snapshot.data!.sigungu} ${snapshot.data!.dongeupmyeon}',
+                                                            userId: widget
+                                                                .userId
+                                                                .toString()),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: ImageData(
+                                                    IconsPath.gosns,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
