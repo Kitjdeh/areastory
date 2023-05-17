@@ -9,6 +9,7 @@ class AreaData {
   final int? articleId;
   AreaData({this.locationDto, this.image, this.articleId});
   factory AreaData.fromJson(Map<String, dynamic> json) {
+    print('22');
     return AreaData(
         locationDto: Map<String, String?>.from(json["locationDto"]),
         image: json["image"],
