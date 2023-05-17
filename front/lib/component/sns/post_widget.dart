@@ -42,6 +42,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
   void initState() {
     super.initState();
     getProfile();
+    print("userId: ${widget.userId} followingId: ${widget.followingId}");
   }
 
   void getProfile() async {
