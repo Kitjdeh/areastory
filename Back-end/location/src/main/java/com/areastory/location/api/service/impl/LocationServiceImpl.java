@@ -7,6 +7,7 @@ import com.areastory.location.db.repository.ArticleRepository;
 import com.areastory.location.dto.common.LocationDto;
 import com.areastory.location.dto.response.LocationResp;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LocationServiceImpl implements LocationService {
     private final LocationMap locationMap;
     private final ArticleRepository articleRepository;
@@ -22,6 +24,10 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<LocationResp> getMapImages(List<LocationDto> locationList) {
+        log.info("넘어옴???????????????????");
+        for (LocationDto locationDto : locationList) {
+            log.info(locationDto.getDosi() + " " + locationDto.getSigungu() + " " + locationDto.getDongeupmyeon());
+        }
         return locationList.stream().map(o1 -> locationMap.getMap().get(new LocationDto(o1.getDosi(), o1.getSigungu(), o1.getDongeupmyeon()))).collect(Collectors.toList());
     }
 
