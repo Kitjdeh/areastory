@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:front/api/follow/create_following.dart';
+import 'package:front/api/follow/delete_following.dart';
 import 'package:front/api/login/delete_user.dart';
 import 'package:front/api/login/kakao/kakao_login.dart';
 import 'package:front/api/login/kakao/login_view_model.dart';
@@ -33,7 +35,20 @@ class _MyPageScreenState extends State<MyPageScreen>
   void setMyId() async {
     myId = await storage.read(key: "userId");
     tabController = TabController(length: 2, vsync: this);
+
+    final userData = await getUser(userId: int.parse(widget.userId));
+    setState(() {
+      followYn = userData.followYn;
+    });
   }
+
+  void chgtoggle(){
+    setState(() {
+      followYn = !followYn;
+    });
+  }
+
+
 
   @override
   void initState() {
@@ -47,16 +62,6 @@ class _MyPageScreenState extends State<MyPageScreen>
   @override
   Widget build(BuildContext context) {
     return _buildMyPageScreen();
-  }
-
-  void _toggleFollowing(val) {
-    // 팔로잉 상태를 토글하는 함수
-    setState(() {
-      if (followYn == null)
-        followYn = val;
-      else
-        followYn = !followYn!;
-    });
   }
 
   /// 유저 정보 위젯
@@ -215,6 +220,7 @@ class _MyPageScreenState extends State<MyPageScreen>
         children: [
           TextButton.icon(
             onPressed: () async {
+              // postFollowing(followingId: int.parse(widget.userId));
               await viewModel.logout();
               setState(() {});
 
@@ -338,14 +344,15 @@ class _MyPageScreenState extends State<MyPageScreen>
                         const SizedBox(
                           width: 20,
                         ),
-                        if (myId == widget.userId && isNotFollowing)
+                        if (myId != widget.userId && !followYn)
                           TextButton(
                             onPressed: () {
-                              _toggleFollowing(snapshot.data!.followYn);
-                              print("팔로잉신청합니다..");
+                              print("팔로잉신청합니다..${snapshot.data!.followYn}");
+                              postFollowing(followingId: int.parse(widget.userId));
+                              chgtoggle();
                             },
                             child: Text(
-                              "팔로잉하기",
+                              "팔로잉신청",
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 10,
@@ -353,18 +360,19 @@ class _MyPageScreenState extends State<MyPageScreen>
                               ),
                             ),
                           ),
-                        if (myId == widget.userId && isFollowing)
+                        if (myId != widget.userId && followYn)
                           TextButton(
                             onPressed: () {
-                              _toggleFollowing(snapshot.data!.followYn);
+                              deleteFollowing(followingId: int.parse(widget.userId));
                               print("팔로잉취소합니다.");
+                              chgtoggle();
                             },
                             child: Text(
                               "팔로잉취소",
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 10,
-                                color: Colors.blue,
+                                color: Colors.red,
                               ),
                             ),
                           ),

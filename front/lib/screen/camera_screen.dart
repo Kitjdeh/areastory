@@ -74,6 +74,7 @@ class _CameraScreenState extends State<CameraScreen> {
     // FollowScreen 컨트롤러의 printArticles 함수 실행
     // Get.find<FollowController>().printArticles();
     _followController.printArticles();
+
     /// 라우터 이동. 현재는 이전 라우터로 이동한다.
     // Navigator.push(
     //     context,
@@ -95,7 +96,7 @@ class _CameraScreenState extends State<CameraScreen> {
     final image = await picker.pickImage(source: imageSource);
     final storage = new FlutterSecureStorage();
     storedLocation = (await storage.read(key: "userlocation"))!;
-    // storedLocation = '서울특별시 강남구 역삼동';
+    // storedLocation = '서울특별시 영등포구 여의도동';
     setState(() {
       _image = File(image!.path);
     });
@@ -191,7 +192,7 @@ class _CameraScreenState extends State<CameraScreen> {
               ? GestureDetector(
                   child: ImageData(
                     IconsPath.camera,
-                    width: 270,
+                    width: MediaQuery.of(context).size.width,
                   ),
                   onTap: () {
                     getImage(ImageSource.camera);
@@ -240,8 +241,8 @@ class _CameraScreenState extends State<CameraScreen> {
             Container(
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.grey,
-                  width: 1.0,
+                  color: Colors.black,
+                  width: 2,
                 ),
                 borderRadius: BorderRadius.circular(8.0),
               ),
@@ -278,14 +279,19 @@ class _CameraScreenState extends State<CameraScreen> {
                   .black12, // Set the inactive track color to a dark shade of gray
             ),
             // 등록 버튼
-            ElevatedButton(
-              onPressed: () {
-                _image != null && !contentController.text.isEmpty
-                    ? createArticle(_image, contentController)
-                    : showCreateConfirmationDialog();
-              },
-              style: ElevatedButton.styleFrom(primary: Colors.black),
-              child: Text('등록'),
+            Material(
+              child: ElevatedButton(
+                onPressed: () {
+                  _image != null && !contentController.text.isEmpty
+                      ? createArticle(_image, contentController)
+                      : showCreateConfirmationDialog();
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
+                  elevation: 3,
+                ),
+                child: Text('등록'),
+              ),
             ),
           ],
         ),

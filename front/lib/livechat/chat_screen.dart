@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:front/api/mypage/get_userInfo.dart';
+import 'package:front/api/user/get_user.dart';
+import 'package:front/component/sns/avatar_widget.dart';
 import 'package:front/controllers/bottom_nav_controller.dart';
 import 'package:front/livechat/chat.dart';
 import 'package:front/livechat/enter_or_quit.dart';
@@ -13,12 +16,14 @@ class LiveChatScreen extends StatefulWidget {
   final int userId;
   final String roomId;
   final String roomName;
+  final String? profile;
 
   const LiveChatScreen({
     Key? key,
     required this.userId,
     required this.roomId,
     required this.roomName,
+    this.profile,
   }) : super(key: key);
 
   @override
@@ -32,6 +37,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
   late final StompClient _stompClient;
   bool _connected = false;
   int userCount = 0;
+  bool? textYn = false;
 
   @override
   void initState() {
@@ -113,6 +119,9 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
       );
       _messageController.clear();
     }
+    setState(() {
+      textYn = false;
+    });
   }
 
   void _disconnect() {
@@ -176,7 +185,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
           color: Colors.black,
           onPressed: () {
             _disconnect;
-            Get.find<BottomNavController>().willPopAction();
+            Navigator.of(context).pop();
           },
         ),
       ),
@@ -204,19 +213,53 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
           ),
           Row(
             children: [
+              AvatarWidget(
+                type: AvatarType.TYPE1,
+                thumbPath: widget.profile!,
+                size: 30,
+              ),
               Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
                   child: TextField(
                     controller: _messageController,
-                    decoration: InputDecoration(hintText: 'Type a message'),
+                    decoration: InputDecoration(
+                      hintText: '이야기를 작성해주세요',
+                      border: InputBorder.none,
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        textYn = value.isNotEmpty;
+                      });
+                    },
+                    maxLines: null, // maxLines 속성 제거
                   ),
                 ),
               ),
-              IconButton(
-                icon: Icon(Icons.send),
-                onPressed: _sendMessage,
+              SizedBox(
+                width: 5,
               ),
+              GestureDetector(
+                onTap: () {
+                  textYn! ? _sendMessage() : print('작성해줘');
+                },
+                child: Text(
+                  '게시',
+                  style: TextStyle(
+                    color: textYn! ? Colors.blue : Colors.black,
+                    fontSize: 23,
+                  ),
+                ),
+              )
             ],
           ),
         ],

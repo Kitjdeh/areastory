@@ -1,13 +1,13 @@
 flutter_native_splash:
   color: "#ffffff"
-  image: asset/img/login_logo.png
+  image: asset/img/splash/login_logo.png
 #  branding: asset/img/logo.png
 #  branding_mode: bottom
   fullscreen: true
   android: true
   android_12:
     color: "#ffffff"
-    image: asset/img/login_logo.png
+    image: asset/img/splash/login_logo.png
 #    branding: asset/img/logo.png
 #    branding_mode: bottom
     fullscreen: true
