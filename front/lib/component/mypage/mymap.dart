@@ -6,6 +6,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/api/map/mapdata.dart';
 import 'package:front/component/map/customoverlay.dart';
+import 'package:front/const/colors.dart';
+import 'package:front/const/colors.dart';
+import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/map_screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
@@ -177,13 +180,15 @@ class _MyMapState extends State<MyMap> {
       // print(mapdata.fullname);
       customPolygonLayers.add(
         CustomPolygonLayer(
+          entitle: false,
           userId: mapdata.articleId ?? 0,
           urls: [mapdata.urls ?? ''],
           area: mapdata.fullname ?? '',
           polygons: [
             Polygon(
-              isFilled: false,
-              borderColor: Colors.white30,
+              isFilled: true,
+              color: MYPAINTNG,
+              borderColor: MYMAPBORDER,
               points: mapdata.polygons!,
               borderStrokeWidth: 3.0,
             ),
@@ -277,18 +282,22 @@ class _MyMapState extends State<MyMap> {
                 //-----post----------
               },
               onPositionChanged: (pos, hasGesture) {
+                _zoom > 13.0
+                ? nowallareadata = widget.smallareaData
+                    : _zoom > 9.0
+                ? nowallareadata = widget.middleareaData
+                    : nowallareadata = widget.bigareaData;
                 if (_debounce?.isActive ?? false) _debounce!.cancel();
                 _debounce = Timer(debounceDuration, () async {
                   print("mapController.zoom${mapController.zoom}");
                   // nowallareadata = widget.smallareaData;
-                  await _zoom > 13.0
-                      ? nowallareadata = widget.smallareaData
-                      : _zoom > 9.0
-                          ? nowallareadata = widget.middleareaData
-                          : nowallareadata = widget.bigareaData;
+                  // await _zoom > 13.0
+                  //     ? nowallareadata = widget.smallareaData
+                  //     : _zoom > 9.0
+                  //         ? nowallareadata = widget.middleareaData
+                  //         : nowallareadata = widget.bigareaData;
                   print('posistionchanged 작동함');
                   List<Map<String, String>> requestlist = [];
-                  // print('nowallareadata${nowallareadata.length}');
                   // 현재 보이는 화면의 경계를 계산
                   final bounds = mapController.bounds!;
                   final ne = bounds.northEast;
@@ -303,18 +312,16 @@ class _MyMapState extends State<MyMap> {
                     });
                   }).toList();
                   nowareadata = visibleMapdata;
-
                   setState(() {
                     nowareadata = visibleMapdata;
                   });
                   await Future.forEach(visibleMapdata, (e) {
                     requestlist.add(e.mapinfo!);
                   });
-                  var A = visibleMapdata.map((e) => e.mapinfo).toList();
-
                   //----------------------------------post-----
                   Map<String, AreaData> result =
                       await postmyAreaData(requestlist, strUser ?? '');
+
                   List<Mapdata> newvisibleMapdata = [];
                   // print('result${result}');
                   await Future.forEach(visibleMapdata, (e) {
@@ -350,16 +357,17 @@ class _MyMapState extends State<MyMap> {
                 Opacity(
                   opacity: 0.8,
                   child: CustomPolygonLayer(
+                    entitle: false,
                     userId: userId ?? 0,
-                    articleId: mapdata.articleId ?? 1,
+                    articleId: mapdata.articleId ?? 0,
                     // articleId: [mapdata.articleId ?? 0 ],
                     urls: [mapdata.urls ?? ''],
                     area: mapdata.fullname ?? '',
                     polygons: [
                       Polygon(
                         isFilled: false,
-                        color: Colors.green,
-                        borderColor: Colors.green,
+                        color: MYMAPBORDER,
+                        borderColor: MYMAPBORDER,
                         points: mapdata.polygons!,
                         borderStrokeWidth: 3.0,
                       ),
@@ -371,20 +379,20 @@ class _MyMapState extends State<MyMap> {
                       child: PolylineLayer(
                           polylines: widget.middleareaData
                               .map((e) => Polyline(
-                                    borderStrokeWidth: 4.0,
-                                    points: e.polygons!,
-                                    borderColor: Colors.blue,
-                                  ))
+                                  borderStrokeWidth: 4.0,
+                                  points: e.polygons!,
+                                  borderColor: MYBIGBORDER,
+                                  color: MYBIGBORDER))
                               .toList()),
                     )
                   : IgnorePointer(
                       child: PolylineLayer(
                           polylines: widget.bigareaData
                               .map((e) => Polyline(
-                                    borderStrokeWidth: 4.0,
-                                    points: e.polygons!,
-                                    borderColor: Colors.red,
-                                  ))
+                                  borderStrokeWidth: 4.0,
+                                  points: e.polygons!,
+                                  borderColor: MYBIGBORDER,
+                                  color: MYBIGBORDER))
                               .toList()),
                     ),
               IgnorePointer(
@@ -393,94 +401,51 @@ class _MyMapState extends State<MyMap> {
                     CircleMarker(
                         point: mylatlng ?? companyLatLng,
                         radius: 5.0,
-                        color: Colors.red)
+                        color: Colors.blueAccent)
                   ],
                 ),
               )
             ],
           ),
           Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FloatingActionButton(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        isScrollControlled: true,
-                        builder: (BuildContext context) {
-                          // getAlarm(userId ?? 2);
-                          return SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child: Center(
-                              child: FutureBuilder<Object>(
-                                  future: null,
-                                  builder: (context, snapshot) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white30,
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                      ),
-                                      child: ListView.separated(
-                                        // controller: _scrollController,
-                                        itemCount: 4,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return Container(
-                                            height: 50,
-                                            alignment: Alignment.center,
-                                            child:
-                                                const CircularProgressIndicator(),
-                                          );
-                                        },
-
-                                        separatorBuilder: (context, index) {
-                                          return SizedBox(height: 20);
-                                        },
-                                      ),
-                                    );
-                                  }),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: Container(
-                      child: Icon(Icons.alarm),
-                    ),
-                    backgroundColor: Colors.transparent,
-                  )
-                ],
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     children: [
-                      FloatingActionButton(
-                        onPressed: () {
+                      GestureDetector(
+                        onTap: () {
                           mycenter();
                         },
-                        child: Text('*'),
-                      )
+                        child: ImageData(
+                          IconsPath.nowlocation,
+                          width: 250,
+                        ),
+                      ),
                     ],
                   ),
                   Column(
                     children: [
-                      FloatingActionButton(
-                          onPressed: () {
-                            pluszoom();
-                          },
-                          child: Text('+')),
-                      FloatingActionButton(
-                          onPressed: () {
-                            minuszoom();
-                          },
-                          child: Text('-')),
+                      GestureDetector(
+                        onTap: () {
+                          pluszoom();
+                        },
+                        child: ImageData(
+                          IconsPath.zoomIn,
+                          width: 150,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          minuszoom();
+                        },
+                        child: ImageData(
+                          IconsPath.zoomOut,
+                          width: 150,
+                        ),
+                      ),
                     ],
                   ),
                 ],
