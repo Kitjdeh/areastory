@@ -7,6 +7,7 @@ import 'package:front/api/login/delete_user.dart';
 import 'package:front/api/login/kakao/kakao_login.dart';
 import 'package:front/api/login/kakao/login_view_model.dart';
 import 'package:front/api/user/get_user.dart';
+import 'package:front/component/alarm/alarm_screen.dart';
 import 'package:front/component/alarm/toast.dart';
 import 'package:front/component/mypage/follow/follow.dart';
 import 'package:front/component/mypage/mypage_tabbar.dart';
@@ -45,13 +46,11 @@ class _MyPageScreenState extends State<MyPageScreen>
     });
   }
 
-  void chgtoggle(){
+  void chgtoggle() {
     setState(() {
       followYn = !followYn;
     });
   }
-
-
 
   @override
   void initState() {
@@ -90,32 +89,32 @@ class _MyPageScreenState extends State<MyPageScreen>
                   onTap: () {
                     widget.userId == myId
                         ? Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => UpdateProfileScreen(
-                          userId: widget.userId,
-                          img: snapshot.data!.profile.toString(),
-                          nickname: snapshot.data!.nickname,
-                        ),
-                      ),
-                    ).then((result) {
-                      if (result == true) {
-                        setState(() {
-                          // 정보를 업데이트하기 위한 필요한 작업 수행
-                          // 예: _information() 호출 또는 AppBar의 타이틀 업데이트
-                        });
-                      }
-                    })
-                    //     ? Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => UpdateProfileScreen(
-                    //       userId: widget.userId,
-                    //       img: snapshot.data!.profile.toString(),
-                    //       nickname: snapshot.data!.nickname,
-                    //     ),
-                    //   ),
-                    // )
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UpdateProfileScreen(
+                                userId: widget.userId,
+                                img: snapshot.data!.profile.toString(),
+                                nickname: snapshot.data!.nickname,
+                              ),
+                            ),
+                          ).then((result) {
+                            if (result == true) {
+                              setState(() {
+                                // 정보를 업데이트하기 위한 필요한 작업 수행
+                                // 예: _information() 호출 또는 AppBar의 타이틀 업데이트
+                              });
+                            }
+                          })
+                        //     ? Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => UpdateProfileScreen(
+                        //       userId: widget.userId,
+                        //       img: snapshot.data!.profile.toString(),
+                        //       nickname: snapshot.data!.nickname,
+                        //     ),
+                        //   ),
+                        // )
                         : null;
                   },
                   child: Container(
@@ -157,12 +156,13 @@ class _MyPageScreenState extends State<MyPageScreen>
                     print("팔로워 리스트로 이동");
                     // Get.to(MypageFollowScreen(index: '0'));
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MypageFollowScreen(
-                                index: '0',
-                                userId: widget.userId,
-                                nickname: snapshot.data!.nickname))).then((result) {
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MypageFollowScreen(
+                                    index: '0',
+                                    userId: widget.userId,
+                                    nickname: snapshot.data!.nickname)))
+                        .then((result) {
                       if (result == true) {
                         setState(() {
                           // 정보를 업데이트하기 위한 필요한 작업 수행
@@ -193,12 +193,13 @@ class _MyPageScreenState extends State<MyPageScreen>
                     print("팔로잉 리스트로 이동");
                     // Get.to(MypageFollowScreen(index: '1'));
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MypageFollowScreen(
-                                index: '1',
-                                userId: widget.userId,
-                                nickname: snapshot.data!.nickname))).then((result) {
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MypageFollowScreen(
+                                    index: '1',
+                                    userId: widget.userId,
+                                    nickname: snapshot.data!.nickname)))
+                        .then((result) {
                       if (result == true) {
                         setState(() {
                           // 정보를 업데이트하기 위한 필요한 작업 수행
@@ -240,9 +241,14 @@ class _MyPageScreenState extends State<MyPageScreen>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextButton.icon(
-            onPressed: () async {
-              print("알람이다");
-              Navigator.of(context).pop();
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AlarmScreen(
+                            userId: int.parse(widget.userId),
+                            signal: '1',
+                          )));
             },
             icon: Icon(
               Icons.access_alarm,
@@ -282,7 +288,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                 print("신고하기");
                 // await _showReportDialog();
                 final msg =
-                await reportUser(targetUserId: int.parse(widget.userId));
+                    await reportUser(targetUserId: int.parse(widget.userId));
                 print(msg);
                 toast(context, msg.toString());
               },
@@ -383,7 +389,8 @@ class _MyPageScreenState extends State<MyPageScreen>
                           TextButton(
                             onPressed: () {
                               print("팔로잉신청합니다..${snapshot.data!.followYn}");
-                              postFollowing(followingId: int.parse(widget.userId));
+                              postFollowing(
+                                  followingId: int.parse(widget.userId));
                               chgtoggle();
                             },
                             child: Text(
@@ -398,7 +405,8 @@ class _MyPageScreenState extends State<MyPageScreen>
                         if (myId != widget.userId && followYn)
                           TextButton(
                             onPressed: () {
-                              deleteFollowing(followingId: int.parse(widget.userId));
+                              deleteFollowing(
+                                  followingId: int.parse(widget.userId));
                               print("팔로잉취소합니다.");
                               chgtoggle();
                             },
@@ -443,18 +451,18 @@ class _MyPageScreenState extends State<MyPageScreen>
             ]),
         body: SafeArea(
             child: Column(
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                _information(),
-                const SizedBox(
-                  height: 15,
-                ),
-                MypageTabbar(userId: widget.userId),
-                // _tabMenu(),
-                // _tabView(),
-              ],
-            )));
+          children: [
+            const SizedBox(
+              height: 10,
+            ),
+            _information(),
+            const SizedBox(
+              height: 15,
+            ),
+            MypageTabbar(userId: widget.userId),
+            // _tabMenu(),
+            // _tabView(),
+          ],
+        )));
   }
 }

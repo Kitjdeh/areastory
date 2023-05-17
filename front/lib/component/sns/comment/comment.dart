@@ -63,7 +63,8 @@ class _CommentComponentState extends State<CommentComponent> {
 
   void delComment(articleId, commentId) async {
     await deleteComment(articleId: articleId, commentId: commentId);
-    widget.onDelete(commentId);
+    // widget.onDelete(commentId);
+    setState(() {});
   }
 
   String _formatDate(dynamic createdAt) {
