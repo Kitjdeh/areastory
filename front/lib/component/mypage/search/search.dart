@@ -150,7 +150,6 @@ class _SearchScreenState extends State<SearchScreen> {
               ListView.separated(
                 itemCount: _followers.length,
                 itemBuilder: (context, index) {
-                  print(index);
                   return renderContainer(
                     userId: _followers[index].userId.toString(),
                     image: _followers[index].profile.toString(),

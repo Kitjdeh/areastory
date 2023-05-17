@@ -18,7 +18,6 @@ class FollowController extends GetxController {
   late ScrollController scrollController = ScrollController();
 
   void init(userId){
-    print("팔로우컨트롤러 진짜 돌아가요---------------------------");
     scrollController.addListener(loadMoreData);
     this.userId = userId;
     printArticles();
@@ -47,7 +46,6 @@ class FollowController extends GetxController {
     hasNextPage = articleData.nextPage;
     isFirstLoadRunning = false;
     update();
-    print("팔로우컨트롤러${articles.length}");
   }
 
   void loadMoreData() async {

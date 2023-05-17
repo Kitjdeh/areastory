@@ -22,7 +22,7 @@ Future<void> postCommentLike({
   if (response.statusCode == 200) {
     print('댓글 좋아요 성공');
   } else {
-    print('실패');
+    print('댓글 좋아요 실패');
     throw Exception('Failed to create article');
   }
 }

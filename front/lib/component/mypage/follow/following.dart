@@ -92,7 +92,6 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
                 /// 선택한 필터를 사용하여 데이터 요청하는 메서드 호출
                 // printFollowings(); 를 실행한다.
                 printFollowings(int.parse(widget.userId), 0, index);
-                print(index);
                 Navigator.pop(context); // 필터 목록 닫기
 
               },
@@ -167,7 +166,6 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
         ListView.separated(
           itemCount: _followings.length,
         itemBuilder: (context, index) {
-          print(index);
           return renderContainer(
             userId: _followings[index].userId.toString(),
             image: _followings[index].profile.toString(),
@@ -208,7 +206,6 @@ class _FollowingListScreenState extends State<FollowingListScreen> {
               flex: 7,
               child: GestureDetector(
                 onTap: (){
-                  print("감자입니다.");
                   Navigator.push(
                       context,
                       MaterialPageRoute(

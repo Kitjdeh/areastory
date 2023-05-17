@@ -48,7 +48,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final dir = await getApplicationDocumentsDirectory();
       final file = File('${dir.path}/$fileName');
       await file.writeAsBytes(bytes);
-      print(fileName);
       return MultipartFile.fromFile(file.path, filename: fileName);
     } else {
       throw Exception('Failed to get file from URL');
@@ -167,7 +166,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           :await getFileFromUrl(imgUrl),
                     });
                     try {
-                      print(formData);
+                      // print(formData);
                       final res = await Dio().post(
                           '${dotenv.get('BASE_URL')}/api/users/sign-up',
                           data: formData

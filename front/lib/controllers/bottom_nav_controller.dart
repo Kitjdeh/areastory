@@ -87,8 +87,6 @@ class BottomNavController extends GetxController {
 
   Future<bool> willPopAction() async {
     if (bottomHistory.length == 1) {
-      print("길이가 1입니다");
-      print(bottomHistory);
       showDialog(
           context: Get.context!,
           builder: (context) => MessagePopup(
@@ -122,7 +120,6 @@ class BottomNavController extends GetxController {
       bottomHistory.removeLast();
       var index = bottomHistory.last;
       changeBottomNav(index, hasGesture: false);
-      print(bottomHistory);
       return true;
     }
   }

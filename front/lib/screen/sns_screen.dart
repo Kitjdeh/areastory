@@ -225,7 +225,6 @@ class _SnsScreenState extends State<SnsScreen> {
       _hasNextPage = newArticles.nextPage;
 
       setState(() {
-        print('성공');
         _isLoadMoreRunning = false;
       });
     }
@@ -237,7 +236,7 @@ class _SnsScreenState extends State<SnsScreen> {
 
   void handleLocationSelected(String selectedLocation) async {
     List<String> locationParts = selectedLocation.split(' ');
-    print(locationParts);
+    // print(locationParts);
 
     if (locationParts.length == 1) {
       seletedLocationDosi = locationParts[0];
@@ -271,7 +270,7 @@ class _SnsScreenState extends State<SnsScreen> {
       sigungu: seletedLocationSigungu,
       dongeupmyeon: seletedLocationDongeupmyeon,
     );
-    print('2');
+    // print('2');
     _articles.addAll(articleData.articles);
     _hasNextPage = articleData.nextPage;
 
@@ -283,7 +282,7 @@ class _SnsScreenState extends State<SnsScreen> {
       _isFirstLoadRunning = true;
     });
     List<String> locationParts = selectedLocation.split(' ');
-    print(locationParts);
+    // print(locationParts);
 
     if (locationParts.length == 1) {
       seletedLocationDosi = locationParts[0];
@@ -317,7 +316,7 @@ class _SnsScreenState extends State<SnsScreen> {
       sigungu: seletedLocationSigungu,
       dongeupmyeon: seletedLocationDongeupmyeon,
     );
-    print('2');
+    // print('2');
     _articles.addAll(articleData.articles);
     _hasNextPage = articleData.nextPage;
 

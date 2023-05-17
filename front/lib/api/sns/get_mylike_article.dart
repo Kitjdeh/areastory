@@ -19,7 +19,7 @@ Future<ArticleData> getMyLikeArticle() async {
     print('내가 좋아하는 게시글 요청 성공');
     return articleData;
   } else {
-    print('실패');
+    print('내가 좋아하는 게시글 요청 실패');
     throw Exception('Failed to load articles');
   }
 }

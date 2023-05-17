@@ -51,16 +51,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   print("카카오로그인 진행상황 테스트: ${flag}");
                   /// 로그인시 카카오가 던져주는 키값
                   if (await viewModel.isLogined) {
-                    toast(context, '로그인은 뜸');
+                    // toast(context, '로그인은 뜸');
                     print("카카오 통신성공! 카카오 유저 정보 가져옵니다.");
-                    print(viewModel.user?.id);
-                    print(viewModel.user?.kakaoAccount?.profile?.nickname);
-                    print(
-                        viewModel.user?.kakaoAccount?.profile?.profileImageUrl);
                     try {
                       final res = await getLogin(
                           viewModel.user?.id, this.widget.fcmToken);
-                      print(res.data);
                       if (res.msg == '신규 회원입니다.') {
                         print("회원가입 페이지로 이동합니다.");
                         Navigator.pushNamed(
@@ -85,11 +80,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                     } catch (e) {
                       print("로그인 에러발생: 아래는 에러코드입니다.");
-                      toast(context, '로그인 에러발생${e}');
+                      // toast(context, '로그인 에러발생${e}');
                     }
                   } else {
                     print("카카오 서비스 가입 중도 취소");
-                    toast(context, '로그인 실패');
+                    // toast(context, '로그인 실패');
                   }
                 },
                 child: Image(

@@ -57,13 +57,13 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
   }
 
   void onConnect(StompFrame frame) {
-    print('연결됐으예');
+    print('연결됨');
     _stompClient.subscribe(
       destination: '/sub/chat/room/${widget.roomId}',
       callback: (frame) async {
         final dynamic message = json.decode(frame.body!);
-        print(message["userCount"]);
-        print(message);
+        // print(message["userCount"]);
+        // print(message);
         setState(() {
           if (message.containsKey('messageList')) {
             if (message["userId"] == widget.userId) {
@@ -78,7 +78,6 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
             _messages.add(message);
           }
 
-          print(userCount);
         });
         Future.delayed(Duration(milliseconds: 100), () {
           _scrollController.animateTo(

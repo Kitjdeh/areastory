@@ -27,7 +27,7 @@ Future<CommentData> getComments({
     print('게시글의 댓글 조회 성공');
     return commentData;
   } else {
-    print('실패');
+    print('게시글의 댓글 조회 실패');
     throw Exception('Failed to load articles');
   }
 }

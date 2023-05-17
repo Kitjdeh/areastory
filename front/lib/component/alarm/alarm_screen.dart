@@ -98,7 +98,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
     _hasNextPage = newAlarms.nextPage;
 
     setState(() {
-      print('성공');
+      // print('성공');
       _isLoadMoreRunning = false;
     });
   }
