@@ -11,6 +11,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map/src/layer/label.dart';
 import 'package:flutter_map/src/map/flutter_map_state.dart';
+import 'package:front/component/sns/article/article_alert.dart';
 import 'package:front/component/sns/article/article_detail.dart';
 import 'package:latlong2/latlong.dart' hide Path;
 import 'package:widget_mask/widget_mask.dart'; // conflict with Path from UI
@@ -109,33 +110,42 @@ class CustomPolygonLayer extends StatelessWidget {
               key: polygon.key,
               child: GestureDetector(
                 onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    backgroundColor: Colors.transparent,
-                    isScrollControlled: true,
-                    builder: (BuildContext context) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height,
-                            child: Center(
-                              child: ArticleDetailComponent(
-                                articleId: articleId,
-                                userId: userId,
-                                // 지금 로그인한 유저Id
-                                height: 500,
-                                location: area, // 길이가 1단어~4단어 아무렇게나
+                  articleId == 0
+                      ? showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertModal(
+                              message: '이것은 경고 메시지입니다.',
+                            );
+                          },
+                        )
+                      : showModalBottomSheet(
+                          context: context,
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true,
+                          builder: (BuildContext context) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: GestureDetector(
+                                onTap: () {},
+                                child: SizedBox(
+                                  height: MediaQuery.of(context).size.height,
+                                  child: Center(
+                                    child: ArticleDetailComponent(
+                                      articleId: articleId,
+                                      userId: userId,
+                                      // 지금 로그인한 유저Id
+                                      height: 500,
+                                      location: area, // 길이가 1단어~4단어 아무렇게나
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
+                            );
+                          },
+                        );
                 },
                 child: CustomOverlay.OverlayImageLayer(
                     overlayImages: customoverlayImages),

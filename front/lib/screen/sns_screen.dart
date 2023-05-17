@@ -140,18 +140,20 @@ class _SnsScreenState extends State<SnsScreen> {
     super.dispose();
   }
 
-  void _myLocationSearch() async {
-    final storage = new FlutterSecureStorage();
-
-    while (storedLocation == null) {
-      storedLocation = await storage.read(key: "userlocation");
-      await Future.delayed(Duration(milliseconds: 200));
-    }
-
-    print("저장된 위치: $storedLocation");
-    handleLocationSelected(storedLocation!);
-    // storedLocation = '서울특별시 영등포구 여의도동';
+  // void _myLocationSearch() async {
+  void _myLocationSearch() {
+    // final storage = new FlutterSecureStorage();
+    //
+    // while (storedLocation == null) {
+    //   storedLocation = await storage.read(key: "userlocation");
+    //   // print('가져오기');
+    //   await Future.delayed(Duration(milliseconds: 200));
+    // }
+    //
+    // print("저장된 위치: $storedLocation");
     // handleLocationSelected(storedLocation!);
+    storedLocation = '서울특별시 영등포구 여의도동';
+    handleLocationSelected(storedLocation!);
   }
 
   void printArticles() async {
@@ -185,7 +187,7 @@ class _SnsScreenState extends State<SnsScreen> {
     }
     _currentPage = 1;
     _articles.clear();
-    _followings.clear();
+    // _followings.clear();
     final articleData = await getArticles(
       sort: dropdownValue == '인기순' ? 'likeCount' : 'articleId',
       page: _currentPage,
@@ -193,8 +195,8 @@ class _SnsScreenState extends State<SnsScreen> {
       sigungu: seletedLocationSigungu,
       dongeupmyeon: seletedLocationDongeupmyeon,
     );
-    final followData = await getFollowingsSort();
-    _followings.addAll(followData);
+    // final followData = await getFollowingsSort();
+    // _followings.addAll(followData);
     _articles.addAll(articleData.articles);
     _hasNextPage = articleData.nextPage;
 
@@ -234,6 +236,9 @@ class _SnsScreenState extends State<SnsScreen> {
   }
 
   void handleLocationSelected(String selectedLocation) async {
+    setState(() {
+      _isFirstLoadRunning = true;
+    });
     List<String> locationParts = selectedLocation.split(' ');
     print(locationParts);
 
@@ -269,10 +274,13 @@ class _SnsScreenState extends State<SnsScreen> {
       sigungu: seletedLocationSigungu,
       dongeupmyeon: seletedLocationDongeupmyeon,
     );
+    print('2');
     _articles.addAll(articleData.articles);
     _hasNextPage = articleData.nextPage;
 
-    setState(() {});
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
   }
 
   void onChangeSort(String dropdownValue) async {
@@ -360,7 +368,7 @@ class _SnsScreenState extends State<SnsScreen> {
             GestureDetector(
               onTap: () {
                 _myLocationSearch();
-                printArticles();
+                // printArticles();
               },
               child: ImageData(
                 IconsPath.mylocation,

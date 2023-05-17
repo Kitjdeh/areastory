@@ -137,75 +137,77 @@ class _FollowScreenState extends State<FollowScreen> {
     _followController.ondelete(articleId);
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
-        leading: ImageData(
-          IconsPath.logo,
-          width: 270,
-        ),
-        title: Text(
-          "Followings",
-          style: TextStyle(color: Colors.black),
-        ),
-        centerTitle: true,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: ImageData(
+            IconsPath.logo,
+            width: 270,
+          ),
+          title: Text(
+            "Followings",
+            style: TextStyle(color: Colors.black),
+          ),
+          centerTitle: true,
 
-        /// 앱바 그림자효과 제거
-      ),
-      body: GetBuilder<FollowController>(
-        builder: (controller){
-          return _followController.isFirstLoadRunning
-              ? const Center(
-            child: const CircularProgressIndicator(),
-          )
-              : RefreshIndicator(
-            onRefresh: () {
-              return Future<void>.delayed(Duration(seconds: 2), () {
-                _followController.printArticles();
-              });
-            },
-            child: ListView(
-              controller: _followController.scrollController,
-              children: [
-                _storyBoardList(followings: _followController.followings),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: List.generate(
-                    _followController.articles.length,
-                        (index) => ArticleComponent(
-                      userId: _followController.userId,
-                      onDelete: onDelete,
-                      articleId: _followController.articles[index].articleId,
-                      followingId: _followController.articles[index].userId,
-                      height: 300,
+          /// 앱바 그림자효과 제거
+        ),
+        body: GetBuilder<FollowController>(
+          builder: (controller) {
+            return _followController.isFirstLoadRunning
+                ? const Center(
+                    child: const CircularProgressIndicator(),
+                  )
+                : RefreshIndicator(
+                    onRefresh: () {
+                      return Future<void>.delayed(Duration(seconds: 2), () {
+                        _followController.printArticles();
+                      });
+                    },
+                    child: ListView(
+                      controller: _followController.scrollController,
+                      children: [
+                        _storyBoardList(
+                            followings: _followController.followings),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: List.generate(
+                            _followController.articles.length,
+                            (index) => ArticleComponent(
+                              userId: _followController.userId,
+                              onDelete: onDelete,
+                              articleId:
+                                  _followController.articles[index].articleId,
+                              followingId:
+                                  _followController.articles[index].userId,
+                              height: 300,
+                            ),
+                          ),
+                        ),
+                        if (_followController.isLoadMoreRunning)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10, bottom: 40),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        if (!_followController.isLoadMoreRunning &&
+                            !_followController.hasNextPage)
+                          Container(
+                            padding: const EdgeInsets.only(top: 30, bottom: 40),
+                            color: Colors.white,
+                            child: const Center(
+                              child: Text('더이상 게시글이 없습니다'),
+                            ),
+                          ),
+                      ],
                     ),
-                  ),
-                ),
-                if (_followController.isLoadMoreRunning)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10, bottom: 40),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                if (!_followController.isLoadMoreRunning && !_followController.hasNextPage)
-                  Container(
-                    padding: const EdgeInsets.only(top: 30, bottom: 40),
-                    color: Colors.white,
-                    child: const Center(
-                      child: Text('더이상 게시글이 없습니다'),
-                    ),
-                  ),
-              ],
-            ),
-          );
-        },
-      )
-    );
+                  );
+          },
+        ));
   }
 }

@@ -196,17 +196,28 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                           ),
                                           GestureDetector(
                                             onTap: () {
-                                              showModalBottomSheet(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return SnsCommentScreen(
-                                                    articleId: widget.articleId,
-                                                    userId: widget.userId,
-                                                    profile: profile,
-                                                  );
-                                                },
-                                              );
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          SnsCommentScreen(
+                                                            articleId: widget
+                                                                .articleId,
+                                                            userId:
+                                                                widget.userId,
+                                                            profile: profile,
+                                                          )));
+                                              // showModalBottomSheet(
+                                              //   context: context,
+                                              //   builder:
+                                              //       (BuildContext context) {
+                                              //     return SnsCommentScreen(
+                                              //       articleId: widget.articleId,
+                                              //       userId: widget.userId,
+                                              //       profile: profile,
+                                              //     );
+                                              //   },
+                                              // );
                                             },
                                             child: ImageData(
                                               IconsPath.replyIcon,
@@ -270,42 +281,52 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                       padding: EdgeInsets.symmetric(
                                         horizontal: 10,
                                       ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            snapshot.data!.content,
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                              color: Colors.black,
-                                            ),
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => SnsScreen(
-                                                      location: widget
-                                                                  .location !=
-                                                              null
-                                                          ? widget.location
-                                                          : '${snapshot.data!.dosi} ${snapshot.data!.sigungu} ${snapshot.data!.dongeupmyeon}',
-                                                      userId: widget.userId
-                                                          .toString()),
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              flex: 10,
+                                              child: Text(
+                                                snapshot.data!.content,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: Colors.black,
                                                 ),
-                                              );
-                                            },
-                                            child: ImageData(
-                                              IconsPath.gosns,
-                                              width: 40,
+                                                maxLines: 3,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                            Expanded(
+                                              flex: 1,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => SnsScreen(
+                                                          location: widget
+                                                                      .location !=
+                                                                  null
+                                                              ? widget.location
+                                                              : '${snapshot.data!.dosi} ${snapshot.data!.sigungu} ${snapshot.data!.dongeupmyeon}',
+                                                          userId: widget.userId
+                                                              .toString()),
+                                                    ),
+                                                  );
+                                                },
+                                                child: ImageData(
+                                                  IconsPath.gosns,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),

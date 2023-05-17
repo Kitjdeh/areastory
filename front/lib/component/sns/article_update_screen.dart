@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:front/api/sns/get_article.dart';
 import 'package:front/api/sns/update_article.dart';
 import 'package:front/controllers/bottom_nav_controller.dart';
+import 'package:front/controllers/follow_screen_controller.dart';
 import 'package:get/get.dart';
 
 class SnsUpdateScreen extends StatefulWidget {
@@ -14,7 +15,7 @@ class SnsUpdateScreen extends StatefulWidget {
 }
 
 class _SnsUpdateScreenState extends State<SnsUpdateScreen> {
-  final FocusNode _focusNode1 = FocusNode();
+  final FollowController _followController = Get.find<FollowController>();
   final FocusNode _focusNode2 = FocusNode();
   bool _isSwitched = true;
   ScrollController? _scrollController;
@@ -24,6 +25,9 @@ class _SnsUpdateScreenState extends State<SnsUpdateScreen> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    getArticle(articleId: widget.articleId).then((articleData) {
+      contentController.text = articleData.content;
+    });
   }
 
   void updateArticle(publicYn) async {
@@ -32,7 +36,9 @@ class _SnsUpdateScreenState extends State<SnsUpdateScreen> {
       content: contentController.text,
       articleId: widget.articleId,
     );
-    Get.find<BottomNavController>().willPopAction();
+    _followController.printArticles();
+    // Get.find<BottomNavController>().willPopAction();
+    Navigator.of(context).pop();
   }
 
   @override
@@ -51,22 +57,19 @@ class _SnsUpdateScreenState extends State<SnsUpdateScreen> {
         future: getArticle(articleId: widget.articleId),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            contentController.text = snapshot.data!.content;
+            contentController.selection = TextSelection.fromPosition(
+              TextPosition(offset: contentController.text.length),
+            );
             return SafeArea(
               child: GestureDetector(
                 onTap: () {
-                  // 화면 클릭 이벤트 처리
-                  if (_focusNode1.hasFocus) {
-                    // 첫번째 TextFormField에 포커스가 있는 경우
-                    _focusNode1.unfocus();
-                  }
                   if (_focusNode2.hasFocus) {
                     // 두번째 TextFormField에 포커스가 있는 경우
                     _focusNode2.unfocus();
                   }
                 },
                 child: Scaffold(
-                  backgroundColor: const Color(0xFFECF9FF),
+                  backgroundColor: Colors.white,
                   appBar: AppBar(
                     title: Text(
                       "게시글 수정",
@@ -75,14 +78,11 @@ class _SnsUpdateScreenState extends State<SnsUpdateScreen> {
                     centerTitle: true,
                     backgroundColor: Colors.white,
                     elevation: 0,
-
-                    /// 앱바 그림자효과 제거
                     leading: IconButton(
-                      /// 뒤로가기버튼설정
                       icon: Icon(Icons.arrow_back_ios_new_outlined),
                       color: Colors.black,
                       onPressed: () {
-                        Get.find<BottomNavController>().willPopAction();
+                        Navigator.of(context).pop();
                       },
                     ),
                   ),
@@ -90,69 +90,97 @@ class _SnsUpdateScreenState extends State<SnsUpdateScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        Padding(
+                          padding: EdgeInsets.all(
+                              MediaQuery.of(context).size.width * 0.05),
+                          child: Container(
+                            color: Colors.black12,
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height * 0.42,
+                            child: Center(
+                              child: Image.network(snapshot.data!.image),
+                            ),
+                          ),
+                        ),
                         Container(
                           color: Colors.white,
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width / 1.3,
-                          child: Center(
-                            child: Image.network(snapshot.data!.image),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 50.0,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              // 장소 입력 폼
-                              TextFormField(
-                                focusNode: _focusNode1,
-                                decoration: InputDecoration(
-                                  labelText: '장소',
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  '장소: ${snapshot.data!.dosi} ${snapshot.data!.sigungu} ${snapshot.data!.dongeupmyeon}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
                                 ),
-                                enabled: false,
-                                initialValue:
-                                    '${snapshot.data!.dosi} ${snapshot.data!.sigungu} ${snapshot.data!.dongeupmyeon}',
-                              ),
-                              TextFormField(
-                                controller: contentController,
-                                focusNode: _focusNode2,
-                                decoration: InputDecoration(labelText: '내용'),
-                                onTap: () {
-                                  //120만큼 500milSec 동안 뷰를 올려줌
-                                  _scrollController!.animateTo(120.0,
-                                      duration: Duration(milliseconds: 500),
-                                      curve: Curves.ease);
-                                },
-                                maxLines: 3,
-                              ),
-                              // 비공개 여부 체크박스
-                              SwitchListTile(
-                                title: Text('공개'),
-                                value: _isSwitched,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _isSwitched = value;
-                                  });
-                                },
-                              ),
-                              // 등록 버튼
-                              ElevatedButton(
-                                onPressed: () {
-                                  updateArticle(_isSwitched);
-                                },
-                                child: Text('등록'),
-                              ),
-                            ],
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  '내용',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.black,
+                                      width: 2,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  child: TextFormField(
+                                    controller: contentController,
+                                    focusNode: _focusNode2,
+                                    decoration: InputDecoration(
+                                      border: InputBorder
+                                          .none, // Remove default border
+                                      contentPadding: EdgeInsets.all(16.0),
+                                    ),
+                                    onTap: () {
+                                      //120만큼 500milSec 동안 뷰를 올려줌
+                                      _scrollController!.animateTo(120.0,
+                                          duration: Duration(milliseconds: 500),
+                                          curve: Curves.ease);
+                                    },
+                                    maxLines: 2,
+                                  ),
+                                ),
+                                // 비공개 여부 체크박스
+                                SwitchListTile(
+                                  title: Text('공개'),
+                                  value: _isSwitched,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _isSwitched = value;
+                                    });
+                                  },
+                                  activeColor: Colors
+                                      .black, // Set the active color to black
+                                  inactiveTrackColor: Colors.black12,
+                                ),
+                                // 등록 버튼
+                                ElevatedButton(
+                                  onPressed: () {
+                                    updateArticle(_isSwitched);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.black,
+                                    elevation: 3,
+                                  ),
+                                  child: Text('등록'),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        SizedBox(
-                          height: 15.0,
-                        )
                       ],
                     ),
                   ),
