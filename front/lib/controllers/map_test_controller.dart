@@ -10,11 +10,11 @@ class MapTempController extends GetxController {
   List<Mapdata> middleareaData = [];
   // 읍, 면, 동 단위 데이터 입력 리스트
   List<Mapdata> smallareaData = [];
-
+  Map<String, String> areamap = {};
 
   Future<void> loadmapdata(String link) async {
     List<List<LatLng>> _polygon = [];
-    Map<String, String> areamap = {};
+    // Map<String, String> areamap = {};
     int cnt = 0;
     Set<String> arealastletter = {};
     List<Mapdata> allareaData = [];
