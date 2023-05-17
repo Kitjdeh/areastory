@@ -34,7 +34,7 @@ class _MyAlbumState extends State<MyAlbum> {
     myId = await storage.read(key: "userId");
   }
 
-  void printArticles(userId, page) async {
+  Future<void> printArticles(userId, page) async {
     _articles.clear();
     myId = await storage.read(key: "userId");
 
@@ -93,42 +93,49 @@ class _MyAlbumState extends State<MyAlbum> {
       );
     }
 
-    return NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification notification) {
-        if (notification is ScrollEndNotification) {
-          final double scrollPosition = notification.metrics.pixels;
-          final double maxScrollExtent = notification.metrics.maxScrollExtent;
-          final double triggerThreshold = 400.0; // 일정 높이
-
-          if (scrollPosition > maxScrollExtent - triggerThreshold && nextPage && !_isLoading) {
-            getuserarticle(int.parse(widget.userId));
-          }
-        }
-        return false;
+    return RefreshIndicator(
+      onRefresh: () async {
+        // 당겨서 새로고침 시 동작할 로직을 여기에 작성
+        // 새로운 데이터를 가져오고 상태를 업데이트하는 등의 작업을 수행
+        await printArticles(int.parse(widget.userId), _currentPage);
       },
-      child: Stack(
-        children: [
-          GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              childAspectRatio: 1,
-              mainAxisSpacing: 1,
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification notification) {
+          if (notification is ScrollEndNotification) {
+            final double scrollPosition = notification.metrics.pixels;
+            final double maxScrollExtent = notification.metrics.maxScrollExtent;
+            final double triggerThreshold = 400.0; // 일정 높이
+
+            if (scrollPosition > maxScrollExtent - triggerThreshold && nextPage && !_isLoading) {
+              getuserarticle(int.parse(widget.userId));
+            }
+          }
+          return false;
+        },
+        child: Stack(
+          children: [
+            GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 1,
+                mainAxisSpacing: 1,
+              ),
+              itemBuilder: (context, index) {
+                if (index < _articles.length) {
+                  return renderContainer(
+                    image: _articles[index].image.toString(),
+                    articleId: _articles[index].articleId,
+                  );
+                }
+              },
+              itemCount: _articles.length + 1,
             ),
-            itemBuilder: (context, index) {
-              if (index < _articles.length) {
-                return renderContainer(
-                  image: _articles[index].image.toString(),
-                  articleId: _articles[index].articleId,
-                );
-              }
-            },
-            itemCount: _articles.length + 1,
-          ),
-          if (_isLoading)
-            Center(
-              child: CircularProgressIndicator(),
-            ),
-        ],
+            if (_isLoading)
+              Center(
+                child: CircularProgressIndicator(),
+              ),
+          ],
+        ),
       ),
     );
   }
