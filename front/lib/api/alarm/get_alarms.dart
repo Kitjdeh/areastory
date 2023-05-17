@@ -19,7 +19,7 @@ Future<AllAlarmData> getAlarms({
     print('all알람 요청 성공');
     return alarmData;
   } else {
-    print('실패');
+    print('all알람 요청 실패');
     throw Exception('Failed to load articles');
   }
 }

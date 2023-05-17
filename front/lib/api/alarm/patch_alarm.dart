@@ -20,7 +20,7 @@ Future<void> checkAlarm({
   if (response.statusCode == 200) {
     print('알람 체크 성공');
   } else {
-    print('실패');
+    print('알람 체크 실패');
     throw Exception('Failed to delete article');
   }
 }

@@ -59,7 +59,6 @@ class _MyPageScreenState extends State<MyPageScreen>
     super.initState();
     tabController = TabController(length: 2, vsync: this);
     setMyId();
-    print("마이페이지 이닛스테이트가 돌아가요");
   }
 
   @override
@@ -154,7 +153,6 @@ class _MyPageScreenState extends State<MyPageScreen>
                 // 팔로워(수)
                 GestureDetector(
                   onTap: () {
-                    print("팔로워 리스트로 이동");
                     // Get.to(MypageFollowScreen(index: '0'));
                     Navigator.push(
                         context,
@@ -190,7 +188,6 @@ class _MyPageScreenState extends State<MyPageScreen>
                 // 팔로잉(수)
                 GestureDetector(
                   onTap: () {
-                    print("팔로잉 리스트로 이동");
                     // Get.to(MypageFollowScreen(index: '1'));
                     Navigator.push(
                         context,
@@ -399,7 +396,6 @@ class _MyPageScreenState extends State<MyPageScreen>
                           TextButton(
                             onPressed: () {
                               deleteFollowing(followingId: int.parse(widget.userId));
-                              print("팔로잉취소합니다.");
                               chgtoggle();
                             },
                             child: Text(

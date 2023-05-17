@@ -24,7 +24,7 @@ Future<List<Followings>> getFollowingsSort() async {
     print('팔로잉 유저 요청(정렬) 성공');
     return followings;
   } else {
-    print('실패');
+    print('팔로잉 유저 요청(정렬) 실패');
     throw Exception('Failed to load followers');
   }
 }

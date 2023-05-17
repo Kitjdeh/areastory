@@ -42,7 +42,6 @@ class _MyAlbumState extends State<MyAlbum> {
     setState(() {
       _articles.addAll(articleData.articles);
     });
-    print("최초의 앨범사진 요청했습니다.");
   }
 
   void getuserarticle(userId) async {
@@ -54,8 +53,6 @@ class _MyAlbumState extends State<MyAlbum> {
       nextPage = articleData.nextPage;
       _isLoading = false; // 로딩 완료 상태로 설정
     });
-    print("들어간 게시글");
-    print("앨범사진 요청했습니다");
   }
 
   void getortherarticle(userId) async {
@@ -67,17 +64,12 @@ class _MyAlbumState extends State<MyAlbum> {
       nextPage = articleData.nextPage;
       _isLoading = false; // 로딩 완료 상태로 설정
     });
-    print("들어간 게시글");
-    print("앨범사진 요청했습니다");
   }
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // body: RefreshIndicator(child: renderMaxExtent(), onRefresh: (){
-      //   printArticles(int.parse(widget.userId), _currentPage);
-      // })
       body: renderMaxExtent(),
     );
   }
@@ -123,7 +115,6 @@ class _MyAlbumState extends State<MyAlbum> {
               mainAxisSpacing: 1,
             ),
             itemBuilder: (context, index) {
-              print("현재인덱스: $index, 리스트길이: ${_articles.length}");
               if (index < _articles.length) {
                 return renderContainer(
                   image: _articles[index].image.toString(),
@@ -150,8 +141,6 @@ class _MyAlbumState extends State<MyAlbum> {
   }) {
     return GestureDetector(
         onTap: () {
-          print("게시글상세 띄웁니다. articleId: $articleId");
-          print("myId: ${myId} userId: ${widget.userId}");
           Get.to(() => AlbumDetail(articleId: articleId, userId: int.parse(myId!), followingId: int.parse(widget.userId),));
           // Navigator.push(
           //   context,

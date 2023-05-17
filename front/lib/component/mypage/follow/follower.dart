@@ -53,7 +53,6 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
         followingStatusMap[user.userId.toString()] = user.check;
       });
     });
-    print("최초의 팔로워목록 요청했습니다.");
   }
 
   void getuserfollowers(userId) async {
@@ -69,7 +68,6 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
         followingStatusMap[user.userId.toString()] = user.check;
       });
     });
-    print("팔로워 목록 요청했습니다");
   }
 
 
@@ -95,7 +93,6 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
                 /// 선택한 필터를 사용하여 데이터 요청하는 메서드 호출
                 // printFollowings(); 를 실행한다.
                 printFollowers(int.parse(widget.userId), 0, index);
-                print(index);
                 Navigator.pop(context); // 필터 목록 닫기
 
               },
@@ -127,7 +124,6 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
             CupertinoDialogAction(
               child: Text('확인'),
               onPressed: () {
-                print("팔로워 취소합니다?");
                 deleteFollower(followerId: int.parse(userId)); // 팔로워 취소 함수 호출
                 setState(() {
                   followStatusMap[userId] = true; // 팔로워 상태 업데이트
@@ -203,7 +199,6 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
               ListView.separated(
                 itemCount: _followers.length,
                 itemBuilder: (context, index) {
-                  print(index);
                   return renderContainer(
                     userId: _followers[index].userId.toString(),
                     image: _followers[index].profile.toString(),
@@ -252,7 +247,6 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
                   flex: 7,
                   child: GestureDetector(
                     onTap: (){
-                      print("감자입니다.");
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -304,7 +298,6 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
                     // padding: EdgeInsets.symmetric(horizontal: 20),
                     child: IconButton(
                       onPressed: () {
-                        print("팔로워 상태 변경합니다.");
                         if (followingStatusMap[userId] == true) {
                           print("팔로잉 취소합니다. userId: $userId");
                           deleteFollowing(followingId: int.parse(userId));
@@ -330,7 +323,6 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
                     padding: EdgeInsets.only(right: 20),
                     child: IconButton(
                       onPressed: () {
-                        print("팔로워 상태 변경합니다.");
                         if (followStatusMap[userId] == false) {
                           print("팔로워 취소합니다. userId: $userId");
                           // deleteFollower(followerId: int.parse(userId));
