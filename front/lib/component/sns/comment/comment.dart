@@ -39,6 +39,10 @@ class _CommentComponentState extends State<CommentComponent> {
   @override
   void initState() {
     super.initState();
+    getComment(articleId: widget.articleId, commentId: widget.commentId)
+        .then((commentData) {
+      _editCommentController.text = commentData.content;
+    });
   }
 
   void createCommentLike(articleId, commentId) async {
@@ -72,11 +76,11 @@ class _CommentComponentState extends State<CommentComponent> {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
 
-    if (difference.inSeconds < 60) {
+    if (difference.inSeconds < 32460) {
       return '${difference.inSeconds}초 전';
-    } else if (difference.inMinutes < 60) {
+    } else if (difference.inMinutes < 600) {
       return '${difference.inMinutes}분 전';
-    } else if (difference.inHours < 24) {
+    } else if (difference.inHours < 33) {
       return '${difference.inHours}시간 전';
     } else {
       return '${difference.inDays}일 전';
@@ -138,20 +142,21 @@ class _CommentComponentState extends State<CommentComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<CommentData>(
-        future: getComment(
-            articleId: widget.articleId, commentId: widget.commentId),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            _editCommentController =
-                TextEditingController(text: snapshot.data!.content);
-            return GestureDetector(
-              onTap: () {
-                if (isEditing) {
-                  cancelEditing();
-                }
-              },
-              child: SizedBox(
+    return GestureDetector(
+      onTap: () {
+        if (isEditing) {
+          cancelEditing();
+        }
+      },
+      child: FutureBuilder<CommentData>(
+          future: getComment(
+              articleId: widget.articleId, commentId: widget.commentId),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              _editCommentController.selection = TextSelection.fromPosition(
+                TextPosition(offset: _editCommentController.text.length),
+              );
+              return SizedBox(
                 height: widget.height,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,17 +301,17 @@ class _CommentComponentState extends State<CommentComponent> {
                     ),
                   ],
                 ),
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Container(
-              height: 0,
-            );
-          } else {
-            return Container(
-              height: 0,
-            );
-          }
-        });
+              );
+            } else if (snapshot.hasError) {
+              return Container(
+                height: 0,
+              );
+            } else {
+              return Container(
+                height: 0,
+              );
+            }
+          }),
+    );
   }
 }

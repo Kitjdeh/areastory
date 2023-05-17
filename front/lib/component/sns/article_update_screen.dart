@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:front/api/sns/get_article.dart';
 import 'package:front/api/sns/update_article.dart';
 import 'package:front/controllers/bottom_nav_controller.dart';
+import 'package:front/controllers/follow_screen_controller.dart';
 import 'package:get/get.dart';
 
 class SnsUpdateScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class SnsUpdateScreen extends StatefulWidget {
 }
 
 class _SnsUpdateScreenState extends State<SnsUpdateScreen> {
+  final FollowController _followController = Get.find<FollowController>();
   final FocusNode _focusNode2 = FocusNode();
   bool _isSwitched = true;
   ScrollController? _scrollController;
@@ -34,6 +36,7 @@ class _SnsUpdateScreenState extends State<SnsUpdateScreen> {
       content: contentController.text,
       articleId: widget.articleId,
     );
+    _followController.printArticles();
     // Get.find<BottomNavController>().willPopAction();
     Navigator.of(context).pop();
   }
