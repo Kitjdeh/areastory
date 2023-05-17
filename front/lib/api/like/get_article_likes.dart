@@ -25,7 +25,7 @@ Future<UserData> getArticleLikes({
     print('게시글 좋아요 유저 요청 성공');
     return userData;
   } else {
-    print('실패');
+    print('게시글 좋아요 유저 요청 실패');
     throw Exception('Failed to load articles');
   }
 }

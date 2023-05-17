@@ -1,13 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:front/api/mypage/get_userInfo.dart';
-import 'package:front/api/user/get_user.dart';
 import 'package:front/component/sns/avatar_widget.dart';
-import 'package:front/controllers/bottom_nav_controller.dart';
 import 'package:front/livechat/chat.dart';
 import 'package:front/livechat/enter_or_quit.dart';
-import 'package:get/get.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
@@ -61,18 +57,19 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
   }
 
   void onConnect(StompFrame frame) {
-    print('연결됐으예');
+    print('연결됨');
     _stompClient.subscribe(
       destination: '/sub/chat/room/${widget.roomId}',
       callback: (frame) async {
         final dynamic message = json.decode(frame.body!);
-        print(message["userCount"]);
+        // print(message["userCount"]);
+        // print(message);
         setState(() {
           if (message.containsKey('messageList')) {
             if (message["userId"] == widget.userId) {
               _messages.addAll(message["messageList"]);
-              userCount = message["userCount"];
             }
+            userCount = message["userCount"];
             _messages.add({"message": message["message"]});
           } else if (message.containsKey('message')) {
             _messages.add({"message": message["message"]});
@@ -81,7 +78,6 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
             _messages.add(message);
           }
 
-          print(userCount);
         });
         Future.delayed(Duration(milliseconds: 100), () {
           _scrollController.animateTo(
@@ -184,7 +180,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
           icon: Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black,
           onPressed: () {
-            _disconnect;
+            _disconnect();
             Navigator.of(context).pop();
           },
         ),

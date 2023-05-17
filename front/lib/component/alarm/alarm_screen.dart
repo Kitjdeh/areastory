@@ -85,7 +85,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
     if (_hasNextPage == true &&
         _isFirstLoadRunning == false &&
         _isLoadMoreRunning == false &&
-        _controller.position.extentAfter < 1000)
+        _controller.position.extentAfter < 500)
       setState(() {
         _isLoadMoreRunning = true;
       });
@@ -98,7 +98,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
     _hasNextPage = newAlarms.nextPage;
 
     setState(() {
-      print('성공');
+      // print('성공');
       _isLoadMoreRunning = false;
     });
   }

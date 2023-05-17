@@ -20,7 +20,7 @@ Future<void> postArticle({
   final storage = new FlutterSecureStorage();
   final userId = await storage.read(key: 'userId');
 
-  print(userId);
+  // print(userId);
 
   final formData = FormData.fromMap({
     'articleWriteReq': MultipartFile.fromString(
@@ -48,7 +48,7 @@ Future<void> postArticle({
   if (response.statusCode == 200) {
     print('게시글 생성 성공');
   } else {
-    print('실패');
+    print('게시글 생성 실패');
     throw Exception('Failed to create article');
   }
 }

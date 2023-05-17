@@ -21,7 +21,6 @@ class _CameraScreenState extends State<CameraScreen> {
   final FollowController _followController = Get.find<FollowController>();
   // String? storedLocation;
   String storedLocation = '사진을 찍어주세요';
-  final FocusNode _focusNode1 = FocusNode();
   final FocusNode _focusNode2 = FocusNode();
   final picker = ImagePicker();
   bool _isSwitched = true;
@@ -132,11 +131,6 @@ class _CameraScreenState extends State<CameraScreen> {
     return SafeArea(
       child: GestureDetector(
         onTap: () {
-          // 화면 클릭 이벤트 처리
-          if (_focusNode1.hasFocus) {
-            // 첫번째 TextFormField에 포커스가 있는 경우
-            _focusNode1.unfocus();
-          }
           if (_focusNode2.hasFocus) {
             // 두번째 TextFormField에 포커스가 있는 경우
             _focusNode2.unfocus();

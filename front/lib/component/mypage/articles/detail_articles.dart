@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:front/component/sns/post_widget.dart';
 
 class AlbumDetail extends StatefulWidget {
-  const AlbumDetail({Key? key, required this.articleId}) : super(key: key);
+  const AlbumDetail({Key? key,
+    required this.articleId,
+    required this.userId,
+    required this.followingId,}) : super(key: key);
   final int articleId;
+  final int followingId;
+  final int userId;
 
   @override
   State<AlbumDetail> createState() => _AlbumDetailState();
 }
 
+
 class _AlbumDetailState extends State<AlbumDetail> {
+  void onDelete(int articleId) {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,8 +35,22 @@ class _AlbumDetailState extends State<AlbumDetail> {
             Navigator.of(context).pop();
           },
         ),
+        titleSpacing: 0,
+        centerTitle: true,
+        title: Text(
+          "게시글 상세",
+          style: TextStyle(color: Colors.black),
+        ),
       ),
-      body: Text("감자"),
+      body: SingleChildScrollView(
+        child: ArticleComponent(
+          userId: widget.userId,
+          onDelete: onDelete,
+          articleId: widget.articleId,
+          followingId: widget.followingId,
+          height: 300,
+        ),
+      ),
     );
   }
 }

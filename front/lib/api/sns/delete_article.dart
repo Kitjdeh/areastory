@@ -20,7 +20,7 @@ Future<void> deleteArticle({
   if (response.statusCode == 200) {
     print('게시글 삭제 성공');
   } else {
-    print('실패');
+    print('게시글 삭제 실패');
     throw Exception('Failed to delete article');
   }
 }

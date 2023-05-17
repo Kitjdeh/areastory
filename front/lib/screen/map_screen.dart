@@ -715,13 +715,13 @@ class _CustomMapState extends State<_CustomMap> {
                       final strUser = await storage.read(key: "userId");
                       final userId = await int.parse(strUser!);
 
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AlarmScreen(
-                                    userId: userId,
-                                    signal: '1',
-                                  )));
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => AlarmScreen(
+                      //               userId: userId,
+                      //               signal: '1',
+                      //             )));
                     },
                     child: Container(
                       // decoration: BoxDecoration(

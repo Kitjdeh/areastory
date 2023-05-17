@@ -25,7 +25,7 @@ Future<CommentData> getComment({
     print('댓글 조회 성공');
     return commentData;
   } else {
-    print('실패');
+    print('댓글 조회 실패');
     throw Exception('Failed to load articles');
   }
 }

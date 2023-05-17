@@ -138,6 +138,10 @@ void main() async {
   if (!kIsWeb) {
     await setupFlutterNotifications();
   }
+
+  /// 기존 FCM 토큰을 삭제.
+  FirebaseMessaging.instance.deleteToken();
+
   var fcmToken = await FirebaseMessaging.instance
       .getToken(vapidKey: "${dotenv.get('FIREBASE_KEY')}");
 
@@ -147,8 +151,7 @@ void main() async {
     /// 예를 들면 백엔드 user정보의 토큰을 바꿔준다.
   });
 
-  /// 기존 FCM 토큰을 삭제.
-  //FirebaseMessaging.instance.deleteToken();
+
 
   /// 안드로이드는 채널설정이 필수.
   var channel = const AndroidNotificationChannel(

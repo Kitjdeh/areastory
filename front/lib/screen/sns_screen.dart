@@ -141,17 +141,19 @@ class _SnsScreenState extends State<SnsScreen> {
   }
 
   void _myLocationSearch() async {
+    // void _myLocationSearch() {
     final storage = new FlutterSecureStorage();
 
     while (storedLocation == null) {
       storedLocation = await storage.read(key: "userlocation");
+      // print('가져오기');
       await Future.delayed(Duration(milliseconds: 200));
     }
 
     print("저장된 위치: $storedLocation");
-    handleLocationSelected(storedLocation!);
+    handleLocationSelected2(storedLocation!);
     // storedLocation = '서울특별시 영등포구 여의도동';
-    // handleLocationSelected(storedLocation!);
+    // handleLocationSelected2(storedLocation!);
   }
 
   void printArticles() async {
@@ -185,7 +187,7 @@ class _SnsScreenState extends State<SnsScreen> {
     }
     _currentPage = 1;
     _articles.clear();
-    _followings.clear();
+    // _followings.clear();
     final articleData = await getArticles(
       sort: dropdownValue == '인기순' ? 'likeCount' : 'articleId',
       page: _currentPage,
@@ -193,8 +195,8 @@ class _SnsScreenState extends State<SnsScreen> {
       sigungu: seletedLocationSigungu,
       dongeupmyeon: seletedLocationDongeupmyeon,
     );
-    final followData = await getFollowingsSort();
-    _followings.addAll(followData);
+    // final followData = await getFollowingsSort();
+    // _followings.addAll(followData);
     _articles.addAll(articleData.articles);
     _hasNextPage = articleData.nextPage;
 
@@ -223,7 +225,6 @@ class _SnsScreenState extends State<SnsScreen> {
       _hasNextPage = newArticles.nextPage;
 
       setState(() {
-        print('성공');
         _isLoadMoreRunning = false;
       });
     }
@@ -235,7 +236,7 @@ class _SnsScreenState extends State<SnsScreen> {
 
   void handleLocationSelected(String selectedLocation) async {
     List<String> locationParts = selectedLocation.split(' ');
-    print(locationParts);
+    // print(locationParts);
 
     if (locationParts.length == 1) {
       seletedLocationDosi = locationParts[0];
@@ -269,10 +270,59 @@ class _SnsScreenState extends State<SnsScreen> {
       sigungu: seletedLocationSigungu,
       dongeupmyeon: seletedLocationDongeupmyeon,
     );
+    // print('2');
     _articles.addAll(articleData.articles);
     _hasNextPage = articleData.nextPage;
 
     setState(() {});
+  }
+
+  void handleLocationSelected2(String selectedLocation) async {
+    setState(() {
+      _isFirstLoadRunning = true;
+    });
+    List<String> locationParts = selectedLocation.split(' ');
+    // print(locationParts);
+
+    if (locationParts.length == 1) {
+      seletedLocationDosi = locationParts[0];
+      seletedLocationSigungu = '';
+      seletedLocationDongeupmyeon = '';
+    } else if (locationParts.length == 2) {
+      seletedLocationDosi = locationParts[0];
+      seletedLocationSigungu = locationParts[1];
+      seletedLocationDongeupmyeon = '';
+    } else if (locationParts.length == 3) {
+      if (locationParts[2][locationParts[2].length - 1] == "구") {
+        seletedLocationDosi = locationParts[0];
+        seletedLocationSigungu = locationParts[1] + locationParts[2];
+      } else {
+        seletedLocationDosi = locationParts[0];
+        seletedLocationSigungu = locationParts[1];
+        seletedLocationDongeupmyeon = locationParts[2];
+      }
+    } else {
+      seletedLocationDosi = locationParts[0];
+      seletedLocationSigungu = locationParts[1] + locationParts[2];
+      seletedLocationDongeupmyeon = locationParts[3];
+    }
+
+    _currentPage = 1;
+    _articles.clear();
+    final articleData = await getArticles(
+      sort: dropdownValue == '인기순' ? 'likeCount' : 'articleId',
+      page: _currentPage,
+      dosi: seletedLocationDosi,
+      sigungu: seletedLocationSigungu,
+      dongeupmyeon: seletedLocationDongeupmyeon,
+    );
+    // print('2');
+    _articles.addAll(articleData.articles);
+    _hasNextPage = articleData.nextPage;
+
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
   }
 
   void onChangeSort(String dropdownValue) async {
@@ -306,7 +356,7 @@ class _SnsScreenState extends State<SnsScreen> {
               )
             : ImageData(
                 IconsPath.logo,
-                width: 270,
+                width: 200,
               ),
         centerTitle: widget.location != null ? true : false,
         leading: widget.location != null
@@ -360,7 +410,7 @@ class _SnsScreenState extends State<SnsScreen> {
             GestureDetector(
               onTap: () {
                 _myLocationSearch();
-                printArticles();
+                // printArticles();
               },
               child: ImageData(
                 IconsPath.mylocation,
@@ -378,7 +428,7 @@ class _SnsScreenState extends State<SnsScreen> {
             },
             child: ImageData(
               dropdownValue == '인기순' ? IconsPath.hot : IconsPath.recently,
-              width: 250,
+              width: 230,
             ),
           ),
           SizedBox(

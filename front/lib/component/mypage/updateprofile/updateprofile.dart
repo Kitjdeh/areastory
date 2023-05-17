@@ -53,8 +53,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       final dir = await getApplicationDocumentsDirectory();
       final file = File('${dir.path}/$fileName');
       await file.writeAsBytes(bytes);
-      print("이미지가 안바뀌었습니다. 파일이름입니다");
-      print(fileName);
       return MultipartFile.fromFile(file.path, filename: fileName);
     } else {
       throw Exception('Failed to get file from URL');
@@ -166,14 +164,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     });
                     print("_image: ${_image}");
                     try {
-                      print(formData);
                       final res = await Dio().patch(
                           '${dotenv.get('BASE_URL')}/api/users/${widget.userId}',
                           data: formData
                       );
                       if (res.statusCode == 200){
                         print("회원정보 수정 성공");
-                        Navigator.of(context).pop();
+                        // Navigator.of(context).pop();
+                        Navigator.pop(context, true); // 수정이 성공했음을 나타내는 true 값을 결과로 전달합니다
+
                         // 이전 페이지의 build() 메서드에서 상태 업데이트
                         // Navigator.pushReplacement(
                         //   context,

@@ -7,12 +7,15 @@ import 'package:front/api/login/delete_user.dart';
 import 'package:front/api/login/kakao/kakao_login.dart';
 import 'package:front/api/login/kakao/login_view_model.dart';
 import 'package:front/api/user/get_user.dart';
+import 'package:front/component/alarm/alarm_screen.dart';
 import 'package:front/component/alarm/toast.dart';
 import 'package:front/component/mypage/follow/follow.dart';
 import 'package:front/component/mypage/mypage_tabbar.dart';
 import 'package:front/component/mypage/report.dart';
 import 'package:front/component/mypage/updateprofile/updateprofile.dart';
 import 'package:front/constant/home_tabs.dart';
+import 'package:front/controllers/mypage_screen_controller.dart';
+import 'package:get/get.dart';
 
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({Key? key, required this.userId}) : super(key: key);
@@ -31,6 +34,7 @@ class _MyPageScreenState extends State<MyPageScreen>
   int? cntArticles;
   late String? selectedReportType = "불건전한 닉네임";
   late bool followYn = false;
+  final MyPageController _mypageController = Get.find<MyPageController>();
 
   void setMyId() async {
     myId = await storage.read(key: "userId");
@@ -42,13 +46,11 @@ class _MyPageScreenState extends State<MyPageScreen>
     });
   }
 
-  void chgtoggle(){
+  void chgtoggle() {
     setState(() {
       followYn = !followYn;
     });
   }
-
-
 
   @override
   void initState() {
@@ -56,7 +58,6 @@ class _MyPageScreenState extends State<MyPageScreen>
     super.initState();
     tabController = TabController(length: 2, vsync: this);
     setMyId();
-    print("마이페이지 이닛스테이트가 돌아가요");
   }
 
   @override
@@ -83,9 +84,6 @@ class _MyPageScreenState extends State<MyPageScreen>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // 프로필 사진
-                // 컨테이너는 넓이, 높이 설정안하면 -> 자동으로 최대크기
-                // sizedbox는 하나라도 설정안하면 -> 자동으로 child의 최대크기
                 GestureDetector(
                   onTap: () {
                     widget.userId == myId
@@ -98,18 +96,25 @@ class _MyPageScreenState extends State<MyPageScreen>
                                 nickname: snapshot.data!.nickname,
                               ),
                             ),
-                          )
-                        // Get.to(UpdateProfileScreen(
-                        //         userId: widget.userId,
-                        //         img: snapshot.data!.profile.toString(),
-                        //         nickname: snapshot.data!.nickname))
+                          ).then((result) {
+                            if (result == true) {
+                              setState(() {
+                                // 정보를 업데이트하기 위한 필요한 작업 수행
+                                // 예: _information() 호출 또는 AppBar의 타이틀 업데이트
+                              });
+                            }
+                          })
+                        //     ? Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => UpdateProfileScreen(
+                        //       userId: widget.userId,
+                        //       img: snapshot.data!.profile.toString(),
+                        //       nickname: snapshot.data!.nickname,
+                        //     ),
+                        //   ),
+                        // )
                         : null;
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) =>
-                    //             UpdateProfileScreen(userId: widget.userId, img: snapshot.data!.profile.toString())))
-                    // : null;
                   },
                   child: Container(
                     width: 100,
@@ -147,15 +152,22 @@ class _MyPageScreenState extends State<MyPageScreen>
                 // 팔로워(수)
                 GestureDetector(
                   onTap: () {
-                    print("팔로워 리스트로 이동");
                     // Get.to(MypageFollowScreen(index: '0'));
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MypageFollowScreen(
-                                index: '0',
-                                userId: widget.userId,
-                                nickname: snapshot.data!.nickname)));
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MypageFollowScreen(
+                                    index: '0',
+                                    userId: widget.userId,
+                                    nickname: snapshot.data!.nickname)))
+                        .then((result) {
+                      if (result == true) {
+                        setState(() {
+                          // 정보를 업데이트하기 위한 필요한 작업 수행
+                          // 예: _information() 호출 또는 AppBar의 타이틀 업데이트
+                        });
+                      }
+                    });
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -176,15 +188,22 @@ class _MyPageScreenState extends State<MyPageScreen>
                 // 팔로잉(수)
                 GestureDetector(
                   onTap: () {
-                    print("팔로잉 리스트로 이동");
                     // Get.to(MypageFollowScreen(index: '1'));
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MypageFollowScreen(
-                                index: '1',
-                                userId: widget.userId,
-                                nickname: snapshot.data!.nickname)));
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MypageFollowScreen(
+                                    index: '1',
+                                    userId: widget.userId,
+                                    nickname: snapshot.data!.nickname)))
+                        .then((result) {
+                      if (result == true) {
+                        setState(() {
+                          // 정보를 업데이트하기 위한 필요한 작업 수행
+                          // 예: _information() 호출 또는 AppBar의 타이틀 업데이트
+                        });
+                      }
+                    });
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -218,6 +237,25 @@ class _MyPageScreenState extends State<MyPageScreen>
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          TextButton.icon(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AlarmScreen(
+                            userId: int.parse(widget.userId),
+                            signal: '1',
+                          )));
+            },
+            icon: Icon(
+              Icons.access_alarm,
+              color: Colors.black,
+            ),
+            label: Text(
+              "알람",
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
           TextButton.icon(
             onPressed: () async {
               // postFollowing(followingId: int.parse(widget.userId));
@@ -348,7 +386,8 @@ class _MyPageScreenState extends State<MyPageScreen>
                           TextButton(
                             onPressed: () {
                               print("팔로잉신청합니다..${snapshot.data!.followYn}");
-                              postFollowing(followingId: int.parse(widget.userId));
+                              postFollowing(
+                                  followingId: int.parse(widget.userId));
                               chgtoggle();
                             },
                             child: Text(
@@ -363,8 +402,9 @@ class _MyPageScreenState extends State<MyPageScreen>
                         if (myId != widget.userId && followYn)
                           TextButton(
                             onPressed: () {
-                              deleteFollowing(followingId: int.parse(widget.userId));
-                              print("팔로잉취소합니다.");
+                              deleteFollowing(
+                                  followingId: int.parse(widget.userId));
+
                               chgtoggle();
                             },
                             child: Text(

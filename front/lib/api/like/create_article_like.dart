@@ -19,7 +19,7 @@ Future<void> postArticleLike({required int articleId}) async {
   if (response.statusCode == 200) {
     print('게시글 좋아요 성공');
   } else {
-    print('실패');
+    print('게시글 좋아요 실패');
     throw Exception('Failed to create article');
   }
 }

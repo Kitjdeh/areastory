@@ -155,7 +155,6 @@ class MapTempController extends GetxController {
   }
 
   Future<bool> fetchData() async {
-    print("자 지도함수 돌아갑니다~ 감자 고구마");
     bool data = false;
     await loadmapdata('asset/map/ctp_korea.geojson');
     await loadmapdata('asset/map/sigungookorea.json');
@@ -164,7 +163,6 @@ class MapTempController extends GetxController {
     await Future.delayed(Duration(milliseconds: 100), () {
       data = true;
     });
-    print("자 지도함수 끝~ 고구마 고구마");
     update();
     return data;
   }

@@ -29,7 +29,7 @@ Future<List<Followers>> getFollowers({
     print('팔로워 유저 요청 성공');
     return followers;
   } else {
-    print('실패');
+    print('팔로워 유저 요청 실패');
     throw Exception('Failed to load followers');
   }
 }

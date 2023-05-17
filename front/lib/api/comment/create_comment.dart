@@ -32,7 +32,7 @@ Future<void> postComment({
   if (response.statusCode == 200) {
     print('댓글 생성 성공');
   } else {
-    print('실패');
+    print('댓글 생성 실패');
     throw Exception('Failed to create article');
   }
 }

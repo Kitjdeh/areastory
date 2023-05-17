@@ -80,7 +80,8 @@ class _SearchScreenState extends State<SearchScreen> {
           icon: Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black,
           onPressed: () {
-            Get.find<BottomNavController>().willPopAction();
+            // Get.find<BottomNavController>().willPopAction();
+            Navigator.pop(context, true);
           },
         ),
         titleSpacing: 0,
@@ -149,7 +150,6 @@ class _SearchScreenState extends State<SearchScreen> {
               ListView.separated(
                 itemCount: _followers.length,
                 itemBuilder: (context, index) {
-                  print(index);
                   return renderContainer(
                     userId: _followers[index].userId.toString(),
                     image: _followers[index].profile.toString(),
@@ -192,7 +192,6 @@ class _SearchScreenState extends State<SearchScreen> {
                   flex: 7,
                   child: GestureDetector(
                     onTap: (){
-                      print("감자입니다.");
                       Navigator.push(
                           context,
                           MaterialPageRoute(

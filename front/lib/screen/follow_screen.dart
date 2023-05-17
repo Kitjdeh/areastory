@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front/api/follow/get_followings_sort.dart';
 import 'package:front/api/sns/get_follow_articles.dart';
-import 'package:front/component/follow/follow_map.dart';
 import 'package:front/component/sns/avatar_widget.dart';
 import 'package:front/component/sns/post_widget.dart';
 import 'package:front/constant/home_tabs.dart';
@@ -22,20 +21,6 @@ class FollowScreen extends StatefulWidget {
   State<FollowScreen> createState() => _FollowScreenState();
 }
 
-Widget _myStory() {
-  return Stack(
-    children: [
-      AvatarWidget(
-        type: AvatarType.TYPE2,
-        thumbPath:
-            'https://areastory-user.s3.ap-northeast-2.amazonaws.com/profile/8373fb5d-78e7-4613-afc9-5269c247f36a.1683607649926',
-        size: 70,
-      ),
-    ],
-  );
-}
-
-
 Widget _storyBoardList({
   required List followings,
 }) {
@@ -43,10 +28,6 @@ Widget _storyBoardList({
     scrollDirection: Axis.horizontal,
     child: Row(
       children: [
-        // const SizedBox(
-        //   width: 10,
-        // ),
-        // _myStory(),
         const SizedBox(
           width: 5,
         ),
@@ -80,7 +61,7 @@ Widget _storyBoardList({
 }
 
 class _FollowScreenState extends State<FollowScreen> {
-  final FollowController _followController = Get.put(FollowController());
+  final FollowController _followController = Get.find<FollowController>();
   bool _isToggleOn = false; // 토글 상태 변수
   Duration _animationDuration = Duration(milliseconds: 300);
 
@@ -98,36 +79,11 @@ class _FollowScreenState extends State<FollowScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = ScrollController();
-    printArticles();
-    // _followController.printArticles();
-    _controller.addListener(_loadMoreData);
-    // signal = widget.signal!;
+    // _controller = ScrollController();
+    // printArticles();
+    // _controller.addListener(_loadMoreData);
+    _followController.init(int.parse(widget.userId));
   }
-
-  void _toggleSwitch() {
-    setState(() {
-      _isToggleOn = !_isToggleOn; // 토글 상태 변경
-    });
-  }
-
-  // @override
-  // void didUpdateWidget(covariant FollowScreen oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-  //   if (oldWidget.signal != widget.signal) {
-  //     setState(() {
-  //       signal = widget.signal!;
-  //     });
-  //     handleSignal(signal);
-  //   }
-  // }
-
-  // void handleSignal(String signal) {
-  //   if (signal == '1') {
-  //     printArticles();
-  //     signal = '';
-  //   }
-  // }
 
   @override
   void dispose() {
@@ -177,73 +133,81 @@ class _FollowScreenState extends State<FollowScreen> {
   }
 
   void onDelete(int articleId) {
-    setState(() {});
+    // setState(() {});
+    _followController.ondelete(articleId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
-        leading: ImageData(
-          IconsPath.logo,
-          width: 270,
-        ),
-        title: Text(
-          "Followings",
-          style: TextStyle(color: Colors.black),
-        ),
-        centerTitle: true,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: ImageData(
+            IconsPath.logo,
+            width: 270,
+          ),
+          title: Text(
+            "Followings",
+            style: TextStyle(color: Colors.black),
+          ),
+          centerTitle: true,
 
-        /// 앱바 그림자효과 제거
-      ),
-      body: _isFirstLoadRunning
-          ? const Center(
-              child: const CircularProgressIndicator(),
-            )
-          : RefreshIndicator(
-              onRefresh: () {
-                return Future<void>.delayed(Duration(seconds: 2), () {
-                  printArticles();
-                });
-              },
-              child: ListView(
-                controller: _controller,
-                children: [
-                  _storyBoardList(followings: _followings),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: List.generate(
-                      _articles.length,
-                      (index) => ArticleComponent(
-                        userId: userId,
-                        onDelete: onDelete,
-                        articleId: _articles[index].articleId,
-                        followingId: _articles[index].userId,
-                        height: 300,
-                      ),
+          /// 앱바 그림자효과 제거
+        ),
+        body: GetBuilder<FollowController>(
+          builder: (controller) {
+            return _followController.isFirstLoadRunning
+                ? const Center(
+                    child: const CircularProgressIndicator(),
+                  )
+                : RefreshIndicator(
+                    onRefresh: () {
+                      return Future<void>.delayed(Duration(seconds: 2), () {
+                        _followController.printArticles();
+                      });
+                    },
+                    child: ListView(
+                      controller: _followController.scrollController,
+                      children: [
+                        _storyBoardList(
+                            followings: _followController.followings),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: List.generate(
+                            _followController.articles.length,
+                            (index) => ArticleComponent(
+                              userId: _followController.userId,
+                              onDelete: onDelete,
+                              articleId:
+                                  _followController.articles[index].articleId,
+                              followingId:
+                                  _followController.articles[index].userId,
+                              height: 300,
+                            ),
+                          ),
+                        ),
+                        if (_followController.isLoadMoreRunning)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10, bottom: 40),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        if (!_followController.isLoadMoreRunning &&
+                            !_followController.hasNextPage)
+                          Container(
+                            padding: const EdgeInsets.only(top: 30, bottom: 40),
+                            color: Colors.white,
+                            child: const Center(
+                              child: Text('더이상 게시글이 없습니다'),
+                            ),
+                          ),
+                      ],
                     ),
-                  ),
-                  if (_isLoadMoreRunning)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 40),
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  if (!_isLoadMoreRunning && !_hasNextPage)
-                    Container(
-                      padding: const EdgeInsets.only(top: 30, bottom: 40),
-                      color: Colors.white,
-                      child: const Center(
-                        child: Text('더이상 게시글이 없습니다'),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-    );
+                  );
+          },
+        ));
   }
 }

@@ -3,8 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<LoginDataClass> getLogin(providerId, fcmToken) async {
-  print("로그인 함수 실행~!!!!!");
-  print("fcmToken: $fcmToken");
+  // print("fcmToken: $fcmToken");
   final dio = Dio(BaseOptions(
     baseUrl: '${dotenv.get('BASE_URL')}/api/users',
   ));

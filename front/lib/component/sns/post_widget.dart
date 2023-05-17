@@ -42,6 +42,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
   void initState() {
     super.initState();
     getProfile();
+    print("userId: ${widget.userId} followingId: ${widget.followingId}");
   }
 
   void getProfile() async {
@@ -116,7 +117,13 @@ class _ArticleComponentState extends State<ArticleComponent> {
                   MaterialPageRoute(
                       builder: (context) => SnsUpdateScreen(
                             articleId: widget.articleId,
-                          )));
+                          ))).then((result) {
+                if (result == true) {
+                  setState(() {
+                    print('업데이트 성공');
+                  });
+                }
+              });
             },
             icon: Icon(
               Icons.update,
@@ -230,7 +237,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
                   },
                   child: ImageData(
                     followYn ? IconsPath.following : IconsPath.follow,
-                    width: 300,
+                    width: 250,
                   ),
                 ),
             ],
