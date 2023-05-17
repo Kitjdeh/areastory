@@ -8,11 +8,13 @@ class AlertModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('경고'),
+      title: Text('게시물 없음'),
       content: Text(message),
       actions: <Widget>[
         TextButton(
-          onPressed: () {  },
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
           child: Text('확인'),
         ),
       ],

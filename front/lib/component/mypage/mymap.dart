@@ -13,9 +13,9 @@ import 'package:latlong2/latlong.dart';
 class MyMap extends StatefulWidget {
   MyMap(
       {Key? key,
-        required this.bigareaData,
-        required this.middleareaData,
-        required this.smallareaData})
+      required this.bigareaData,
+      required this.middleareaData,
+      required this.smallareaData})
       : super(key: key);
   final List<Mapdata> bigareaData;
   final List<Mapdata> middleareaData;
@@ -134,14 +134,14 @@ class _MyMapState extends State<MyMap> {
     await _zoom > 13.0
         ? nowallareadata = widget.smallareaData
         : _zoom > 9.0
-        ? nowallareadata = widget.middleareaData
-        : nowallareadata = widget.bigareaData;
+            ? nowallareadata = widget.middleareaData
+            : nowallareadata = widget.bigareaData;
     setState(() {
       _zoom > 13.0
           ? nowallareadata = widget.smallareaData
           : _zoom > 9.0
-          ? nowallareadata = widget.middleareaData
-          : nowallareadata = widget.bigareaData;
+              ? nowallareadata = widget.middleareaData
+              : nowallareadata = widget.bigareaData;
     });
 
     print('posistionchanged 작동함');
@@ -169,6 +169,7 @@ class _MyMapState extends State<MyMap> {
     });
     var A = visibleMapdata.map((e) => e.mapinfo).toList();
   }
+
   Widget build(BuildContext context) {
     List<Widget> customPolygonLayers = [];
     for (var mapdata in nowareadata) {
@@ -202,8 +203,8 @@ class _MyMapState extends State<MyMap> {
               center: LatLng(37.60732175555233, 127.0710794642477),
               zoom: _zoom,
               interactiveFlags: InteractiveFlag.drag |
-              InteractiveFlag.doubleTapZoom |
-              InteractiveFlag.pinchZoom,
+                  InteractiveFlag.doubleTapZoom |
+                  InteractiveFlag.pinchZoom,
               onMapReady: () async {
                 final strUser = await storage.read(key: "userId");
                 // await loadmapdata('asset/map/ctp_korea.geojson');
@@ -214,7 +215,7 @@ class _MyMapState extends State<MyMap> {
                 mypoisition = await Geolocator.getCurrentPosition(
                     desiredAccuracy: LocationAccuracy.high);
                 mylatlng =
-                await LatLng(mypoisition!.latitude, mypoisition!.longitude);
+                    await LatLng(mypoisition!.latitude, mypoisition!.longitude);
                 List<Map<String, String>> requestlist = [];
                 nowallareadata = widget.middleareaData;
                 Strlocation;
@@ -281,8 +282,8 @@ class _MyMapState extends State<MyMap> {
                   await _zoom > 13.0
                       ? nowallareadata = widget.smallareaData
                       : _zoom > 9.0
-                      ? nowallareadata = widget.middleareaData
-                      : nowallareadata = widget.bigareaData;
+                          ? nowallareadata = widget.middleareaData
+                          : nowallareadata = widget.bigareaData;
                   print('posistionchanged 작동함');
                   List<Map<String, String>> requestlist = [];
                   // print('nowallareadata${nowallareadata.length}');
@@ -311,7 +312,7 @@ class _MyMapState extends State<MyMap> {
 
                   //----------------------------------post-----
                   Map<String, AreaData> result =
-                  await postAreaData(requestlist);
+                      await postAreaData(requestlist);
                   List<Mapdata> newvisibleMapdata = [];
                   // print('result${result}');
                   await Future.forEach(visibleMapdata, (e) {
@@ -365,25 +366,25 @@ class _MyMapState extends State<MyMap> {
                 ),
               _zoom > 12
                   ? IgnorePointer(
-                child: PolylineLayer(
-                    polylines: widget.middleareaData
-                        .map((e) => Polyline(
-                      borderStrokeWidth: 4.0,
-                      points: e.polygons!,
-                      borderColor: Colors.blue,
-                    ))
-                        .toList()),
-              )
+                      child: PolylineLayer(
+                          polylines: widget.middleareaData
+                              .map((e) => Polyline(
+                                    borderStrokeWidth: 4.0,
+                                    points: e.polygons!,
+                                    borderColor: Colors.blue,
+                                  ))
+                              .toList()),
+                    )
                   : IgnorePointer(
-                child: PolylineLayer(
-                    polylines: widget.bigareaData
-                        .map((e) => Polyline(
-                      borderStrokeWidth: 4.0,
-                      points: e.polygons!,
-                      borderColor: Colors.red,
-                    ))
-                        .toList()),
-              ),
+                      child: PolylineLayer(
+                          polylines: widget.bigareaData
+                              .map((e) => Polyline(
+                                    borderStrokeWidth: 4.0,
+                                    points: e.polygons!,
+                                    borderColor: Colors.red,
+                                  ))
+                              .toList()),
+                    ),
               IgnorePointer(
                 child: CircleLayer(
                   circles: [
@@ -420,7 +421,7 @@ class _MyMapState extends State<MyMap> {
                                       decoration: BoxDecoration(
                                         color: Colors.white30,
                                         borderRadius:
-                                        BorderRadius.circular(100),
+                                            BorderRadius.circular(100),
                                       ),
                                       child: ListView.separated(
                                         // controller: _scrollController,
@@ -431,7 +432,7 @@ class _MyMapState extends State<MyMap> {
                                             height: 50,
                                             alignment: Alignment.center,
                                             child:
-                                            const CircularProgressIndicator(),
+                                                const CircularProgressIndicator(),
                                           );
                                         },
 

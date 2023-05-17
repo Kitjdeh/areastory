@@ -115,7 +115,7 @@ class CustomPolygonLayer extends StatelessWidget {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertModal(
-                              message: '이것은 경고 메시지입니다.',
+                              message: '게시글이 없습니다. 등록해 주세요',
                             );
                           },
                         )

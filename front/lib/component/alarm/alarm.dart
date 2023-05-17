@@ -43,7 +43,8 @@ class _AlarmComponentState extends State<AlarmComponent> {
 
   void delAlarm(notificationId) async {
     await deleteAlarm(notificationId: notificationId);
-    widget.onDelete(notificationId);
+    setState(() {});
+    // widget.onDelete(notificationId);
   }
 
   String _formatDate(dynamic createdAt) {

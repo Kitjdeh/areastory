@@ -10,6 +10,7 @@ import 'package:front/component/alarm/alarm_screen.dart';
 import 'package:front/component/alarm/toast.dart';
 import 'package:front/component/map/customoverlay.dart';
 import 'package:front/component/sns/article/article_detail.dart';
+import 'package:front/constant/home_tabs.dart';
 import 'package:front/controllers/map_test_controller.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geojson/geojson.dart';
@@ -715,13 +716,13 @@ class _CustomMapState extends State<_CustomMap> {
                       final strUser = await storage.read(key: "userId");
                       final userId = await int.parse(strUser!);
 
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AlarmScreen(
-                                    userId: userId,
-                                    signal: '1',
-                                  )));
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => AlarmScreen(
+                      //               userId: userId,
+                      //               signal: '1',
+                      //             )));
                     },
                     child: Container(
                       // decoration: BoxDecoration(
@@ -750,26 +751,37 @@ class _CustomMapState extends State<_CustomMap> {
                 children: [
                   Column(
                     children: [
-                      FloatingActionButton(
-                        onPressed: () {
+                      GestureDetector(
+                        onTap: () {
                           mycenter();
                         },
-                        child: Text('*'),
-                      )
+                        child: ImageData(
+                          IconsPath.nowlocation,
+                          width: 250,
+                        ),
+                      ),
                     ],
                   ),
                   Column(
                     children: [
-                      FloatingActionButton(
-                          onPressed: () {
-                            pluszoom();
-                          },
-                          child: Text('+')),
-                      FloatingActionButton(
-                          onPressed: () {
-                            minuszoom();
-                          },
-                          child: Text('-')),
+                      GestureDetector(
+                        onTap: () {
+                          pluszoom();
+                        },
+                        child: ImageData(
+                          IconsPath.zoomIn,
+                          width: 150,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          minuszoom();
+                        },
+                        child: ImageData(
+                          IconsPath.zoomOut,
+                          width: 150,
+                        ),
+                      ),
                     ],
                   ),
                 ],
