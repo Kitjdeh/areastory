@@ -36,6 +36,7 @@ class _AlbumDetailState extends State<AlbumDetail> {
           },
         ),
         titleSpacing: 0,
+        centerTitle: true,
         title: Text(
           "게시글 상세",
           style: TextStyle(color: Colors.black),
@@ -46,7 +47,7 @@ class _AlbumDetailState extends State<AlbumDetail> {
           userId: widget.userId,
           onDelete: onDelete,
           articleId: widget.articleId,
-          followingId: widget.userId,
+          followingId: widget.followingId,
           height: 300,
         ),
       ),
