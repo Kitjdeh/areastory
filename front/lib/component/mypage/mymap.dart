@@ -54,6 +54,7 @@ class _MyMapState extends State<MyMap> {
   String? Strlocation;
   double _zoom = 10.0;
   int? userId;
+  String? strUser;
   final storage = new FlutterSecureStorage();
   final LatLng companyLatLng = LatLng(37.5013, 127.0397);
   // Positionchange 후 작동하게 하여야함
@@ -206,7 +207,7 @@ class _MyMapState extends State<MyMap> {
                   InteractiveFlag.doubleTapZoom |
                   InteractiveFlag.pinchZoom,
               onMapReady: () async {
-                final strUser = await storage.read(key: "userId");
+                strUser = await storage.read(key: "userId");
                 // await loadmapdata('asset/map/ctp_korea.geojson');
                 // await loadmapdata('asset/map/sigungookorea.json');
                 // await loadmapdata('asset/map/minimal.json');
@@ -248,7 +249,8 @@ class _MyMapState extends State<MyMap> {
                 // await postAreaData(requestlist);
 
                 //--------post-----------
-                Map<String, AreaData> result = await postAreaData(requestlist);
+                Map<String, AreaData> result =
+                    await postmyAreaData(requestlist, strUser ?? '');
                 List<Mapdata> newvisibleMapdata = [];
                 // print('응답${result}');
                 await Future.forEach(visibleMapdata, (e) {
@@ -312,7 +314,7 @@ class _MyMapState extends State<MyMap> {
 
                   //----------------------------------post-----
                   Map<String, AreaData> result =
-                      await postAreaData(requestlist);
+                      await postmyAreaData(requestlist, strUser ?? '');
                   List<Mapdata> newvisibleMapdata = [];
                   // print('result${result}');
                   await Future.forEach(visibleMapdata, (e) {
