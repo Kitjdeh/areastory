@@ -480,6 +480,7 @@ class _CustomMapState extends State<_CustomMap> {
       // print(mapdata.fullname);
       customPolygonLayers.add(
         CustomPolygonLayer(
+          entitle: true,
           userId: mapdata.articleId ?? 0,
           urls: [mapdata.urls ?? ''],
           area: mapdata.fullname ?? '',
@@ -587,28 +588,14 @@ class _CustomMapState extends State<_CustomMap> {
               onPositionChanged: (pos, hasGesture) {
                 if (_debounce?.isActive ?? false) _debounce!.cancel();
                 _debounce = Timer(debounceDuration, () async {
-                  // setState(() {
-                  //   _zoom > 13.0
-                  //       ? nowallareadata = widget.smallareaData
-                  //       : _zoom > 10.0
-                  //       ? nowallareadata = widget.middleareaData
-                  //       : nowallareadata = widget.bigareaData;
-                  // });
+                  print("mapController.zoom${mapController.zoom}");
                   // nowallareadata = widget.smallareaData;
                   await _zoom > 13.0
                       ? nowallareadata = widget.smallareaData
-                      : _zoom > 10.0
-                          ? nowallareadata = widget.middleareaData
-                          : nowallareadata = widget.bigareaData;
-                  setState(() {
-                    _zoom > 13.0
-                        ? nowallareadata = widget.smallareaData
-                        : _zoom > 10.0
-                            ? nowallareadata = widget.middleareaData
-                            : nowallareadata = widget.bigareaData;
-                  });
+                      : _zoom > 9.0
+                      ? nowallareadata = widget.middleareaData
+                      : nowallareadata = widget.bigareaData;
                   print('posistionchanged 작동함');
-                  print("mapController.zoom${mapController.zoom}");
                   List<Map<String, String>> requestlist = [];
                   // print('nowallareadata${nowallareadata.length}');
                   // 현재 보이는 화면의 경계를 계산
@@ -632,26 +619,24 @@ class _CustomMapState extends State<_CustomMap> {
                   await Future.forEach(visibleMapdata, (e) {
                     requestlist.add(e.mapinfo!);
                   });
-                  // var A = visibleMapdata.map((e) => e.mapinfo).toList();
+                  var A = visibleMapdata.map((e) => e.mapinfo).toList();
 
                   //----------------------------------post-----
                   Map<String, AreaData> result =
-                      await postAreaData(requestlist);
+                  await postAreaData(requestlist);
                   List<Mapdata> newvisibleMapdata = [];
                   // print('result${result}');
                   await Future.forEach(visibleMapdata, (e) {
                     final areakey = e.keyname;
-                    // print('visiblemapdata');
-                    // print('e.keyname${e.keyname}');
                     // print(
                     //     'resultareakey${result[areakey]!.image} e ${e} areakey${areakey}');
                     final url = result[areakey]!.image ?? e.urls;
-                    // print(url);
+                    print(url);
                     final ariticleid = result[areakey]!.articleId ?? 0;
                     final mapinfo = e.mapinfo;
+                    final fullname = e.fullname;
                     final keyname = e.keyname;
                     final polygons = e.polygons;
-                    final fullname = e.fullname;
                     final newdata = Mapdata(
                         mapinfo: mapinfo,
                         fullname: fullname,
@@ -674,6 +659,7 @@ class _CustomMapState extends State<_CustomMap> {
                 Opacity(
                   opacity: 0.8,
                   child: CustomPolygonLayer(
+                    entitle: true,
                     userId: userId ?? 0,
                     articleId: mapdata.articleId ?? 0,
                     // articleId: [mapdata.articleId ?? 0 ],
