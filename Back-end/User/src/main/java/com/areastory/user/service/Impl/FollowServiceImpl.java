@@ -45,7 +45,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     public FollowerPageResp findFollowers(Long userId, int page, int type) {
-        Pageable pageable = PageRequest.of(page, 15);
+        Pageable pageable = PageRequest.of(page, 100);
         Page<FollowerResp> followers = followRepository.findFollowers(userId, pageable, type);
         return FollowerPageResp.fromFollowerResp(followers);
     }
@@ -58,7 +58,7 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public FollowingPageResp findFollowing(Long userId, int page, int type) {
-        Pageable pageable = PageRequest.of(page, 5);
+        Pageable pageable = PageRequest.of(page, 100);
         Page<FollowingResp> following = followRepository.findFollowing(userId, pageable, type);
         return FollowingPageResp.fromFollowingResp(following);
     }

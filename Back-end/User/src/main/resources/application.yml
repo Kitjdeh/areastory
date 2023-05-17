@@ -20,8 +20,10 @@ spring:
     database: mysql
     hibernate:
       ddl-auto: update
-      jdbc:
-        time-zone: Asia/Seoul
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Seoul
     show-sql: true
     generate-ddl: true
   servlet:

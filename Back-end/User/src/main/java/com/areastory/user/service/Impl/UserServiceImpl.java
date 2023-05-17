@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ArticleResp getArticleList(Long userId, int page) {
-        Pageable pageable = PageRequest.of(page, 20, Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, 100, Sort.Direction.DESC, "createdAt");
         User user = userRepository.findById(userId).orElseThrow();
         Page<ArticleDto> articleDtos = articleRepository.findByUser(user, pageable)
                 .map(ArticleDto::fromEntity);
@@ -158,14 +158,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ArticleResp getOtherUserArticleList(Long userId, int page) {
-        Pageable pageable = PageRequest.of(page, 20, Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, 100, Sort.Direction.DESC, "createdAt");
         Page<ArticleDto> articleDtos = articleRepository.getOtherUserArticleList(userId, pageable);
         return ArticleResp.fromArticleDto(articleDtos);
     }
 
     @Override
     public FollowerPageResp getUserBySearch(Long userId, int page, String search) {
-        Pageable pageable = PageRequest.of(page, 5);
+        Pageable pageable = PageRequest.of(page, 100);
         return FollowerPageResp.fromFollowerResp(userRepository.getUserBySearch(userId, pageable, searchCondition(search)));
     }
 
