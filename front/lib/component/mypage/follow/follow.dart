@@ -43,7 +43,14 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    SearchScreen(userId: widget.userId)));
+                    SearchScreen(userId: widget.userId))).then((result) {
+          if (result == true) {
+            setState(() {
+              // 정보를 업데이트하기 위한 필요한 작업 수행
+              // 예: _information() 호출 또는 AppBar의 타이틀 업데이트
+            });
+          }
+        });
       },
       child: Row(
         children: [

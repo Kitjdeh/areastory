@@ -75,6 +75,9 @@ class _MyAlbumState extends State<MyAlbum> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // body: RefreshIndicator(child: renderMaxExtent(), onRefresh: (){
+      //   printArticles(int.parse(widget.userId), _currentPage);
+      // })
       body: renderMaxExtent(),
     );
   }
