@@ -99,6 +99,16 @@ class _MyMapState extends State<MyMap> {
     // _loadMapadata();
   }
 
+  bool ifpolygoninsdie(LatLng points, List<LatLng> polygons) {
+    int intersectCount = 0;
+    for (int j = 0; j < polygons.length - 1; j++) {
+      if (rayCastIntersect(points, polygons[j], polygons[j + 1])) {
+        intersectCount++;
+      }
+    }
+    return ((intersectCount % 2) == 1); // odd = inside, even = outside;
+  }
+
   bool rayCastIntersect(LatLng tap, LatLng vertA, LatLng vertB) {
     double aY = vertA.latitude;
     double bY = vertB.latitude;
