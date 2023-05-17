@@ -85,6 +85,7 @@ public class UserRepositorySupportImpl implements UserRepositorySupport {
                 .orderBy(follow.createdAt.desc())
                 .fetch();
 
+
         List<FollowerResp> notFollowerList = queryFactory
                 .select(Projections.constructor(FollowerResp.class,
                         user.userId,
@@ -92,7 +93,7 @@ public class UserRepositorySupportImpl implements UserRepositorySupport {
                         user.profile,
                         Expressions.constant(false)))
                 .from(user)
-                .where(user.userId.notIn(getFollowingUserId(userId)), user.nickname.like(search))
+                .where(user.userId.notIn(getFollowingUserId(userId)), user.userId.ne(userId), user.nickname.like(search))
                 .orderBy(user.nickname.asc())
                 .fetch();
 

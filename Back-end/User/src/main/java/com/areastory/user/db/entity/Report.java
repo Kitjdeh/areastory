@@ -1,6 +1,8 @@
 package com.areastory.user.db.entity;
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,11 +20,13 @@ public class Report extends BaseTime implements Serializable {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "report_user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User reportUser;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User targetUser;
     @Column(name = "report_content")
     private String reportContent;
