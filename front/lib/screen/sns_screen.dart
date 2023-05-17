@@ -151,7 +151,7 @@ class _SnsScreenState extends State<SnsScreen> {
     }
 
     print("저장된 위치: $storedLocation");
-    handleLocationSelected(storedLocation!);
+    handleLocationSelected2(storedLocation!);
     // storedLocation = '서울특별시 영등포구 여의도동';
     // handleLocationSelected2(storedLocation!);
   }
@@ -357,7 +357,7 @@ class _SnsScreenState extends State<SnsScreen> {
               )
             : ImageData(
                 IconsPath.logo,
-                width: 270,
+                width: 200,
               ),
         centerTitle: widget.location != null ? true : false,
         leading: widget.location != null
@@ -429,7 +429,7 @@ class _SnsScreenState extends State<SnsScreen> {
             },
             child: ImageData(
               dropdownValue == '인기순' ? IconsPath.hot : IconsPath.recently,
-              width: 250,
+              width: 230,
             ),
           ),
           SizedBox(

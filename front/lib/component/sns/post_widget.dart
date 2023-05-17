@@ -89,11 +89,11 @@ class _ArticleComponentState extends State<ArticleComponent> {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
 
-    if (difference.inSeconds < 32460) {
+    if (difference.inSeconds < 60) {
       return '${difference.inSeconds}초 전';
-    } else if (difference.inMinutes < 600) {
+    } else if (difference.inMinutes < 60) {
       return '${difference.inMinutes}분 전';
-    } else if (difference.inHours < 33) {
+    } else if (difference.inHours < 24) {
       return '${difference.inHours}시간 전';
     } else {
       return '${difference.inDays}일 전';
@@ -236,7 +236,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
                   },
                   child: ImageData(
                     followYn ? IconsPath.following : IconsPath.follow,
-                    width: 300,
+                    width: 250,
                   ),
                 ),
             ],
