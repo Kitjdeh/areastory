@@ -604,8 +604,8 @@ class _CustomMapState extends State<_CustomMap> {
                     _zoom > 13.0
                         ? nowallareadata = widget.smallareaData
                         : _zoom > 10.0
-                        ? nowallareadata = widget.middleareaData
-                        : nowallareadata = widget.bigareaData;
+                            ? nowallareadata = widget.middleareaData
+                            : nowallareadata = widget.bigareaData;
                   });
                   print('posistionchanged 작동함');
                   print("mapController.zoom${mapController.zoom}");
@@ -640,7 +640,6 @@ class _CustomMapState extends State<_CustomMap> {
                   List<Mapdata> newvisibleMapdata = [];
                   // print('result${result}');
                   await Future.forEach(visibleMapdata, (e) {
-
                     final areakey = e.keyname;
                     // print('visiblemapdata');
                     // print('e.keyname${e.keyname}');
@@ -725,46 +724,8 @@ class _CustomMapState extends State<_CustomMap> {
             ],
           ),
           Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FloatingActionButton(
-                    onPressed: () async {
-                      final strUser = await storage.read(key: "userId");
-                      final userId = await int.parse(strUser!);
-
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => AlarmScreen(
-                      //               userId: userId,
-                      //               signal: '1',
-                      //             )));
-                    },
-                    child: Container(
-                      // decoration: BoxDecoration(
-                      //   borderRadius: BorderRadius.circular(100),
-                      // ),
-                      child: Icon(Icons.alarm),
-                      // Image.asset(
-                      //   'asset/img/options/mypage_bottom_sheet_setting_02.jpg',
-                      //   fit: BoxFit.fill,
-                      // ),
-                    ),
-                    backgroundColor: Colors.transparent,
-
-                    // Container(
-                    //   decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(100),
-                    //       image: new DecorationImage(
-                    //           image: new AssetImage(
-                    //              ))),
-                    // )
-                  )
-                ],
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
