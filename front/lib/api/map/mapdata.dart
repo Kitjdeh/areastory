@@ -52,3 +52,39 @@ Future<Map<String, AreaData>> postAreaData(
       : null;
   return AreaInfo;
 }
+Future<Map<String, AreaData>> postmyAreaData(
+    List<Map<String, String>> data,String userid) async {
+
+  List<Map<String, dynamic>> responseJson = [];
+
+  List<AreaData> areadata = [];
+  Map<String, AreaData> AreaInfo = {};
+  Map<String, String> headers = {
+    'Content-Type': 'application/json',
+  };
+  String url = '${dotenv.get('BASE_URL')}/api/map/${userid}';
+  http.Response response = await http.post(Uri.parse(url),
+      body: json.encode(data), headers: headers);
+  final int statuscode = response.statusCode;
+
+  await statuscode == 200
+      ? responseJson = List<Map<String, dynamic>>.from(
+      jsonDecode(utf8.decode(response.bodyBytes))) // 응답 데이터를 변환하여 저장
+  // areadata = jsonDecode(utf8.decode(response.bodyBytes))
+      : print("에러가 발생 에러코드${response.statusCode}");
+  await statuscode == 200
+      ? Future.forEach(responseJson, (e) {
+    areadata.add(AreaData.fromJson(e));
+  })
+      : null;
+  areadata != null
+      ? Future.forEach(areadata, (e) {
+    e.locationDto!['dongeupmyeon'] != null
+        ? AreaInfo.addAll({e.locationDto!['dongupyeon'] ?? "": e})
+        : e.locationDto!['sigungu'] != null
+        ? AreaInfo.addAll({e.locationDto!['sigungu'] ?? "": e})
+        : AreaInfo.addAll({e.locationDto!['dosi'] ?? "": e});
+  })
+      : null;
+  return AreaInfo;
+}
