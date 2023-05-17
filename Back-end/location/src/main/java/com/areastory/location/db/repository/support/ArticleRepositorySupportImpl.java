@@ -1,5 +1,6 @@
 package com.areastory.location.db.repository.support;
 
+import com.areastory.location.db.entity.Article;
 import com.areastory.location.db.entity.ArticleSub;
 import com.areastory.location.dto.common.LocationDto;
 import com.areastory.location.dto.response.LocationResp;
@@ -13,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +28,7 @@ import static com.querydsl.jpa.JPAExpressions.select;
 @RequiredArgsConstructor
 public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
     private final JPAQueryFactory query;
+    private final EntityManager em;
 
     @Override
     public LocationResp getDailyLikeCountData(String type, Long articleId, LocationDto locationDto, Long dailyLikeCount) {
@@ -114,6 +119,111 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
         return tuples.stream().map(this::tupleToDongeupmyeonResp).collect(Collectors.toList());
     }
 
+
+    @Override
+    public List<Article> getImage(List<LocationDto> locationList, Long userId) {
+        if (locationList.size() == 0) {
+            return null;
+        }
+
+        String jpql = "select a.* from article a join";
+        String subJpql = getSubQuery(locationList, userId);
+        jpql += subJpql;
+        Query result = em.createNativeQuery(jpql, Article.class)
+                .setParameter("userId", userId);
+        return (List<Article>) result.getResultList();
+    }
+
+    private String getSubQuery(List<LocationDto> locationList, Long userId) {
+        String subQuery;
+        String whereJpql = " where (";
+        String subGroupBy;
+        String onJpql;
+        String mainGroupBy;
+        LocationDto locationDto = locationList.get(0);
+        List<String> whereCondition;
+        //dosi, sigungu, dongeupmyeon 다 들어왔을 경우
+        if (locationDto.getDongeupmyeon() != null) {
+            subQuery = "(select user_id, public_yn, dosi, sigungu, dongeupmyeon, MAX(daily_like_count) as max_like_count from article";
+            whereCondition = getDongImage(locationList);
+            subGroupBy = " group by dosi, sigungu, dongeupmyeon, user_id) b";
+            onJpql = " on a.dosi=b.dosi and a.sigungu=b.sigungu and a.dongeupmyeon=b.dongeupmyeon and a.user_id=b.user_id and a.daily_like_count=b.max_like_count and a.public_yn=b.public_yn";
+            mainGroupBy = " group by a.dosi, a.sigungu, a.dongeupmyeon, a.user_id";
+        }
+        //dosi, sigungu 만 들어왔을 경우
+        else if (locationDto.getSigungu() != null) {
+            subQuery = "(select user_id, public_yn, dosi, sigungu, MAX(daily_like_count) as max_like_count from article";
+            whereCondition = getSiginguImage(locationList);
+            subGroupBy = " group by dosi, sigungu, user_id) b";
+            onJpql = " on a.dosi=b.dosi and a.sigungu=b.sigungu and a.user_id=b.user_id and a.daily_like_count=b.max_like_count and a.public_yn=b.public_yn";
+            mainGroupBy = " group by a.dosi, a.sigungu, a.user_id";
+        }
+        // dosi 만 들어왔을 경우
+        else {
+            subQuery = "(select user_id, public_yn, dosi, MAX(daily_like_count) as max_like_count from article";
+            whereCondition = getDosiImage(locationList);
+            subGroupBy = " group by dosi, user_id) b";
+            onJpql = " on a.dosi=b.dosi and a.user_id=b.user_id and a.daily_like_count=b.max_like_count and a.public_yn=b.public_yn";
+            mainGroupBy = " group by a.dosi, a.user_id";
+        }
+
+        //where절 합치기
+        if (!whereCondition.isEmpty()) {
+            subQuery += whereJpql;
+            subQuery += String.join(" or ", whereCondition);
+            subQuery += ")";
+            subQuery += " and user_id = :userId and public_yn = 1";
+        }
+        //서브쿼리의 group by 합치기
+        subQuery += subGroupBy;
+
+        //메인쿼리 on 절 합치기
+        subQuery += onJpql;
+
+        //메인 쿼리 group by 합치기
+        subQuery += mainGroupBy;
+        return subQuery;
+    }
+
+    /*
+    DongImage : dosi, sigungu, dongeupmyeon 세개가 다 들어올 경우의 가공
+     */
+    private List<String> getDongImage(List<LocationDto> locationDtoList) {
+        List<String> whereJpql = new ArrayList<>();
+        //list 넘어온 주소들 가공해서 whereJpql에 넣기
+        for (int i = 0; i < locationDtoList.size(); i++) {
+            whereJpql.add("(dosi= \"" + locationDtoList.get(i).getDosi() + "\""
+                    + " and sigungu = \"" + locationDtoList.get(i).getSigungu() + "\""
+                    + " and dongeupmyeon = \"" + locationDtoList.get(i).getDongeupmyeon() + "\")");
+        }
+
+        return whereJpql;
+    }
+
+    /*
+    SigunguImage : dosi, sigungu 두 개가 들어올 경우의 가공
+     */
+    private List<String> getSiginguImage(List<LocationDto> locationDtoList) {
+        //list 넘어온 주소들 가공해서 whereJpql에 넣기
+        List<String> whereJpql = new ArrayList<>();
+        for (int i = 0; i < locationDtoList.size(); i++) {
+            whereJpql.add("(dosi= \"" + locationDtoList.get(i).getDosi() + "\""
+                    + " and sigungu = \"" + locationDtoList.get(i).getSigungu() + "\")");
+        }
+        return whereJpql;
+    }
+
+    /*
+    DosiImage : dosi만 들어올 경우의 가공
+     */
+    private List<String> getDosiImage(List<LocationDto> locationDtoList) {
+        //list 넘어온 주소들 가공해서 whereJpql에 넣기
+        List<String> whereJpql = new ArrayList<>();
+        for (int i = 0; i < locationDtoList.size(); i++) {
+            whereJpql.add("(dosi= \"" + locationDtoList.get(i).getDosi() + "\")");
+        }
+        return whereJpql;
+    }
 
     @Override
     public List<LocationResp> getInitSigungu() {

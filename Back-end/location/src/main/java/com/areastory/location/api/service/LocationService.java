@@ -12,4 +12,6 @@ public interface LocationService {
     List<LocationResp> getMapImages(List<LocationDto> locationList) throws Exception;
 
     List<LocationResp> getUserMapImages(Long userId, List<LocationDto> locationList) throws Exception;
+
+
 }

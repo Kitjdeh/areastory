@@ -20,7 +20,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
                     " ORDER BY a.article_id DESC limit 1", nativeQuery = true)
     Article getDong(@Param("location") LocationDto locationDto, @Param("userId") Long userId);
 
-
     @Query(value =
             "SELECT * FROM article a " +
                     "JOIN (" +
@@ -43,4 +42,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
                     ") b ON a.dosi = b.dosi AND a.daily_like_count = b.max_count AND a.user_id = b.user_id AND a.public_yn = b.public_yn " +
                     " ORDER BY a.article_id DESC limit 1", nativeQuery = true)
     Article getDosi(@Param("location") LocationDto locationDto, @Param("userId") Long userId);
+
+
 }
