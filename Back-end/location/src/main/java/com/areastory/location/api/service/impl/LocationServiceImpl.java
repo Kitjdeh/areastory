@@ -23,10 +23,6 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<LocationResp> getMapImages(List<LocationDto> locationList) {
-        log.info("넘어옴???????????????????");
-        for (LocationDto locationDto : locationList) {
-            log.info(locationDto.getDosi() + " " + locationDto.getSigungu() + " " + locationDto.getDongeupmyeon());
-        }
         return locationList.stream().map(o1 -> locationMap.getMap().get(new LocationDto(o1.getDosi(), o1.getSigungu(), o1.getDongeupmyeon()))).collect(Collectors.toList());
     }
 
@@ -45,12 +41,9 @@ public class LocationServiceImpl implements LocationService {
     }
 
     private LocationResp toDongResp(Article article) {
-        System.out.println("Resp 변환");
         if (article == null) {
-            System.out.println("null인가?");
             return null;
         }
-        System.out.println("null이 아닌가?");
 
         return LocationResp.builder()
                 .dosi(article.getDosi())
