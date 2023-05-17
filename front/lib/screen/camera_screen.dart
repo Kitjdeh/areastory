@@ -30,6 +30,7 @@ class _CameraScreenState extends State<CameraScreen> {
   String seletedLocationDosi = '';
   String seletedLocationSigungu = '';
   String seletedLocationDongeupmyeon = '';
+  bool? createYn = true;
 
   File? _image;
 
@@ -83,6 +84,7 @@ class _CameraScreenState extends State<CameraScreen> {
     //               signal: '1',
     //             )));
     Get.back();
+    createYn = true;
   }
 
   @override
@@ -93,9 +95,9 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future getImage(ImageSource imageSource) async {
     final image = await picker.pickImage(source: imageSource);
-    final storage = new FlutterSecureStorage();
-    storedLocation = (await storage.read(key: "userlocation"))!;
-    // storedLocation = '서울특별시 영등포구 여의도동';
+    // final storage = new FlutterSecureStorage();
+    // storedLocation = (await storage.read(key: "userlocation"))!;
+    storedLocation = '서울특별시 영등포구 여의도동';
     setState(() {
       _image = File(image!.path);
     });
@@ -114,6 +116,7 @@ class _CameraScreenState extends State<CameraScreen> {
               child: Text('확인'),
               onPressed: () {
                 Navigator.of(context).pop(); // 대화 상자 닫기
+                createYn = true;
               },
             ),
           ],
@@ -276,9 +279,12 @@ class _CameraScreenState extends State<CameraScreen> {
             Material(
               child: ElevatedButton(
                 onPressed: () {
-                  _image != null && !contentController.text.isEmpty
-                      ? createArticle(_image, contentController)
-                      : showCreateConfirmationDialog();
+                  if (createYn == true) {
+                    createYn = false;
+                    _image != null && !contentController.text.isEmpty
+                        ? createArticle(_image, contentController)
+                        : showCreateConfirmationDialog();
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.black,
