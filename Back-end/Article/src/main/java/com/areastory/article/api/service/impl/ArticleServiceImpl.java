@@ -144,7 +144,7 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleLike articleLike = optionalArticleLike.get();
 
         Article article = articleRepository.findById(articleId).orElseThrow();
-        // 하루 전이라면 daily like count도 감소시켜야 함
+        // 하루 전이라면 daily like count 도 감소시켜야 함
         LocalDateTime yesterday = LocalDateTime.now().minusDays(1).withHour(0).withMinute(0).withSecond(0);
         if (yesterday.isBefore(articleLike.getCreatedAt())) {
             article.removeDailyLikeCount();
