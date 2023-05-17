@@ -15,7 +15,7 @@ class CommentComponent extends StatefulWidget {
   final double height;
   final Function(bool isChildActive) onUpdateIsChildActive;
   final int myId;
-  final Function(int commentId) onDelete;
+  final Function(bool editing) onDelete;
 
   const CommentComponent({
     Key? key,
@@ -92,16 +92,19 @@ class _CommentComponentState extends State<CommentComponent> {
     }
   }
 
-  void startEditing() {
+  void startEditing(content) {
+    _editCommentController.text = content;
     setState(() {
       isEditing = true;
     });
+    widget.onDelete(isEditing);
   }
 
   void cancelEditing() {
     setState(() {
       isEditing = false;
     });
+    widget.onDelete(isEditing);
   }
 
   void saveEditing() async {
@@ -115,6 +118,7 @@ class _CommentComponentState extends State<CommentComponent> {
     setState(() {
       isEditing = false;
     });
+    widget.onDelete(isEditing);
   }
 
   void showDeleteConfirmationDialog() async {
@@ -230,10 +234,16 @@ class _CommentComponentState extends State<CommentComponent> {
                                           onTap: () {
                                             isEditing
                                                 ? saveEditing()
-                                                : startEditing();
+                                                : startEditing(
+                                                    snapshot.data!.content);
                                           },
                                           child: isEditing
-                                              ? Text('수정')
+                                              ? Text(
+                                                  '수정',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                )
                                               : ImageData(
                                                   IconsPath.update,
                                                   width: 60,
@@ -244,12 +254,21 @@ class _CommentComponentState extends State<CommentComponent> {
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            showDeleteConfirmationDialog();
+                                            isEditing
+                                                ? cancelEditing()
+                                                : showDeleteConfirmationDialog();
                                           },
-                                          child: ImageData(
-                                            IconsPath.delete,
-                                            width: 60,
-                                          ),
+                                          child: isEditing
+                                              ? Text(
+                                                  '취소',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                )
+                                              : ImageData(
+                                                  IconsPath.delete,
+                                                  width: 60,
+                                                ),
                                         ),
                                       ],
                                     ),
@@ -287,7 +306,6 @@ class _CommentComponentState extends State<CommentComponent> {
                           if (isEditing)
                             Expanded(
                               child: TextFormField(
-                                // initialValue: snapshot.data!.content,
                                 controller: _editCommentController,
                               ),
                             )
