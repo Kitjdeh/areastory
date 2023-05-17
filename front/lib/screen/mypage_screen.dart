@@ -13,6 +13,8 @@ import 'package:front/component/mypage/mypage_tabbar.dart';
 import 'package:front/component/mypage/report.dart';
 import 'package:front/component/mypage/updateprofile/updateprofile.dart';
 import 'package:front/constant/home_tabs.dart';
+import 'package:front/controllers/mypage_screen_controller.dart';
+import 'package:get/get.dart';
 
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({Key? key, required this.userId}) : super(key: key);
@@ -31,6 +33,7 @@ class _MyPageScreenState extends State<MyPageScreen>
   int? cntArticles;
   late String? selectedReportType = "불건전한 닉네임";
   late bool followYn = false;
+  final MyPageController _mypageController = Get.find<MyPageController>();
 
   void setMyId() async {
     myId = await storage.read(key: "userId");
@@ -83,33 +86,37 @@ class _MyPageScreenState extends State<MyPageScreen>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // 프로필 사진
-                // 컨테이너는 넓이, 높이 설정안하면 -> 자동으로 최대크기
-                // sizedbox는 하나라도 설정안하면 -> 자동으로 child의 최대크기
                 GestureDetector(
                   onTap: () {
                     widget.userId == myId
                         ? Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => UpdateProfileScreen(
-                                userId: widget.userId,
-                                img: snapshot.data!.profile.toString(),
-                                nickname: snapshot.data!.nickname,
-                              ),
-                            ),
-                          )
-                        // Get.to(UpdateProfileScreen(
-                        //         userId: widget.userId,
-                        //         img: snapshot.data!.profile.toString(),
-                        //         nickname: snapshot.data!.nickname))
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UpdateProfileScreen(
+                          userId: widget.userId,
+                          img: snapshot.data!.profile.toString(),
+                          nickname: snapshot.data!.nickname,
+                        ),
+                      ),
+                    ).then((result) {
+                      if (result == true) {
+                        setState(() {
+                          // 정보를 업데이트하기 위한 필요한 작업 수행
+                          // 예: _information() 호출 또는 AppBar의 타이틀 업데이트
+                        });
+                      }
+                    })
+                    //     ? Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => UpdateProfileScreen(
+                    //       userId: widget.userId,
+                    //       img: snapshot.data!.profile.toString(),
+                    //       nickname: snapshot.data!.nickname,
+                    //     ),
+                    //   ),
+                    // )
                         : null;
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) =>
-                    //             UpdateProfileScreen(userId: widget.userId, img: snapshot.data!.profile.toString())))
-                    // : null;
                   },
                   child: Container(
                     width: 100,
@@ -155,7 +162,14 @@ class _MyPageScreenState extends State<MyPageScreen>
                             builder: (context) => MypageFollowScreen(
                                 index: '0',
                                 userId: widget.userId,
-                                nickname: snapshot.data!.nickname)));
+                                nickname: snapshot.data!.nickname))).then((result) {
+                      if (result == true) {
+                        setState(() {
+                          // 정보를 업데이트하기 위한 필요한 작업 수행
+                          // 예: _information() 호출 또는 AppBar의 타이틀 업데이트
+                        });
+                      }
+                    });
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -184,7 +198,14 @@ class _MyPageScreenState extends State<MyPageScreen>
                             builder: (context) => MypageFollowScreen(
                                 index: '1',
                                 userId: widget.userId,
-                                nickname: snapshot.data!.nickname)));
+                                nickname: snapshot.data!.nickname))).then((result) {
+                      if (result == true) {
+                        setState(() {
+                          // 정보를 업데이트하기 위한 필요한 작업 수행
+                          // 예: _information() 호출 또는 AppBar의 타이틀 업데이트
+                        });
+                      }
+                    });
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -247,7 +268,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                 print("신고하기");
                 // await _showReportDialog();
                 final msg =
-                    await reportUser(targetUserId: int.parse(widget.userId));
+                await reportUser(targetUserId: int.parse(widget.userId));
                 print(msg);
                 toast(context, msg.toString());
               },
@@ -408,18 +429,18 @@ class _MyPageScreenState extends State<MyPageScreen>
             ]),
         body: SafeArea(
             child: Column(
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            _information(),
-            const SizedBox(
-              height: 15,
-            ),
-            MypageTabbar(userId: widget.userId),
-            // _tabMenu(),
-            // _tabView(),
-          ],
-        )));
+              children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                _information(),
+                const SizedBox(
+                  height: 15,
+                ),
+                MypageTabbar(userId: widget.userId),
+                // _tabMenu(),
+                // _tabView(),
+              ],
+            )));
   }
 }

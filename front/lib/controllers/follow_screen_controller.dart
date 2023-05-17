@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front/api/follow/get_followings_sort.dart';
 import 'package:front/api/sns/get_follow_articles.dart';
-import 'package:front/component/sns/avatar_widget.dart';
-import 'package:front/component/sns/post_widget.dart';
-import 'package:front/constant/home_tabs.dart';
-import 'package:front/controllers/follow_screen_controller.dart';
 import 'package:get/get.dart';
-import 'package:front/screen/mypage_screen.dart';
 
 class FollowController extends GetxController {
   bool _isToggleOn = false; // 토글 상태 변수

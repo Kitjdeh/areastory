@@ -4,6 +4,7 @@ import 'package:front/constant/home_tabs.dart';
 import 'package:front/controllers/bottom_nav_controller.dart';
 import 'package:front/controllers/follow_screen_controller.dart';
 import 'package:front/controllers/map_test_controller.dart';
+import 'package:front/controllers/mypage_screen_controller.dart';
 import 'package:front/screen/camera_screen.dart';
 import 'package:front/screen/follow_screen.dart';
 import 'package:front/screen/map_screen.dart';
@@ -23,6 +24,7 @@ class HomeScreen extends GetView<BottomNavController> {
   List<Mapdata> smallareaData = [];
   final MapTempController _mapTempController = Get.put(MapTempController());
   final FollowController _followController = Get.put(FollowController());
+  final MyPageController _mypageController = Get.put(MyPageController());
 
 
   Future<void> loadmapdata(String link) async {

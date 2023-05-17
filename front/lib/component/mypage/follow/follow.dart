@@ -97,7 +97,8 @@ class _MypageFollowScreenState extends State<MypageFollowScreen>
           icon: Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black,
           onPressed: () {
-            Get.find<BottomNavController>().willPopAction();
+            // Get.find<BottomNavController>().willPopAction();
+            Navigator.pop(context, true);
           },
         ),
       ),

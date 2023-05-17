@@ -35,6 +35,11 @@ class _AlbumDetailState extends State<AlbumDetail> {
             Navigator.of(context).pop();
           },
         ),
+        titleSpacing: 0,
+        title: Text(
+          "게시글 상세",
+          style: TextStyle(color: Colors.black),
+        ),
       ),
       body: SingleChildScrollView(
         child: ArticleComponent(
