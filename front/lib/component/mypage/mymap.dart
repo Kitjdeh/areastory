@@ -168,7 +168,7 @@ class _MyMapState extends State<MyMap> {
     await Future.forEach(visibleMapdata, (e) {
       requestlist.add(e.mapinfo!);
     });
-    var A = visibleMapdata.map((e) => e.mapinfo).toList();
+    // var A = visibleMapdata.map((e) => e.mapinfo).toList();
   }
 
   Widget build(BuildContext context) {
