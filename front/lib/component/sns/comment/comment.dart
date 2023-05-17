@@ -34,11 +34,15 @@ class CommentComponent extends StatefulWidget {
 
 class _CommentComponentState extends State<CommentComponent> {
   bool isEditing = false;
-  late TextEditingController _editCommentController;
+  TextEditingController _editCommentController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    firstComment();
+  }
+
+  void firstComment() {
     getComment(articleId: widget.articleId, commentId: widget.commentId)
         .then((commentData) {
       _editCommentController.text = commentData.content;

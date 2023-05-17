@@ -116,7 +116,13 @@ class _ArticleComponentState extends State<ArticleComponent> {
                   MaterialPageRoute(
                       builder: (context) => SnsUpdateScreen(
                             articleId: widget.articleId,
-                          )));
+                          ))).then((result) {
+                if (result == true) {
+                  setState(() {
+                    print('업데이트 성공');
+                  });
+                }
+              });
             },
             icon: Icon(
               Icons.update,

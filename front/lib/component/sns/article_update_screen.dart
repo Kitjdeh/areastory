@@ -38,7 +38,7 @@ class _SnsUpdateScreenState extends State<SnsUpdateScreen> {
     );
     _followController.printArticles();
     // Get.find<BottomNavController>().willPopAction();
-    Navigator.of(context).pop();
+    Navigator.pop(context, true);
   }
 
   @override
