@@ -250,9 +250,12 @@ class _ArticleComponentState extends State<ArticleComponent> {
   Widget _image({
     required String image,
   }) {
-    return CachedNetworkImage(
-      imageUrl: image,
+    return Image.network(
+      image,
     );
+    // return CachedNetworkImage(
+    //   imageUrl: image,
+    // );
   }
 
   Widget _infoCount({
