@@ -10,6 +10,7 @@ import 'package:front/component/alarm/alarm_screen.dart';
 import 'package:front/component/alarm/toast.dart';
 import 'package:front/component/map/customoverlay.dart';
 import 'package:front/component/sns/article/article_detail.dart';
+import 'package:front/const/colors.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/controllers/map_test_controller.dart';
 import 'package:geolocator/geolocator.dart';
@@ -586,12 +587,26 @@ class _CustomMapState extends State<_CustomMap> {
               onPositionChanged: (pos, hasGesture) {
                 if (_debounce?.isActive ?? false) _debounce!.cancel();
                 _debounce = Timer(debounceDuration, () async {
+                  // setState(() {
+                  //   _zoom > 13.0
+                  //       ? nowallareadata = widget.smallareaData
+                  //       : _zoom > 10.0
+                  //       ? nowallareadata = widget.middleareaData
+                  //       : nowallareadata = widget.bigareaData;
+                  // });
                   // nowallareadata = widget.smallareaData;
                   await _zoom > 13.0
                       ? nowallareadata = widget.smallareaData
                       : _zoom > 10.0
                           ? nowallareadata = widget.middleareaData
                           : nowallareadata = widget.bigareaData;
+                  setState(() {
+                    _zoom > 13.0
+                        ? nowallareadata = widget.smallareaData
+                        : _zoom > 10.0
+                        ? nowallareadata = widget.middleareaData
+                        : nowallareadata = widget.bigareaData;
+                  });
                   print('posistionchanged 작동함');
                   print("mapController.zoom${mapController.zoom}");
                   List<Map<String, String>> requestlist = [];
@@ -617,36 +632,40 @@ class _CustomMapState extends State<_CustomMap> {
                   await Future.forEach(visibleMapdata, (e) {
                     requestlist.add(e.mapinfo!);
                   });
-                  var A = visibleMapdata.map((e) => e.mapinfo).toList();
+                  // var A = visibleMapdata.map((e) => e.mapinfo).toList();
 
                   //----------------------------------post-----
-                  // Map<String, AreaData> result =
-                  //     await postAreaData(requestlist);
-                  // List<Mapdata> newvisibleMapdata = [];
-                  // // print('result${result}');
-                  // await Future.forEach(visibleMapdata, (e) {
-                  //   final areakey = e.keyname;
-                  //   // print(
-                  //   //     'resultareakey${result[areakey]!.image} e ${e} areakey${areakey}');
-                  //   final url = result[areakey]!.image ?? e.urls;
-                  //   print(url);
-                  //   final ariticleid = result[areakey]!.articleId ?? 0;
-                  //   final mapinfo = e.mapinfo;
-                  //   final keyname = e.keyname;
-                  //   final polygons = e.polygons;
-                  //   final newdata = Mapdata(
-                  //       mapinfo: mapinfo,
-                  //       fullname: fullname,
-                  //       keyname: keyname,
-                  //       polygons: polygons,
-                  //       urls: url,
-                  //       articleId: ariticleid);
-                  //   newvisibleMapdata.add(newdata);
-                  // });
-                  // nowareadata = newvisibleMapdata;
-                  // setState(() {
-                  //   nowareadata = newvisibleMapdata;
-                  // });
+                  Map<String, AreaData> result =
+                      await postAreaData(requestlist);
+                  List<Mapdata> newvisibleMapdata = [];
+                  // print('result${result}');
+                  await Future.forEach(visibleMapdata, (e) {
+
+                    final areakey = e.keyname;
+                    // print('visiblemapdata');
+                    // print('e.keyname${e.keyname}');
+                    // print(
+                    //     'resultareakey${result[areakey]!.image} e ${e} areakey${areakey}');
+                    final url = result[areakey]!.image ?? e.urls;
+                    // print(url);
+                    final ariticleid = result[areakey]!.articleId ?? 0;
+                    final mapinfo = e.mapinfo;
+                    final keyname = e.keyname;
+                    final polygons = e.polygons;
+                    final fullname = e.fullname;
+                    final newdata = Mapdata(
+                        mapinfo: mapinfo,
+                        fullname: fullname,
+                        keyname: keyname,
+                        polygons: polygons,
+                        urls: url,
+                        articleId: ariticleid);
+                    newvisibleMapdata.add(newdata);
+                  });
+                  nowareadata = newvisibleMapdata;
+                  setState(() {
+                    nowareadata = newvisibleMapdata;
+                  });
                   //--------------------post-------------
                 });
               },
@@ -664,8 +683,8 @@ class _CustomMapState extends State<_CustomMap> {
                     polygons: [
                       Polygon(
                         isFilled: false,
-                        color: Colors.white,
-                        borderColor: Colors.white,
+                        color: PAINTNG,
+                        borderColor: MAPBORDER,
                         points: mapdata.polygons!,
                         borderStrokeWidth: 3.0,
                       ),
@@ -679,7 +698,7 @@ class _CustomMapState extends State<_CustomMap> {
                               .map((e) => Polyline(
                                     borderStrokeWidth: 5.0,
                                     points: e.polygons!,
-                                    borderColor: Colors.grey,
+                                    borderColor: BIGBORDER,
                                   ))
                               .toList()),
                     )
@@ -689,8 +708,8 @@ class _CustomMapState extends State<_CustomMap> {
                               .map((e) => Polyline(
                                   borderStrokeWidth: 5.0,
                                   points: e.polygons!,
-                                  borderColor: Colors.grey,
-                                  color: Colors.grey))
+                                  borderColor: BIGBORDER,
+                                  color: BIGBORDER))
                               .toList()),
                     ),
               IgnorePointer(
