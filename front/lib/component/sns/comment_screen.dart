@@ -110,9 +110,7 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
 
     _comments.insert(0, newComment.comments.first);
 
-    setState(() {
-      textYn = false;
-    });
+    setState(() {});
 
     _commentController.clear();
   }
@@ -252,6 +250,9 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
                   onTap: () {
                     if (textYn == true) {
                       final value = _commentController.text;
+
+                      textYn = false;
+
                       createComment(value);
                     }
                   },
