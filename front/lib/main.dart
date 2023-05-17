@@ -140,7 +140,7 @@ void main() async {
   }
 
   /// 기존 FCM 토큰을 삭제.
-  FirebaseMessaging.instance.deleteToken();
+  // FirebaseMessaging.instance.deleteToken();
 
   var fcmToken = await FirebaseMessaging.instance
       .getToken(vapidKey: "${dotenv.get('FIREBASE_KEY')}");
