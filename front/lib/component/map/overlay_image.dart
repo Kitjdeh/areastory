@@ -128,32 +128,55 @@ class OverlayImage extends CustomOverlayImage {
       child: DecoratedBox(
         child: Center(
           child: Opacity(
-            opacity: 0.5,
+            opacity: 0.8,
             child: Text(
               '${localname}',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 10, color: Colors.black54),
+              style: TextStyle(fontSize: 10, color: Colors.black),
             ),
           ),
         ),
         decoration: ShapeDecoration(
           color: Colors.blue,
           image: DecorationImage(
-              image:
-                  // AssetImage('asset/video/현제_집밖.PNG')
-                  localname == '역삼동'
-                      ? AssetImage('asset/video/상준_바나프레소.PNG')
-                      : localname == '성북구'
-                          ? AssetImage('asset/video/지하철들어옴.PNG')
-                          : localname == '장안구'
-                              ? AssetImage('asset/video/수민_버스밖.PNG')
-                              : localname == '야탑동'
-                                  ? AssetImage('asset/video/현제_집밖.PNG')
-                                  : localname == '강남구'
-                                      ? AssetImage('asset/video/멀캠입장.PNG')
-                                      : localname == '화성시'
-                                          ? AssetImage('asset/video/동탄.PNG')
-                                          : AssetImage(url)
+              image: NetworkImage(url)
+              // localname == '서초구'
+              //     ? AssetImage('asset/video/서초구.PNG')
+              //     : localname == '과천시'
+              //         ? AssetImage('asset/video/과천시.PNG')
+              //         : localname == '장안구'
+              //             ? AssetImage('asset/video/수민_버스밖.PNG')
+              //             : localname == '야탑동'
+              //                 ? AssetImage('asset/video/현제_집밖.PNG')
+              //                 : localname == '관악구'
+              //                     ? AssetImage('asset/video/관악구.PNG')
+              //                     : localname == '의왕시'
+              //                         ? AssetImage('asset/video/수원시.PNG')
+              //                         : localname == '압구정동'
+              //                             ? AssetImage(
+              //                                 'asset/video/압구정동.PNG')
+              //                             : localname == '만안구'
+              //                                 ? AssetImage(
+              //                                     'asset/video/만안구.PNG')
+              //                                 : localname == '동대문구'
+              //                                     ? AssetImage(
+              //                                         'asset/video/동대문구.PNG')
+              //                                     : localname == '용산구'
+              //                                         ? AssetImage(
+              //                                             'asset/video/용산구.PNG')
+              //                                         : localname == '양양군'
+              //                                             ? AssetImage(
+              //                                                 'asset/video/양양시.PNG')
+              //                                             : localname ==
+              //                                                     '광주시'
+              //                                                 ? AssetImage(
+              //                                                     'asset/video/광주시.PNG')
+              //                                                 : localname ==
+              //                                                         '송파구'
+              //                                                     ? AssetImage(
+              //                                                         'asset/video/송파구.PNG')
+              //                                                     : AssetImage(
+              //                                                         url)
               // AssetImage('asset/img/doji.jpg')
               ,
               // opacity: 0.5,

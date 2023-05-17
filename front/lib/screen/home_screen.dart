@@ -20,11 +20,12 @@ class HomeScreen extends GetView<BottomNavController> {
   List<Mapdata> middleareaData = [];
   // 읍, 면, 동 단위 데이터 입력 리스트
   List<Mapdata> smallareaData = [];
+  Map<String, String> areamap = {};
   final MapTempController _mapTempController = Get.put(MapTempController());
 
   Future<void> loadmapdata(String link) async {
     List<List<LatLng>> _polygon = [];
-    Map<String, String> areamap = {};
+    // Map<String, String> areamap = {};
     int cnt = 0;
     Set<String> arealastletter = {};
     List<Mapdata> allareaData = [];
@@ -55,6 +56,7 @@ class HomeScreen extends GetView<BottomNavController> {
         dosi = feature.properties!['CTP_KOR_NM'];
         NM = feature.properties!['CTPRVN_CD'];
         areamap[NM] = dosi;
+        print('areamap[${NM} ${areamap[NM]}]');
         mapinfo["dosi"] = dosi;
         areaname = dosi;
         keyname = dosi;
@@ -67,6 +69,7 @@ class HomeScreen extends GetView<BottomNavController> {
         sigungu = feature.properties!['SIG_KOR_NM'];
         mapinfo["sigungu"] = sigungu;
         areamap[NM] = sigungu;
+        print('areamap[${NM} ${areamap[NM]}]');
         areaname = '${dosi} ${sigungu}';
         keyname = sigungu;
         // num < 15 ? namelist.add(sigungu) : null;
@@ -83,6 +86,7 @@ class HomeScreen extends GetView<BottomNavController> {
         dongeupmyeon = feature.properties!['EMD_KOR_NM'];
         mapinfo["dongeupmyeon"] = dongeupmyeon;
         areamap[NM] = dongeupmyeon;
+        print('areamap[${NM} ${areamap[NM]}]');
         areaname = '${dosi} ${sigungu} ${dongeupmyeon}';
         keyname = dongeupmyeon;
         num < 15 ? namelist.add(dongeupmyeon) : null;
@@ -147,6 +151,7 @@ class HomeScreen extends GetView<BottomNavController> {
       }
       ;
     }
+
     if (link == 'asset/map/ctp_korea.geojson') {
       bigareaData = allareaData;
       print(bigareaData.length);
