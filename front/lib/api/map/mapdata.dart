@@ -41,15 +41,20 @@ Future<Map<String, AreaData>> postAreaData(
           areadata.add(AreaData.fromJson(e));
         })
       : null;
+
+  // print('areadata${areadata}');
   areadata != null
       ? Future.forEach(areadata, (e) {
           e.locationDto!['dongeupmyeon'] != null
-              ? AreaInfo.addAll({e.locationDto!['dongupyeon'] ?? "": e})
+              ? AreaInfo.addAll({e.locationDto!['dongeupmyeon'] ?? "": e})
               : e.locationDto!['sigungu'] != null
                   ? AreaInfo.addAll({e.locationDto!['sigungu'] ?? "": e})
                   : AreaInfo.addAll({e.locationDto!['dosi'] ?? "": e});
         })
       : null;
+  // Future.forEach(areadata, (e) {
+  //  print('e${e.locationDto}');
+  // });
   return AreaInfo;
 }
 Future<Map<String, AreaData>> postmyAreaData(
@@ -77,10 +82,11 @@ Future<Map<String, AreaData>> postmyAreaData(
     areadata.add(AreaData.fromJson(e));
   })
       : null;
+
   areadata != null
       ? Future.forEach(areadata, (e) {
     e.locationDto!['dongeupmyeon'] != null
-        ? AreaInfo.addAll({e.locationDto!['dongupyeon'] ?? "": e})
+        ? AreaInfo.addAll({e.locationDto!['dongeupmyeon'] ?? "": e})
         : e.locationDto!['sigungu'] != null
         ? AreaInfo.addAll({e.locationDto!['sigungu'] ?? "": e})
         : AreaInfo.addAll({e.locationDto!['dosi'] ?? "": e});

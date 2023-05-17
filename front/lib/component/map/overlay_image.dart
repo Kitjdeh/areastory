@@ -6,6 +6,8 @@ import 'package:flutter_map/src/core/bounds.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:polygon/polygon.dart' as newpolygon;
 
+import '../../const/colors.dart';
+
 /// Base class for all overlay images.
 abstract class CustomOverlayImage {
   ImageProvider get imageProvider;
@@ -137,7 +139,7 @@ class OverlayImage extends CustomOverlayImage {
           ),
         ),
         decoration: ShapeDecoration(
-          color: Colors.blue,
+          color: PAINTNG,
           image: DecorationImage(
               image: NetworkImage(url)
               // localname == '서초구'
