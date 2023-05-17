@@ -241,6 +241,20 @@ class _MyPageScreenState extends State<MyPageScreen>
         children: [
           TextButton.icon(
             onPressed: () async {
+              print("알람이다");
+              Navigator.of(context).pop();
+            },
+            icon: Icon(
+              Icons.access_alarm,
+              color: Colors.black,
+            ),
+            label: Text(
+              "알람",
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          TextButton.icon(
+            onPressed: () async {
               // postFollowing(followingId: int.parse(widget.userId));
               await viewModel.logout();
               setState(() {});
