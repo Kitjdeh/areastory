@@ -181,7 +181,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
           icon: Icon(Icons.arrow_back_ios_new_outlined),
           color: Colors.black,
           onPressed: () {
-            _disconnect;
+            _disconnect();
             Navigator.of(context).pop();
           },
         ),
