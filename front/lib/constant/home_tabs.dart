@@ -59,4 +59,7 @@ class IconsPath {
   static String get findlocation => 'asset/img/findlocation.png';
   static String get mylocation => 'asset/img/mylocation.png';
   static String get camera => 'asset/img/camera.png';
+  static String get nowlocation => 'asset/img/nowlocation.png';
+  static String get zoomIn => 'asset/img/zoomIn.png';
+  static String get zoomOut => 'asset/img/zoomOut.png';
 }
