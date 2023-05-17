@@ -22,7 +22,7 @@ public class NotificationProducer {
                 .username(followingUser.getNickname())
                 .otherUserId(followerUser.getUserId())
                 .otherUsername(followerUser.getNickname())
-                .createdAt(follow.getCreatedAt())
+//                .createdAt(follow.getCreatedAt())
                 .build();
         kafkaTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_NOTIFICATION, followerUser.getUserId(), followNotificationKafkaDto));
     }

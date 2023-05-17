@@ -46,15 +46,16 @@ public class NotificationListener {
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         System.out.println(notificationKafkaDto.getCreatedAt());
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
         NotificationDto notificationDto = NotificationDto.builder()
                 .title(title)
                 .body(body)
                 .createdAt(notificationKafkaDto.getCreatedAt())
                 .articleId(notificationKafkaDto.getArticleId())
                 .commentId(notificationKafkaDto.getCommentId())
-                .userId(notificationKafkaDto.getUserId())
-                .otherUserId(notificationKafkaDto.getOtherUserId())
-                .type(notificationKafkaDto.getType())
+                .userId(notificationKafkaDto.getUserId()) // 알람을 받은 사람
+//                .otherUserId(notificationKafkaDto.getOtherUserId())
+//                .type(notificationKafkaDto.getType())
                 .build();
         notificationService.addNotification(notificationDto);
         //원래 여기 쓰면 안되는데 일단 리팩토링 전에 씀
@@ -63,7 +64,7 @@ public class NotificationListener {
         //상현
 //        String registrationToken = "czYC8DJERUS2C6nwrqG_N8:APA91bH00MoGdSrmkVdcv0GTiGesWzlSrRtbw5k7xfPg3SPR1FSqeELXFGaQSgf_oUaH4EMJkbmkfkcfeVCvsPTnkTQkz6M21ecdj4Tr35pzeMWOO2O51OwDv0W3hNaxvL4FL7rcIDPX";
         //원준
-//                    String registrationToken = "eAv6-BfNRv6e9xl2y93M61:APA91bHSbiCUZBbd7AGHo8FWJP5Hzl57i_kxFou388kLwzwlz6883svCdCqaxdUFv3L1Nm_2TCLCkccSLgSZBbPW_fKz6T9fbE1tnqnUjrwWdMNoNWQtbMAdGwH4utMjlf0Y7YhpFpZP";
+//        String registrationToken = "eAv6-BfNRv6e9xl2y93M61:APA91bHSbiCUZBbd7AGHo8FWJP5Hzl57i_kxFou388kLwzwlz6883svCdCqaxdUFv3L1Nm_2TCLCkccSLgSZBbPW_fKz6T9fbE1tnqnUjrwWdMNoNWQtbMAdGwH4utMjlf0Y7YhpFpZP";
         Notification notification = Notification.builder().setTitle(title).setBody(body).build();
         System.out.println("token : " + registrationToken);
         Message message = Message.builder()
@@ -81,7 +82,14 @@ public class NotificationListener {
         String response = null;
         try {
             response = FirebaseMessaging.getInstance().send(message);
-        } catch (FirebaseMessagingException e) {// 이러면 타입 넣은거지 ㅇㅇ 수정끝
+        } catch (FirebaseMessagingException e) {
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            System.out.println("여기 문제임");
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             throw new RuntimeException(e);
         }
         // Response is a message ID string.
