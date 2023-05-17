@@ -191,7 +191,7 @@ class _AlarmComponentState extends State<AlarmComponent> {
                         Text(
                           _formatDate(snapshot.data!.createdAt),
                           style: TextStyle(
-                            color: Colors.grey,
+                            color: Colors.black,
                             fontSize: 12,
                           ),
                         ),
