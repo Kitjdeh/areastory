@@ -44,7 +44,7 @@ Future<Map<String, AreaData>> postAreaData(
       : null;
 
   // print('areadata${areadata}');
-  areadata != null
+  await areadata != null
       ? Future.forEach(areadata, (e) {
           e.locationDto!['dongeupmyeon'] != null
               ? AreaInfo.addAll({e.locationDto!['dongeupmyeon'] ?? "": e})
@@ -84,7 +84,7 @@ Future<Map<String, AreaData>> postmyAreaData(
   })
       : null;
 
-  areadata != null
+  await areadata != null
       ? Future.forEach(areadata, (e) {
     e.locationDto!['dongeupmyeon'] != null
         ? AreaInfo.addAll({e.locationDto!['dongeupmyeon'] ?? "": e})

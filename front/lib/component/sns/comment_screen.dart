@@ -32,6 +32,7 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
   List _comments = [];
   String dropdownValue = '인기순';
   bool? textYn = false;
+  bool? isEditing = false;
 
   final TextEditingController _commentController = TextEditingController();
   late ScrollController _controller;
@@ -52,7 +53,8 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
     super.dispose();
   }
 
-  void onDelete(int commentId) async {
+  void onDelete(bool editing) async {
+    isEditing = editing;
     setState(() {});
   }
 
@@ -209,63 +211,65 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
                 ),
               ),
             ),
-            Row(
-              children: [
-                AvatarWidget(
-                  type: AvatarType.TYPE1,
-                  thumbPath: widget.profile,
-                  size: 30,
-                ),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 1,
+            isEditing!
+                ? Container()
+                : Row(
+                    children: [
+                      AvatarWidget(
+                        type: AvatarType.TYPE1,
+                        thumbPath: widget.profile,
+                        size: 30,
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: TextField(
-                      controller: _commentController,
-                      decoration: InputDecoration(
-                        hintText: '댓글를 작성해주세요',
-                        border: InputBorder.none,
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: TextField(
+                            controller: _commentController,
+                            decoration: InputDecoration(
+                              hintText: '댓글를 작성해주세요',
+                              border: InputBorder.none,
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                textYn = value.isNotEmpty;
+                              });
+                            },
+                            maxLines: null, // maxLines 속성 제거
+                          ),
+                        ),
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          textYn = value.isNotEmpty;
-                        });
-                      },
-                      maxLines: null, // maxLines 속성 제거
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    if (textYn == true) {
-                      final value = _commentController.text;
+                      SizedBox(
+                        width: 5,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          if (textYn == true) {
+                            final value = _commentController.text;
 
-                      textYn = false;
+                            textYn = false;
 
-                      createComment(value);
-                    }
-                  },
-                  child: Text(
-                    '게시',
-                    style: TextStyle(
-                      color: textYn! ? Colors.blue : Colors.black,
-                      fontSize: 23,
-                    ),
+                            createComment(value);
+                          }
+                        },
+                        child: Text(
+                          '게시',
+                          style: TextStyle(
+                            color: textYn! ? Colors.blue : Colors.black,
+                            fontSize: 23,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ],
-            ),
           ],
         ),
       ),
