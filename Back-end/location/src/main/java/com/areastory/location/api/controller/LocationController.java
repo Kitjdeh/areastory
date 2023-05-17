@@ -4,6 +4,7 @@ import com.areastory.location.api.service.LocationService;
 import com.areastory.location.dto.common.LocationDto;
 import com.areastory.location.dto.response.LocationResp;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,13 +13,18 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Slf4j
 public class LocationController {
     private final LocationService locationService;
 
     @PostMapping("/map")
     public ResponseEntity<List<LocationResp>> getMap(@RequestBody List<LocationDto> locationList) {
         try {
-            return ResponseEntity.ok(locationService.getMapImages(locationList));
+            List<LocationResp> resps = locationService.getMapImages(locationList);
+            for (LocationResp resp : resps) {
+                log.info(resp.getArticleId() + " " + resp.getLocationDto().getDosi() + " " + resp.getLocationDto().getSigungu() + " " + resp.getLocationDto().getDongeupmyeon());
+            }
+            return ResponseEntity.ok(resps);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("뭔가 잘못됨 ㅋㅋ");
