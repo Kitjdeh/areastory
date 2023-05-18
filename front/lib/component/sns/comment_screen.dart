@@ -170,8 +170,10 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
             Expanded(
               child: Container(
                 child: RefreshIndicator(
-                  onRefresh: () async {
-                    printComments();
+                  onRefresh: () {
+                    return Future<void>.delayed(Duration(seconds: 2), () {
+                      printComments();
+                    });
                   },
                   child: ListView(
                     controller: _controller,

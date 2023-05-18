@@ -107,8 +107,10 @@ class _SnsLikeScreenState extends State<SnsLikeScreen> {
             Expanded(
               child: Container(
                 child: RefreshIndicator(
-                  onRefresh: () async {
-                    printLikes();
+                  onRefresh: () {
+                    return Future<void>.delayed(Duration(seconds: 2), () {
+                      printLikes();
+                    });
                   },
                   child: ListView(
                     controller: _controller,

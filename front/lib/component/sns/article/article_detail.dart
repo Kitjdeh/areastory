@@ -163,7 +163,7 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                         snapshot.data!.followYn
                                             ? IconsPath.following
                                             : IconsPath.follow,
-                                        width: 300,
+                                        width: 250,
                                       ),
                                     ),
                                   SizedBox(

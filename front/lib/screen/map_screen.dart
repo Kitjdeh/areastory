@@ -723,7 +723,7 @@ class _CustomMapState extends State<_CustomMap> {
                         },
                         child: ImageData(
                           IconsPath.nowlocation,
-                          width: 250,
+                          width: 200,
                         ),
                       ),
                     ],
