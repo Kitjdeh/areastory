@@ -638,8 +638,10 @@ class _CustomMapState extends State<_CustomMap> {
                     final areakey = e.keyname;
                     // print(
                     //     'resultareakey${result[areakey]!.image} e ${e} areakey${areakey}');
-                    final url = result[areakey]!.image ?? e.urls;
-                    print(url);
+                    final url = result[areakey] == null
+                        ? e.urls
+                        : result[areakey]!.image;
+
                     final ariticleid = result[areakey]!.articleId ?? 0;
                     final mapinfo = e.mapinfo;
                     final fullname = e.fullname;
