@@ -409,9 +409,7 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
               message: '삭제된 게시글입니다',
             );
           } else {
-            return AlertModal(
-              message: '삭제된 게시글입니다',
-            );
+            return CircularProgressIndicator();
           }
         });
   }
