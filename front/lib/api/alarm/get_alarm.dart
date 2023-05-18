@@ -34,7 +34,7 @@ class AlarmData {
   final int? articleId;
   final int? commentId;
   final int? userId;
-  final String type;
+  final String? type;
   final int? otherUserId;
 
   AlarmData({
@@ -47,7 +47,7 @@ class AlarmData {
     this.commentId,
     this.userId,
     this.otherUserId,
-    required this.type,
+    this.type,
   });
 
   factory AlarmData.fromJson(Map<String, dynamic> json) {

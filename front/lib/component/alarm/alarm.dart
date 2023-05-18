@@ -176,9 +176,10 @@ class _AlarmComponentState extends State<AlarmComponent> {
                   Expanded(
                     flex: 8,
                     child: _profile(
-                      type: snapshot.data!.type,
+                      // type: snapshot.data!.type,
+                      type: "comment",
                       title: snapshot.data!.title,
-                      otherUserId: snapshot.data!.otherUserId!,
+                      otherUserId: 1,
                       articleId: snapshot.data!.articleId,
                       checked: snapshot.data!.checked,
                     ),
