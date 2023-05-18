@@ -27,7 +27,6 @@ class HomeScreen extends GetView<BottomNavController> {
   final FollowController _followController = Get.put(FollowController());
   final MyPageController _mypageController = Get.put(MyPageController());
 
-
   Future<void> loadmapdata(String link) async {
     List<List<LatLng>> _polygon = [];
     // Map<String, String> areamap = {};
@@ -122,7 +121,7 @@ class HomeScreen extends GetView<BottomNavController> {
                 fullname: areaname,
                 polygons: _polygonLatLong,
                 // urls: randomurl[cnt % 5]);
-            urls: '');
+                urls: '');
             localareadata != null ? allareaData.add(localareadata!) : null;
             cnt = cnt + 1;
           }
@@ -149,7 +148,7 @@ class HomeScreen extends GetView<BottomNavController> {
               fullname: areaname,
               polygons: _polygonLatLong,
               // urls: randomurl[cnt % 5]);
-          urls: '');
+              urls: '');
           localareadata != null ? allareaData.add(localareadata!) : null;
           cnt = cnt + 1;
         }
@@ -287,8 +286,10 @@ class HomeScreen extends GetView<BottomNavController> {
                         fit: BoxFit.cover),
                   ),
                   child: Scaffold(
-                    body: Center(child: Text('잠시만 기다려 주세요')),
-                    backgroundColor: Colors.grey[300],
+                    body: Center(
+                        child:
+                            Image.asset('asset/img/splash/loadingphoto.gif')),
+                    backgroundColor: Colors.white,
                   )),
             );
           }

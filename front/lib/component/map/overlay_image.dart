@@ -145,7 +145,7 @@ class OverlayImage extends CustomOverlayImage {
           image: url == '' || url == null
               ? entitle == true
                   ? DecorationImage(
-                      image: AssetImage('asset/img/color/진한색.png'),
+                      image: AssetImage('asset/img/color/진한회색.png'),
                       fit: BoxFit.fill)
                   : DecorationImage(
                       image: AssetImage('asset/img/color/마이배경.png'),

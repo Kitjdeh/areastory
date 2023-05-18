@@ -44,11 +44,11 @@ class _LoginScreenState extends State<LoginScreen> {
               GestureDetector(
                 onTap: () async {
                   final HASH = await KakaoSdk.origin;
-                  print('HASH${HASH}');
+                  // print('HASH${HASH}');
                   final flag = await viewModel.login();
                   viewModel.printError();
                   setState(() {});
-                  print("카카오로그인 진행상황 테스트: ${flag}");
+                  // print("카카오로그인 진행상황 테스트: ${flag}");
                   /// 로그인시 카카오가 던져주는 키값
                   if (await viewModel.isLogined) {
                     // toast(context, '로그인은 뜸');

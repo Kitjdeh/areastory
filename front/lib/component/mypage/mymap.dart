@@ -29,7 +29,7 @@ class MyMap extends StatefulWidget {
 }
 
 class _MyMapState extends State<MyMap> {
-  MapController mapController = MapController();
+  MapController mymapController = MapController();
   List<LatLng> points = [];
   List<String> arealist = [];
   Map<String, String> areadata = {};
@@ -70,16 +70,16 @@ class _MyMapState extends State<MyMap> {
 
   var currentcenter = LatLng(37.60732175555233, 127.0710794642477);
   void minuszoom() {
-    _zoom = mapController.zoom - 1;
-    this.currentcenter = mapController.center;
-    mapController.move(currentcenter, _zoom);
+    _zoom = mymapController.zoom - 1;
+    this.currentcenter = mymapController.center;
+    mymapController.move(currentcenter, _zoom);
     print(_zoom);
   }
 
   void pluszoom() {
-    _zoom = mapController.zoom + 1;
-    this.currentcenter = mapController.center;
-    mapController.move(currentcenter, _zoom);
+    _zoom = mymapController.zoom + 1;
+    this.currentcenter = mymapController.center;
+    mymapController.move(currentcenter, _zoom);
     print(_zoom);
   }
 
@@ -87,14 +87,14 @@ class _MyMapState extends State<MyMap> {
     mypoisition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     mylatlng = await LatLng(mypoisition!.latitude, mypoisition!.longitude);
-    await mapController.move(mylatlng ?? companyLatLng, _zoom);
+    await mymapController.move(mylatlng ?? companyLatLng, _zoom);
     print(_zoom);
-    await Future.forEach(widget.smallareaData, (mapdata) {
-      if (ifpolygoninsdie(mylatlng!, mapdata.polygons!)) {
-        String result = mapdata.mapinfo!.values.join(' ');
-        Strlocation = result;
-      }
-    });
+    // await Future.forEach(widget.smallareaData, (mapdata) {
+    //   if (ifpolygoninsdie(mylatlng!, mapdata.polygons!)) {
+    //     String result = mapdata.mapinfo!.values.join(' ');
+    //     Strlocation = result;
+    //   }
+    // });
   }
 
   @override
@@ -180,7 +180,7 @@ class _MyMapState extends State<MyMap> {
       // print(mapdata.fullname);
       customPolygonLayers.add(
         CustomPolygonLayer(
-          entitle: false,
+          entitle: true,
           userId: mapdata.articleId ?? 0,
           urls: [mapdata.urls ?? ''],
           area: mapdata.fullname ?? '',
@@ -196,240 +196,237 @@ class _MyMapState extends State<MyMap> {
         ),
       );
     }
-
+    // print('widget.bigareaData.length${widget.bigareaData.length}');
     return Expanded(
       flex: 1,
       child: Stack(
         children: [
-          FlutterMap(
-            mapController: mapController,
-            options: MapOptions(
-              maxZoom: 18,
-              minZoom: 6,
-              center: LatLng(37.60732175555233, 127.0710794642477),
-              zoom: _zoom,
-              interactiveFlags: InteractiveFlag.drag |
-                  InteractiveFlag.doubleTapZoom |
-                  InteractiveFlag.pinchZoom,
-              onMapReady: () async {
-                strUser = await storage.read(key: "userId");
-                // await loadmapdata('asset/map/ctp_korea.geojson');
-                // await loadmapdata('asset/map/sigungookorea.json');
-                // await loadmapdata('asset/map/minimal.json');
-                userId = int.parse(strUser!);
-                print('유저아이디!!!${userId}');
-                mypoisition = await Geolocator.getCurrentPosition(
-                    desiredAccuracy: LocationAccuracy.high);
-                mylatlng =
-                    await LatLng(mypoisition!.latitude, mypoisition!.longitude);
-                List<Map<String, String>> requestlist = [];
-                nowallareadata = widget.middleareaData;
-                Strlocation;
-                await Future.forEach(widget.smallareaData, (mapdata) {
-                  if (ifpolygoninsdie(mylatlng!, mapdata.polygons!)) {
-                    String result = mapdata.mapinfo!.values.join(' ');
-                    // toast(context, "내위치: ${result}");
-                    Strlocation = result;
-                  }
-                });
-                // await storage.write(key: "userlocation", value: Strlocation);
-                final bounds = mapController.bounds;
-                final sw = bounds!.southWest;
-                final ne = bounds!.northEast;
-                // 화면 내에 있는 폴리곤만 필터링
-                final visibleMapdata = nowallareadata.where((p) {
-                  return p.polygons!.any((point) {
-                    return point.latitude >= sw!.latitude &&
-                        point.latitude <= ne!.latitude &&
-                        point.longitude >= sw.longitude &&
-                        point.longitude <= ne!.longitude;
-                  });
-                }).toList();
-                // visibleMapdata.map((e) => requestlist.add(e.mapinfo!));
-                await Future.forEach(visibleMapdata, (e) {
-                  requestlist.add(e.mapinfo!);
-                });
-
-                // Future<Map<String, AreaData>>result =
-                // await postAreaData(requestlist);
-
-                //--------post-----------
-                Map<String, AreaData> result =
-                    await postmyAreaData(requestlist, strUser ?? '');
-                List<Mapdata> newvisibleMapdata = [];
-                // print('응답${result}');
-                await Future.forEach(visibleMapdata, (e) {
-                  final areakey = e.keyname;
-                  final url = result[areakey]!.image ?? e.urls;
-                  final ariticleid = result[areakey]!.articleId ?? 0;
-                  final mapinfo = e.mapinfo;
-                  final fullname = e.fullname;
-                  final keyname = e.keyname;
-                  final polygons = e.polygons;
-                  final newdata = Mapdata(
-                      mapinfo: mapinfo,
-                      fullname: fullname,
-                      keyname: keyname,
-                      polygons: polygons,
-                      urls: url,
-                      articleId: ariticleid);
-                  newvisibleMapdata.add(newdata);
-                });
-                setState(() {
-                  nowareadata = newvisibleMapdata;
-                });
-
-                //-----post----------
-              },
-              onPositionChanged: (pos, hasGesture) {
-                // setState(() {
-                //
-                // });
-                if (_debounce?.isActive ?? false) _debounce!.cancel();
-                _debounce = Timer(debounceDuration, () async {
-                  _zoom = mapController.zoom;
-                  // print("mapController.zoom${mapController.zoom}");
-                  // nowallareadata = widget.smallareaData;
-                  setState(() {
-                    mapController.zoom > 13.0
-                        ? nowallareadata = widget.smallareaData
-                        : mapController.zoom > 9.0
-                        ? nowallareadata = widget.middleareaData
-                        : nowallareadata = widget.bigareaData;
-                    // print('setstatenowallareadata${nowallareadata.length}');
-                  });
-
-                  print('posistionchanged 작동함${mapController.zoom}');
-
-                  List<Map<String, String>> requestlist = [];
-                  // 현재 보이는 화면의 경계를 계산
-                  final bounds = mapController.bounds!;
-                  final ne = bounds.northEast;
-                  final sw = bounds.southWest;
-                  // 화면 내에 있는 폴리곤만 필터링
-                  final visibleMapdata = nowallareadata.where((p) {
-                    return p.polygons!.any((point) {
-                      return point.latitude >= sw!.latitude &&
-                          point.latitude <= ne!.latitude &&
-                          point.longitude >= sw.longitude &&
-                          point.longitude <= ne!.longitude;
-                    });
-                  }).toList();
-                  nowareadata = visibleMapdata;
-                  setState(() {
-                    nowareadata = visibleMapdata;
-                  });
-                  await Future.forEach(visibleMapdata, (e) {
-                    requestlist.add(e.mapinfo!);
-                  });
-                  //----------------------------------post-----
-                  Map<String, AreaData> result =
-                      await postmyAreaData(requestlist, strUser ?? '');
-
-                  List<Mapdata> newvisibleMapdata = [];
-                  // print('result${result}');
-                  await Future.forEach(visibleMapdata, (e) {
-                    final areakey = e.keyname;
-                    // print(
-                    //     'resultareakey${result[areakey]!.image} e ${e} areakey${areakey}');
-                    final url = result[areakey]!.image ?? e.urls;
-                    print(url);
-                    final ariticleid = result[areakey]!.articleId ?? 0;
-                    final mapinfo = e.mapinfo;
-                    final fullname = e.fullname;
-                    final keyname = e.keyname;
-                    final polygons = e.polygons;
-                    final newdata = Mapdata(
-                        mapinfo: mapinfo,
-                        fullname: fullname,
-                        keyname: keyname,
-                        polygons: polygons,
-                        urls: url,
-                        articleId: ariticleid);
-                    newvisibleMapdata.add(newdata);
-                  });
-                  nowareadata = newvisibleMapdata;
-                  setState(() {
-                    nowareadata = newvisibleMapdata;
-                  });
-                  //--------------------post-------------
-                });
-              },
-            ),
+          Column(
             children: [
-              for (var mapdata in nowareadata)
-                Opacity(
-                  opacity: 0.8,
-                  child: CustomPolygonLayer(
-                    entitle: false,
-                    userId: userId ?? 0,
-                    articleId: mapdata.articleId ?? 0,
-                    // articleId: [mapdata.articleId ?? 0 ],
-                    urls: [mapdata.urls ?? ''],
-                    area: mapdata.fullname ?? '',
-                    polygons: [
-                      Polygon(
-                        isFilled: false,
-                        color: MYMAPBORDER,
-                        borderColor: MYMAPBORDER,
-                        points: mapdata.polygons!,
-                        borderStrokeWidth: 3.0,
-                      ),
-                    ],
+              Expanded(
+                child: FlutterMap(
+                  mapController: mymapController,
+                  options: MapOptions(
+                    maxZoom: 18,
+                    minZoom: 6,
+                    center: mylatlng ?? LatLng(37.60732175555233, 127.0710794642477),
+                    zoom: _zoom,
+                    interactiveFlags: InteractiveFlag.drag |
+                        InteractiveFlag.doubleTapZoom |
+                        InteractiveFlag.pinchZoom,
+                    onMapReady: () async {
+                      final strUser = await storage.read(key: "userId");
+                      // await loadmapdata('asset/map/ctp_korea.geojson');
+                      // await loadmapdata('asset/map/sigungookorea.json');
+                      // await loadmapdata('asset/map/minimal.json');
+                      userId = int.parse(strUser!);
+                      // print('유저아이디!!!${userId}');
+                      mypoisition = await Geolocator.getCurrentPosition(
+                          desiredAccuracy: LocationAccuracy.high);
+                      mylatlng =
+                          await LatLng(mypoisition!.latitude, mypoisition!.longitude);
+                      List<Map<String, String>> requestlist = [];
+                      nowallareadata = widget.middleareaData;
+                      // Strlocation;
+                      // await Future.forEach(widget.smallareaData, (mapdata) {
+                      //   if (ifpolygoninsdie(mylatlng!, mapdata.polygons!)) {
+                      //     String result = mapdata.mapinfo!.values.join(' ');
+                      //     // toast(context, "내위치: ${result}");
+                      //     Strlocation = result;
+                      //   }
+                      // });
+                      // await storage.write(key: "userlocation", value: Strlocation);
+                      final bounds = mymapController.bounds;
+                      final sw = bounds!.southWest;
+                      final ne = bounds!.northEast;
+                      // 화면 내에 있는 폴리곤만 필터링
+                      final visibleMapdata = nowallareadata.where((p) {
+                        return p.polygons!.any((point) {
+                          return point.latitude >= sw!.latitude &&
+                              point.latitude <= ne!.latitude &&
+                              point.longitude >= sw.longitude &&
+                              point.longitude <= ne!.longitude;
+                        });
+                      }).toList();
+                      setState(() {
+                        nowareadata = visibleMapdata;
+                      });
+                      // visibleMapdata.map((e) => requestlist.add(e.mapinfo!));
+                      await Future.forEach(visibleMapdata, (e) {
+                        requestlist.add(e.mapinfo!);
+                      });
+
+                      // Future<Map<String, AreaData>>result =
+                      // await postAreaData(requestlist);
+
+                      //--------post-----------
+                      Map<String, AreaData> result =
+                          await postmyAreaData(requestlist, strUser ?? '');
+                      List<Mapdata> newvisibleMapdata = [];
+                      // print('응답${result}');
+                      await Future.forEach(visibleMapdata, (e) {
+                        final areakey = e.keyname;
+                        final url =
+                            result[areakey] == null ? e.urls : result[areakey]!.image;
+                        final ariticleid = result[areakey]!.articleId ?? 0;
+                        final mapinfo = e.mapinfo;
+                        final fullname = e.fullname;
+                        final keyname = e.keyname;
+                        final polygons = e.polygons;
+                        final newdata = Mapdata(
+                            mapinfo: mapinfo,
+                            fullname: fullname,
+                            keyname: keyname,
+                            polygons: polygons,
+                            urls: url,
+                            articleId: ariticleid);
+                        newvisibleMapdata.add(newdata);
+                      });
+                      setState(() {
+                        nowareadata = newvisibleMapdata;
+                      });
+
+                      //-----post----------
+                    },
+                    onPositionChanged: (pos, hasGesture) {
+                      // setState(() {
+                      //
+                      // });
+                      if (_debounce?.isActive ?? false) _debounce!.cancel();
+                      _debounce = Timer(debounceDuration, () async {
+                        // _zoom = mapController.zoom;
+                        // print("mapController.zoom${mapController.zoom}");
+                        // nowallareadata = widget.smallareaData;
+                        setState(() {
+                          mymapController.zoom > 13.0
+                              ? nowallareadata = widget.smallareaData
+                              : mymapController.zoom > 9.0
+                                  ? nowallareadata = widget.middleareaData
+                                  : nowallareadata = widget.bigareaData;
+                          // print('setstatenowallareadata${nowallareadata.length}');
+                        });
+
+                        print('posistionchanged 작동함${mymapController.zoom}');
+
+                        List<Map<String, String>> requestlist = [];
+                        // 현재 보이는 화면의 경계를 계산
+                        final bounds = mymapController.bounds!;
+                        final ne = bounds.northEast;
+                        final sw = bounds.southWest;
+                        // 화면 내에 있는 폴리곤만 필터링
+                        final visibleMapdata = nowallareadata.where((p) {
+                          return p.polygons!.any((point) {
+                            return point.latitude >= sw!.latitude &&
+                                point.latitude <= ne!.latitude &&
+                                point.longitude >= sw.longitude &&
+                                point.longitude <= ne!.longitude;
+                          });
+                        }).toList();
+                        nowareadata = visibleMapdata;
+                        setState(() {
+                          nowareadata = visibleMapdata;
+                        });
+                        await Future.forEach(visibleMapdata, (e) {
+                          requestlist.add(e.mapinfo!);
+                        });
+                        //----------------------------------post-----
+                        Map<String, AreaData> result =
+                            await postmyAreaData(requestlist, strUser ?? '');
+
+                        List<Mapdata> newvisibleMapdata = [];
+                        // print('result${result}');
+                        await Future.forEach(visibleMapdata, (e) {
+                          final areakey = e.keyname;
+                          // print(
+                          //     'resultareakey${result[areakey]!.image} e ${e} areakey${areakey}');
+                          final url = result[areakey]!.image ?? e.urls;
+                          print(url);
+                          final ariticleid = result[areakey]!.articleId ?? 0;
+                          final mapinfo = e.mapinfo;
+                          final fullname = e.fullname;
+                          final keyname = e.keyname;
+                          final polygons = e.polygons;
+                          final newdata = Mapdata(
+                              mapinfo: mapinfo,
+                              fullname: fullname,
+                              keyname: keyname,
+                              polygons: polygons,
+                              urls: url,
+                              articleId: ariticleid);
+                          newvisibleMapdata.add(newdata);
+                        });
+                        nowareadata = newvisibleMapdata;
+                        setState(() {
+                          nowareadata = newvisibleMapdata;
+                        });
+                        //--------------------post-------------
+                      });
+                    },
                   ),
-                ),
-              _zoom > 12
-                  ? IgnorePointer(
-                      child: PolylineLayer(
-                          polylines: widget.middleareaData
-                              .map((e) => Polyline(
-                                  borderStrokeWidth: 4.0,
-                                  points: e.polygons!,
-                                  borderColor: MYBIGBORDER,
-                                  color: MYBIGBORDER))
-                              .toList()),
-                    )
-                  : IgnorePointer(
-                      child: PolylineLayer(
-                          polylines: widget.bigareaData
-                              .map((e) => Polyline(
-                                  borderStrokeWidth: 4.0,
-                                  points: e.polygons!,
-                                  borderColor: MYBIGBORDER,
-                                  color: MYBIGBORDER))
-                              .toList()),
-                    ),
-              IgnorePointer(
-                child: CircleLayer(
-                  circles: [
-                    CircleMarker(
-                        point: mylatlng ?? companyLatLng,
-                        radius: 5.0,
-                        color: Colors.blueAccent)
+                  children: [
+                    for (var mapdata in nowareadata)
+                      Opacity(
+                        opacity: 0.8,
+                        child: CustomPolygonLayer(
+                          entitle: false,
+                          userId: userId ?? 0,
+                          articleId: mapdata.articleId ?? 0,
+                          // articleId: [mapdata.articleId ?? 0 ],
+                          urls: [mapdata.urls ?? ''],
+                          area: mapdata.fullname ?? '',
+                          polygons: [
+                            Polygon(
+                              isFilled: false,
+                              color: MYMAPBORDER,
+                              borderColor: MYMAPBORDER,
+                              points: mapdata.polygons!,
+                              borderStrokeWidth: 3.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                    _zoom > 12
+                        ? IgnorePointer(
+                            child: PolylineLayer(
+                                polylines: widget.middleareaData
+                                    .map((e) => Polyline(
+                                        borderStrokeWidth: 5.0,
+                                        points: e.polygons!,
+                                        borderColor: MYBIGBORDER,
+                                        color: MYBIGBORDER))
+                                    .toList()),
+                          )
+                        : IgnorePointer(
+                            child: PolylineLayer(
+                                polylines: widget.bigareaData
+                                    .map((e) => Polyline(
+                                        borderStrokeWidth: 5.0,
+                                        points: e.polygons!,
+                                        borderColor: MYBIGBORDER,
+                                        color: MYBIGBORDER))
+                                    .toList()),
+                          ),
+                    // IgnorePointer(
+                    //   child: CircleLayer(
+                    //     circles: [
+                    //       CircleMarker(
+                    //           point: mylatlng ?? companyLatLng,
+                    //           radius: 5.0,
+                    //           color: Colors.blueAccent)
+                    //     ],
+                    //   ),
+                    // )
                   ],
                 ),
-              )
+              ),
             ],
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          mycenter();
-                        },
-                        child: ImageData(
-                          IconsPath.nowlocation,
-                          width: 250,
-                        ),
-                      ),
-                    ],
-                  ),
                   Column(
                     children: [
                       GestureDetector(

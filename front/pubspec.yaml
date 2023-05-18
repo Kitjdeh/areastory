@@ -96,6 +96,7 @@ flutter:
     - asset/img/options/
     - asset/img/login/
     - asset/img/color/
+    - asset/img/splash/
     - asset/location/location.xlsx
     - asset/location/location.json
     - asset/location/final_location.xlsx
