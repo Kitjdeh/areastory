@@ -124,14 +124,23 @@ flutter:
      - family: SUIT
        fonts:
          - asset: asset/font/SUIT-Bold.ttf
+           weight: 700
          - asset: asset/font/SUIT-ExtraBold.ttf
+           weight: 800
          - asset: asset/font/SUIT-ExtraLight.ttf
+           weight: 200
          - asset: asset/font/SUIT-Heavy.ttf
+           weight: 900
          - asset: asset/font/SUIT-Light.ttf
+           weight: 300
          - asset: asset/font/SUIT-Medium.ttf
+           weight: 500
          - asset: asset/font/SUIT-Regular.ttf
+           weight: 400
          - asset: asset/font/SUIT-SemiBold.ttf
+           weight: 600
          - asset: asset/font/SUIT-Thin.ttf
+           weight: 100
   # fonts:
   #   - family: Schyler
   #     fonts:
