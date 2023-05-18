@@ -33,6 +33,7 @@ public class FileUtil {
     public String upload(MultipartFile multipartFile, String dirName) {
         if (multipartFile == null || multipartFile.isEmpty())
             return null;
+        System.out.println("upload");
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new CustomException(ErrorCode.FAIL_CONVERT));
 
@@ -42,14 +43,18 @@ public class FileUtil {
     public String uploadThumbnail(MultipartFile multipartFile, String dirName) {
         if (multipartFile == null || multipartFile.isEmpty())
             return null;
+        System.out.println("uploadThumbnail");
         File uploadFile = compressImage(multipartFile);
         return upload(uploadFile, dirName);
     }
 
     private String upload(File uploadFile, String dirName) {
+        System.out.println("private upload");
         //테스트 때문에 랜덤 값 제거 => 추후 살리기
         String fileName = dirName + "/" + LocalDateTime.now() + uploadFile.getName();
+        System.out.println("fileName: " + fileName);
         String uploadImageUrl = putS3(uploadFile, fileName);
+        System.out.println("uploadImageUrl: " + uploadImageUrl);
         uploadFile.delete(); // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
 
         return uploadImageUrl; // 업로드 된 파일의 S3 URL 주소 반환
@@ -99,13 +104,18 @@ public class FileUtil {
     }
 
     private Optional<File> convert(MultipartFile file) {
-
+        System.out.println("왜 안되냐아앙1");
         File convertFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+        System.out.println("왜 안되냐아앙2");
         try {
             if (convertFile.createNewFile()) {
+                System.out.println("왜 안되냐아앙3");
                 try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+                    System.out.println("왜 안되냐아앙4");
                     fos.write(file.getBytes());
+                    System.out.println("왜 안되냐아앙5");
                 }
+                System.out.println("왜 안되냐아앙6");
                 return Optional.of(convertFile);
             }
         } catch (IOException e) {
