@@ -30,6 +30,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .sigungu(articleKafkaDto.getSigungu())
                 .dongeupmyeon(articleKafkaDto.getDongeupmyeon())
                 .build();
+        System.out.println("종아요 수 : " + articleKafkaDto.getDailyLikeCount());
         Article article = Article.articleBuilder()
                 .articleId(articleKafkaDto.getArticleId())
                 .userId(articleKafkaDto.getUserId())

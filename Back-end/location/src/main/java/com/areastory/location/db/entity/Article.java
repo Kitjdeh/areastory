@@ -3,6 +3,8 @@ package com.areastory.location.db.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
+@DynamicInsert
 @Table(name = "article"
 //        indexes = {
 //        @Index(name = "idx_location4", columnList = "daily_like_count"),
@@ -29,6 +32,7 @@ public class Article extends Location {
     private String image;
     @Setter
     @Column(name = "daily_like_count")
+    @ColumnDefault("0")
     private Long dailyLikeCount;
     private LocalDateTime createdAt;
 
