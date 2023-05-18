@@ -36,7 +36,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       setState(() {
         _image = savedImage;
       });
-      print("이미지입니다 ${_image}");
+      // print("이미지입니다 ${_image}");
     }
   }
 
