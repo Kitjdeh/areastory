@@ -17,9 +17,9 @@ public class NotificationProducer {
     public void send(ArticleLike articleLike) {
         NotificationKafkaDto articleLikeNotificationKafkaDto = NotificationKafkaDto.builder()
                 .type(KafkaProperties.ARTICLE_LIKE)
-                .userId(articleLike.getArticle().getUser().getUserId())
+                .userId(articleLike.getArticle().getUser().getUserId()) // 게시글 작성자
                 .username(articleLike.getArticle().getUser().getNickname())
-                .otherUserId(articleLike.getUser().getUserId())
+                .otherUserId(articleLike.getUser().getUserId()) // 좋아요 누른 사람
                 .otherUsername(articleLike.getUser().getNickname())
                 .articleId(articleLike.getArticle().getArticleId())
                 .articleContent(articleLike.getArticle().getContent())
