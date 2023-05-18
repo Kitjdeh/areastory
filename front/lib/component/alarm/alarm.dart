@@ -176,7 +176,8 @@ class _AlarmComponentState extends State<AlarmComponent> {
                   Expanded(
                     flex: 8,
                     child: _profile(
-                      type: snapshot.data!.type,
+                      // type: snapshot.data!.type,
+                      type: "comment",
                       title: snapshot.data!.title,
                       otherUserId: snapshot.data!.otherUserId!,
                       articleId: snapshot.data!.articleId,
@@ -191,7 +192,7 @@ class _AlarmComponentState extends State<AlarmComponent> {
                         Text(
                           _formatDate(snapshot.data!.createdAt),
                           style: TextStyle(
-                            color: Colors.grey,
+                            color: Colors.black,
                             fontSize: 12,
                           ),
                         ),

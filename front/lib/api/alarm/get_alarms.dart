@@ -69,7 +69,7 @@ class Notification {
   final int? articleId;
   final int? commentId;
   final int? userId;
-  final String type;
+  final String? type;
   final int? otherUserId;
 
   Notification({
@@ -82,7 +82,8 @@ class Notification {
     this.commentId,
     this.userId,
     this.otherUserId,
-    required this.type,
+    this.type,
+    // required this.type,
   });
 
   factory Notification.fromJson(Map<String, dynamic> json) {

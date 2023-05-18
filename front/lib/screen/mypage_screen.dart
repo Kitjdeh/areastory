@@ -383,39 +383,59 @@ class _MyPageScreenState extends State<MyPageScreen>
                           width: 20,
                         ),
                         if (myId != widget.userId && !followYn)
-                          TextButton(
-                            onPressed: () {
+                          GestureDetector(
+                              onTap: () {
                               print("팔로잉신청합니다..${snapshot.data!.followYn}");
                               postFollowing(
                                   followingId: int.parse(widget.userId));
                               chgtoggle();
                             },
-                            child: Text(
-                              "팔로잉신청",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                                color: Colors.blue,
-                              ),
-                            ),
+                            child: ImageData(IconsPath.follow, width: 300,)
                           ),
                         if (myId != widget.userId && followYn)
-                          TextButton(
-                            onPressed: () {
-                              deleteFollowing(
-                                  followingId: int.parse(widget.userId));
-
-                              chgtoggle();
-                            },
-                            child: Text(
-                              "팔로잉취소",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                                color: Colors.red,
-                              ),
-                            ),
+                          GestureDetector(
+                              onTap: () {
+                                print("팔로잉취소합니다..${snapshot.data!.followYn}");
+                                deleteFollowing(
+                                    followingId: int.parse(widget.userId));
+                                chgtoggle();
+                              },
+                              child: ImageData(IconsPath.following, width: 300,)
                           ),
+                        // if (myId != widget.userId && !followYn)
+                        //   TextButton(
+                        //     onPressed: () {
+                        //       print("팔로잉신청합니다..${snapshot.data!.followYn}");
+                        //       postFollowing(
+                        //           followingId: int.parse(widget.userId));
+                        //       chgtoggle();
+                        //     },
+                        //     child: Text(
+                        //       "팔로잉신청",
+                        //       style: const TextStyle(
+                        //         fontWeight: FontWeight.bold,
+                        //         fontSize: 10,
+                        //         color: Colors.blue,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // if (myId != widget.userId && followYn)
+                        //   TextButton(
+                        //     onPressed: () {
+                        //       deleteFollowing(
+                        //           followingId: int.parse(widget.userId));
+                        //
+                        //       chgtoggle();
+                        //     },
+                        //     child: Text(
+                        //       "팔로잉취소",
+                        //       style: const TextStyle(
+                        //         fontWeight: FontWeight.bold,
+                        //         fontSize: 10,
+                        //         color: Colors.red,
+                        //       ),
+                        //     ),
+                        //   ),
                       ],
                     );
                   } else if (snapshot.hasError) {
