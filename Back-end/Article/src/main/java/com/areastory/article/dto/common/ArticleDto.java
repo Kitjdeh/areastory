@@ -19,6 +19,7 @@ public class ArticleDto {
     private String profile;
     private String content;
     private String image;
+    private String thumbnail;
     private Long dailyLikeCount;
     private Long totalLikeCount;
     private Long commentCount;
@@ -32,13 +33,14 @@ public class ArticleDto {
     private String dongeupmyeon;
 
 
-    public ArticleDto(Long articleId, Long userId, String nickname, String profile, String content, String image, Long dailyLikeCount, Long totalLikeCount, Long commentCount, Boolean likeYn, Boolean followYn, LocalDateTime createdAt, String dosi, String sigungu, String dongeupmyeon) {
+    public ArticleDto(Long articleId, Long userId, String nickname, String profile, String content, String image, String thumbnail, Long dailyLikeCount, Long totalLikeCount, Long commentCount, Boolean likeYn, Boolean followYn, LocalDateTime createdAt, String dosi, String sigungu, String dongeupmyeon) {
         this.articleId = articleId;
         this.userId = userId;
         this.nickname = nickname;
         this.profile = profile;
         this.content = content;
         this.image = image;
+        this.thumbnail = thumbnail;
         this.dailyLikeCount = dailyLikeCount;
         this.totalLikeCount = totalLikeCount;
         this.commentCount = commentCount;

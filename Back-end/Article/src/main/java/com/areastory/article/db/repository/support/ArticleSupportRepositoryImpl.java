@@ -124,6 +124,7 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
                         article.user.profile,
                         article.content,
                         article.image,
+                        article.thumbnail,
                         article.dailyLikeCount,
                         article.totalLikeCount,
                         article.commentCount,
