@@ -68,7 +68,6 @@ public class ArticleServiceImpl implements ArticleService {
                 .dongeupmyeon(articleWriteReq.getDongeupmyeon())
                 .build());
 
-        System.out.println("저장: " + article.getDailyLikeCount());
         articleProducer.send(article, KafkaProperties.INSERT);
     }
 
