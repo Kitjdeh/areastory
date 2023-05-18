@@ -102,7 +102,7 @@ public class ArticleSupportRepositoryImpl implements ArticleSupportRepository {
     @Override
     public Page<ArticleDto> findAllFollowArticleList(Long userId, Pageable pageable) {
         List<ArticleDto> followArticleList = getArticlesQuery(userId)
-                .where(article.publicYn.eq(true), follow.followUser.userId.eq(userId))
+                .where(article.publicYn.eq(true), (follow.followUser.userId.eq(userId).or(article.user.userId.eq(userId))))
                 .orderBy(getOrderSpecifier(pageable).toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
