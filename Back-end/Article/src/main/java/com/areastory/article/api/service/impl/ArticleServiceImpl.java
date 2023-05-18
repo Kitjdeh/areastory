@@ -66,6 +66,8 @@ public class ArticleServiceImpl implements ArticleService {
                 .sigungu(articleWriteReq.getSigungu())
                 .dongeupmyeon(articleWriteReq.getDongeupmyeon())
                 .build());
+
+        System.out.println("저장: " + article.getDailyLikeCount());
         articleProducer.send(article, KafkaProperties.INSERT);
     }
 
