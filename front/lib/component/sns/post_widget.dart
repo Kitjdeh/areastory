@@ -12,9 +12,11 @@ import 'package:front/api/user/get_user.dart';
 import 'package:front/component/sns/article_update_screen.dart';
 import 'package:front/component/sns/avatar_widget.dart';
 import 'package:front/component/sns/comment_screen.dart';
+import 'package:front/component/sns/image_screen.dart';
 import 'package:front/component/sns/like_screen.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/mypage_screen.dart';
+import 'package:get/get.dart';
 
 class ArticleComponent extends StatefulWidget {
   final int articleId;
@@ -250,8 +252,15 @@ class _ArticleComponentState extends State<ArticleComponent> {
   Widget _image({
     required String image,
   }) {
-    return Image.network(
-      image,
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => ImageScreen(
+              image: image,
+            ));
+      },
+      child: Image.network(
+        image,
+      ),
     );
     // return CachedNetworkImage(
     //   imageUrl: image,
