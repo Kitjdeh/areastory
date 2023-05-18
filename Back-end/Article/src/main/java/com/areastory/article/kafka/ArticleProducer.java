@@ -18,7 +18,6 @@ public class ArticleProducer {
                 .articleId(article.getArticleId())
                 .userId(article.getUser().getUserId())
                 .content(article.getContent())
-                .image(article.getImage())
                 .thumbnail(article.getThumbnail())
                 .dailyLikeCount(article.getDailyLikeCount())
                 .commentCount(article.getCommentCount())
