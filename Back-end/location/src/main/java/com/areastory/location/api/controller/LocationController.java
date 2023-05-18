@@ -21,9 +21,6 @@ public class LocationController {
     public ResponseEntity<List<LocationResp>> getMap(@RequestBody List<LocationDto> locationList) {
         try {
             List<LocationResp> resps = locationService.getMapImages(locationList);
-            for (LocationResp resp : resps) {
-                log.info(resp.getArticleId() + " " + resp.getLocationDto().getDosi() + " " + resp.getLocationDto().getSigungu() + " " + resp.getLocationDto().getDongeupmyeon());
-            }
             return ResponseEntity.ok(resps);
         } catch (Exception e) {
             e.printStackTrace();

@@ -13,8 +13,6 @@ public class ArticleListener {
 
     @KafkaListener(id = KafkaProperties.GROUP_NAME_ARTICLE, topics = KafkaProperties.TOPIC_ARTICLE, containerFactory = "articleContainerFactory")
     public void articleListen(ArticleKafkaDto articleKafkaDto) {
-        System.out.println("articleKafkaDto: " + articleKafkaDto);
-        System.out.println("리스너 리슨 : " + articleKafkaDto.getDailyLikeCount());
         switch (articleKafkaDto.getType()) {
             case KafkaProperties.INSERT:
                 articleService.addArticle(articleKafkaDto);
