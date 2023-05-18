@@ -26,8 +26,6 @@ public class Article {
     @Column(length = 200)
     private String image;
     @Setter
-    private Long totalLikeCount;
-    @Setter
     private Long commentCount;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

@@ -26,7 +26,6 @@ ArticleServiceImpl implements ArticleService {
                 .articleId(articleKafkaDto.getArticleId())
                 .content(articleKafkaDto.getContent())
                 .image(articleKafkaDto.getThumbnail())
-                .totalLikeCount(articleKafkaDto.getLikeCount())
                 .commentCount(articleKafkaDto.getCommentCount())
                 .user(user)
                 .createdAt(articleKafkaDto.getCreatedAt())
@@ -42,7 +41,6 @@ ArticleServiceImpl implements ArticleService {
         Article article = articleRepository.findById(articleKafkaDto.getArticleId()).orElseThrow();
         articleRepository.save(article);
         article.setContent(articleKafkaDto.getContent());
-        article.setTotalLikeCount(articleKafkaDto.getLikeCount());
         article.setCommentCount(articleKafkaDto.getCommentCount());
         article.setPublicYn(articleKafkaDto.getPublicYn());
     }
