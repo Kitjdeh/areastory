@@ -390,7 +390,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                                   followingId: int.parse(widget.userId));
                               chgtoggle();
                             },
-                            child: ImageData(IconsPath.follow, width: 300,)
+                            child: ImageData(IconsPath.follow, width: 250,)
                           ),
                         if (myId != widget.userId && followYn)
                           GestureDetector(
@@ -400,7 +400,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                                     followingId: int.parse(widget.userId));
                                 chgtoggle();
                               },
-                              child: ImageData(IconsPath.following, width: 300,)
+                              child: ImageData(IconsPath.following, width: 250,)
                           ),
                         // if (myId != widget.userId && !followYn)
                         //   TextButton(

@@ -21,8 +21,6 @@ class _MyAlbumState extends State<MyAlbum> {
   final storage = new FlutterSecureStorage();
   String? myId;
 
-
-
   @override
   void initState() {
     // TODO: implement initState
@@ -34,20 +32,26 @@ class _MyAlbumState extends State<MyAlbum> {
     myId = await storage.read(key: "userId");
   }
 
-  Future<void> printArticles(userId, page) async {
+
+  void printArticles(userId, page) async {
     _articles.clear();
     myId = await storage.read(key: "userId");
 
-    final articleData = myId == widget.userId ? await getUserArticles(userId: userId, page:page) : await getOtherArticles(userId: userId, page: page);
+    final articleData = myId == widget.userId
+        ? await getUserArticles(userId: userId, page: 0)
+        : await getOtherArticles(userId: userId, page: 0);
     setState(() {
+      _currentPage = 0;
       _articles.addAll(articleData.articles);
+      print(_articles.length);
     });
   }
 
   void getuserarticle(userId) async {
     if (_isLoading) return; // 이미 로딩 중인 경우 중복 요청 방지
     ++_currentPage;
-    final articleData = await getUserArticles(userId: userId,page: _currentPage);
+    final articleData =
+        await getUserArticles(userId: userId, page: _currentPage);
     setState(() {
       _articles.addAll(articleData.articles);
       nextPage = articleData.nextPage;
@@ -58,14 +62,14 @@ class _MyAlbumState extends State<MyAlbum> {
   void getortherarticle(userId) async {
     if (_isLoading) return; // 이미 로딩 중인 경우 중복 요청 방지
     ++_currentPage;
-    final articleData = await getOtherArticles(userId: userId,page: _currentPage);
+    final articleData =
+        await getOtherArticles(userId: userId, page: _currentPage);
     setState(() {
       _articles.addAll(articleData.articles);
       nextPage = articleData.nextPage;
       _isLoading = false; // 로딩 완료 상태로 설정
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -75,68 +79,89 @@ class _MyAlbumState extends State<MyAlbum> {
   }
 
   Widget renderMaxExtent() {
-    if (_articles.length == 0) {
-      return Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text("등록된 게시글이")],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text("없습니다")],
-            ),
-          ],
-        ),
-      );
-    }
+    // if (_articles.length == 0) {
+    //   return Container(
+    //     child: Column(
+    //       mainAxisAlignment: MainAxisAlignment.center,
+    //       children: [
+    //         Row(
+    //           mainAxisAlignment: MainAxisAlignment.center,
+    //           children: [Text("등록된 게시글이")],
+    //         ),
+    //         Row(
+    //           mainAxisAlignment: MainAxisAlignment.center,
+    //           children: [Text("없습니다")],
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // }
 
     return RefreshIndicator(
-      onRefresh: () async {
+      onRefresh: () {
         // 당겨서 새로고침 시 동작할 로직을 여기에 작성
         // 새로운 데이터를 가져오고 상태를 업데이트하는 등의 작업을 수행
-        await printArticles(int.parse(widget.userId), _currentPage);
+        return Future<void>.delayed(Duration(seconds: 2), () {
+          printArticles(int.parse(widget.userId), _currentPage);
+        });
       },
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (ScrollNotification notification) {
-          if (notification is ScrollEndNotification) {
-            final double scrollPosition = notification.metrics.pixels;
-            final double maxScrollExtent = notification.metrics.maxScrollExtent;
-            final double triggerThreshold = 400.0; // 일정 높이
+      child: _articles.length == 0
+          ? Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [Text("등록된 게시글이")],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [Text("없습니다")],
+                  ),
+                ],
+              ),
+            )
+          : NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification notification) {
+                if (notification is ScrollEndNotification) {
+                  final double scrollPosition = notification.metrics.pixels;
+                  final double maxScrollExtent =
+                      notification.metrics.maxScrollExtent;
+                  final double triggerThreshold = 400.0; // 일정 높이
 
-            if (scrollPosition > maxScrollExtent - triggerThreshold && nextPage && !_isLoading) {
-              getuserarticle(int.parse(widget.userId));
-            }
-          }
-          return false;
-        },
-        child: Stack(
-          children: [
-            GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 1,
-                mainAxisSpacing: 1,
-              ),
-              itemBuilder: (context, index) {
-                if (index < _articles.length) {
-                  return renderContainer(
-                    image: _articles[index].image.toString(),
-                    articleId: _articles[index].articleId,
-                  );
+                  if (scrollPosition > maxScrollExtent - triggerThreshold &&
+                      nextPage &&
+                      !_isLoading) {
+                    getuserarticle(int.parse(widget.userId));
+                  }
                 }
+                return false;
               },
-              itemCount: _articles.length + 1,
-            ),
-            if (_isLoading)
-              Center(
-                child: CircularProgressIndicator(),
+              child: Stack(
+                children: [
+                  GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 1,
+                      mainAxisSpacing: 1,
+                    ),
+                    itemBuilder: (context, index) {
+                      if (index < _articles.length) {
+                        return renderContainer(
+                          image: _articles[index].image.toString(),
+                          articleId: _articles[index].articleId,
+                        );
+                      }
+                    },
+                    itemCount: _articles.length + 1,
+                  ),
+                  if (_isLoading)
+                    Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                ],
               ),
-          ],
-        ),
-      ),
+            ),
     );
   }
 
@@ -147,14 +172,18 @@ class _MyAlbumState extends State<MyAlbum> {
     // double? height,
   }) {
     return GestureDetector(
-        onTap: () {
-          Get.to(() => AlbumDetail(articleId: articleId, userId: int.parse(myId!), followingId: int.parse(widget.userId),));
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => AlbumDetail(articleId: articleId),
-          //   ),
-          // );
+      onTap: () {
+        Get.to(() => AlbumDetail(
+              articleId: articleId,
+              userId: int.parse(myId!),
+              followingId: int.parse(widget.userId),
+            ));
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => AlbumDetail(articleId: articleId),
+        //   ),
+        // );
       },
       child: Container(
         // child: Text(articleId.toString()),
