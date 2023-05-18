@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:front/component/sns/avatar_widget.dart';
+import 'package:front/constant/home_tabs.dart';
 import 'package:front/livechat/chat.dart';
 import 'package:front/livechat/enter_or_quit.dart';
 import 'package:stomp_dart_client/stomp.dart';
@@ -77,7 +78,6 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
           } else {
             _messages.add(message);
           }
-
         });
         Future.delayed(Duration(milliseconds: 100), () {
           _scrollController.animateTo(
@@ -248,13 +248,15 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
                 onTap: () {
                   textYn! ? _sendMessage() : print('작성해줘');
                 },
-                child: Text(
-                  '게시',
-                  style: TextStyle(
-                    color: textYn! ? Colors.blue : Colors.black,
-                    fontSize: 23,
-                  ),
-                ),
+                child: textYn!
+                    ? ImageData(
+                        IconsPath.go,
+                        width: 100,
+                      )
+                    : ImageData(
+                        IconsPath.stop,
+                        width: 100,
+                      ),
               )
             ],
           ),

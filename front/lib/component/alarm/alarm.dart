@@ -179,7 +179,7 @@ class _AlarmComponentState extends State<AlarmComponent> {
                       // type: snapshot.data!.type,
                       type: "comment",
                       title: snapshot.data!.title,
-                      otherUserId: 1,
+                      otherUserId: snapshot.data!.otherUserId,
                       articleId: snapshot.data!.articleId,
                       checked: snapshot.data!.checked,
                     ),

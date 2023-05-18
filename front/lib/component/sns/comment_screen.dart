@@ -260,13 +260,15 @@ class _SnsCommentScreenState extends State<SnsCommentScreen> {
                             createComment(value);
                           }
                         },
-                        child: Text(
-                          '게시',
-                          style: TextStyle(
-                            color: textYn! ? Colors.blue : Colors.black,
-                            fontSize: 23,
-                          ),
-                        ),
+                        child: textYn!
+                            ? ImageData(
+                                IconsPath.go,
+                                width: 100,
+                              )
+                            : ImageData(
+                                IconsPath.stop,
+                                width: 100,
+                              ),
                       )
                     ],
                   ),

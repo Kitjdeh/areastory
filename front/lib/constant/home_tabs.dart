@@ -65,4 +65,7 @@ class IconsPath {
   static String get like => 'asset/img/like.png';
   static String get nolike => 'asset/img/nolike.png';
   static String get comment => 'asset/img/comment.png';
+  static String get go => 'asset/img/go.png';
+  static String get stop => 'asset/img/stop.png';
+
 }
