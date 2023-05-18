@@ -10,10 +10,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -31,6 +36,13 @@ public class FileUtil {
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new CustomException(ErrorCode.FAIL_CONVERT));
 
+        return upload(uploadFile, dirName);
+    }
+
+    public String uploadThumbnail(MultipartFile multipartFile, String dirName) {
+        if (multipartFile == null || multipartFile.isEmpty())
+            return null;
+        File uploadFile = compressImage(multipartFile);
         return upload(uploadFile, dirName);
     }
 
@@ -101,6 +113,38 @@ public class FileUtil {
         }
 
         return Optional.empty();
+    }
+
+    // 파일 용량 축소
+    public File compressImage(MultipartFile file) {
+        File compressedImageFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+
+        try (OutputStream os = new FileOutputStream(compressedImageFile)) {
+
+            float quality = 0.1f; //0.1 ~ 1.0까지 압축되는 이미지의 퀄리티를 지정
+            //숫자가 낮을수록 화질과 용량이 줄어든다.
+
+            Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+
+            if (!writers.hasNext())
+                throw new IllegalStateException("No writers found");
+
+            ImageWriter writer = (ImageWriter) writers.next();
+            ImageOutputStream ios = ImageIO.createImageOutputStream(os);
+            writer.setOutput(ios);
+
+            ImageWriteParam param = writer.getDefaultWriteParam();
+
+            param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+            param.setCompressionQuality(quality);
+            BufferedImage image = ImageIO.read(file.getInputStream());
+            writer.write(null, new IIOImage(image, null, null), param);
+        } catch (FileNotFoundException e) {
+            throw new CustomException(ErrorCode.FILE_NOT_FOUND);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return compressedImageFile;
     }
 
 

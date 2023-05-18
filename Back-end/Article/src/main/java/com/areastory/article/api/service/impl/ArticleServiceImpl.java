@@ -50,14 +50,17 @@ public class ArticleServiceImpl implements ArticleService {
         User user = userRepository.findById(articleWriteReq.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         String imageUrl = "";
+        String thumbnail = "";
         if (picture != null) {
             imageUrl = fileUtil.upload(picture, "picture");
+            thumbnail = fileUtil.uploadThumbnail(picture, "thumbnail");
         }
 
         Article article = articleRepository.save(Article.builder()
                 .user(user)
                 .content(articleWriteReq.getContent())
                 .image(imageUrl)
+                .thumbnail(thumbnail)
                 .publicYn(articleWriteReq.getPublicYn())
                 .dosi(articleWriteReq.getDosi())
                 .sigungu(articleWriteReq.getSigungu())

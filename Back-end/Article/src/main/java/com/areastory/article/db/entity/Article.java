@@ -36,6 +36,9 @@ public class Article extends BaseTime {
     private String content;
     @Column(length = 200)
     private String image;
+
+    @Column(length = 200)
+    private String thumbnail;
     @ColumnDefault("0")
     @Column(name = "daily_like_count")
     private Long dailyLikeCount;
@@ -56,11 +59,12 @@ public class Article extends BaseTime {
 
 
     @Builder
-    public Article(Long articleId, User user, String content, String image, Long dailyLikeCount, Long totalLikeCount, Long commentCount, String dosi, String sigungu, String dongeupmyeon, Boolean publicYn) {
+    public Article(Long articleId, User user, String content, String image, String thumbnail, Long dailyLikeCount, Long totalLikeCount, Long commentCount, String dosi, String sigungu, String dongeupmyeon, Boolean publicYn) {
         this.articleId = articleId;
         this.user = user;
         this.content = content;
         this.image = image;
+        this.thumbnail = thumbnail;
         this.dailyLikeCount = dailyLikeCount;
         this.totalLikeCount = totalLikeCount;
         this.commentCount = commentCount;
