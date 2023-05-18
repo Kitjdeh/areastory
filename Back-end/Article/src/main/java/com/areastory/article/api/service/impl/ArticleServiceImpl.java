@@ -62,6 +62,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .image(imageUrl)
                 .thumbnail(thumbnail)
                 .dailyLikeCount(0L)
+                .commentCount(0L)
                 .publicYn(articleWriteReq.getPublicYn())
                 .dosi(articleWriteReq.getDosi())
                 .sigungu(articleWriteReq.getSigungu())
