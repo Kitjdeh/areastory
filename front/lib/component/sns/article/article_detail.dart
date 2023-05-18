@@ -109,7 +109,8 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   MyPageScreen(
-                                                      userId: widget.userId
+                                                      userId: snapshot
+                                                          .data!.userId
                                                           .toString())));
                                     },
                                     child: ClipOval(

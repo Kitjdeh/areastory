@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/component/sns/avatar_widget.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/livechat/chat.dart';
@@ -32,6 +33,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
   final _scrollController = ScrollController();
   final _messages = [];
   late final StompClient _stompClient;
+  late final myId;
   bool _connected = false;
   int userCount = 0;
   bool? textYn = false;
@@ -55,6 +57,12 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
     );
     _stompClient = stompClient;
     stompClient.activate();
+    goMyId();
+  }
+
+  void goMyId() async {
+    final storage = FlutterSecureStorage();
+    myId = await storage.read(key: 'userId');
   }
 
   void onConnect(StompFrame frame) {
@@ -202,6 +210,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
                         content: _messages[index]["content"],
                         // createdAt: _messages[index]["createdAt"],
                         userId: _messages[index]["userId"],
+                        myId: myId,
                         height: 80,
                       );
               },
