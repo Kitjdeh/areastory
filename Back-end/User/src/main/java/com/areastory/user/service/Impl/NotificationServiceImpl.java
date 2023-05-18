@@ -40,8 +40,6 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public NotificationResp selectAllNotifications(Long userId, Pageable pageable) {
         Page<Notification> notifications = notificationRepository.findAllByUserId(userId, pageable);
-        System.out.println("개수: "+ notifications.getContent().size());
-        System.out.println("시간: "+ notifications.getContent().get(0).getCreatedAt());
         return NotificationResp.builder()
                 .notifications(notifications.getContent().stream().map(this::toDto).collect(Collectors.toList()))
                 .pageSize(notifications.getPageable().getPageSize())

@@ -54,8 +54,8 @@ public class NotificationListener {
                 .articleId(notificationKafkaDto.getArticleId())
                 .commentId(notificationKafkaDto.getCommentId())
                 .userId(notificationKafkaDto.getUserId()) // 알람을 받은 사람
-//                .otherUserId(notificationKafkaDto.getOtherUserId())
-//                .type(notificationKafkaDto.getType())
+                .otherUserId(notificationKafkaDto.getOtherUserId())
+                .type(notificationKafkaDto.getType())
                 .build();
         notificationService.addNotification(notificationDto);
         //원래 여기 쓰면 안되는데 일단 리팩토링 전에 씀
@@ -83,13 +83,6 @@ public class NotificationListener {
         try {
             response = FirebaseMessaging.getInstance().send(message);
         } catch (FirebaseMessagingException e) {
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-            System.out.println("여기 문제임");
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             throw new RuntimeException(e);
         }
         // Response is a message ID string.

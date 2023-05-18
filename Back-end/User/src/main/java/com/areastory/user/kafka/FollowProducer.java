@@ -17,7 +17,7 @@ public class FollowProducer {
                 .type(type)
                 .followUserId(follow.getFollowerUser().getUserId())
                 .followingUserId(follow.getFollowingUser().getUserId())
-//                .createdAt(follow.getCreatedAt())
+                .createdAt(follow.getCreatedAt())
                 .build();
         followTemplate.send(new ProducerRecord<>(KafkaProperties.TOPIC_FOLLOW, followKafkaDto.getFollowUserId(), followKafkaDto));
     }
