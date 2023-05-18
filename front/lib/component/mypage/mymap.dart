@@ -133,46 +133,46 @@ class _MyMapState extends State<MyMap> {
     return x > pX;
   }
 
-  void optimizepostion() async {
-    print("mapController.zoom${mapController.zoom}");
-    await _zoom > 13.0
-        ? nowallareadata = widget.smallareaData
-        : _zoom > 9.0
-            ? nowallareadata = widget.middleareaData
-            : nowallareadata = widget.bigareaData;
-    setState(() {
-      _zoom > 13.0
-          ? nowallareadata = widget.smallareaData
-          : _zoom > 9.0
-              ? nowallareadata = widget.middleareaData
-              : nowallareadata = widget.bigareaData;
-    });
-
-    print('posistionchanged 작동함');
-    List<Map<String, String>> requestlist = [];
-    // print('nowallareadata${nowallareadata.length}');
-    // 현재 보이는 화면의 경계를 계산
-    final bounds = mapController.bounds!;
-    final sw = bounds.southWest;
-    final ne = bounds.northEast;
-    // 화면 내에 있는 폴리곤만 필터링
-    final visibleMapdata = nowallareadata.where((p) {
-      return p.polygons!.any((point) {
-        return point.latitude >= sw!.latitude &&
-            point.latitude <= ne!.latitude &&
-            point.longitude >= sw.longitude &&
-            point.longitude <= ne!.longitude;
-      });
-    }).toList();
-    nowareadata = visibleMapdata;
-    setState(() {
-      nowareadata = visibleMapdata;
-    });
-    await Future.forEach(visibleMapdata, (e) {
-      requestlist.add(e.mapinfo!);
-    });
-    // var A = visibleMapdata.map((e) => e.mapinfo).toList();
-  }
+  // void optimizepostion() async {
+  //   print("mapController.zoom${mapController.zoom}");
+  //   await mapController.zoom > 13.0
+  //       ? nowallareadata = widget.smallareaData
+  //       : mapController.zoom > 9.0
+  //           ? nowallareadata = widget.middleareaData
+  //           : nowallareadata = widget.bigareaData;
+  //   setState(() {
+  //     mapController.zoom > 13.0
+  //         ? nowallareadata = widget.smallareaData
+  //         : mapController.zoom > 9.0
+  //             ? nowallareadata = widget.middleareaData
+  //             : nowallareadata = widget.bigareaData;
+  //   });
+  //
+  //   print('posistionchanged 작동함');
+  //   List<Map<String, String>> requestlist = [];
+  //   // print('nowallareadata${nowallareadata.length}');
+  //   // 현재 보이는 화면의 경계를 계산
+  //   final bounds = mapController.bounds!;
+  //   final sw = bounds.southWest;
+  //   final ne = bounds.northEast;
+  //   // 화면 내에 있는 폴리곤만 필터링
+  //   final visibleMapdata = nowallareadata.where((p) {
+  //     return p.polygons!.any((point) {
+  //       return point.latitude >= sw!.latitude &&
+  //           point.latitude <= ne!.latitude &&
+  //           point.longitude >= sw.longitude &&
+  //           point.longitude <= ne!.longitude;
+  //     });
+  //   }).toList();
+  //   nowareadata = visibleMapdata;
+  //   setState(() {
+  //     nowareadata = visibleMapdata;
+  //   });
+  //   await Future.forEach(visibleMapdata, (e) {
+  //     requestlist.add(e.mapinfo!);
+  //   });
+  //   // var A = visibleMapdata.map((e) => e.mapinfo).toList();
+  // }
 
   Widget build(BuildContext context) {
     List<Widget> customPolygonLayers = [];
@@ -282,21 +282,25 @@ class _MyMapState extends State<MyMap> {
                 //-----post----------
               },
               onPositionChanged: (pos, hasGesture) {
-                _zoom > 13.0
-                ? nowallareadata = widget.smallareaData
-                    : _zoom > 9.0
-                ? nowallareadata = widget.middleareaData
-                    : nowallareadata = widget.bigareaData;
+                // setState(() {
+                //
+                // });
                 if (_debounce?.isActive ?? false) _debounce!.cancel();
                 _debounce = Timer(debounceDuration, () async {
-                  print("mapController.zoom${mapController.zoom}");
+                  _zoom = mapController.zoom;
+                  // print("mapController.zoom${mapController.zoom}");
                   // nowallareadata = widget.smallareaData;
-                  // await _zoom > 13.0
-                  //     ? nowallareadata = widget.smallareaData
-                  //     : _zoom > 9.0
-                  //         ? nowallareadata = widget.middleareaData
-                  //         : nowallareadata = widget.bigareaData;
-                  print('posistionchanged 작동함');
+                  setState(() {
+                    mapController.zoom > 13.0
+                        ? nowallareadata = widget.smallareaData
+                        : mapController.zoom > 9.0
+                        ? nowallareadata = widget.middleareaData
+                        : nowallareadata = widget.bigareaData;
+                    // print('setstatenowallareadata${nowallareadata.length}');
+                  });
+
+                  print('posistionchanged 작동함${mapController.zoom}');
+
                   List<Map<String, String>> requestlist = [];
                   // 현재 보이는 화면의 경계를 계산
                   final bounds = mapController.bounds!;
