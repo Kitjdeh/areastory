@@ -2,7 +2,6 @@ package com.areastory.location.dto.common;
 
 import lombok.*;
 
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -16,7 +15,7 @@ public class ArticleKafkaDto implements Serializable {
     private Long articleId;
     private Long userId;
     private String content;
-    private String image;
+    private String thumbnail;
     private Long dailyLikeCount;
     private Long commentCount;
     private String dosi;

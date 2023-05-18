@@ -33,7 +33,7 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = Article.articleBuilder()
                 .articleId(articleKafkaDto.getArticleId())
                 .userId(articleKafkaDto.getUserId())
-                .image(articleKafkaDto.getImage())
+                .image(articleKafkaDto.getThumbnail())
                 .dailyLikeCount(articleKafkaDto.getDailyLikeCount())
                 .createdAt(articleKafkaDto.getCreatedAt())
                 .location(location)
@@ -77,7 +77,7 @@ public class ArticleServiceImpl implements ArticleService {
             if (locationResp == null || locationResp.getLikeCount() < articleKafkaDto.getDailyLikeCount()) {
                 locationMap.getMap().put(locationDto, new LocationResp(
                         articleKafkaDto.getArticleId(),
-                        articleKafkaDto.getImage(),
+                        articleKafkaDto.getThumbnail(),
                         articleKafkaDto.getDailyLikeCount(),
                         locationDto
                 ));
