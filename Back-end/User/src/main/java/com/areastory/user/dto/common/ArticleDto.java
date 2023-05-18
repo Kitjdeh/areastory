@@ -17,12 +17,12 @@ import java.util.List;
 public class ArticleDto {
 
     private Long articleId;
-    private String image;
+    private String thumbnail;
 
     public static ArticleDto fromEntity(Article article) {
         return ArticleDto.builder()
                 .articleId(article.getArticleId())
-                .image(article.getImage())
+                .thumbnail(article.getThumbnail())
                 .build();
     }
 

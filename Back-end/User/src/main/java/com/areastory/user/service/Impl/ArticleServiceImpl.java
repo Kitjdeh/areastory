@@ -26,12 +26,14 @@ ArticleServiceImpl implements ArticleService {
                 .articleId(articleKafkaDto.getArticleId())
                 .content(articleKafkaDto.getContent())
                 .image(articleKafkaDto.getImage())
+                .thumbnail(articleKafkaDto.getThumbnail())
                 .totalLikeCount(articleKafkaDto.getLikeCount())
                 .commentCount(articleKafkaDto.getCommentCount())
                 .user(user)
                 .createdAt(articleKafkaDto.getCreatedAt())
                 .publicYn(articleKafkaDto.getPublicYn())
                 .build();
+
         articleRepository.save(article);
     }
 

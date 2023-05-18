@@ -16,6 +16,7 @@ public class ArticleKafkaDto implements Serializable {
     private Long userId;
     private String content;
     private String image;
+    private String thumbnail;
     private Long likeCount;
     private Long commentCount;
     private String doName;

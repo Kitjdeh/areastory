@@ -25,6 +25,9 @@ public class Article {
     private String content;
     @Column(length = 200)
     private String image;
+
+    @Column(length = 200)
+    private String thumbnail;
     @Setter
     private Long totalLikeCount;
     @Setter

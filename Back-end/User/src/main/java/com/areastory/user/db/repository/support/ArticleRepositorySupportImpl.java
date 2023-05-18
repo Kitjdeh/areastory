@@ -52,7 +52,7 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport{
         List<ArticleDto> articleDtoList = queryFactory
                 .select(Projections.constructor(ArticleDto.class,
                         article.articleId,
-                        article.image))
+                        article.thumbnail))
                 .from(article)
                 .where(article.user.userId.eq(userId), article.publicYn.eq(true))
                 .orderBy(article.createdAt.desc())
