@@ -5,6 +5,7 @@ import 'package:front/api/like/create_article_like.dart';
 import 'package:front/api/like/delete_article_like.dart';
 import 'package:front/api/sns/get_article.dart';
 import 'package:front/api/user/get_user.dart';
+import 'package:front/component/sns/article/article_alert.dart';
 import 'package:front/component/sns/comment_screen.dart';
 import 'package:front/constant/home_tabs.dart';
 import 'package:front/screen/mypage_screen.dart';
@@ -228,8 +229,7 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                                           child: ImageData(
                                                             snapshot.data!
                                                                     .likeYn
-                                                                ? IconsPath
-                                                                    .like
+                                                                ? IconsPath.like
                                                                 : IconsPath
                                                                     .nolike,
                                                             width: 102,
@@ -333,26 +333,31 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
                                                         MainAxisAlignment
                                                             .center,
                                                     children: [
-                                                      if (widget.location!
-                                                          .contains(snapshot
-                                                              .data!
-                                                              .dosi as Pattern))
-                                                        Text(
-                                                            '${snapshot.data!.dosi}'),
-                                                      if (widget.location!
-                                                          .contains(snapshot
-                                                                  .data!.sigungu
-                                                              as Pattern))
-                                                        Text(
-                                                            '${snapshot.data!.sigungu}'),
-                                                      if (widget.location!
-                                                          .contains(snapshot
-                                                                  .data!
-                                                                  .dongeupmyeon
-                                                              as Pattern))
-                                                        Text(
-                                                            '${snapshot.data!.dongeupmyeon}'),
-                                                      Text('SNS 가기'),
+                                                      widget.location != null
+                                                          ? (widget.location!
+                                                                  .contains(snapshot
+                                                                          .data!
+                                                                          .dongeupmyeon
+                                                                      as Pattern)
+                                                              ? Text(
+                                                                  '${snapshot.data!.dongeupmyeon}')
+                                                              : (widget
+                                                                      .location!
+                                                                      .contains(snapshot
+                                                                              .data!
+                                                                              .sigungu
+                                                                          as Pattern)
+                                                                  ? Text(
+                                                                      '${snapshot.data!.sigungu}')
+                                                                  : (widget.location!.contains(snapshot
+                                                                              .data!
+                                                                              .dosi
+                                                                          as Pattern)
+                                                                      ? Text(
+                                                                          '${snapshot.data!.dosi}')
+                                                                      : Text(
+                                                                          'SNS 가기'))))
+                                                          : Text('${snapshot.data!.dosi}\n${snapshot.data!.sigungu}\n${snapshot.data!.dongeupmyeon}\nSNS 가기')
                                                     ],
                                                   ),
                                                 ),
@@ -400,12 +405,12 @@ class _ArticleDetailComponentState extends State<ArticleDetailComponent> {
               ),
             );
           } else if (snapshot.hasError) {
-            return Container(
-              height: 0,
+            return AlertModal(
+              message: '삭제된 게시글입니다',
             );
           } else {
-            return Container(
-              height: 0,
+            return AlertModal(
+              message: '삭제된 게시글입니다',
             );
           }
         });

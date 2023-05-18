@@ -34,7 +34,7 @@ class CustomPolygonLayer extends StatelessWidget {
 
   CustomPolygonLayer(
       {super.key,
-        required this.entitle,
+      required this.entitle,
       this.polygons = const [],
       this.area = '',
       this.polygonCulling = false,
@@ -118,7 +118,7 @@ class CustomPolygonLayer extends StatelessWidget {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertModal(
-                              message: '게시글이 없습니다. 등록해 주세요',
+                              message: '게시글이 없는 지역입니다',
                             );
                           },
                         )
