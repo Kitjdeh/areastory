@@ -90,10 +90,14 @@ class _MapScreenState extends State<MapScreen> {
                   children: [
                     Expanded(child: GetBuilder<MapTempController>(
                       builder: (controller) {
-                        return _CustomMap(
-                          bigareaData: _mapTempController.bigareaData,
-                          middleareaData: _mapTempController.middleareaData,
-                          smallareaData: _mapTempController.smallareaData,
+                        return Column(
+                          children: [
+                            _CustomMap(
+                              bigareaData: _mapTempController.bigareaData,
+                              middleareaData: _mapTempController.middleareaData,
+                              smallareaData: _mapTempController.smallareaData,
+                            ),
+                          ],
                         );
                       },
                     ))
@@ -237,7 +241,7 @@ class _CustomMapState extends State<_CustomMap> {
   void initState() {
     super.initState();
     // _loadMapadata();
-    print("지도에서 이닛스테이트가 돌아가요");
+    // print("지도에서 이닛스테이트가 돌아가요");
   }
 
   //initstate에 비동기 작업을 위해서 지도 작업 3개를 합친 future함수 생성
@@ -288,7 +292,6 @@ class _CustomMapState extends State<_CustomMap> {
     double m = (aY - bY) / (aX - bX);
     double bee = (-aX) * m + aY;
     double x = (pY - bee) / m;
-
     return x > pX;
   }
 
@@ -505,7 +508,7 @@ class _CustomMapState extends State<_CustomMap> {
             options: MapOptions(
               maxZoom: 18,
               minZoom: 6,
-              center: LatLng(37.60732175555233, 127.0710794642477),
+              center: mylatlng ?? LatLng(37.60732175555233, 127.0710794642477),
               zoom: _zoom,
               interactiveFlags: InteractiveFlag.drag |
                   InteractiveFlag.doubleTapZoom |
@@ -564,7 +567,8 @@ class _CustomMapState extends State<_CustomMap> {
                 // print('응답${result}');
                 await Future.forEach(visibleMapdata, (e) {
                   final areakey = e.keyname;
-                  final url = result[areakey]!.image ?? e.urls;
+                  final url =
+                      result[areakey] == null ? e.urls : result[areakey]!.image;
                   final ariticleid = result[areakey]!.articleId ?? 0;
                   final mapinfo = e.mapinfo;
                   final fullname = e.fullname;
@@ -588,9 +592,9 @@ class _CustomMapState extends State<_CustomMap> {
               onPositionChanged: (pos, hasGesture) {
                 if (_debounce?.isActive ?? false) _debounce!.cancel();
                 _debounce = Timer(debounceDuration, () async {
-                  print(
-                      "mapController.zoom${mapController.zoom} ${nowallareadata.length}");
-                  // nowallareadata = widget.smallareaData;
+                  // print(
+                  //     "mapController.zoom${mapController.zoom} ${nowallareadata.length}");
+                  // // nowallareadata = widget.smallareaData;
                   setState(() {
                     mapController.zoom > 13.0
                         ? nowallareadata = widget.smallareaData
@@ -623,7 +627,7 @@ class _CustomMapState extends State<_CustomMap> {
                   await Future.forEach(visibleMapdata, (e) {
                     requestlist.add(e.mapinfo!);
                   });
-                  var A = visibleMapdata.map((e) => e.mapinfo).toList();
+                  // var A = visibleMapdata.map((e) => e.mapinfo).toList();
 
                   //----------------------------------post-----
                   Map<String, AreaData> result =
@@ -634,8 +638,10 @@ class _CustomMapState extends State<_CustomMap> {
                     final areakey = e.keyname;
                     // print(
                     //     'resultareakey${result[areakey]!.image} e ${e} areakey${areakey}');
-                    final url = result[areakey]!.image ?? e.urls;
-                    print(url);
+                    final url = result[areakey] == null
+                        ? e.urls
+                        : result[areakey]!.image;
+
                     final ariticleid = result[areakey]!.articleId ?? 0;
                     final mapinfo = e.mapinfo;
                     final fullname = e.fullname;
