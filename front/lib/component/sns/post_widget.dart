@@ -250,6 +250,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
 
   Widget _image({
     required String image,
+    required String thumbnail,
     required bool likeYn,
   }) {
     return GestureDetector(
@@ -264,7 +265,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
             : createArticleLike(widget.articleId);
       },
       child: Image.network(
-        image,
+        thumbnail,
       ),
     );
     // return CachedNetworkImage(
@@ -415,6 +416,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
                 const SizedBox(height: 15),
                 _image(
                   image: snapshot.data!.image,
+                  thumbnail: snapshot.data!.thumbnail,
                   likeYn: snapshot.data!.likeYn,
                 ),
                 const SizedBox(height: 15),

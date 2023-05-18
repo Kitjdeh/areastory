@@ -34,6 +34,7 @@ class ArticleData {
   final String profile;
   final String content;
   final String image;
+  final String thumbnail;
   final int dailyLikeCount;
   final int totalLikeCount;
   final int commentCount;
@@ -57,6 +58,7 @@ class ArticleData {
       required this.createdAt,
       required this.profile,
       required this.image,
+      required this.thumbnail,
       this.dosi,
       this.sigungu,
       this.dongeupmyeon});
@@ -69,6 +71,7 @@ class ArticleData {
       profile: json['profile'],
       content: json['content'],
       image: json['image'],
+      thumbnail: json['thumbnail'],
       dailyLikeCount: json['dailyLikeCount'],
       totalLikeCount: json['totalLikeCount'],
       commentCount: json['commentCount'],

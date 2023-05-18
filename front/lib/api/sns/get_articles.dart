@@ -81,6 +81,7 @@ class Article {
   final String profile;
   final String content;
   final String image;
+  final String thumbnail;
   final int dailyLikeCount;
   final int totalLikeCount;
   final int commentCount;
@@ -98,6 +99,7 @@ class Article {
       required this.profile,
       required this.content,
       required this.image,
+      required this.thumbnail,
       required this.dailyLikeCount,
       required this.totalLikeCount,
       required this.commentCount,
@@ -116,6 +118,7 @@ class Article {
       profile: json['profile'],
       content: json['content'],
       image: json['image'],
+      thumbnail: json['thumbnail'],
       dailyLikeCount: json['dailyLikeCount'],
       totalLikeCount: json['totalLikeCount'],
       commentCount: json['commentCount'],
