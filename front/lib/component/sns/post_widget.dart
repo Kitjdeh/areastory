@@ -44,7 +44,6 @@ class _ArticleComponentState extends State<ArticleComponent> {
   void initState() {
     super.initState();
     getProfile();
-    print("userId: ${widget.userId} followingId: ${widget.followingId}");
   }
 
   void getProfile() async {
@@ -251,12 +250,18 @@ class _ArticleComponentState extends State<ArticleComponent> {
 
   Widget _image({
     required String image,
+    required bool likeYn,
   }) {
     return GestureDetector(
       onTap: () {
         Get.to(() => ImageScreen(
               image: image,
             ));
+      },
+      onDoubleTap: () {
+        likeYn
+            ? delArticleLike(widget.articleId)
+            : createArticleLike(widget.articleId);
       },
       child: Image.network(
         image,
@@ -410,6 +415,7 @@ class _ArticleComponentState extends State<ArticleComponent> {
                 const SizedBox(height: 15),
                 _image(
                   image: snapshot.data!.image,
+                  likeYn: snapshot.data!.likeYn,
                 ),
                 const SizedBox(height: 15),
                 _infoCount(

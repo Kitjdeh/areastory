@@ -44,7 +44,6 @@ class MyPageController extends GetxController {
     this.userId = userId;
     setMyId();
     update();
-    print("마이페이지 컨트롤러 이닛스테이트가 돌아가요");
   }
 
 }

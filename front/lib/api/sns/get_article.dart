@@ -20,7 +20,6 @@ Future<ArticleData> getArticle({
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());
     final articleData = ArticleData.fromJson(jsonData);
-    print('게시글 요청 성공');
     return articleData;
   } else {
     print('게시글 요청 실패');

@@ -22,7 +22,6 @@ Future<CommentData> getComment({
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());
     final commentData = CommentData.fromJson(jsonData);
-    print('댓글 조회 성공');
     return commentData;
   } else {
     print('댓글 조회 실패');

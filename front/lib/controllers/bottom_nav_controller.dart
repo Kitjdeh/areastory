@@ -58,7 +58,6 @@ class BottomNavController extends GetxController {
       print(bottomHistory);
     }
     else if (bottomHistory.last == value) {
-      print("현재 같은 인덱스를 탭하였어요.");
       var page = PageName.values[bottomHistory.last];
       if(page == PageName.MYPAGE){
         var value = myPageNavigationKey.currentState!.popUntil((route) => route.isFirst);

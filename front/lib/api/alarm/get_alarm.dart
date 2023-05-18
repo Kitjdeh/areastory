@@ -17,7 +17,7 @@ Future<AlarmData> getAlarm({
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.toString());
     final alarmData = AlarmData.fromJson(jsonData);
-    print('알람 요청 성공');
+
     return alarmData;
   } else {
     print('알림 요청 실패');

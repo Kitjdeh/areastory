@@ -468,8 +468,8 @@ class _MyPageScreenState extends State<MyPageScreen>
               ),
               GestureDetector(
                 onTap: () {
-                  print(widget.userId);
-                  print(myId);
+                  // print(widget.userId);
+                  // print(myId);
                   showModalBottomSheet(
                     context: context,
                     // 모달 이외 클릭시 모달창 닫힘.
