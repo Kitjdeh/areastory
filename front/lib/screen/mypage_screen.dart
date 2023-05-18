@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -325,6 +326,8 @@ class _MyPageScreenState extends State<MyPageScreen>
                               await viewModel.logout();
                               setState(() {});
                               await storage.delete(key: "userId");
+                              /// 기존 FCM 토큰을 삭제.
+                              FirebaseMessaging.instance.deleteToken();
                               SystemNavigator.pop();
                             } catch (e) {
                               // 탈퇴 실패 시 처리할 작업을 추가할 수 있습니다.
