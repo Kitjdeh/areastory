@@ -21,7 +21,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 /// 앱이 백그라운드 상태일때 메시지 수신. 항상 main.dart의 최상위.
-
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -139,11 +138,11 @@ void main() async {
     await setupFlutterNotifications();
   }
 
-  /// 기존 FCM 토큰을 삭제.
-  // FirebaseMessaging.instance.deleteToken();
-
   var fcmToken = await FirebaseMessaging.instance
       .getToken(vapidKey: "${dotenv.get('FIREBASE_KEY')}");
+
+  /// /// 기존 FCM 토큰을 삭제.
+  // FirebaseMessaging.instance.deleteToken();
 
   FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
     // TODO: If necessary send token to application server.
