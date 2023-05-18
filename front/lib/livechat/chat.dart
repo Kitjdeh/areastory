@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ChatComponent extends StatelessWidget {
   final String profile;
@@ -7,6 +8,8 @@ class ChatComponent extends StatelessWidget {
   // final DateTime createdAt;
   final int userId;
   final double height;
+  final String myId;
+
   const ChatComponent({
     Key? key,
     required this.profile,
@@ -15,6 +18,7 @@ class ChatComponent extends StatelessWidget {
     // required this.createdAt,
     required this.userId,
     required this.height,
+    required this.myId,
   }) : super(key: key);
 
   String _formatDate(dynamic createdAt) {
@@ -51,6 +55,8 @@ class ChatComponent extends StatelessWidget {
       child: SizedBox(
         height: height,
         child: Row(
+          // mainAxisAlignment:
+          // userId != int.parse(myId) ? MainAxisAlignment.start : MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
