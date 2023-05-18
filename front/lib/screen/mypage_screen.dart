@@ -237,25 +237,25 @@ class _MyPageScreenState extends State<MyPageScreen>
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          TextButton.icon(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AlarmScreen(
-                            userId: int.parse(widget.userId),
-                            signal: '1',
-                          )));
-            },
-            icon: Icon(
-              Icons.access_alarm,
-              color: Colors.black,
-            ),
-            label: Text(
-              "알람",
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
+          // TextButton.icon(
+          //   onPressed: () {
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //             builder: (context) => AlarmScreen(
+          //                   userId: int.parse(widget.userId),
+          //                   signal: '1',
+          //                 )));
+          //   },
+          //   icon: Icon(
+          //     Icons.access_alarm,
+          //     color: Colors.black,
+          //   ),
+          //   label: Text(
+          //     "알람",
+          //     style: TextStyle(color: Colors.black),
+          //   ),
+          // ),
           TextButton.icon(
             onPressed: () async {
               // postFollowing(followingId: int.parse(widget.userId));
@@ -445,6 +445,24 @@ class _MyPageScreenState extends State<MyPageScreen>
                   }
                 }),
             actions: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AlarmScreen(
+                            userId: int.parse(widget.userId),
+                            signal: '1',
+                          )));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: Icon(
+                  Icons.access_alarm,
+                  color: Colors.black,
+                )
+                ),
+              ),
               GestureDetector(
                 onTap: () {
                   print(widget.userId);
