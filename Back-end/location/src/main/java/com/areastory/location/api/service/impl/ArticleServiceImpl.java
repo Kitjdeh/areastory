@@ -70,9 +70,10 @@ public class ArticleServiceImpl implements ArticleService {
 
     private void checkLikeCount(String type, LocationDto locationDto, ArticleKafkaDto articleKafkaDto) {
         Long likeCount = articleRepository.findById(articleKafkaDto.getArticleId()).get().getDailyLikeCount();
+        System.out.println("likeCount: " + likeCount);
         LocationResp locationResp = locationMap.getMap().get(locationDto);
         if (articleKafkaDto.getDailyLikeCount() > likeCount) {
-
+            System.out.println("db에 있는 값보다 더 높은 값으로 갱신되었을 때 여기 와?");
             //좋아요를 눌렀거나 메모리에 없는 데이터일 때
             if (locationResp == null || locationResp.getLikeCount() < articleKafkaDto.getDailyLikeCount()) {
                 locationMap.getMap().put(locationDto, new LocationResp(
