@@ -26,7 +26,7 @@ public class LocationServiceImpl implements LocationService {
         int i = 1;
         for (LocationDto locationDto : locationList) {
             System.out.println(i);
-            System.out.println(locationMap.getMap().get(new LocationDto(locationDto.getDosi(), locationDto.getSigungu(), locationDto.getDongeupmyeon())).getArticleId());
+            System.out.println(locationMap.getMap().get(new LocationDto(locationDto.getDosi(), locationDto.getSigungu(), locationDto.getDongeupmyeon())));
             i++;
         }
         return locationList.stream().map(o1 -> locationMap.getMap().get(new LocationDto(o1.getDosi(), o1.getSigungu(), o1.getDongeupmyeon()))).collect(Collectors.toList());
