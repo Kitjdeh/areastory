@@ -32,6 +32,7 @@ public class LocationController {
     @PostMapping("/map/{userId}")
     public ResponseEntity<List<LocationResp>> getUserMap(@PathVariable Long userId, @RequestBody List<LocationDto> locationList) {
         try {
+            System.out.println("userId: " + userId);
             return ResponseEntity.ok(locationService.getUserMapImages(userId, locationList));
         } catch (Exception e) {
             System.out.println("뭔가 잘못됨 ㅋㅋ");

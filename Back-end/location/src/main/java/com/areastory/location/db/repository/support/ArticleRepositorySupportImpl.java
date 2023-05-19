@@ -127,14 +127,14 @@ public class ArticleRepositorySupportImpl implements ArticleRepositorySupport {
         }
 
         String jpql = "select a.* from article a join";
-        String subJpql = getSubQuery(locationList, userId);
+        String subJpql = getSubQuery(locationList);
         jpql += subJpql;
         Query result = em.createNativeQuery(jpql, Article.class)
                 .setParameter("userId", userId);
         return (List<Article>) result.getResultList();
     }
 
-    private String getSubQuery(List<LocationDto> locationList, Long userId) {
+    private String getSubQuery(List<LocationDto> locationList) {
         String subQuery;
         String whereJpql = " where (";
         String subGroupBy;
