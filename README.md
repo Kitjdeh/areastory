@@ -9,8 +9,8 @@
 ### SSAFY 8기 자율 프로젝트
 
 ## 팀원 소개
-
-<img src="assets/팀원소개.PNG" title="팀원소개" alt="팀원소개" align="inline">
+  
+  <img src="assets/팀원소개.PNG" title="팀원소개" alt="팀원소개" align="inline">
 
 ## **개발 환경 및 IDE**
 
