@@ -124,6 +124,7 @@ class OverlayImage extends CustomOverlayImage {
     List<String> areaname = ['몰?루'];
     area != null ? areaname = area!.split(' ') : null;
     String? localname = areaname.last;
+    // print('url${url}');
     return Positioned(
       left: bounds.topLeft.x.toDouble(),
       top: bounds.topLeft.y.toDouble(),

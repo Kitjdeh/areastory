@@ -558,7 +558,8 @@ class _CustomMapState extends State<_CustomMap> {
                   final areakey = e.keyname;
                   final url =
                       result[areakey] == null ? e.urls : result[areakey]!.image;
-                  final ariticleid = result[areakey]!.articleId ?? 0;
+                  final ariticleid =
+                      result[areakey] != null ? result[areakey]!.articleId : 0;
                   final mapinfo = e.mapinfo;
                   final fullname = e.fullname;
                   final keyname = e.keyname;
@@ -632,8 +633,10 @@ class _CustomMapState extends State<_CustomMap> {
                       final url = result[areakey] == null
                           ? e.urls
                           : result[areakey]!.image;
-
-                      final ariticleid = result[areakey]!.articleId ?? 0;
+                      final ariticleid = result[areakey] != null
+                          ? result[areakey]!.articleId
+                          : 0;
+                      ;
                       final mapinfo = e.mapinfo;
                       final fullname = e.fullname;
                       final keyname = e.keyname;
