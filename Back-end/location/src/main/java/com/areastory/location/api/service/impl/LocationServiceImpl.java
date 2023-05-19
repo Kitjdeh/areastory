@@ -23,8 +23,11 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<LocationResp> getMapImages(List<LocationDto> locationList) {
+        int i = 1;
         for (LocationDto locationDto : locationList) {
+            System.out.println(i);
             System.out.println(locationMap.getMap().get(new LocationDto(locationDto.getDosi(), locationDto.getSigungu(), locationDto.getDongeupmyeon())).getArticleId());
+            i++;
         }
         return locationList.stream().map(o1 -> locationMap.getMap().get(new LocationDto(o1.getDosi(), o1.getSigungu(), o1.getDongeupmyeon()))).collect(Collectors.toList());
     }
