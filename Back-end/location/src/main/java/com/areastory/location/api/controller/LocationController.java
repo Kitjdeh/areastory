@@ -26,10 +26,6 @@ public class LocationController {
                 log.info("---------------------------------------------------------------------------------------------");
             }
             List<LocationResp> resps = locationService.getMapImages(locationList);
-            System.out.println(resps.get(0).getArticleId());
-            System.out.println(resps.get(0).getLocationDto().getDosi());
-            System.out.println(resps.get(0).getLocationDto().getSigungu());
-            System.out.println(resps.get(0).getLocationDto().getDongeupmyeon());
             return ResponseEntity.ok(resps);
         } catch (Exception e) {
             e.printStackTrace();
