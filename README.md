@@ -12,6 +12,7 @@
 
 <img src="assets/team.PNG" title="team" alt="team" align="inline">
 
+
 ## **개발 환경 및 IDE**
 
 **Frontend**
