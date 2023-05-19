@@ -83,6 +83,7 @@ class _MypageTabbarState extends State<MypageTabbar>
                     bigareaData.length > 0
                         ? Column(
                           children:[ MyMap(
+                            userId:widget.userId,
                             bigareaData: bigareaData,
                             middleareaData: middleareaData,
                             smallareaData: smallareaData,

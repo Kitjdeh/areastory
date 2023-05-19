@@ -16,6 +16,7 @@ import 'package:latlong2/latlong.dart';
 class MyMap extends StatefulWidget {
   MyMap(
       {Key? key,
+        required this.userId,
       required this.bigareaData,
       required this.middleareaData,
       required this.smallareaData})
@@ -23,7 +24,7 @@ class MyMap extends StatefulWidget {
   final List<Mapdata> bigareaData;
   final List<Mapdata> middleareaData;
   final List<Mapdata> smallareaData;
-
+  final String userId;
   @override
   State<MyMap> createState() => _MyMapState();
 }
@@ -56,10 +57,11 @@ class _MyMapState extends State<MyMap> {
   LatLng? mylatlng;
   String? Strlocation;
   double _zoom = 10.0;
-  int? userId;
+  int? intuserId;
   String? strUser;
   final storage = new FlutterSecureStorage();
   final LatLng companyLatLng = LatLng(37.5013, 127.0397);
+
   // Positionchange 후 작동하게 하여야함
   final updatepostionchange = Debouncer(Duration(seconds: 1),
       // onChanged: optimizepostion(),
@@ -100,7 +102,16 @@ class _MyMapState extends State<MyMap> {
   @override
   void initState() {
     super.initState();
-    // _loadMapadata();
+    _loadUseradata();
+  }
+
+  void _loadUseradata() async {
+    strUser = await storage.read(key: "userId");
+
+    setState(() {
+      // strUser = strUser;
+      intuserId = int.parse(widget.userId);
+    });
   }
 
   bool ifpolygoninsdie(LatLng points, List<LatLng> polygons) {
@@ -209,22 +220,21 @@ class _MyMapState extends State<MyMap> {
                   options: MapOptions(
                     maxZoom: 18,
                     minZoom: 6,
-                    center: mylatlng ?? LatLng(37.60732175555233, 127.0710794642477),
+                    center: mylatlng ??
+                        LatLng(37.60732175555233, 127.0710794642477),
                     zoom: _zoom,
                     interactiveFlags: InteractiveFlag.drag |
                         InteractiveFlag.doubleTapZoom |
                         InteractiveFlag.pinchZoom,
                     onMapReady: () async {
-                      final strUser = await storage.read(key: "userId");
                       // await loadmapdata('asset/map/ctp_korea.geojson');
                       // await loadmapdata('asset/map/sigungookorea.json');
                       // await loadmapdata('asset/map/minimal.json');
-                      userId = int.parse(strUser!);
                       // print('유저아이디!!!${userId}');
                       mypoisition = await Geolocator.getCurrentPosition(
                           desiredAccuracy: LocationAccuracy.high);
-                      mylatlng =
-                          await LatLng(mypoisition!.latitude, mypoisition!.longitude);
+                      mylatlng = await LatLng(
+                          mypoisition!.latitude, mypoisition!.longitude);
                       List<Map<String, String>> requestlist = [];
                       nowallareadata = widget.middleareaData;
                       // Strlocation;
@@ -262,13 +272,17 @@ class _MyMapState extends State<MyMap> {
                       //--------post-----------
                       Map<String, AreaData> result =
                           await postmyAreaData(requestlist, strUser ?? '');
+                      print('strUser${strUser}');
                       List<Mapdata> newvisibleMapdata = [];
                       // print('응답${result}');
                       await Future.forEach(visibleMapdata, (e) {
                         final areakey = e.keyname;
-                        final url =
-                            result[areakey] == null ? e.urls : result[areakey]!.image;
-                        final ariticleid = result[areakey]!.articleId ?? 0;
+                        final url = result[areakey] == null
+                            ? ''
+                            : result[areakey]!.image;
+                        final ariticleid = result[areakey] == null
+                            ? 0
+                            : result[areakey]!.articleId;
                         final mapinfo = e.mapinfo;
                         final fullname = e.fullname;
                         final keyname = e.keyname;
@@ -285,6 +299,7 @@ class _MyMapState extends State<MyMap> {
                       setState(() {
                         nowareadata = newvisibleMapdata;
                       });
+                      nowareadata = newvisibleMapdata;
 
                       //-----post----------
                     },
@@ -339,9 +354,12 @@ class _MyMapState extends State<MyMap> {
                           final areakey = e.keyname;
                           // print(
                           //     'resultareakey${result[areakey]!.image} e ${e} areakey${areakey}');
-                          final url = result[areakey]!.image ?? e.urls;
-                          print(url);
-                          final ariticleid = result[areakey]!.articleId ?? 0;
+                          final url = result[areakey] == null
+                              ? ''
+                              : result[areakey]!.image;
+                          final ariticleid = result[areakey] == null
+                              ? 0
+                              : result[areakey]!.articleId;
                           final mapinfo = e.mapinfo;
                           final fullname = e.fullname;
                           final keyname = e.keyname;
@@ -359,6 +377,7 @@ class _MyMapState extends State<MyMap> {
                         setState(() {
                           nowareadata = newvisibleMapdata;
                         });
+                        nowareadata = newvisibleMapdata;
                         //--------------------post-------------
                       });
                     },
@@ -369,7 +388,7 @@ class _MyMapState extends State<MyMap> {
                         opacity: 0.8,
                         child: CustomPolygonLayer(
                           entitle: false,
-                          userId: userId ?? 0,
+                          userId: intuserId ?? 0,
                           articleId: mapdata.articleId ?? 0,
                           // articleId: [mapdata.articleId ?? 0 ],
                           urls: [mapdata.urls ?? ''],
