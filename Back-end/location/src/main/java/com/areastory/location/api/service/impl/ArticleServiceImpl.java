@@ -76,6 +76,13 @@ public class ArticleServiceImpl implements ArticleService {
             System.out.println("db에 있는 값보다 더 높은 값으로 갱신되었을 때 여기 와?");
             //좋아요를 눌렀거나 메모리에 없는 데이터일 때
             if (locationResp == null || locationResp.getLikeCount() < articleKafkaDto.getDailyLikeCount()) {
+                System.out.println("여기 메모리에 없음 넣어야함");
+                System.out.println(locationDto.getDosi());
+                System.out.println(locationDto.getSigungu());
+                System.out.println(locationDto.getDongeupmyeon());
+                System.out.println(articleKafkaDto.getArticleId());
+                System.out.println(articleKafkaDto.getThumbnail());
+                System.out.println(articleKafkaDto.getDailyLikeCount());
                 locationMap.getMap().put(locationDto, new LocationResp(
                         articleKafkaDto.getArticleId(),
                         articleKafkaDto.getThumbnail(),
