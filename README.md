@@ -10,7 +10,7 @@
 
 ## 팀원 소개
 
-<img src="assets/팀원소개.PNG" title="팀원소개" alt="팀원소개" align="inline">
+<img src="assets/team.PNG" title="team" alt="team" align="inline">
 
 ## **개발 환경 및 IDE**
 
@@ -134,4 +134,4 @@
 
 ## 시스템 아키텍쳐
 
-<img src="assets/아키텍쳐.png" title="아키텍쳐" alt="아키텍쳐" align="inline">
+<img src="assets/architecture.png" title="architecture" alt="architecture" align="inline">
