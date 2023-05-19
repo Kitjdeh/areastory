@@ -127,6 +127,7 @@ class OverlayImage extends CustomOverlayImage {
     return Positioned(
       left: bounds.topLeft.x.toDouble(),
       top: bounds.topLeft.y.toDouble(),
+
       width: bounds.size.x.toDouble(),
       height: bounds.size.y.toDouble(),
       child: DecoratedBox(
@@ -150,49 +151,7 @@ class OverlayImage extends CustomOverlayImage {
                   : DecorationImage(
                       image: AssetImage('asset/img/color/마이배경.png'),
                       fit: BoxFit.fill)
-              : DecorationImage(
-                  image: NetworkImage(url)
-                  // localname == '서초구'
-                  //     ? AssetImage('asset/video/서초구.PNG')
-                  //     : localname == '과천시'
-                  //         ? AssetImage('asset/video/과천시.PNG')
-                  //         : localname == '장안구'
-                  //             ? AssetImage('asset/video/수민_버스밖.PNG')
-                  //             : localname == '야탑동'
-                  //                 ? AssetImage('asset/video/현제_집밖.PNG')
-                  //                 : localname == '관악구'
-                  //                     ? AssetImage('asset/video/관악구.PNG')
-                  //                     : localname == '의왕시'
-                  //                         ? AssetImage('asset/video/수원시.PNG')
-                  //                         : localname == '압구정동'
-                  //                             ? AssetImage(
-                  //                                 'asset/video/압구정동.PNG')
-                  //                             : localname == '만안구'
-                  //                                 ? AssetImage(
-                  //                                     'asset/video/만안구.PNG')
-                  //                                 : localname == '동대문구'
-                  //                                     ? AssetImage(
-                  //                                         'asset/video/동대문구.PNG')
-                  //                                     : localname == '용산구'
-                  //                                         ? AssetImage(
-                  //                                             'asset/video/용산구.PNG')
-                  //                                         : localname == '양양군'
-                  //                                             ? AssetImage(
-                  //                                                 'asset/video/양양시.PNG')
-                  //                                             : localname ==
-                  //                                                     '광주시'
-                  //                                                 ? AssetImage(
-                  //                                                     'asset/video/광주시.PNG')
-                  //                                                 : localname ==
-                  //                                                         '송파구'
-                  //                                                     ? AssetImage(
-                  //                                                         'asset/video/송파구.PNG')
-                  //                                                     : AssetImage(
-                  //                                                         url)
-                  // AssetImage('asset/img/doji.jpg')
-                  ,
-                  // opacity: 0.5,
-                  fit: BoxFit.fill),
+              : DecorationImage(image: NetworkImage(url), fit: BoxFit.fill),
           shape: newpolygon.PolygonBorder(
             polygon: polygon,
             // polygon: polygon,

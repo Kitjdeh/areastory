@@ -69,6 +69,7 @@ Future<Map<String, AreaData>> postmyAreaData(
     'Content-Type': 'application/json',
   };
   String url = '${dotenv.get('BASE_URL')}/api/map/${userid}';
+  print('요청url${url}');
   http.Response response = await http.post(Uri.parse(url),
       body: json.encode(data), headers: headers);
   final int statuscode = response.statusCode;

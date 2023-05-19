@@ -116,16 +116,6 @@ class _MapScreenState extends State<MapScreen> {
             }));
   }
 
-  AppBar renderAppbar() {
-    return AppBar(
-      title: Text(
-        'AreaStory',
-        style: TextStyle(color: Colors.blue[200], fontWeight: FontWeight.w700),
-      ),
-      backgroundColor: Colors.white,
-    );
-  }
-
   Future<String> checkPermission() async {
     await Permission.notification.request();
     PermissionStatus alarmstatus = await Permission.notification.status;
@@ -202,7 +192,6 @@ class _CustomMapState extends State<_CustomMap> {
   final updatepostionchange = Debouncer(Duration(seconds: 1),
       // onChanged: optimizepostion(),
       initialValue: null);
-
   final Duration debounceDuration = const Duration(seconds: 1);
   Timer? _debounce;
 
@@ -590,78 +579,81 @@ class _CustomMapState extends State<_CustomMap> {
                 //-----post----------
               },
               onPositionChanged: (pos, hasGesture) {
-                if (_debounce?.isActive ?? false) _debounce!.cancel();
-                _debounce = Timer(debounceDuration, () async {
-                  // print(
-                  //     "mapController.zoom${mapController.zoom} ${nowallareadata.length}");
-                  // // nowallareadata = widget.smallareaData;
-                  setState(() {
-                    mapController.zoom > 13.0
-                        ? nowallareadata = widget.smallareaData
-                        : mapController.zoom > 9.0
-                            ? nowallareadata = widget.middleareaData
-                            : nowallareadata = widget.bigareaData;
-                    print('setstatenowallareadata${nowallareadata.length}');
-                  });
-                  print('posistionchanged 작동함${nowallareadata.length}');
-                  List<Map<String, String>> requestlist = [];
-                  // print('nowallareadata${nowallareadata.length}');
-                  // 현재 보이는 화면의 경계를 계산
-                  final bounds = mapController.bounds!;
-                  final ne = bounds.northEast;
-                  final sw = bounds.southWest;
-                  // 화면 내에 있는 폴리곤만 필터링
-                  final visibleMapdata = nowallareadata.where((p) {
-                    return p.polygons!.any((point) {
-                      return point.latitude >= sw!.latitude &&
-                          point.latitude <= ne!.latitude &&
-                          point.longitude >= sw.longitude &&
-                          point.longitude <= ne!.longitude;
-                    });
-                  }).toList();
-                  nowareadata = visibleMapdata;
-
-                  setState(() {
-                    nowareadata = visibleMapdata;
-                  });
-                  await Future.forEach(visibleMapdata, (e) {
-                    requestlist.add(e.mapinfo!);
-                  });
-                  // var A = visibleMapdata.map((e) => e.mapinfo).toList();
-
-                  //----------------------------------post-----
-                  Map<String, AreaData> result =
-                      await postAreaData(requestlist);
-                  List<Mapdata> newvisibleMapdata = [];
-                  // print('result${result}');
-                  await Future.forEach(visibleMapdata, (e) {
-                    final areakey = e.keyname;
+                if (_debounce?.isActive ?? false) {
+                  _debounce!.cancel();
+                } else {
+                  _debounce = Timer(debounceDuration, () async {
                     // print(
-                    //     'resultareakey${result[areakey]!.image} e ${e} areakey${areakey}');
-                    final url = result[areakey] == null
-                        ? e.urls
-                        : result[areakey]!.image;
+                    //     "mapController.zoom${mapController.zoom} ${nowallareadata.length}");
+                    // // nowallareadata = widget.smallareaData;
+                    setState(() {
+                      mapController.zoom > 13.0
+                          ? nowallareadata = widget.smallareaData
+                          : mapController.zoom > 9.0
+                              ? nowallareadata = widget.middleareaData
+                              : nowallareadata = widget.bigareaData;
+                      print('setstatenowallareadata${nowallareadata.length}');
+                    });
+                    print('posistionchanged 작동함${nowallareadata.length}');
+                    List<Map<String, String>> requestlist = [];
+                    // print('nowallareadata${nowallareadata.length}');
+                    // 현재 보이는 화면의 경계를 계산
+                    final bounds = mapController.bounds!;
+                    final ne = bounds.northEast;
+                    final sw = bounds.southWest;
+                    // 화면 내에 있는 폴리곤만 필터링
+                    final visibleMapdata = nowallareadata.where((p) {
+                      return p.polygons!.any((point) {
+                        return point.latitude >= sw!.latitude &&
+                            point.latitude <= ne!.latitude &&
+                            point.longitude >= sw.longitude &&
+                            point.longitude <= ne!.longitude;
+                      });
+                    }).toList();
+                    nowareadata = visibleMapdata;
 
-                    final ariticleid = result[areakey]!.articleId ?? 0;
-                    final mapinfo = e.mapinfo;
-                    final fullname = e.fullname;
-                    final keyname = e.keyname;
-                    final polygons = e.polygons;
-                    final newdata = Mapdata(
-                        mapinfo: mapinfo,
-                        fullname: fullname,
-                        keyname: keyname,
-                        polygons: polygons,
-                        urls: url,
-                        articleId: ariticleid);
-                    newvisibleMapdata.add(newdata);
-                  });
-                  nowareadata = newvisibleMapdata;
-                  setState(() {
+                    setState(() {
+                      nowareadata = visibleMapdata;
+                    });
+                    await Future.forEach(visibleMapdata, (e) {
+                      requestlist.add(e.mapinfo!);
+                    });
+                    // var A = visibleMapdata.map((e) => e.mapinfo).toList();
+
+                    //----------------------------------post-----
+                    Map<String, AreaData> result =
+                        await postAreaData(requestlist);
+                    List<Mapdata> newvisibleMapdata = [];
+                    // print('result${result}');
+                    await Future.forEach(visibleMapdata, (e) {
+                      final areakey = e.keyname;
+                      // print(
+                      //     'resultareakey${result[areakey]!.image} e ${e} areakey${areakey}');
+                      final url = result[areakey] == null
+                          ? e.urls
+                          : result[areakey]!.image;
+
+                      final ariticleid = result[areakey]!.articleId ?? 0;
+                      final mapinfo = e.mapinfo;
+                      final fullname = e.fullname;
+                      final keyname = e.keyname;
+                      final polygons = e.polygons;
+                      final newdata = Mapdata(
+                          mapinfo: mapinfo,
+                          fullname: fullname,
+                          keyname: keyname,
+                          polygons: polygons,
+                          urls: url,
+                          articleId: ariticleid);
+                      newvisibleMapdata.add(newdata);
+                    });
                     nowareadata = newvisibleMapdata;
+                    setState(() {
+                      nowareadata = newvisibleMapdata;
+                    });
+                    //--------------------post-------------
                   });
-                  //--------------------post-------------
-                });
+                }
               },
             ),
             children: [
