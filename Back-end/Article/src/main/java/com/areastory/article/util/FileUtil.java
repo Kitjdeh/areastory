@@ -16,6 +16,7 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.time.LocalDateTime;
@@ -126,43 +127,34 @@ public class FileUtil {
             float quality = 0.1f; //0.1 ~ 1.0까지 압축되는 이미지의 퀄리티를 지정
             //숫자가 낮을수록 화질과 용량이 줄어든다.
             Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
-            System.out.println("파일 이름111111111111111111 :" + file.getOriginalFilename());
             if (!writers.hasNext())
                 throw new IllegalStateException("No writers found");
 
             ImageWriter writer = (ImageWriter) writers.next();
-            System.out.println("파일 이름222222222222222222 :" + file.getOriginalFilename());
             ImageOutputStream ios = ImageIO.createImageOutputStream(os);
-            System.out.println("파일 이름33333333333333333333 :" + file.getOriginalFilename());
 
             writer.setOutput(ios);
-            System.out.println("파일 이름44444444444444444444 :" + file.getOriginalFilename());
             ImageWriteParam param = writer.getDefaultWriteParam();
-            System.out.println("파일 이름55555555555555555555 :" + file.getOriginalFilename());
             param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-            System.out.println("파일 이름6666666666666666666666 :" + file.getOriginalFilename());
             param.setCompressionQuality(quality);
-            System.out.println("파일 이름77777777777777777777777 :" + file.getOriginalFilename());
-            BufferedImage image;
-            if (Objects.equals(file.getContentType(), "application/octet-stream")) {
-                // JPEG 이미지를 JPG로 변환
-                File jpgFile = convertJpegToJpg(file);
-                System.out.println("파일 이름888888888888888888888888 :" + file.getOriginalFilename());
-                image = ImageIO.read(jpgFile);
-                System.out.println("파일 이름999999999999999999999 :" + file.getOriginalFilename());
-            } else {
-                // 그 외의 형식은 그대로 사용
-                image = ImageIO.read(file.getInputStream());
-                System.out.println("파일 이름101010101010110101010101010 :" + file.getOriginalFilename());
-            }
+            BufferedImage image = ImageIO.read(file.getInputStream());
+
+            // 가로와 세로의 크기를 수정하여 문제를 해결
+            int width = image.getWidth();
+            int height = image.getHeight();
+            BufferedImage resizedImage = new BufferedImage(height, width, image.getType());
+            AffineTransform transform = new AffineTransform();
+            transform.rotate(Math.PI / 2, width / 2, height / 2);
+            transform.translate((height - width) / 2, (height - width) / 2);
+            Graphics2D g = resizedImage.createGraphics();
+            g.drawImage(image, transform, null);
+            g.dispose();
             writer.write(null, new IIOImage(image, null, null), param);
-            System.out.println("파일 이름11 :" + file.getOriginalFilename());
         } catch (FileNotFoundException e) {
             throw new CustomException(ErrorCode.FILE_NOT_FOUND);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("파일 이름12 :" + file.getOriginalFilename());
         return compressedImageFile;
     }
 
