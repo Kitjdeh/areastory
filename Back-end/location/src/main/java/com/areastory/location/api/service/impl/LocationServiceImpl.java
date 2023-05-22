@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,13 +24,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<LocationResp> getMapImages(List<LocationDto> locationList) {
-        int i = 1;
-        for (LocationDto locationDto : locationList) {
-            System.out.println(i);
-            System.out.println(locationMap.getMap().get(new LocationDto(locationDto.getDosi(), locationDto.getSigungu(), locationDto.getDongeupmyeon())));
-            i++;
-        }
-        return locationList.stream().map(o1 -> locationMap.getMap().get(new LocationDto(o1.getDosi(), o1.getSigungu(), o1.getDongeupmyeon()))).collect(Collectors.toList());
+        return locationList.stream().map(o1 -> locationMap.getMap().get(new LocationDto(o1.getDosi(), o1.getSigungu(), o1.getDongeupmyeon()))).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Override

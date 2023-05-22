@@ -20,11 +20,6 @@ public class LocationController {
     @PostMapping("/map")
     public ResponseEntity<List<LocationResp>> getMap(@RequestBody List<LocationDto> locationList) {
         try {
-            for (LocationDto locationDto : locationList) {
-                log.info("---------------------------------------------------------------------------------------------");
-                log.info(locationDto.getDosi() + " " + locationDto.getSigungu() + " " + locationDto.getDongeupmyeon());
-                log.info("---------------------------------------------------------------------------------------------");
-            }
             List<LocationResp> resps = locationService.getMapImages(locationList);
             return ResponseEntity.ok(resps);
         } catch (Exception e) {
