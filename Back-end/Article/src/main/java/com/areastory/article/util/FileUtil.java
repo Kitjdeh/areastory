@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.time.LocalDateTime;
@@ -40,9 +41,6 @@ public class FileUtil {
     }
 
     public String uploadThumbnail(MultipartFile multipartFile, String dirName) {
-        System.out.println("------------------------------------------------------------------------------------------");
-        System.out.println(multipartFile.getName().substring(multipartFile.getName().lastIndexOf(".") + 1));
-        System.out.println("------------------------------------------------------------------------------------------");
         if (multipartFile == null || multipartFile.isEmpty())
             return null;
         File uploadFile = compressImage(multipartFile);
@@ -123,9 +121,6 @@ public class FileUtil {
         File compressedImageFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
         try (OutputStream os = new FileOutputStream(compressedImageFile)) {
 
-            System.out.println("------------------------------------------------------------------------------------------");
-            System.out.println(file.getName().substring(file.getName().lastIndexOf(".") + 1));
-            System.out.println("------------------------------------------------------------------------------------------");
 
             float quality = 0.1f; //0.1 ~ 1.0까지 압축되는 이미지의 퀄리티를 지정
             //숫자가 낮을수록 화질과 용량이 줄어든다.
@@ -142,7 +137,15 @@ public class FileUtil {
 
             param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
             param.setCompressionQuality(quality);
-            BufferedImage image = ImageIO.read(file.getInputStream());
+            BufferedImage image;
+            if (file.getContentType().equals("image/jpeg")) {
+                // JPEG 이미지를 JPG로 변환
+                File jpgFile = convertJpegToJpg(file);
+                image = ImageIO.read(jpgFile);
+            } else {
+                // 그 외의 형식은 그대로 사용
+                image = ImageIO.read(file.getInputStream());
+            }
             writer.write(null, new IIOImage(image, null, null), param);
         } catch (FileNotFoundException e) {
             throw new CustomException(ErrorCode.FILE_NOT_FOUND);
@@ -152,5 +155,16 @@ public class FileUtil {
         return compressedImageFile;
     }
 
+    private File convertJpegToJpg(MultipartFile jpegFile) throws IOException {
+        BufferedImage jpegImage = ImageIO.read(jpegFile.getInputStream());
+
+        File jpgFile = new File(Objects.requireNonNull(jpegFile.getOriginalFilename()));
+        BufferedImage jpgImage = new BufferedImage(jpegImage.getWidth(), jpegImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+        jpgImage.createGraphics().drawImage(jpegImage, 0, 0, Color.WHITE, null);
+
+        ImageIO.write(jpgImage, "jpg", jpgFile);
+
+        return jpgFile;
+    }
 
 }
