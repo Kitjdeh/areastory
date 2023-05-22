@@ -454,7 +454,7 @@ class _MyPageScreenState extends State<MyPageScreen>
                       context,
                       MaterialPageRoute(
                           builder: (context) => AlarmScreen(
-                            userId: int.parse(widget.userId),
+                            userId: int.parse(myId!),
                             signal: '1',
                           )));
                 },
