@@ -131,14 +131,16 @@ public class FileUtil {
 
             ImageWriter writer = (ImageWriter) writers.next();
             ImageOutputStream ios = ImageIO.createImageOutputStream(os);
+
             writer.setOutput(ios);
 
             ImageWriteParam param = writer.getDefaultWriteParam();
 
             param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
             param.setCompressionQuality(quality);
+            System.out.println("파일 이름111111111111111111 :" + file.getOriginalFilename());
             BufferedImage image;
-            if (file.getContentType().equals("image/jpeg")) {
+            if (Objects.equals(file.getContentType(), "application/octet-stream")) {
                 // JPEG 이미지를 JPG로 변환
                 File jpgFile = convertJpegToJpg(file);
                 image = ImageIO.read(jpgFile);
