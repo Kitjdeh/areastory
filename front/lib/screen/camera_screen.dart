@@ -97,9 +97,9 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future getImage(ImageSource imageSource) async {
     final image = await picker.pickImage(source: imageSource);
-    // final storage = new FlutterSecureStorage();
-    // storedLocation = (await storage.read(key: "userlocation"))!;
-    storedLocation = '경기도 성남시 중원구 여수동';
+    final storage = new FlutterSecureStorage();
+    storedLocation = (await storage.read(key: "userlocation"))!;
+    // storedLocation = '경기도 성남시 중원구 여수동';
     setState(() {
       _image = File(image!.path);
     });
