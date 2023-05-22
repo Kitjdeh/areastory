@@ -49,6 +49,7 @@ public class FileUtil {
     private String upload(File uploadFile, String dirName) {
         //테스트 때문에 랜덤 값 제거 => 추후 살리기
         String fileName = dirName + "/" + LocalDateTime.now() + uploadFile.getName();
+        System.out.println(uploadFile.getName().lastIndexOf(".") + 1);
         String uploadImageUrl = putS3(uploadFile, fileName);
         uploadFile.delete(); // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
 
@@ -117,12 +118,9 @@ public class FileUtil {
     // 파일 용량 축소
     public File compressImage(MultipartFile file) {
         File compressedImageFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
-
         try (OutputStream os = new FileOutputStream(compressedImageFile)) {
-
             float quality = 0.1f; //0.1 ~ 1.0까지 압축되는 이미지의 퀄리티를 지정
             //숫자가 낮을수록 화질과 용량이 줄어든다.
-
             Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
 
             if (!writers.hasNext())
