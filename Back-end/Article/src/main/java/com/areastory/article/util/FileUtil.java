@@ -140,13 +140,15 @@ public class FileUtil {
             BufferedImage image = ImageIO.read(file.getInputStream());
 
             // 가로와 세로의 크기를 수정하여 문제를 해결
+            // 이미지 회전 방향 설정
+            AffineTransform transform = new AffineTransform();
+            transform.rotate(0); // 회전 각도를 조정하여 원하는 방향으로 회전 가능
+
+            // 이미지 크기 및 회전 적용
             int width = image.getWidth();
             int height = image.getHeight();
-            BufferedImage resizedImage = new BufferedImage(height, width, image.getType());
-            AffineTransform transform = new AffineTransform();
-            transform.rotate(Math.PI / 2, width / 2, height / 2);
-            transform.translate((height - width) / 2, (height - width) / 2);
-            Graphics2D g = resizedImage.createGraphics();
+            BufferedImage rotatedImage = new BufferedImage(width, height, image.getType());
+            Graphics2D g = rotatedImage.createGraphics();
             g.drawImage(image, transform, null);
             g.dispose();
             writer.write(null, new IIOImage(image, null, null), param);
