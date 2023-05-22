@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -33,29 +34,14 @@ public class ArticleServiceImpl implements ArticleService {
                 .build();
 
         LocationDto DongeupmyeonDto = new LocationDto(articleKafkaDto.getDosi(), articleKafkaDto.getSigungu(), articleKafkaDto.getDongeupmyeon());
-        if (locationMap.getMap().get(DongeupmyeonDto) == null) {
-            locationMap.getMap().put(DongeupmyeonDto, new LocationResp(
-                    articleKafkaDto.getArticleId(),
-                    articleKafkaDto.getThumbnail(),
-                    articleKafkaDto.getDailyLikeCount(),
-                    DongeupmyeonDto));
-        }
+        putMap(DongeupmyeonDto, articleKafkaDto);
+
         LocationDto SigunguDto = new LocationDto(articleKafkaDto.getDosi(), articleKafkaDto.getSigungu());
-        if (locationMap.getMap().get(SigunguDto) == null) {
-            locationMap.getMap().put(SigunguDto, new LocationResp(
-                    articleKafkaDto.getArticleId(),
-                    articleKafkaDto.getThumbnail(),
-                    articleKafkaDto.getDailyLikeCount(),
-                    SigunguDto));
-        }
+        putMap(SigunguDto, articleKafkaDto);
+
         LocationDto DosiDto = new LocationDto(articleKafkaDto.getDosi());
-        if (locationMap.getMap().get(DosiDto) == null) {
-            locationMap.getMap().put(DosiDto, new LocationResp(
-                    articleKafkaDto.getArticleId(),
-                    articleKafkaDto.getThumbnail(),
-                    articleKafkaDto.getDailyLikeCount(),
-                    DosiDto));
-        }
+        putMap(DosiDto, articleKafkaDto);
+
         Article article = Article.articleBuilder()
                 .articleId(articleKafkaDto.getArticleId())
                 .userId(articleKafkaDto.getUserId())
@@ -94,6 +80,16 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository.deleteById(articleKafkaDto.getArticleId());
     }
 
+    private void putMap(LocationDto locationDto, ArticleKafkaDto articleKafkaDto) {
+        if (locationMap.getMap().get(locationDto) == null) {
+            locationMap.getMap().put(locationDto, new LocationResp(
+                    articleKafkaDto.getArticleId(),
+                    articleKafkaDto.getThumbnail(),
+                    articleKafkaDto.getDailyLikeCount(),
+                    locationDto));
+        }
+    }
+
     private void checkLikeCount(String type, LocationDto locationDto, ArticleKafkaDto articleKafkaDto) {
         Long likeCount = articleRepository.findById(articleKafkaDto.getArticleId()).get().getDailyLikeCount();
         LocationResp locationResp = locationMap.getMap().get(locationDto);
@@ -114,19 +110,11 @@ public class ArticleServiceImpl implements ArticleService {
                 //DB에서 dailyLikeCount 초과인 글들 가져오기
                 LocationResp locationData = articleRepository.getDailyLikeCountData(type, articleKafkaDto.getArticleId(), locationDto, dailyLikeCount);
                 //가져온 게시글의 PK 값이 현재 메모리에 있는 게시글의 PK 값과 다르다면 변경
-                if (locationData != null) {
-                    locationMap.getMap().put(locationDto, new LocationResp(
-                            locationData.getArticleId(),
-                            locationData.getImage(),
-                            locationData.getLikeCount(),
-                            locationDto));
-                } else {
-                    locationMap.getMap().put(locationDto, new LocationResp(
-                            locationResp.getArticleId(),
-                            locationResp.getImage(),
-                            dailyLikeCount,
-                            locationDto));
-                }
+                locationMap.getMap().put(locationDto, Objects.requireNonNullElseGet(locationData, () -> new LocationResp(
+                        locationResp.getArticleId(),
+                        locationResp.getImage(),
+                        dailyLikeCount,
+                        locationDto)));
             }
         }
 

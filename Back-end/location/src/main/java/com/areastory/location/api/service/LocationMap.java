@@ -24,6 +24,7 @@ public class LocationMap {
         return map;
     }
 
+
     @PostConstruct
     public void init() {
         //모든 지역의 article중 가장 좋아요가 높은 거를 넣어야함
