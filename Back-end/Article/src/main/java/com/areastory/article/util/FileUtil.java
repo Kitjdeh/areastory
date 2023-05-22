@@ -49,7 +49,9 @@ public class FileUtil {
     private String upload(File uploadFile, String dirName) {
         //테스트 때문에 랜덤 값 제거 => 추후 살리기
         String fileName = dirName + "/" + LocalDateTime.now() + uploadFile.getName();
-        System.out.println(uploadFile.getName().lastIndexOf(".") + 1);
+        System.out.println("------------------------------------------------------------------------------------------");
+        System.out.println(uploadFile.getName().substring(uploadFile.getName().lastIndexOf(".") + 1));
+        System.out.println("------------------------------------------------------------------------------------------");
         String uploadImageUrl = putS3(uploadFile, fileName);
         uploadFile.delete(); // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
 
