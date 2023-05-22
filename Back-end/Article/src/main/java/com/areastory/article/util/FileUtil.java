@@ -141,7 +141,7 @@ public class FileUtil {
 
             // 이미지 회전 방향 설정
             AffineTransform transform = new AffineTransform();
-            transform.rotate(0); // 회전 각도를 조정하여 원하는 방향으로 회전 가능
+            transform.rotate(90); // 회전 각도를 조정하여 원하는 방향으로 회전 가능
 
             // 이미지 크기 및 회전 적용
             int width = image.getWidth();
