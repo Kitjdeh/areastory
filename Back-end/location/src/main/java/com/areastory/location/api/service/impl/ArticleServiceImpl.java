@@ -25,11 +25,37 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public void addArticle(ArticleKafkaDto articleKafkaDto) {
+
         Location location = Location.builder()
                 .dosi(articleKafkaDto.getDosi())
                 .sigungu(articleKafkaDto.getSigungu())
                 .dongeupmyeon(articleKafkaDto.getDongeupmyeon())
                 .build();
+
+        LocationDto DongeupmyeonDto = new LocationDto(articleKafkaDto.getDosi(), articleKafkaDto.getSigungu(), articleKafkaDto.getDongeupmyeon());
+        if (locationMap.getMap().get(DongeupmyeonDto) == null) {
+            locationMap.getMap().put(DongeupmyeonDto, new LocationResp(
+                    articleKafkaDto.getArticleId(),
+                    articleKafkaDto.getThumbnail(),
+                    articleKafkaDto.getDailyLikeCount(),
+                    DongeupmyeonDto));
+        }
+        LocationDto SigunguDto = new LocationDto(articleKafkaDto.getDosi(), articleKafkaDto.getSigungu());
+        if (locationMap.getMap().get(SigunguDto) == null) {
+            locationMap.getMap().put(SigunguDto, new LocationResp(
+                    articleKafkaDto.getArticleId(),
+                    articleKafkaDto.getThumbnail(),
+                    articleKafkaDto.getDailyLikeCount(),
+                    SigunguDto));
+        }
+        LocationDto DosiDto = new LocationDto(articleKafkaDto.getDosi());
+        if (locationMap.getMap().get(DosiDto) == null) {
+            locationMap.getMap().put(DosiDto, new LocationResp(
+                    articleKafkaDto.getArticleId(),
+                    articleKafkaDto.getThumbnail(),
+                    articleKafkaDto.getDailyLikeCount(),
+                    DosiDto));
+        }
         Article article = Article.articleBuilder()
                 .articleId(articleKafkaDto.getArticleId())
                 .userId(articleKafkaDto.getUserId())
@@ -70,19 +96,10 @@ public class ArticleServiceImpl implements ArticleService {
 
     private void checkLikeCount(String type, LocationDto locationDto, ArticleKafkaDto articleKafkaDto) {
         Long likeCount = articleRepository.findById(articleKafkaDto.getArticleId()).get().getDailyLikeCount();
-        System.out.println("likeCount: " + likeCount);
         LocationResp locationResp = locationMap.getMap().get(locationDto);
         if (articleKafkaDto.getDailyLikeCount() > likeCount) {
-            System.out.println("db에 있는 값보다 더 높은 값으로 갱신되었을 때 여기 와?");
             //좋아요를 눌렀거나 메모리에 없는 데이터일 때
             if (locationResp == null || locationResp.getLikeCount() < articleKafkaDto.getDailyLikeCount()) {
-                System.out.println("여기 메모리에 없음 넣어야함");
-                System.out.println(locationDto.getDosi());
-                System.out.println(locationDto.getSigungu());
-                System.out.println(locationDto.getDongeupmyeon());
-                System.out.println(articleKafkaDto.getArticleId());
-                System.out.println(articleKafkaDto.getThumbnail());
-                System.out.println(articleKafkaDto.getDailyLikeCount());
                 locationMap.getMap().put(locationDto, new LocationResp(
                         articleKafkaDto.getArticleId(),
                         articleKafkaDto.getThumbnail(),
