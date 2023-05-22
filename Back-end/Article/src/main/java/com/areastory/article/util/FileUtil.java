@@ -151,7 +151,7 @@ public class FileUtil {
             Graphics2D g = rotatedImage.createGraphics();
             g.drawImage(image, transform, null);
             g.dispose();
-            writer.write(null, new IIOImage(image, null, null), param);
+            writer.write(null, new IIOImage(rotatedImage, null, null), param);
         } catch (FileNotFoundException e) {
             throw new CustomException(ErrorCode.FILE_NOT_FOUND);
         } catch (IOException e) {
