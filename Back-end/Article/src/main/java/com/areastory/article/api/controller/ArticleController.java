@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/articles")
@@ -23,7 +25,13 @@ public class ArticleController {
      */
     @PostMapping
     public ResponseEntity<?> writeArticle(@RequestPart(value = "picture", required = false) MultipartFile picture,
-                                          @RequestPart ArticleWriteReq articleWriteReq) {
+                                          @RequestPart ArticleWriteReq articleWriteReq) throws IOException {
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println(picture.getName());
+        System.out.println(picture.getContentType());
+        System.out.println(picture.getOriginalFilename());
+        System.out.println(picture.getInputStream());
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         articleService.addArticle(articleWriteReq, picture);
 
         return ResponseEntity.ok().build();
