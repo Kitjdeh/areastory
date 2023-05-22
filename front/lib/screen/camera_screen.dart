@@ -31,6 +31,7 @@ class _CameraScreenState extends State<CameraScreen> {
   String seletedLocationSigungu = '';
   String seletedLocationDongeupmyeon = '';
   bool? createYn = true;
+  bool isModalVisible = false;
 
   File? _image;
 
@@ -50,7 +51,7 @@ class _CameraScreenState extends State<CameraScreen> {
     } else if (locationParts.length == 3) {
       if (locationParts[2][locationParts[2].length - 1] == "구") {
         seletedLocationDosi = locationParts[0];
-        seletedLocationSigungu = locationParts[1] + locationParts[2];
+        seletedLocationSigungu = locationParts[1] + ' ' + locationParts[2];
       } else {
         seletedLocationDosi = locationParts[0];
         seletedLocationSigungu = locationParts[1];
@@ -58,7 +59,7 @@ class _CameraScreenState extends State<CameraScreen> {
       }
     } else {
       seletedLocationDosi = locationParts[0];
-      seletedLocationSigungu = locationParts[1] + locationParts[2];
+      seletedLocationSigungu = locationParts[1] + ' ' + locationParts[2];
       seletedLocationDongeupmyeon = locationParts[3];
     }
     await postArticle(
@@ -83,6 +84,7 @@ class _CameraScreenState extends State<CameraScreen> {
     //               userId: userId.toString(),
     //               signal: '1',
     //             )));
+    Navigator.of(context, rootNavigator: true).pop();
     Get.back();
     createYn = true;
   }
@@ -95,9 +97,9 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future getImage(ImageSource imageSource) async {
     final image = await picker.pickImage(source: imageSource);
-    final storage = new FlutterSecureStorage();
-    storedLocation = (await storage.read(key: "userlocation"))!;
-    // storedLocation = '서울특별시 영등포구 여의도동';
+    // final storage = new FlutterSecureStorage();
+    // storedLocation = (await storage.read(key: "userlocation"))!;
+    storedLocation = '경기도 성남시 중원구 여수동';
     setState(() {
       _image = File(image!.path);
     });
@@ -281,9 +283,20 @@ class _CameraScreenState extends State<CameraScreen> {
                 onPressed: () {
                   if (createYn == true) {
                     createYn = false;
-                    _image != null && !contentController.text.isEmpty
-                        ? createArticle(_image, contentController)
-                        : showCreateConfirmationDialog();
+                    if (_image != null && !contentController.text.isEmpty) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('게시글 생성 중'),
+                            content: Text('게시글을 생성 중입니다. 잠시만 기다려주세요.'),
+                          );
+                        },
+                      );
+                      createArticle(_image, contentController);
+                    } else {
+                      showCreateConfirmationDialog();
+                    }
                   }
                 },
                 style: ElevatedButton.styleFrom(
