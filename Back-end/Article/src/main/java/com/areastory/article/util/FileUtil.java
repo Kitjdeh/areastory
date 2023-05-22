@@ -139,23 +139,14 @@ public class FileUtil {
             param.setCompressionQuality(quality);
             BufferedImage image = ImageIO.read(file.getInputStream());
 
-            // 이미지 회전 및 방향 설정
+            // 이미지 회전 방향 설정
             AffineTransform transform = new AffineTransform();
-
-            int width = image.getWidth();
-            int height = image.getHeight();
-
-            // 이미지의 회전 및 방향 처리
-            if (width > height) { // 가로로 찍은 경우
-                transform.rotate(Math.toRadians(90)); // 90도 시계방향 회전
-            } else if (width < height) { // 세로로 찍은 경우
-                transform.rotate(Math.toRadians(-90)); // 90도 반시계방향 회전
-            } else { // 정사각형 이미지인 경우
-                // 추가적인 회전 처리 필요 없음
-            }
+            transform.rotate(0); // 회전 각도를 조정하여 원하는 방향으로 회전 가능
 
             // 이미지 크기 및 회전 적용
-            BufferedImage rotatedImage = new BufferedImage(height, width, image.getType());
+            int width = image.getWidth();
+            int height = image.getHeight();
+            BufferedImage rotatedImage = new BufferedImage(width, height, image.getType());
             Graphics2D g = rotatedImage.createGraphics();
             g.drawImage(image, transform, null);
             g.dispose();
