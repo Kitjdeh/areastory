@@ -271,7 +271,7 @@ class _MyMapState extends State<MyMap> {
 
                       //--------post-----------
                       Map<String, AreaData> result =
-                          await postmyAreaData(requestlist, strUser ?? '');
+                          await postmyAreaData(requestlist, widget.userId);
                       print('strUser${strUser}');
                       List<Mapdata> newvisibleMapdata = [];
                       // print('응답${result}');
@@ -346,7 +346,7 @@ class _MyMapState extends State<MyMap> {
                         });
                         //----------------------------------post-----
                         Map<String, AreaData> result =
-                            await postmyAreaData(requestlist, strUser ?? '');
+                            await postmyAreaData(requestlist, widget.userId);
 
                         List<Mapdata> newvisibleMapdata = [];
                         // print('result${result}');
