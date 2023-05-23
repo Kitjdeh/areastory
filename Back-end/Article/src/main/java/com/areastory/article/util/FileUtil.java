@@ -115,10 +115,10 @@ public class FileUtil {
 
     // 파일 용량 축소
     public File compressImage(MultipartFile file) {
-//        File compressedImageFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
-        File compressedImageFile = new File("thumbnail/" + file.getName());
+        File compressedImageFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+//        File compressedImageFile = new File("thumbnail/" + file.getName());
         try {
-            BufferedImage bi = ImageIO.read(compressedImageFile);
+            BufferedImage bi = ImageIO.read(file.getInputStream());
             double ratio = 3;
             int width = (int) (bi.getWidth() / ratio);
             int height = (int) (bi.getHeight() / ratio);
