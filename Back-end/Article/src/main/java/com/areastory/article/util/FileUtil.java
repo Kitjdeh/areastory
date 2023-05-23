@@ -237,8 +237,8 @@ public class FileUtil {
     // 이미지의 픽셀 값 차이 계산 메서드
     private int calculatePixelDifference(BufferedImage image1, BufferedImage image2) {
         int diff = 0;
-        for (int y = 0; y < image1.getHeight(); y++) {
-            for (int x = 0; x < image1.getWidth(); x++) {
+        for (int y = 0; y < image1.getWidth(); y++) {
+            for (int x = 0; x < image1.getHeight(); x++) {
                 int rgb1 = image1.getRGB(x, y);
                 int rgb2 = image2.getRGB(x, y);
 
