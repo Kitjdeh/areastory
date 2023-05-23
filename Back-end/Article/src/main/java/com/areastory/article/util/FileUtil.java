@@ -134,7 +134,7 @@ public class FileUtil {
             // 회전된 이미지 로드
             BufferedImage rotatedImage = ImageIO.read(compressedImageFile);
 
-            // 회전 각도 (예시로 30도로 가정)
+            // 회전 각도
             double rotationAngle = estimateRotationAngle(bi, rotatedImage);
 
             System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
@@ -220,18 +220,9 @@ public class FileUtil {
 
         // 주어진 각도 범위 내에서 회전 각도 추정
         for (double angle = minAngle; angle <= maxAngle; angle += angleStep) {
-            // 회전 복원을 위한 AffineTransform 객체 생성
-            AffineTransform transform = new AffineTransform();
-            transform.rotate(Math.toRadians(angle), rotatedImage.getWidth() / 2.0, rotatedImage.getHeight() / 2.0);
-
-            // 회전 복원
-            BufferedImage restoredImage = new BufferedImage(rotatedImage.getWidth(), rotatedImage.getHeight(), rotatedImage.getType());
-            Graphics2D g = restoredImage.createGraphics();
-            g.drawImage(rotatedImage, transform, null);
-            g.dispose();
 
             // 원본 이미지와 회전 복원 이미지의 픽셀 값 차이 계산
-            int pixelDiff = calculatePixelDifference(originalImage, restoredImage);
+            int pixelDiff = calculatePixelDifference(originalImage, rotatedImage);
 
             // 최소 픽셀 값 차이인 경우 각도 갱신
             if (pixelDiff < minPixelDiff) {
@@ -249,7 +240,7 @@ public class FileUtil {
         for (int y = 0; y < image1.getHeight(); y++) {
             for (int x = 0; x < image1.getWidth(); x++) {
                 int rgb1 = image1.getRGB(x, y);
-                int rgb2 = image2.getRGB(y, x);
+                int rgb2 = image2.getRGB(x, y);
 
                 // RGB 각각의 차이 계산
                 int redDiff = Math.abs((rgb1 >> 16) & 0xFF - (rgb2 >> 16) & 0xFF);
