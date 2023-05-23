@@ -10,17 +10,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -121,55 +117,47 @@ public class FileUtil {
     // 파일 용량 축소
     public File compressImage(MultipartFile file) {
         File compressedImageFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
-        try (OutputStream os = new FileOutputStream(compressedImageFile)) {
+        try {
+            BufferedImage bi = ImageIO.read(compressedImageFile);
 
+            double ratio = 3;
+            int width = (int) (bi.getWidth() / ratio);
+            int height = (int) (bi.getHeight() / ratio);
 
-            float quality = 0.1f; //0.1 ~ 1.0까지 압축되는 이미지의 퀄리티를 지정
-            //숫자가 낮을수록 화질과 용량이 줄어든다.
-            Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
-            if (!writers.hasNext())
-                throw new IllegalStateException("No writers found");
-
-            ImageWriter writer = (ImageWriter) writers.next();
-            ImageOutputStream ios = ImageIO.createImageOutputStream(os);
-
-            writer.setOutput(ios);
-            ImageWriteParam param = writer.getDefaultWriteParam();
-            param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-            param.setCompressionQuality(quality);
-            BufferedImage image = ImageIO.read(file.getInputStream());
-
-            // 이미지 회전 방향 설정
-            AffineTransform transform = new AffineTransform();
-            transform.rotate(90); // 회전 각도를 조정하여 원하는 방향으로 회전 가능
-
-            // 이미지 크기 및 회전 적용
-            int width = image.getWidth();
-            int height = image.getHeight();
-            BufferedImage rotatedImage = new BufferedImage(width, height, image.getType());
-            Graphics2D g = rotatedImage.createGraphics();
-            g.drawImage(image, transform, null);
-            g.dispose();
-
-            writer.write(null, new IIOImage(image, null, null), param);
-        } catch (FileNotFoundException e) {
-            throw new CustomException(ErrorCode.FILE_NOT_FOUND);
+            BufferedImage bt = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+            Graphics2D graphics2D = bt.createGraphics();
+            graphics2D.drawImage(bi, 0, 0, width, height, null);
+            ImageIO.write(bt, "jpg", compressedImageFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+//        File compressedImageFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+//
+//        try (OutputStream os = new FileOutputStream(compressedImageFile)) {
+//
+//            float quality = 0.1f; //0.1 ~ 1.0까지 압축되는 이미지의 퀄리티를 지정
+//            //숫자가 낮을수록 화질과 용량이 줄어든다.
+//            Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+//            if (!writers.hasNext())
+//                throw new IllegalStateException("No writers found");
+//
+//            ImageWriter writer = (ImageWriter) writers.next();
+//            ImageOutputStream ios = ImageIO.createImageOutputStream(os);
+//
+//            writer.setOutput(ios);
+//            ImageWriteParam param = writer.getDefaultWriteParam();
+//            param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+//            param.setCompressionQuality(quality);
+//            BufferedImage image = ImageIO.read(file.getInputStream());
+//            writer.write(null, new IIOImage(image, null, null), param);
+//        } catch (FileNotFoundException e) {
+//            throw new CustomException(ErrorCode.FILE_NOT_FOUND);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return compressedImageFile;
         return compressedImageFile;
     }
 
-    private File convertJpegToJpg(MultipartFile jpegFile) throws IOException {
-        BufferedImage jpegImage = ImageIO.read(jpegFile.getInputStream());
-
-        File jpgFile = new File(Objects.requireNonNull(jpegFile.getOriginalFilename()));
-        BufferedImage jpgImage = new BufferedImage(jpegImage.getWidth(), jpegImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-        jpgImage.createGraphics().drawImage(jpegImage, 0, 0, Color.WHITE, null);
-
-        ImageIO.write(jpgImage, "jpg", jpgFile);
-
-        return jpgFile;
-    }
 
 }
