@@ -41,7 +41,6 @@ public class FileUtil {
         if (multipartFile == null || multipartFile.isEmpty())
             return null;
         File uploadFile = compressImage(multipartFile);
-        System.out.println("파일 이름13 :" + multipartFile.getOriginalFilename());
         return upload(uploadFile, dirName);
     }
 
@@ -116,10 +115,10 @@ public class FileUtil {
 
     // 파일 용량 축소
     public File compressImage(MultipartFile file) {
-        File compressedImageFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+//        File compressedImageFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+        File compressedImageFile = new File("thumbnail/" + file.getName());
         try {
             BufferedImage bi = ImageIO.read(compressedImageFile);
-
             double ratio = 3;
             int width = (int) (bi.getWidth() / ratio);
             int height = (int) (bi.getHeight() / ratio);
