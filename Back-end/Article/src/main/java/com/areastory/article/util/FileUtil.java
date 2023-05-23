@@ -135,7 +135,11 @@ public class FileUtil {
             BufferedImage rotatedImage = ImageIO.read(compressedImageFile);
 
             // 회전 각도 (예시로 30도로 가정)
-            double rotationAngle = 90.0;
+            double rotationAngle = estimateRotationAngle(bi, rotatedImage);
+
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            System.out.println("회전 : " + rotationAngle);
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
             // 이미지 복원을 위한 AffineTransform 객체 생성
             AffineTransform transform = new AffineTransform();
