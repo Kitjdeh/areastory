@@ -116,7 +116,6 @@ public class FileUtil {
     // 파일 용량 축소
     public File compressImage(MultipartFile file) {
         File compressedImageFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
-//        File compressedImageFile = new File("thumbnail/" + file.getName());
         try {
             BufferedImage bi = ImageIO.read(file.getInputStream());
             double ratio = 3;
@@ -127,6 +126,39 @@ public class FileUtil {
             Graphics2D graphics2D = bt.createGraphics();
             graphics2D.drawImage(bi, 0, 0, width, height, null);
             ImageIO.write(bt, "jpg", compressedImageFile);
+            /*
+            회전 테스트
+             */
+            // 원본 이미지 로드
+            BufferedImage originalImage = ImageIO.read(file.getInputStream());
+
+            // 회전된 이미지 로드
+            BufferedImage rotatedImage = ImageIO.read(compressedImageFile);
+
+            // 이미지 크기 비교
+            boolean isRotated = (originalImage.getWidth() != rotatedImage.getWidth()) || (originalImage.getHeight() != rotatedImage.getHeight());
+
+            // 이미지 픽셀 값 비교
+            if (!isRotated) {
+                for (int y = 0; y < originalImage.getHeight(); y++) {
+                    for (int x = 0; x < originalImage.getWidth(); x++) {
+                        if (originalImage.getRGB(x, y) != rotatedImage.getRGB(x, y)) {
+                            isRotated = true;
+                            break;
+                        }
+                    }
+                    if (isRotated) {
+                        break;
+                    }
+                }
+            }
+
+            if (isRotated) {
+                System.out.println("이미지 회전이 적용되었습니다.");
+            } else {
+                System.out.println("이미지 회전이 적용되지 않았습니다.");
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
