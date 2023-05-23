@@ -249,7 +249,7 @@ public class FileUtil {
         for (int y = 0; y < image1.getHeight(); y++) {
             for (int x = 0; x < image1.getWidth(); x++) {
                 int rgb1 = image1.getRGB(x, y);
-                int rgb2 = image2.getRGB(x, y);
+                int rgb2 = image2.getRGB(y, x);
 
                 // RGB 각각의 차이 계산
                 int redDiff = Math.abs((rgb1 >> 16) & 0xFF - (rgb2 >> 16) & 0xFF);
