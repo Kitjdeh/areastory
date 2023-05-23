@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,6 +28,7 @@ public class FileUtil {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+
 
     public String upload(MultipartFile multipartFile, String dirName) {
         if (multipartFile == null || multipartFile.isEmpty())
@@ -53,18 +55,6 @@ public class FileUtil {
 
         return uploadImageUrl; // 업로드 된 파일의 S3 URL 주소 반환
     }
-
-    public void deleteFile(String fileUrl) {
-        try {
-            String fileKey = fileUrl.substring(50); // 삭제 시 필요한 키
-            String objectName = fileUrl.substring(55); // 파일이 존재하는지 확인하기 위한 키
-            if (amazonS3Client.doesObjectExist(bucket, objectName)) {
-                amazonS3Client.deleteObject(bucket, fileKey);
-            }
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.FILE_NOT_FOUND);
-        }
-    }
 //
 //    //String으로 된 url File로 변경
 //    public String urlUpload(String url, String dirName) throws IOException {
@@ -90,6 +80,18 @@ public class FileUtil {
 //        return uploadImageUrl; // 업로드 된 파일의 S3 URL 주소 반환
 //
 //    }
+
+    public void deleteFile(String fileUrl) {
+        try {
+            String fileKey = fileUrl.substring(50); // 삭제 시 필요한 키
+            String objectName = fileUrl.substring(55); // 파일이 존재하는지 확인하기 위한 키
+            if (amazonS3Client.doesObjectExist(bucket, objectName)) {
+                amazonS3Client.deleteObject(bucket, fileKey);
+            }
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.FILE_NOT_FOUND);
+        }
+    }
 
     private String putS3(File uploadFile, String fileName) {
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(
@@ -129,35 +131,47 @@ public class FileUtil {
             /*
             회전 테스트
              */
-            // 원본 이미지 로드
-            BufferedImage originalImage = ImageIO.read(file.getInputStream());
-
             // 회전된 이미지 로드
             BufferedImage rotatedImage = ImageIO.read(compressedImageFile);
 
+            // 회전 각도 (예시로 30도로 가정)
+            double rotationAngle = 90.0;
+
+            // 이미지 복원을 위한 AffineTransform 객체 생성
+            AffineTransform transform = new AffineTransform();
+            transform.rotate(-Math.toRadians(rotationAngle), rotatedImage.getWidth() / 2.0, rotatedImage.getHeight() / 2.0);
+
+            // 이미지 복원
+            BufferedImage restoredImage = new BufferedImage(rotatedImage.getWidth(), rotatedImage.getHeight(), rotatedImage.getType());
+            Graphics2D g = restoredImage.createGraphics();
+            g.drawImage(rotatedImage, transform, null);
+            g.dispose();
+
+            // 복원된 이미지를 파일로 저장 또는 처리할 수 있습니다.
+            ImageIO.write(restoredImage, "jpg", compressedImageFile);
             // 이미지 크기 비교
-            boolean isRotated = (originalImage.getWidth() != rotatedImage.getWidth()) || (originalImage.getHeight() != rotatedImage.getHeight());
-
-            // 이미지 픽셀 값 비교
-            if (!isRotated) {
-                for (int y = 0; y < originalImage.getHeight(); y++) {
-                    for (int x = 0; x < originalImage.getWidth(); x++) {
-                        if (originalImage.getRGB(x, y) != rotatedImage.getRGB(x, y)) {
-                            isRotated = true;
-                            break;
-                        }
-                    }
-                    if (isRotated) {
-                        break;
-                    }
-                }
-            }
-
-            if (isRotated) {
-                System.out.println("이미지 회전이 적용되었습니다.");
-            } else {
-                System.out.println("이미지 회전이 적용되지 않았습니다.");
-            }
+//            boolean isRotated = (originalImage.getWidth() != rotatedImage.getWidth()) || (originalImage.getHeight() != rotatedImage.getHeight());
+//
+//            // 이미지 픽셀 값 비교
+//            if (!isRotated) {
+//                for (int y = 0; y < originalImage.getHeight(); y++) {
+//                    for (int x = 0; x < originalImage.getWidth(); x++) {
+//                        if (originalImage.getRGB(x, y) != rotatedImage.getRGB(x, y)) {
+//                            isRotated = true;
+//                            break;
+//                        }
+//                    }
+//                    if (isRotated) {
+//                        break;
+//                    }
+//                }
+//            }
+//
+//            if (isRotated) {
+//                System.out.println("이미지 회전이 적용되었습니다.");
+//            } else {
+//                System.out.println("이미지 회전이 적용되지 않았습니다.");
+//            }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -190,5 +204,58 @@ public class FileUtil {
         return compressedImageFile;
     }
 
+    // 회전 각도 추정 메서드
+    private double estimateRotationAngle(BufferedImage originalImage, BufferedImage rotatedImage) {
+        // 회전 각도 범위 설정
+        double minAngle = -10.0; // 추정할 최소 각도
+        double maxAngle = 10.0; // 추정할 최대 각도
+        double angleStep = 0.1; // 각도 증가 간격
 
+        double bestAngle = 0.0;
+        int minPixelDiff = Integer.MAX_VALUE;
+
+        // 주어진 각도 범위 내에서 회전 각도 추정
+        for (double angle = minAngle; angle <= maxAngle; angle += angleStep) {
+            // 회전 복원을 위한 AffineTransform 객체 생성
+            AffineTransform transform = new AffineTransform();
+            transform.rotate(Math.toRadians(angle), rotatedImage.getWidth() / 2.0, rotatedImage.getHeight() / 2.0);
+
+            // 회전 복원
+            BufferedImage restoredImage = new BufferedImage(rotatedImage.getWidth(), rotatedImage.getHeight(), rotatedImage.getType());
+            Graphics2D g = restoredImage.createGraphics();
+            g.drawImage(rotatedImage, transform, null);
+            g.dispose();
+
+            // 원본 이미지와 회전 복원 이미지의 픽셀 값 차이 계산
+            int pixelDiff = calculatePixelDifference(originalImage, restoredImage);
+
+            // 최소 픽셀 값 차이인 경우 각도 갱신
+            if (pixelDiff < minPixelDiff) {
+                minPixelDiff = pixelDiff;
+                bestAngle = angle;
+            }
+        }
+
+        return bestAngle;
+    }
+
+    // 이미지의 픽셀 값 차이 계산 메서드
+    private int calculatePixelDifference(BufferedImage image1, BufferedImage image2) {
+        int diff = 0;
+        for (int y = 0; y < image1.getHeight(); y++) {
+            for (int x = 0; x < image1.getWidth(); x++) {
+                int rgb1 = image1.getRGB(x, y);
+                int rgb2 = image2.getRGB(x, y);
+
+                // RGB 각각의 차이 계산
+                int redDiff = Math.abs((rgb1 >> 16) & 0xFF - (rgb2 >> 16) & 0xFF);
+                int greenDiff = Math.abs((rgb1 >> 8) & 0xFF - (rgb2 >> 8) & 0xFF);
+                int blueDiff = Math.abs(rgb1 & 0xFF - rgb2 & 0xFF);
+
+                // 픽셀 값 차이 누적
+                diff += redDiff + greenDiff + blueDiff;
+            }
+        }
+        return diff;
+    }
 }
