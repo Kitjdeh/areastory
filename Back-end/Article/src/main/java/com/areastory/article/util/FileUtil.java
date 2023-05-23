@@ -135,7 +135,7 @@ public class FileUtil {
             BufferedImage rotatedImage = ImageIO.read(compressedImageFile);
 
             // 회전 각도
-            double rotationAngle = estimateRotationAngle(bi, rotatedImage);
+            double rotationAngle = -90;
 
             System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             System.out.println("회전 : " + rotationAngle);
@@ -208,49 +208,4 @@ public class FileUtil {
         return compressedImageFile;
     }
 
-    // 회전 각도 추정 메서드
-    private double estimateRotationAngle(BufferedImage originalImage, BufferedImage rotatedImage) {
-        // 회전 각도 범위 설정
-        double minAngle = -10.0; // 추정할 최소 각도
-        double maxAngle = 10.0; // 추정할 최대 각도
-        double angleStep = 0.1; // 각도 증가 간격
-
-        double bestAngle = 0.0;
-        int minPixelDiff = Integer.MAX_VALUE;
-
-        // 주어진 각도 범위 내에서 회전 각도 추정
-        for (double angle = minAngle; angle <= maxAngle; angle += angleStep) {
-
-            // 원본 이미지와 회전 복원 이미지의 픽셀 값 차이 계산
-            int pixelDiff = calculatePixelDifference(originalImage, rotatedImage);
-
-            // 최소 픽셀 값 차이인 경우 각도 갱신
-            if (pixelDiff < minPixelDiff) {
-                minPixelDiff = pixelDiff;
-                bestAngle = angle;
-            }
-        }
-
-        return bestAngle;
-    }
-
-    // 이미지의 픽셀 값 차이 계산 메서드
-    private int calculatePixelDifference(BufferedImage image1, BufferedImage image2) {
-        int diff = 0;
-        for (int y = 0; y < image1.getWidth(); y++) {
-            for (int x = 0; x < image1.getHeight(); x++) {
-                int rgb1 = image1.getRGB(x, y);
-                int rgb2 = image2.getRGB(x, y);
-
-                // RGB 각각의 차이 계산
-                int redDiff = Math.abs((rgb1 >> 16) & 0xFF - (rgb2 >> 16) & 0xFF);
-                int greenDiff = Math.abs((rgb1 >> 8) & 0xFF - (rgb2 >> 8) & 0xFF);
-                int blueDiff = Math.abs(rgb1 & 0xFF - rgb2 & 0xFF);
-
-                // 픽셀 값 차이 누적
-                diff += redDiff + greenDiff + blueDiff;
-            }
-        }
-        return diff;
-    }
 }
