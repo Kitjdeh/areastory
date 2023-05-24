@@ -1,0 +1,58 @@
+server:
+  servlet:
+    contextPath: /
+    encoding:
+      enabled: true
+      force: true
+      charset: UTF-8
+  port: 5002
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+      use-new-id-generator-mappings: false
+    properties:
+      hibernate:
+        show_sql: true   # System out
+        format_sql: true
+        jdbc:
+          time_zone: Asia/Seoul
+    open-in-view: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      password: ${DB_PASSWORD}
+      username: ${DB_USER}
+    url: ${DB_URL}
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 200MB
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+#springfox:
+#  documentation:
+#    swagger:
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+
+#aws
+cloud:
+  aws:
+    credentials:
+      secret-key: ${AWS_SECRET_KEY}
+      access-key: ${AWS_ACCESS_KEY}
+    s3:
+      bucket: ${BUCKET_NAME}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
