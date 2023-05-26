@@ -1,0 +1,37 @@
+spring:
+  profiles:
+    active: test
+  #  datasource:
+  #    url: jdbc:h2:tcp://localhost/~/User
+  #    username: sa
+  #    password:
+  #    driver-class-name: org.h2.Driver
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: k8a302
+    #    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/areastory
+    url: jdbc:mysql://3.34.239.211:3306/areastory
+    password: ssafy12!
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        # show_sql: true
+        format_sql: true
+        use_sql_comments: true
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
+
+cloud:
+  aws:
+    s3:
+      bucket: areastory-user
+    credentials:
+      access-key: AKIA3JCA7IWZKYII6T5M
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false

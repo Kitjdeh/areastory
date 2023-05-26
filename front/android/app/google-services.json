@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "495600762325",
+    "project_id": "areastory-c6f82",
+    "storage_bucket": "areastory-c6f82.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495600762325:android:a8d234d6d16d1e712b915c",
+        "android_client_info": {
+          "package_name": "com.a302.areastory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "495600762325-8dj1efjmotq6q2kogv30r32q65lf7nba.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClzAdk8OnsoyKAgbSTK3mZt9bnmC3F8EQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "495600762325-8dj1efjmotq6q2kogv30r32q65lf7nba.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "495600762325-6rcdr083fvnldgn77iobejn51e2vd681.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.front"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
