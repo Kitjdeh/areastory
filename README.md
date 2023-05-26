@@ -113,7 +113,7 @@
   - 프로필 이미지 선택시 프로필 수정페이지로 이동합니다.
   - 기기의 앨범에서 이미지 선택이 가능하며 닉네임 수정이 가능합니다.
 
-  ![프로필수정](assets\프로필수정.gif)
+  ![프로필수정](assets/프로필수정.gif)
 
 - 팔로워/ 팔로잉 목록
   
@@ -121,33 +121,33 @@
   - 최신순, 오래된순, 이름순으로 정렬하여 제공할 수 있다.
   - 팔로워, 팔로잉 신청 및 취소
 
-  ![팔로잉](assets\팔로잉.gif)
+  ![팔로잉](assets/팔로잉.gif)
 
 - 유저검색
 
   - 팔로워/ 팔로잉 목록에서 검색창을 터치하면 유저검색 페이지로 이동
   - 검색시 팔로잉 유저, 전체 유저 순으로 결과를 제공한다.
 
-  ![유저검색](assets\유저검색.gif)
+  ![유저검색](assets/유저검색.gif)
 
 - 마이앨범
   
   - 내 게시글의 이미지의 저화질 버전인 썸네일을 그리드뷰 형식으로 제공
   - 내 게시글 이미지 선택시, 게시글 디테일 페이지로 이동
   
-  ![마이앨범](assets\마이앨범.gif)
+  ![마이앨범](assets/마이앨범.gif)
 
 - 내지도
   
   - 내 게시글로 채워진 지도 제공
 
-  ![내지도](assets\내지도.gif)
+  ![내지도](assets/내지도.gif)
 
 - 옵션
   
   - 유저신고: 다른 유저의 마이페이지 접속시, 유저신고 기능 활성화
 
-  ![신고](assets\신고.gif)
+  ![신고](assets/신고.gif)
 
   - 로그아웃: 앱종료
   
@@ -159,15 +159,15 @@
 
 - location ERD
 
-  <img src="assets\mapErd.png"  width="200" height="400"/>
+  <img src="assets/mapErd.png"  width="200" height="400"/>
 
 - Article ERD
 
-  <img src="assets\articleErd.png"  width="200" height="400"/>
+  <img src="assets/articleErd.png"/>
 
 - User ERD
 
-  <img src="assets\userErd.png"  width="200" height="400"/>
+  <img src="assets/userErd.png"/>
 
 ## 시스템 아키텍쳐
 
